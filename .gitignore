@@ -1,0 +1,12 @@
+*.suo
+bin
+obj
+*.ide
+*.cache
+*.lref
+*.cache
+*.ide-wal
+*.ide-shm
+/.vs
+.cache
+*.cache
