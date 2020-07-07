@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data.cs" />
+    <Compile Include="ImageList.cs" />
     <Compile Include="KDCollectionBase.cs" />
     <Compile Include="KDObjectBase.cs" />
     <Compile Include="KDTextEncoder.cs" />

@@ -35,7 +35,7 @@ namespace KDLib
 			set
 			{
 				_Image = value;
-				File.WriteAllBytes("Tests\\Images\\" + ID.ToString() + _ImageType, RawImage);
+				File.WriteAllBytes("Tests\\Images\\" + ID.ToString() + "." +  _ImageType, RawImage);
 			}
 		}
 
