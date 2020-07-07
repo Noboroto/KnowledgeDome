@@ -85,7 +85,7 @@ namespace KDLib
 		public Player(string name, byte[] avatar)
 			: this()
 		{
-			Hashcode = Data.GenerateHashcode();
+			Hashcode = Data.GenerateID();
 			Name = name;
 			RawAvatar = avatar;
 		}
