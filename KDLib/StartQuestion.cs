@@ -24,7 +24,7 @@
 				case "Địa lý":
 					return SubjectInfo.Geography;
 				case "Hiểu biết chung":
-					return SubjectInfo.BaseKnowledge;
+					return SubjectInfo.General;
 				case "Hoá học":
 					return SubjectInfo.Chemistry;
 				case "Lịch sử":
@@ -32,7 +32,7 @@
 				case "Lĩnh vực khác":
 					return SubjectInfo.Other;
 				case "Nghệ thuật":
-					return SubjectInfo.Art;
+					return SubjectInfo.Arts;
 				case "Sinh học":
 					return SubjectInfo.Biology;
 				case "Thể thao":

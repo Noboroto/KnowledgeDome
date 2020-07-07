@@ -29,6 +29,11 @@ namespace KDLib
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 
+		public virtual bool Contains (int id)
+        {
+			return false;
+        }
+
 		internal void OnPropertyChanged(string propertyname)
 		{
 			if (this.PropertyChanged != null)

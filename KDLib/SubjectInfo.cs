@@ -3,11 +3,11 @@
     public enum SubjectInfo
     {
         Geography,
-        BaseKnowledge,
+        General,
         Chemistry,
         History,
         Other,
-        Art,
+        Arts,
         Biology,
         Sport,
         English,
