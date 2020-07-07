@@ -1,6 +1,6 @@
 ﻿namespace KDLib
 {
-	public abstract class Question : KDObjBase
+	public abstract class Question : KDObjectBase
 	{
 		private string _Content;
 
