@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KDLib
+﻿namespace KDLib
 {
-    class Subject
+    public enum SubjectInfo
     {
+        Geography,
+        BaseKnowledge,
+        Chemistry,
+        History,
+        Other,
+        Art,
+        Biology,
+        Sport,
+        English,
+        Math,
+        Literature,
+        Physics,
+        Unknown
     }
 }

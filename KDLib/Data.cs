@@ -13,7 +13,7 @@ namespace KDLib
         /// Get Hashcode for object
         /// </summary>
         /// <returns></returns>
-        internal static int GenerateHashcode()
+        internal static int GenerateID()
         {
             return 0;
         }

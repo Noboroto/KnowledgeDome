@@ -2,6 +2,8 @@
 {
 	public abstract class Question : KDObjectBase
 	{
+		private int _ID;
+
 		private string _Content;
 
 		private string _Answer;
@@ -31,11 +33,30 @@
 				OnPropertyChanged("Answer");
 			}
 		}
+		public int ID
+        {
+            get
+            {
+				return _ID;
+            }
+			set
+            {
+				_ID = value;
+				OnPropertyChanged("ID");
+            }
+        }
 
-		internal Question(string content, string answer)
+		internal Question(int id, string content, string answer)
 		{
+			ID = id;
 			Content = content;
 			Answer = answer;
+		}
+		public static int IDComparer(Question a, Question b)
+		{
+			if (a.ID < b.ID) return -1;
+			if (a.ID > b.ID) return 1;
+			return 0;
 		}
 
 		public static int ContentComparer(Question a, Question b)
