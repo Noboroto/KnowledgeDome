@@ -26,7 +26,7 @@ namespace KDLib
 		{
 		}
 
-		internal bool Contains(int hashcode)
+		public override bool Contains(int hashcode)
 		{
 			using (Enumerator enumerator = GetEnumerator())
 			{

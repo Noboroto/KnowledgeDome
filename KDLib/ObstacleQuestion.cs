@@ -51,6 +51,18 @@ namespace KDLib
 			}
 		}
 
+		public string ImageType
+        {
+			get
+            {
+				return _ImageType;
+            }
+			set
+            {
+				_ImageType = value;
+            }
+        }
+
 		public Bitmap BitmapImage => new Bitmap(new MemoryStream(RawImage));
 
 		public void GetValueFrom(ObstacleQuestion q)
@@ -61,9 +73,21 @@ namespace KDLib
 		}
 
 		public ObstacleQuestion(int id, int charcount, string content)
-			: base(id, "",content)
+			: base(id, content, "")
 		{
 			CharCount = charcount;
+		}
+
+
+		public string ConvertToJson()
+		{
+			string s = "{";
+			s += "\"ID\":" + ID;
+			s += ",\"ImageType\":" + '"' + ImageType + '"';
+			s += ",\"CharCount\":" + CharCount;
+			s += ",\"Content\":" + '"' + Content + '"';
+			s += ",\"Answer\":" + '"' + Answer + '"';
+			return s + "}";
 		}
 
 		public static int Comparer(ObstacleQuestion a, ObstacleQuestion b)

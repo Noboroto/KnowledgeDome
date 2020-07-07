@@ -9,18 +9,7 @@ namespace KDLib
 	{
 		public ObstacleList()
 		{
-		}
 
-		public override void Add(Obstacle item)
-		{
-			base.Add(item);
-			item.CollectionChanged += Item_CollectionChanged;
-		}
-
-		public override void Remove(Obstacle item)
-		{
-			item.CollectionChanged -= Item_CollectionChanged;
-			base.Remove(item);
 		}
 
 		public override bool Contains(int ID)

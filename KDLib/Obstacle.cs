@@ -3,12 +3,15 @@ using System.Collections.Specialized;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media;
+using Newtonsoft.Json;
 
 namespace KDLib
 {
-	public class Obstacle : KDCollectionBase<ObstacleRowQuestion>
+	public class Obstacle
 	{
 		private ObstacleQuestion _obstacleQuestion;
+
+		private List<ObstacleRowQuestion> _RowList;
 
 		public int ID
 		{
@@ -30,41 +33,67 @@ namespace KDLib
 		{
 			get
 			{
-				return _obstacleQuestion.Answer;
+				return _obstacleQuestion.Content;
 			}
 		}
-		
+
 		public ImageSource Image
-        {
+		{
 			get
-            {
+			{
 				return _obstacleQuestion.Image;
-            }
-        }
-		
+			}
+		}
+
 		public Bitmap BitmapImage
-        {
+		{
 			get
-            {
+			{
 				return _obstacleQuestion.BitmapImage;
-            }
-        }
-		
+			}
+		}
+
 		public ObstacleQuestion obstacleQuestion
+		{
+			get
+			{
+				return _obstacleQuestion;
+			}
+			set
+			{
+				_obstacleQuestion = value;
+			}
+		}
+
+		public List<ObstacleRowQuestion> RowList
         {
 			get
             {
-				return _obstacleQuestion;
+				return _RowList;
             }
 			set
             {
-				_obstacleQuestion = value;
+				_RowList = value;
             }
         }
 
 		public Obstacle()
 		{
+			RowList = new List<ObstacleRowQuestion>();
 		}
+
+		/// <summary>
+		/// Returns JSON string
+		/// </summary>
+		/// <returns></returns>
+
+		public string CovertToJson ()
+        {
+			string s = "\"obstacleQuestion\":" + obstacleQuestion.ConvertToJson();
+			s += ",\"RowList\":" + JsonConvert.SerializeObject(RowList);
+			return s;
+        }
+
 		public static int Comparer(Obstacle a, Obstacle b)
 		{
 			return ObstacleQuestion.Comparer(a.obstacleQuestion, b.obstacleQuestion);
