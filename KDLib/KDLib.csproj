@@ -47,11 +47,19 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccelerationQuestion.cs" />
+    <Compile Include="AccelerationQuestionList.cs" />
     <Compile Include="Data.cs" />
+    <Compile Include="ExtraQuestion.cs" />
+    <Compile Include="ExtraQuestionList.cs" />
+    <Compile Include="FinishQuestion.cs" />
+    <Compile Include="FinishQuestionList.cs" />
     <Compile Include="ImageList.cs" />
     <Compile Include="KDCollectionBase.cs" />
     <Compile Include="KDObjectBase.cs" />
     <Compile Include="KDTextEncoder.cs" />
+    <Compile Include="Match.cs" />
+    <Compile Include="MatchList.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="ObstacleList.cs" />
     <Compile Include="ObstacleQuestion.cs" />
