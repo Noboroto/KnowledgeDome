@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Newtonsoft.Json;
+using System.IO;
 using System.Windows.Media;
 
 namespace KDLib
@@ -38,6 +39,7 @@ namespace KDLib
 			}
 		}
 
+		[JsonIgnore]
 		public byte[] RawAvatar
 		{
 			get
@@ -52,6 +54,7 @@ namespace KDLib
 			}
 		}
 
+		[JsonIgnore]
 		public ImageSource Avatar
 		{
 			get
@@ -89,12 +92,12 @@ namespace KDLib
 			Name = name;
 			RawAvatar = avatar;
 		}
-
+		[JsonConstructor]
 		public Player(int hashcode, string name)
 		{
 			Hashcode = hashcode;
 			Name = name;
-			RawAvatar = File.ReadAllBytes("Images\\Players\\" + Hashcode.ToString() + ".png");
+			if (File.Exists("Images\\Players\\" + Hashcode.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + Hashcode.ToString() + ".png");
 		}
 
 		public void GetValueFrom(Player p)
