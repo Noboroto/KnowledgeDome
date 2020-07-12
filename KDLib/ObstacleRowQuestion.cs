@@ -1,4 +1,6 @@
-﻿namespace KDLib
+﻿using Newtonsoft.Json;
+
+namespace KDLib
 {
 	public class ObstacleRowQuestion : Question
 	{
@@ -29,7 +31,7 @@
 				_CharCount = value;
 			}
 		}
-
+		[JsonConstructor]
 		public ObstacleRowQuestion(int id, int parentID, int charcount, string content, string answer)
 			: base(id, content, answer)
 		{

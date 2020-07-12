@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
@@ -18,6 +19,7 @@ namespace KDLib
 			base.Remove(item);
 		}
 
+		[JsonConstructor]
 		public PlayerList()
 		{
 		}

@@ -6,95 +6,11 @@ namespace KDLib
 {
 	public static class Data
 	{
-		private static MatchList _Matches;
-
-		private static StartQuestionList _StartQuestions;
-
-		private static ObstacleList _Obstacles;
-
-		private static AccelerationQuestionList _AccelerationQuestions;
-
-		private static FinishQuestionList _FinishQuestions;
-
-		private static ExtraQuestionList _ExtraQuestions;
+		private static int _CurrentPlayer;
 
 		private static int _CurrentMatchIndex;
 
-		private static int _CurrentPlayer;
-
-		private static Random Generator = new Random();
-
-		public static MatchList Matches
-		{
-			get
-			{
-				return _Matches;
-			}
-			set
-			{
-				_Matches = value;
-			}
-		}
-
-		public static StartQuestionList StartQuestions
-		{
-			get
-			{
-				return _StartQuestions;
-			}
-			set
-			{
-				_StartQuestions = value;
-			}
-		}
-
-		public static ObstacleList Obstacles
-		{
-			get
-			{
-				return _Obstacles;
-			}
-			set
-			{
-				_Obstacles = value;
-			}
-		}
-
-		public static AccelerationQuestionList AccelerationQuestions
-		{
-			get
-			{
-				return _AccelerationQuestions;
-			}
-			set
-			{
-				_AccelerationQuestions = value;
-			}
-		}
-
-		public static FinishQuestionList FinishQuestions
-		{
-			get
-			{
-				return _FinishQuestions;
-			}
-			set
-			{
-				_FinishQuestions = value;
-			}
-		}
-
-		public static ExtraQuestionList ExtraQuestions
-		{
-			get
-			{
-				return _ExtraQuestions;
-			}
-			set
-			{
-				_ExtraQuestions = value;
-			}
-		}
+		private static MatchList _Matches;
 
 		public static int CurrentPlayer
 		{
@@ -105,6 +21,18 @@ namespace KDLib
 			set
 			{
 				_CurrentPlayer = value;
+			}
+		}
+
+		public static MatchList Matches
+		{
+			get
+			{
+				return _Matches;
+			}
+			set
+			{
+				_Matches = value;
 			}
 		}
 
@@ -189,19 +117,6 @@ namespace KDLib
 				ExtraQuestions = new ExtraQuestionList();
 			}
 			*/
-		}
-
-		internal static bool Contains(int ID)
-		{
-			if (StartQuestions != null && StartQuestions.Contains(ID) && Obstacles != null && Obstacles.Contains(ID) && AccelerationQuestions != null && AccelerationQuestions.Contains(ID) && FinishQuestions != null && FinishQuestions.Contains(ID) && ExtraQuestions != null && ExtraQuestions.Contains(ID))
-			{
-				if (Matches != null)
-				{
-					return Matches.Contains(ID);
-				}
-				return false;
-			}
-			return false;
 		}
 
         /// <summary>

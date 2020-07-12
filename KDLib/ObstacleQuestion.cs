@@ -52,7 +52,7 @@ namespace KDLib
 				return null;
 			}
 		}
-		[JsonIgnore]
+
 		public string ImageType
         {
 			get
@@ -74,22 +74,12 @@ namespace KDLib
 			RawImage = q.RawImage;	
 		}
 
-		public ObstacleQuestion(int id, int charcount, string content)
+		[JsonConstructor]
+		public ObstacleQuestion(int id, int charcount, string type, string content)
 			: base(id, content, "")
 		{
+			ImageType = type;
 			CharCount = charcount;
-		}
-
-
-		public string ConvertToJson()
-		{
-			string s = "{";
-			s += "\"ID\":" + ID;
-			s += ",\"ImageType\":" + '"' + ImageType + '"';
-			s += ",\"CharCount\":" + CharCount;
-			s += ",\"Content\":" + '"' + Content + '"';
-			s += ",\"Answer\":" + '"' + Answer + '"';
-			return s + "}";
 		}
 
 		public static int Comparer(ObstacleQuestion a, ObstacleQuestion b)

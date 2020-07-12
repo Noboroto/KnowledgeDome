@@ -13,6 +13,7 @@ namespace KDLib
 
 		private List<ObstacleRowQuestion> _RowList;
 
+		[JsonIgnore]
 		public int ID
 		{
 			get
@@ -21,6 +22,7 @@ namespace KDLib
 			}
 		}
 
+		[JsonIgnore]
 		public int CharCount
 		{
 			get
@@ -29,6 +31,7 @@ namespace KDLib
 			}
 		}
 
+		[JsonIgnore]
 		public string Content
 		{
 			get

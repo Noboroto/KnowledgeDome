@@ -6,7 +6,7 @@ namespace KDLib
 {
 	public class Player : KDObjectBase
 	{
-		private int _Hashcode;
+		private int _ID;
 
 		private string _Name;
 
@@ -14,15 +14,15 @@ namespace KDLib
 
 		private int _Score;
 
-		public int Hashcode
+		public int ID
 		{
 			get
 			{
-				return _Hashcode;
+				return _ID;
 			}
 			set
 			{
-				_Hashcode = value;
+				_ID = value;
 			}
 		}
 
@@ -49,7 +49,7 @@ namespace KDLib
 			set
 			{
 				_Avatar = value;
-				File.WriteAllBytes("Images/Players/" + Hashcode.ToString() + ".png", RawAvatar);
+				File.WriteAllBytes("Images/Players/" + ID.ToString() + ".png", RawAvatar);
 				OnPropertyChanged("Avatar");
 			}
 		}
@@ -88,16 +88,16 @@ namespace KDLib
 		public Player(string name, byte[] avatar)
 			: this()
 		{
-			Hashcode = Data.GenerateID();
+			ID = Data.GenerateID();
 			Name = name;
 			RawAvatar = avatar;
 		}
 		[JsonConstructor]
-		public Player(int hashcode, string name)
+		public Player(int id, string name)
 		{
-			Hashcode = hashcode;
+			ID = id;
 			Name = name;
-			if (File.Exists("Images\\Players\\" + Hashcode.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + Hashcode.ToString() + ".png");
+			if (File.Exists("Images\\Players\\" + ID.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + ID.ToString() + ".png");
 		}
 
 		public void GetValueFrom(Player p)
