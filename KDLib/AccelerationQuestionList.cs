@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -6,10 +7,13 @@ namespace KDLib
 {
 	public class AccelerationQuestionList : KDCollectionBase<AccelerationQuestion>
 	{
+		[JsonIgnore]
 		public int IQCount => FindAll((AccelerationQuestion q) => q.HintImages.Count == 1).Count;
 
+		[JsonIgnore]
 		public int ImageStringCount => FindAll((AccelerationQuestion q) => q.HintImages.Count > 2).Count;
 
+		[JsonIgnore]
 		public int JigsawCount => FindAll((AccelerationQuestion q) => q.HintImages.Count == 2).Count;
 
 		public AccelerationQuestionList()

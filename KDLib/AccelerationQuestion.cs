@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Newtonsoft.Json;
+using System.IO;
 
 namespace KDLib
 {
@@ -7,6 +8,7 @@ namespace KDLib
 
 		private ImageList _HintImages;
 
+		[JsonIgnore]
 		public ImageList HintImages
 		{
 			get
@@ -25,6 +27,7 @@ namespace KDLib
 			HintImages = hintimages;
 		}
 
+		[JsonConstructor]
 		public AccelerationQuestion(int id, string content, string answer)
 			: base(id, content, answer)
 		{
