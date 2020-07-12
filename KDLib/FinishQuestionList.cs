@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -6,10 +7,13 @@ namespace KDLib
 {
 	public class FinishQuestionList : KDCollectionBase<FinishQuestion>
 	{
+		[JsonIgnore]
 		public int P10Count => FindAll((FinishQuestion q) => q.Value == 10).Count;
 
+		[JsonIgnore]
 		public int P20Count => FindAll((FinishQuestion q) => q.Value == 20).Count;
 
+		[JsonIgnore]
 		public int P30Count => FindAll((FinishQuestion q) => q.Value == 30).Count;
 
 		public FinishQuestionList()

@@ -1,4 +1,6 @@
-﻿namespace KDLib
+﻿using Newtonsoft.Json;
+
+namespace KDLib
 {
 	public class FinishQuestion : Question
 	{
@@ -22,6 +24,7 @@
 		{
 		}
 
+		[JsonConstructor]
 		public FinishQuestion(int id, int value, string content, string answer)
 			: base(id, content, answer)
 		{

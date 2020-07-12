@@ -13,16 +13,17 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            AccelerationQuestionList abc = new AccelerationQuestionList();
-            abc.Add(new AccelerationQuestion(1, "abcaaD", "ăe"));
-            abc.Add(new AccelerationQuestion(2, "acaaD", "ăe"));
-            abc.Add(new AccelerationQuestion(3, "aaaD", "dasdăe"));
-
+            FinishQuestionList abc = new FinishQuestionList()
+            {
+                new FinishQuestion(1,10, "abcaaD", "ăe"),
+                new FinishQuestion(2,20, "acaaD", "ăe"),
+                new FinishQuestion(3,20 ,"aaaD", "dasdăe")
+            };
             using (StreamWriter sw = File.CreateText(@"C:\Users\thanh\OneDrive\Desktop\abc.json"))
             {
                 string text = JsonConvert.SerializeObject(abc);
                 sw.WriteLine(text);
-                abc = JsonConvert.DeserializeObject<AccelerationQuestionList>(text);
+                abc = JsonConvert.DeserializeObject<FinishQuestionList>(text);
             }
         }
     }
