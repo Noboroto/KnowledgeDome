@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
 using System.IO;
@@ -13,7 +14,7 @@ namespace KDLib
 		private byte[] _Image;
 
 		private string _ImageType;
-
+		[JsonProperty]
 		public int CharCount
 		{
 			get
@@ -25,7 +26,7 @@ namespace KDLib
 				_CharCount = value;
 			}
 		}
-
+		[JsonIgnore]
 		private byte[] RawImage
 		{
 			get
@@ -39,6 +40,7 @@ namespace KDLib
 			}
 		}
 
+		[JsonIgnore]
 		public ImageSource Image
 		{
 			get
@@ -50,7 +52,7 @@ namespace KDLib
 				return null;
 			}
 		}
-
+		[JsonIgnore]
 		public string ImageType
         {
 			get
@@ -62,14 +64,14 @@ namespace KDLib
 				_ImageType = value;
             }
         }
-
+		[JsonIgnore]
 		public Bitmap BitmapImage => new Bitmap(new MemoryStream(RawImage));
 
 		public void GetValueFrom(ObstacleQuestion q)
 		{
 			CharCount = q.CharCount;
 			Content = q.Content;
-			RawImage = q.RawImage;
+			RawImage = q.RawImage;	
 		}
 
 		public ObstacleQuestion(int id, int charcount, string content)

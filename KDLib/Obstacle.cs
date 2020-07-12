@@ -37,6 +37,7 @@ namespace KDLib
 			}
 		}
 
+		[JsonIgnore]
 		public ImageSource Image
 		{
 			get
@@ -45,6 +46,7 @@ namespace KDLib
 			}
 		}
 
+		[JsonIgnore]
 		public Bitmap BitmapImage
 		{
 			get
@@ -52,7 +54,7 @@ namespace KDLib
 				return _obstacleQuestion.BitmapImage;
 			}
 		}
-
+		[JsonProperty]
 		public ObstacleQuestion obstacleQuestion
 		{
 			get
@@ -64,7 +66,7 @@ namespace KDLib
 				_obstacleQuestion = value;
 			}
 		}
-
+		[JsonProperty]
 		public List<ObstacleRowQuestion> RowList
         {
 			get
