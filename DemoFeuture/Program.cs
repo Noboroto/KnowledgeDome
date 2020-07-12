@@ -23,13 +23,7 @@ namespace DemoFeuture
             obstacleList[0].RowList.Add(new ObstacleRowQuestion(2, 1, 2, "abc", "abc"));
             using (StreamWriter sw = File.CreateText(@"C:\Users\thanh\OneDrive\Desktop\abc.json"))
             {
-                string text = "[";
-                foreach (var child in obstacleList)
-                {
-                    text += "{" + child.CovertToJson() + "},";
-                }
-                text = text.Remove(text.Length - 1 ,1);
-                text += "]";
+                string text = JsonConvert.SerializeObject(obstacleList);
                 sw.WriteLine(text);
                 obstacleList = JsonConvert.DeserializeObject<ObstacleList>(text);
             }
