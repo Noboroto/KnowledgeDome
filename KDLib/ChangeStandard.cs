@@ -280,5 +280,36 @@ namespace KDLib
             ["y@4"] = "ỹ",
             ["y@5"] = "ỵ"
         };
+        public static Dictionary<string, SubjectInfo> StringToSubject = new Dictionary<string, SubjectInfo>()
+        {
+            ["Địa lý"] = SubjectInfo.Geography,
+            ["Hiểu biết chung"] = SubjectInfo.General,
+            ["Hoá học"] = SubjectInfo.Chemistry,
+            ["Lịch sử"] = SubjectInfo.History,
+            ["Lĩnh vực khác"] = SubjectInfo.Other,
+            ["Nghệ thuật"] = SubjectInfo.Arts,
+            ["Sinh học"] = SubjectInfo.Biology,
+            ["Thể thao"] = SubjectInfo.Sport,
+            ["Tiếng Anh"] = SubjectInfo.English,
+            ["Toán học"] = SubjectInfo.Math,
+            ["Văn học"] = SubjectInfo.Literature,
+            ["Vật lý"] = SubjectInfo.Physics
+        };
+        public static Dictionary<SubjectInfo, string> SubjectToString = new Dictionary<SubjectInfo, string>()
+        {
+            [SubjectInfo.Geography] = "Địa lý",
+            [SubjectInfo.General] = "Hiểu biết chung",
+            [SubjectInfo.Chemistry] = "Hoá học",
+            [SubjectInfo.History] = "Lịch sử",
+            [SubjectInfo.Other] = "Lĩnh vực khác",
+            [SubjectInfo.Arts] = "Nghệ thuật",
+            [SubjectInfo.Biology] = "Sinh học",
+            [SubjectInfo.Sport] = "Thể thao",
+            [SubjectInfo.English] = "Tiếng Anh",
+            [SubjectInfo.Math] = "Toán học",
+            [SubjectInfo.Literature] = "Văn học",
+            [SubjectInfo.Physics] = "Vật lý",
+            [SubjectInfo.Unknown] = "Không xác định"
+        };
     }
 }
