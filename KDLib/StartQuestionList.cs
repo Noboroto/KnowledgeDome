@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,28 +8,40 @@ namespace KDLib
 {
 	public class StartQuestionList : KDCollectionBase<StartQuestion>
 	{
+		[JsonIgnore]
 		public int MathCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.Math).Count;
 
+		[JsonIgnore]
 		public int PhysicsCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.Physics).Count;
 
+		[JsonIgnore]
 		public int ChemistryCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.Physics).Count;
 
+		[JsonIgnore]
 		public int BiologyCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.Biology).Count;
 
+		[JsonIgnore]
 		public int LiteratureCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.Literature).Count;
 
+		[JsonIgnore]
 		public int HistoryCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.History).Count;
 
+		[JsonIgnore]
 		public int GeographyCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.Geography).Count;
 
+		[JsonIgnore]
 		public int SportCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.Sport).Count;
 
+		[JsonIgnore]
 		public int ArtsCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.Arts).Count;
 
+		[JsonIgnore]
 		public int OthersCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.Other).Count;
 
+		[JsonIgnore]
 		public int GeneralCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.General).Count;
 
+		[JsonIgnore]
 		public int EnglishCount => FindAll((StartQuestion sq) => sq.Subject == SubjectInfo.English).Count;
 
 		public StartQuestionList()

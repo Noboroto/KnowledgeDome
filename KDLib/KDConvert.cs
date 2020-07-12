@@ -2,7 +2,7 @@
 
 namespace KDLib
 {
-    static class ChangeStandard
+    static class KDConvert
     {
         public static Dictionary<string, string> VietnameseToASCII = new Dictionary<string, string>()
         {

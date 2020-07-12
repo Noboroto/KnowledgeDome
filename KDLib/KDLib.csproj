@@ -67,7 +67,7 @@
     <Compile Include="Player.cs" />
     <Compile Include="PlayerList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ChangeStandard.cs" />
+    <Compile Include="KDConvert.cs" />
     <Compile Include="Question.cs" />
     <Compile Include="StartQuestion.cs" />
     <Compile Include="StartQuestionList.cs" />

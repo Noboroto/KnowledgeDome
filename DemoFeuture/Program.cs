@@ -13,19 +13,16 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            ObstacleList obstacleList= new ObstacleList
-            {
-                new Obstacle
-                {
-                    obstacleQuestion = new ObstacleQuestion (1,1,"wethd")
-                }
-            };
-            obstacleList[0].RowList.Add(new ObstacleRowQuestion(2, 1, 2, "abc", "abc"));
+            StartQuestionList abc = new StartQuestionList();
+            abc.Add(new StartQuestion(1, "D","abcaaD", "ăe"));
+            abc.Add(new StartQuestion(2, "Toán học", "abcaaD", "ăe"));
+            abc.Add(new StartQuestion(3, "D", "abcaaD", "ăe"));
+
             using (StreamWriter sw = File.CreateText(@"C:\Users\thanh\OneDrive\Desktop\abc.json"))
             {
-                string text = JsonConvert.SerializeObject(obstacleList);
+                string text = JsonConvert.SerializeObject(abc);
                 sw.WriteLine(text);
-                obstacleList = JsonConvert.DeserializeObject<ObstacleList>(text);
+                abc = JsonConvert.DeserializeObject<StartQuestionList>(text);
             }
         }
     }

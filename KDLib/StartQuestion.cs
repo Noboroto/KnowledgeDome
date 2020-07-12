@@ -1,9 +1,14 @@
-﻿namespace KDLib
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace KDLib
 {
 	public class StartQuestion : Question
 	{
 		private SubjectInfo _Subject;
 
+		[JsonProperty("Subject")]
+		[JsonConverter(typeof (StringEnumConverter))]
 		public SubjectInfo Subject
 		{
 			get
@@ -19,35 +24,8 @@
 
 		private SubjectInfo SubjectValue (string value)
 		{
-			switch (value)
-			{
-				case "Địa lý":
-					return SubjectInfo.Geography;
-				case "Hiểu biết chung":
-					return SubjectInfo.General;
-				case "Hoá học":
-					return SubjectInfo.Chemistry;
-				case "Lịch sử":
-					return SubjectInfo.History;
-				case "Lĩnh vực khác":
-					return SubjectInfo.Other;
-				case "Nghệ thuật":
-					return SubjectInfo.Arts;
-				case "Sinh học":
-					return SubjectInfo.Biology;
-				case "Thể thao":
-					return SubjectInfo.Sport;
-				case "Tiếng Anh":
-					return SubjectInfo.English;
-				case "Toán học":
-					return SubjectInfo.Math;
-				case "Văn học":
-					return SubjectInfo.Literature;
-				case "Vật lý":
-					return SubjectInfo.Physics;
-				default:
-					return SubjectInfo.Unknown;
-			}
+			if (!KDConvert.StringToSubject.ContainsKey(value)) return SubjectInfo.Unknown;
+			else return KDConvert.StringToSubject[value];
 		}
 
 		public StartQuestion(string subject_name, string content, string answer)
@@ -59,6 +37,13 @@
 			: base(id, content, answer)
 		{
 			Subject = SubjectValue (subject_name);
+		}
+
+		[JsonConstructor]
+		public StartQuestion(int id, SubjectInfo subject, string content, string answer)
+	: base(id, content, answer)
+		{
+			Subject = subject;
 		}
 
 		public void GetValueFrom(StartQuestion sq)
