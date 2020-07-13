@@ -32,7 +32,7 @@ namespace KDLib
             }
 			set
             {
-				ImageType = value;
+				_ImageType = value;
             }
         }
 

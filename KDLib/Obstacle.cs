@@ -92,13 +92,6 @@ namespace KDLib
 		/// </summary>
 		/// <returns></returns>
 
-		public string CovertToJson ()
-        {
-			string s = "\"obstacleQuestion\":" + obstacleQuestion.ConvertToJson();
-			s += ",\"RowList\":" + JsonConvert.SerializeObject(RowList);
-			return s;
-        }
-
 		public static int Comparer(Obstacle a, Obstacle b)
 		{
 			return ObstacleQuestion.Comparer(a.obstacleQuestion, b.obstacleQuestion);

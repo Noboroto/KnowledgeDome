@@ -28,13 +28,13 @@ namespace KDLib
 		{
 		}
 
-		public override bool Contains(int hashcode)
+		public override bool Contains(int id)
 		{
 			using (Enumerator enumerator = GetEnumerator())
 			{
 				while (enumerator.MoveNext())
 				{
-					if (enumerator.Current.Hashcode == hashcode)
+					if (enumerator.Current.ID == id)
 					{
 						return true;
 					}

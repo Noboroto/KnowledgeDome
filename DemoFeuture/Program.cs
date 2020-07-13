@@ -13,18 +13,9 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            FinishQuestionList abc = new FinishQuestionList()
-            {
-                new FinishQuestion(1,10, "abcaaD", "ăe"),
-                new FinishQuestion(2,20, "acaaD", "ăe"),
-                new FinishQuestion(3,20 ,"aaaD", "dasdăe")
-            };
-            using (StreamWriter sw = File.CreateText(@"C:\Users\thanh\OneDrive\Desktop\abc.json"))
-            {
-                string text = JsonConvert.SerializeObject(abc);
-                sw.WriteLine(text);
-                abc = JsonConvert.DeserializeObject<FinishQuestionList>(text);
-            }
+            MatchList abc = new MatchList();
+            string s = File.ReadAllText(@"C:\Users\thanh\OneDrive\Desktop\abc.json");
+            abc = JsonConvert.DeserializeObject<MatchList>(s);
         }
     }
 }

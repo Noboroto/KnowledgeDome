@@ -9,17 +9,17 @@ namespace KDLib
 
 		private PlayerList _Players;
 
-		private static StartQuestionList _StartQuestions;
+		private StartQuestionList _StartQuestions;
 
-		private static ObstacleList _Obstacles;
+		private ObstacleList _Obstacles;
 
-		private static AccelerationQuestionList _AccelerationQuestions;
+		private AccelerationQuestionList _AccelerationQuestions;
 
-		private static FinishQuestionList _FinishQuestions;
+		private FinishQuestionList _FinishQuestions;
 
-		private static ExtraQuestionList _ExtraQuestions;
+		private ExtraQuestionList _ExtraQuestions;
 
-		public static StartQuestionList StartQuestions
+		public StartQuestionList StartQuestions
 		{
 			get
 			{
@@ -31,7 +31,7 @@ namespace KDLib
 			}
 		}
 
-		public static ObstacleList Obstacles
+		public ObstacleList Obstacles
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace KDLib
 			}
 		}
 
-		public static AccelerationQuestionList AccelerationQuestions
+		public AccelerationQuestionList AccelerationQuestions
 		{
 			get
 			{
@@ -55,7 +55,7 @@ namespace KDLib
 			}
 		}
 
-		public static FinishQuestionList FinishQuestions
+		public FinishQuestionList FinishQuestions
 		{
 			get
 			{
@@ -67,7 +67,7 @@ namespace KDLib
 			}
 		}
 
-		public static ExtraQuestionList ExtraQuestions
+		public ExtraQuestionList ExtraQuestions
 		{
 			get
 			{
@@ -115,8 +115,18 @@ namespace KDLib
 			ExtraQuestions = new ExtraQuestionList();
 			//Players.CollectionChanged += Players_CollectionChanged;
 		}
-
+		
 		[JsonConstructor]
+		public Match (PlayerList players, StartQuestionList starts, ObstacleList obstacles, AccelerationQuestionList accelerations, FinishQuestionList finishes, ExtraQuestionList extras)
+        {
+			Players = players;
+			StartQuestions = starts;
+			Obstacles = obstacles;
+			AccelerationQuestions = accelerations;
+			FinishQuestions = finishes;
+			ExtraQuestions = extras;
+		}
+
 		public Match(string name)
 			: this()
 		{
