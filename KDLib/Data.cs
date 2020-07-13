@@ -36,20 +36,6 @@ namespace KDLib
 			}
 		}
 
-		public static int CurrentMatchIndex
-		{
-			get
-			{
-				return _CurrentMatchIndex;
-			}
-			set
-			{
-				_CurrentMatchIndex = value;
-			}
-		}
-
-		public static Match CurrentMatch => Matches[CurrentMatchIndex];
-
 		/// <summary>
 		/// (Làm sau) chuẩn bị dữ liệu
 		/// </summary>
