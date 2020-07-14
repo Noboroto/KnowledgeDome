@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace KDLib
 {
     static class KDConvert
     {
+        public static ASCIIEncoding ASCIIEncoder = new ASCIIEncoding();
         public static Dictionary<string, string> VietnameseToASCII = new Dictionary<string, string>()
         {
             [" "] = "|",
