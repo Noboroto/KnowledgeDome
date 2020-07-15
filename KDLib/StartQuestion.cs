@@ -7,8 +7,6 @@ namespace KDLib
 	{
 		private SubjectInfo _Subject;
 
-		[JsonProperty("Subject")]
-		[JsonConverter(typeof (StringEnumConverter))]
 		public SubjectInfo Subject
 		{
 			get
@@ -17,7 +15,7 @@ namespace KDLib
 			}
 			set
 			{
-				_Subject = value;
+				_Subject = (SubjectInfo)value;
 				OnPropertyChanged("Subject");
 			}
 		}
@@ -29,18 +27,18 @@ namespace KDLib
 		}
 
 		public StartQuestion(string subject_name, string content, string answer)
-			: this(Data.GenerateID(), subject_name, content, answer)
+			: this(subject_name, content, answer, Data.GenerateID())
 		{
 		}
 
-		public StartQuestion(int id, string subject_name, string content, string answer)
+		public StartQuestion(string subject_name, string content, string answer, int id)
 			: base(id, content, answer)
 		{
 			Subject = SubjectValue (subject_name);
 		}
 
 		[JsonConstructor]
-		public StartQuestion(int id, SubjectInfo subject, string content, string answer)
+		public StartQuestion(SubjectInfo subject, string content, string answer, int id)
 	: base(id, content, answer)
 		{
 			Subject = subject;

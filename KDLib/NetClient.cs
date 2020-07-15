@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -17,6 +18,7 @@ namespace KDLib
 		private static Thread tSendMessage;
 
 		private const int PortForTCP = 2644;
+
 		private const int PortForChecker = 2645;
 
 		public static void Connect(int ClientID, IPAddress ipaServerAddress)

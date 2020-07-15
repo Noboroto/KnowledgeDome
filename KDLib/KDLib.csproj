@@ -56,6 +56,7 @@
     <Compile Include="FinishQuestionList.cs" />
     <Compile Include="ImageList.cs" />
     <Compile Include="KDCollectionBase.cs" />
+    <Compile Include="KDCommand.cs" />
     <Compile Include="KDObjectBase.cs" />
     <Compile Include="KDTextEncoder.cs" />
     <Compile Include="Match.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="Question.cs" />
     <Compile Include="StartQuestion.cs" />
     <Compile Include="StartQuestionList.cs" />
-    <Compile Include="SubjectInfo.cs" />
+    <Compile Include="TypeEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

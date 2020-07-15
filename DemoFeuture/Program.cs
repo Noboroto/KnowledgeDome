@@ -13,9 +13,13 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            MatchList abc = new MatchList();
-            string s = File.ReadAllText(@"C:\Users\thanh\OneDrive\Desktop\abc.json");
-            abc = JsonConvert.DeserializeObject<MatchList>(s);
+            KDCommand a = new KDCommand(MachineType.MC, CommandType.Hide, "aba");
+            using (StreamWriter se = File.CreateText(@"C:\Users\thanh\OneDrive\Desktop\bc.json"))
+            {
+                string t = JsonConvert.SerializeObject(a);
+                se.Write(t);
+                a = JsonConvert.DeserializeObject<KDCommand>(t);
+            }
         }
     }
 }
