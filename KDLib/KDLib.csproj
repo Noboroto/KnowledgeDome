@@ -57,6 +57,7 @@
     <Compile Include="ImageList.cs" />
     <Compile Include="KDCollectionBase.cs" />
     <Compile Include="KDCommand.cs" />
+    <Compile Include="KDCommandList.cs" />
     <Compile Include="KDObjectBase.cs" />
     <Compile Include="KDTextEncoder.cs" />
     <Compile Include="Match.cs" />

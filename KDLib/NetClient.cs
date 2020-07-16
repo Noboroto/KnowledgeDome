@@ -17,17 +17,13 @@ namespace KDLib
 
 		private static Thread tSendMessage;
 
-		private const int PortForTCP = 2644;
-
-		private const int PortForChecker = 2645;
-
 		public static void Connect(int ClientID, IPAddress ipaServerAddress)
 		{
 			try
 			{
-				tcClient.Connect(ipaServerAddress, PortForTCP);
+				tcClient.Connect(ipaServerAddress, Data.PortForTCP);
 				NetworkStream stream = tcClient.GetStream();
-				byte[] bytes = KDConvert.ASCIIEncoder.GetBytes(ClientID.ToString());
+				byte[] bytes = KDConvert.UTF8Encoder.GetBytes(ClientID.ToString());
 				stream.Write(bytes, 0, bytes.Length);
 				Thread_ListenFromServer();
 			}
@@ -44,12 +40,12 @@ namespace KDLib
 			tListenFromServer.Start();
 		}
 
-		public static void SendCommand(string sCommand)
+		public static void SendCommand(KDCommand Command)
 		{
-			/*
+			
 			tSendMessage = new Thread(SendMessage);
 			tSendMessage.IsBackground = true;
-			tSendMessage.Start(GetCodedMessage(sCommand.ToUpper()));*/
+			tSendMessage.Start(JsonConvert.SerializeObject(Command));
 		}
 
 		private static void ListenFromServer()
@@ -57,38 +53,41 @@ namespace KDLib
 			NetworkStream stream = tcClient.GetStream();
 			while (true)
 			{
-				/*byte[] array = new byte[1024];
+				byte[] array = new byte[1024];
 				int num = 0;
 				try
 				{
 					num = stream.Read(array, 0, 1024);
 				}
-				catch
+				catch (Exception e)
 				{
-					DataProvider dataProvider = new DataProvider("[", "]", AIObjectBase.TagDefinition('w', "disconnect"), haskey: false);
-					Commands.Add(dataProvider.Children[0]);
-					return;
+					throw e;
 				}
 				if (num != 0)
 				{
-					foreach (DataProvider child in new DataProvider("[", "]", GetEncodedMessage(aeEncoding.GetString(array, 0, num)), haskey: false).Children)
-					{
-						Commands.Add(child);
-					}
+					Data.Commands.Add(JsonConvert.DeserializeObject<KDCommand>(KDConvert.UTF8Encoder.GetString(array)));
 					continue;
 				}
 				break;
-				*/
 			}
 		}
 
 		private static void SendMessage(object oCommand)
 		{
-			/*
 			string s = (string)oCommand;
 			NetworkStream stream = tcClient.GetStream();
-			byte[] bytes = aeEncoding.GetBytes(s);
-			stream.Write(bytes, 0, bytes.Length);*/
+			byte[] bytes = KDConvert.UTF8Encoder.GetBytes(s);
+			stream.Write(bytes, 0, bytes.Length);
 		}
+		/*
+		private static string GetASCIIMessage(string message)
+		{
+			foreach (string c in KDConvert.VietnameseToASCII.Keys)
+			{
+				message = message.Replace(c, KDConvert.VietnameseToASCII[c]);
+			}
+			return message;
+		}
+		*/
 	}
 }

@@ -5,7 +5,8 @@ namespace KDLib
 {
     static class KDConvert
     {
-        public static ASCIIEncoding ASCIIEncoder = new ASCIIEncoding();
+        public static UTF8Encoding UTF8Encoder = new UTF8Encoding();
+        /*
         public static Dictionary<string, string> VietnameseToASCII = new Dictionary<string, string>()
         {
             [" "] = "|",
@@ -282,6 +283,7 @@ namespace KDLib
             ["y@4"] = "ỹ",
             ["y@5"] = "ỵ"
         };
+        */
         public static Dictionary<string, SubjectInfo> StringToSubject = new Dictionary<string, SubjectInfo>()
         {
             ["Địa lý"] = SubjectInfo.Geography,

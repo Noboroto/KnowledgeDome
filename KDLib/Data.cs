@@ -12,6 +12,36 @@ namespace KDLib
 
 		private static MatchList _Matches;
 
+		private static KDCommandList _Commands;
+
+		public static int PortForTCP = 2644;
+
+		public static int PortForChecker = 2645;
+
+		public static KDCommandList Commands
+        {
+            get
+            {
+				return Commands;
+            }
+			set
+            {
+				Commands = value;
+            }
+        }
+
+		public static int CurrentMatchIndex
+        {
+            get
+            {
+				return _CurrentMatchIndex;
+            }
+			set
+            {
+				_CurrentMatchIndex = value;
+            }
+        }
+
 		public static int CurrentPlayer
 		{
 			get
@@ -45,9 +75,8 @@ namespace KDLib
 		}
 
         /// <summary>
-        /// Get ID for object
+        /// Get ID for object. Not complete
         /// </summary>
-        /// <returns></returns>
         internal static int GenerateID()
         {
             return 0;
