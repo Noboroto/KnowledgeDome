@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using KDLib.KDException;
 
 namespace KDLib
 {
@@ -36,9 +37,9 @@ namespace KDLib
             {
 				await Connect(IPAddress.Parse(ip));
             }
-			catch (Exception e)
+			catch
             {
-				throw new Exception(e.Message);
+				throw;
             }
         }
 
@@ -56,12 +57,12 @@ namespace KDLib
 				}
 				else
                 {
-					throw new Exception("Lỗi rồi!");
+					throw new IPNotFoundException();
                 }
 			}
-			catch (Exception e)
+			catch 
             {
-				throw new Exception(e.Message);
+				throw;
             }
 		}
 

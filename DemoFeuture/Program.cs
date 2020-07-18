@@ -8,6 +8,7 @@ using KDLib;
 using System.IO;
 using System.Net;
 using System.Windows;
+using KDLib.KDException;
 
 namespace DemoFeuture
 {
@@ -22,7 +23,7 @@ namespace DemoFeuture
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(e.InnerException.Message);
             }
             Console.WriteLine("End");
             Console.ReadKey();
