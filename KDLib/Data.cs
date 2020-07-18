@@ -6,6 +6,8 @@ namespace KDLib
 {
 	public static class Data
 	{
+		private static MachineType _ThisMachine;
+
 		private static int _CurrentPlayer;
 
 		private static int _CurrentMatchIndex;
@@ -18,15 +20,27 @@ namespace KDLib
 
 		public static int PortForChecker = 2645;
 
+		public static MachineType ThisMacineType
+        {
+            get
+            {
+				return _ThisMachine;
+            }
+            set
+            {
+				_ThisMachine = (MachineType)value;
+            }
+        }
+
 		public static KDCommandList Commands
         {
             get
             {
-				return Commands;
+				return _Commands;
             }
 			set
             {
-				Commands = value;
+				_Commands = value;
             }
         }
 

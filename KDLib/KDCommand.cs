@@ -52,6 +52,14 @@ namespace KDLib
             }
         }
 
+        public KDCommand (CommandType prefix, string cmd)
+        {
+            _Machine = Data.ThisMacineType;
+            _PrefixCmd = prefix;
+            _Content = cmd;
+        }
+
+        [JsonConstructor]
         public KDCommand(MachineType type, CommandType prefix, string cmd)
         {
             _Machine = type;

@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using KDLib;
 using System.IO;
+using System.Net;
+using System.Windows;
 
 namespace DemoFeuture
 {
@@ -13,13 +15,17 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            KDCommand a = new KDCommand(MachineType.MC, CommandType.Hide, "aba");
-            using (StreamWriter se = File.CreateText(@"C:\Users\thanh\OneDrive\Desktop\bc.json"))
+            Console.WriteLine("Start");
+            try
             {
-                string t = JsonConvert.SerializeObject(a);
-                se.Write(t);
-                a = JsonConvert.DeserializeObject<KDCommand>(t);
+                NetClient.Connect("192.168.51.17");
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            Console.WriteLine("End");
+            Console.ReadKey();
         }
     }
 }

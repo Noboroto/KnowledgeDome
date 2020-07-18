@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace KDLib
 {
@@ -21,20 +23,28 @@ namespace KDLib
     public enum MachineType
     {
         Server,
+        [Description("Thí sinh 1")]
         Player_1,
+        [Description("Thí sinh 2")]
         Player_2,
+        [Description("Thí sinh 3")]
         Player_3,
+        [Description("Thí sinh 4")]
         Player_4,
         MC,
+        [Description("Khán giả")]
         Viewer
     }
     public enum CommandType
     {
+        AskForConnect,
+        Forcusing,
+        LostForcus,
         Discconect,
         Show,
         Hide,
         Answer,
-        Online,
+        IsConnected,
         Question,
         Start,
         Right,
@@ -42,6 +52,7 @@ namespace KDLib
         Wrong,
         ShowImage,
         HideImage,
-        NavigationTo
+        NavigationTo,
+        OK,
     }
 }
