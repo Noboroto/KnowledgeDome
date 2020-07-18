@@ -38,7 +38,7 @@ namespace KDLib
             }
 			catch (Exception e)
             {
-				throw new Exception(e.Message, e);
+				throw new Exception(e.Message);
             }
         }
 
@@ -61,7 +61,7 @@ namespace KDLib
 			}
 			catch (Exception e)
             {
-				throw new Exception(e.Message, e);
+				throw new Exception(e.Message);
             }
 		}
 
