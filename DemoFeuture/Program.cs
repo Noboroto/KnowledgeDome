@@ -18,7 +18,7 @@ namespace DemoFeuture
             Console.WriteLine("Start");
             try
             {
-                NetClient.Connect("192.168.51.17");
+                NetClient.Connect("192.168.51.17").Wait();
             }
             catch (Exception e)
             {

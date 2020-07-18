@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace KDLib
@@ -17,19 +18,50 @@ namespace KDLib
 
 		private static Thread tSendMessage;
 
-		public static void Connect(int ClientID, IPAddress ipaServerAddress)
+		private static async Task<bool> IsConnected(IPAddress ip, int iPort)
+		{
+			using (TcpClient tcp = new TcpClient())
+			{
+				var taskconnect = tcp.ConnectAsync(ip, iPort);
+				var timer = Task.Delay(500);
+
+				var result = await Task.WhenAny(new[] { taskconnect, timer });
+				return result == taskconnect;
+			}
+		}
+
+		public static async Task Connect(string ip)
+        {
+			try
+            {
+				await Connect(IPAddress.Parse(ip));
+            }
+			catch (Exception e)
+            {
+				throw new Exception(e.Message, e);
+            }
+        }
+
+		public static async Task Connect(IPAddress ServerAddress)
 		{
 			try
 			{
-				tcClient.Connect(ipaServerAddress, Data.PortForTCP);
-				NetworkStream stream = tcClient.GetStream();
-				byte[] bytes = KDConvert.UTF8Encoder.GetBytes(ClientID.ToString());
-				stream.Write(bytes, 0, bytes.Length);
-				Thread_ListenFromServer();
+				if (await IsConnected(ServerAddress, Data.PortForChecker))
+                {
+					tcClient.Connect(ServerAddress, Data.PortForTCP);
+					//NetworkStream stream = tcClient.GetStream();
+					//byte[] bytes = KDConvert.UTF8Encoder.GetBytes(ClientID.ToString());
+					//stream.Write(bytes, 0, bytes.Length);
+					//Thread_ListenFromServer();
+				}
+				else
+                {
+					throw new Exception("Lỗi rồi!");
+                }
 			}
 			catch (Exception e)
             {
-				throw e;
+				throw new Exception(e.Message, e);
             }
 		}
 
