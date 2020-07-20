@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using KDLib.KDException;
 using System.IO;
+using System;
 
 namespace KDLib
 {
@@ -51,6 +52,10 @@ namespace KDLib
             {
 				Connect(IPAddress.Parse(ip)).Wait();
             }
+			catch (AggregateException ae)
+			{
+				throw ae.Flatten();
+			}
 			catch
             {
 				throw;
@@ -67,6 +72,7 @@ namespace KDLib
 					_ServerIP = ServerAddress;
 
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
+					ThisClient.Connect(ServerAddress, Data.PortForChecker);
 
 					SendCommand(new KDCommand(CommandType.AskForConnect), ThisClient);
 					
@@ -78,6 +84,10 @@ namespace KDLib
 					_ServerIP = IPAddress.Loopback;
 					throw new IPNotFoundException();
                 }
+			}
+			catch (AggregateException ae)
+			{
+				throw ae.Flatten();
 			}
 			catch
             {
@@ -102,6 +112,10 @@ namespace KDLib
 						_IsServerOnline = false;
 					}
 				}
+				catch (AggregateException ae)
+				{
+					throw ae.Flatten();
+				}
 				catch
                 {
 					continue;
@@ -115,6 +129,10 @@ namespace KDLib
             {
 				SendMessage(JsonConvert.SerializeObject(Command), tcp).Wait();
             }
+			catch (AggregateException ae)
+			{
+				throw ae.Flatten();
+			}
 			catch
             {
 				throw;
@@ -123,38 +141,46 @@ namespace KDLib
 
 		private static async void ListenFromServer()
 		{
-			StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream());
-			while (true)
+			using (StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream()))
 			{
-				string information = "";
-				try
+				while (true)
 				{
-					information = await ReadFromStream.ReadToEndAsync();
+					string information = "";
+					try
+					{
+						information = await ReadFromStream.ReadToEndAsync();
+					}
+					catch
+					{
+						continue;
+					}
+					if (information != "")
+					{
+						Data.Commands.Add(JsonConvert.DeserializeObject<KDCommand>(information));
+						continue;
+					}
+					break;
 				}
-				catch
-				{
-					continue;
-				}
-				if (information != "")
-				{
-					Data.Commands.Add(JsonConvert.DeserializeObject<KDCommand>(information));
-					continue;
-				}
-				break;
 			}
 		}
 
-		private static async Task SendMessage(string s, TcpClient tcp)
+		private static async Task SendMessage(string command, TcpClient tcp)
 		{
-			StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true};
-			try
+			using (StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true })
 			{
-				await WriteToStream.WriteAsync(s);
+				try
+				{
+					await WriteToStream.WriteAsync(command);
+				}
+				catch (AggregateException ae)
+                {
+					throw ae.Flatten();
+                }
+				catch
+				{
+					throw;
+				}
 			}
-			catch
-            {
-				throw;
-            }
 		}
 	}
 }

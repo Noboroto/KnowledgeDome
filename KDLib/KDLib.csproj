@@ -64,6 +64,7 @@
     <Compile Include="Match.cs" />
     <Compile Include="MatchList.cs" />
     <Compile Include="NetClient.cs" />
+    <Compile Include="NetServer.cs" />
     <Compile Include="Obstacle.cs" />
     <Compile Include="ObstacleList.cs" />
     <Compile Include="ObstacleQuestion.cs" />

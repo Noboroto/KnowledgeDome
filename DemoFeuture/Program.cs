@@ -17,6 +17,18 @@ namespace DemoFeuture
         static void Main(string[] args)
         {
             Console.WriteLine("Start");
+            try
+            {
+                NetClient.Connect("192.168.12.1");
+            }
+            catch (AggregateException ae)
+            {
+                foreach (var e in ae.InnerExceptions)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
             Console.WriteLine("End");
             Console.ReadKey();
         }
