@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel;
-using System.Xml.Serialization;
+﻿using System.ComponentModel;
 
 namespace KDLib
 {

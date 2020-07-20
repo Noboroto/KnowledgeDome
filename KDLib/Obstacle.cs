@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Drawing;
-using System.IO;
 using System.Windows.Media;
 using Newtonsoft.Json;
 

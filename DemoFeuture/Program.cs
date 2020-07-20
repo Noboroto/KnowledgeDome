@@ -17,14 +17,6 @@ namespace DemoFeuture
         static void Main(string[] args)
         {
             Console.WriteLine("Start");
-            try
-            {
-                NetClient.Connect("192.168.51.17").Wait();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.InnerException.Message);
-            }
             Console.WriteLine("End");
             Console.ReadKey();
         }

@@ -52,7 +52,7 @@ namespace KDLib
             }
         }
 
-        public KDCommand (CommandType prefix, string cmd)
+        public KDCommand (CommandType prefix, string cmd = "")
         {
             _Machine = Data.ThisMacineType;
             _PrefixCmd = prefix;
@@ -60,7 +60,7 @@ namespace KDLib
         }
 
         [JsonConstructor]
-        public KDCommand(MachineType type, CommandType prefix, string cmd)
+        public KDCommand(MachineType type, CommandType prefix, string cmd = "")
         {
             _Machine = type;
             _PrefixCmd = prefix;

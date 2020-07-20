@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Text;
-
-namespace KDLib
+﻿namespace KDLib
 {
 	public class ExtraQuestionList : KDCollectionBase<ExtraQuestion>
 	{

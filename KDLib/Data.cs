@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Text;
-
-namespace KDLib
+﻿namespace KDLib
 {
 	public static class Data
 	{
 		private static MachineType _ThisMachine;
+
+		private static bool _OnFocus;
 
 		private static int _CurrentPlayer;
 
@@ -29,6 +27,18 @@ namespace KDLib
             set
             {
 				_ThisMachine = (MachineType)value;
+            }
+        }
+
+		public static bool OnFocus
+        {
+			get
+            {
+				return _OnFocus;
+            }
+			set
+            {
+				_OnFocus = value;
             }
         }
 
