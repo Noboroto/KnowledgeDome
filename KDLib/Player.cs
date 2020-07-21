@@ -6,7 +6,7 @@ namespace KDLib
 {
 	public class Player : KDObjectBase
 	{
-		private int _ID;
+		private string _ID;
 
 		private string _Name;
 
@@ -14,7 +14,7 @@ namespace KDLib
 
 		private int _Score;
 
-		public int ID
+		public string ID
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace KDLib
 			set
 			{
 				_Avatar = value;
-				File.WriteAllBytes("Images/Players/" + ID.ToString() + ".png", RawAvatar);
+				File.WriteAllBytes("Images/Players/" + ID + ".png", RawAvatar);
 				OnPropertyChanged("Avatar");
 			}
 		}
@@ -85,15 +85,8 @@ namespace KDLib
 			_Avatar = new byte[0];
 		}
 
-		public Player(string name, byte[] avatar)
-			: this()
-		{
-			ID = Data.GenerateID();
-			Name = name;
-			RawAvatar = avatar;
-		}
 		[JsonConstructor]
-		public Player(int id, string name)
+		public Player(string id, string name)
 		{
 			ID = id;
 			Name = name;

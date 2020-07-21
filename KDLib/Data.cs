@@ -87,13 +87,5 @@
 		{
 
 		}
-
-        /// <summary>
-        /// Get ID for object. Not complete
-        /// </summary>
-        internal static int GenerateID()
-        {
-            return 0;
-        }
     }
 }

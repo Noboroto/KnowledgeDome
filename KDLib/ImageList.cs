@@ -35,6 +35,11 @@ namespace KDLib
 			RemoveAt(index);
 		}
 
+        public override bool Contains(object id)
+        {
+			return true;
+        }
+
 		public void Save(int ID, string ImageType)
 		{
 			for (int i = 0; i < base.Count; i++)

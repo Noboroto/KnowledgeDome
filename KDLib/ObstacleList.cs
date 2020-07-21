@@ -9,13 +9,13 @@ namespace KDLib
 
 		}
 
-		public override bool Contains(int ID)
+		public override bool Contains(object id)
 		{
 			using (Enumerator enumerator = GetEnumerator())
 			{
 				while (enumerator.MoveNext())
 				{
-					if (enumerator.Current.ID == ID)
+					if (enumerator.Current.ID == (int)id)
 					{
 						return true;
 					}

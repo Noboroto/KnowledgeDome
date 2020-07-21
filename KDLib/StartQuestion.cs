@@ -25,11 +25,6 @@ namespace KDLib
 			else return KDConvert.StringToSubject[value];
 		}
 
-		public StartQuestion(string subject_name, string content, string answer)
-			: this(subject_name, content, answer, Data.GenerateID())
-		{
-		}
-
 		public StartQuestion(string subject_name, string content, string answer, int id)
 			: base(id, content, answer)
 		{

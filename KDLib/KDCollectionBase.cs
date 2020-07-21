@@ -29,10 +29,7 @@ namespace KDLib
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 
-		public virtual bool Contains (int id)
-        {
-			return false;
-        }
+		public abstract bool Contains(object id);
 
 		internal void OnPropertyChanged(string propertyname)
 		{

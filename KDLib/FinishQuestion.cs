@@ -19,11 +19,6 @@ namespace KDLib
 			}
 		}
 
-		public FinishQuestion(int value, string content, string answer)
-			: this(Data.GenerateID(), value, content, answer)
-		{
-		}
-
 		[JsonConstructor]
 		public FinishQuestion(int id, int value, string content, string answer)
 			: base(id, content, answer)

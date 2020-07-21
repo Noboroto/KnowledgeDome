@@ -36,19 +36,13 @@ namespace KDLib
             }
         }
 
-		public AccelerationQuestion(string content, string answer, ImageList hintimages)
-			: base(Data.GenerateID(),content, answer)
-		{
-			HintImages = hintimages;
-		}
-
 		[JsonConstructor]
 		public AccelerationQuestion(int id, string type, string content, string answer)
 			: base(id, content, answer)
 		{
 			int num = 0;
 			ImageType = type;
-			while (File.Exists("Tests\\Images\\" + ID.ToString() + "^" + num.ToString() + ".png"))
+			while (File.Exists("Tests\\Images\\" + ID.ToString() + "^" + num.ToString() + type))
 			{
 				HintImages.Add(File.ReadAllBytes("Tests\\Images\\" + ID.ToString() + "^" + num.ToString() + "." + type));
 				num++;

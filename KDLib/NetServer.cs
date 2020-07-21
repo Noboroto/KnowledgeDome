@@ -106,7 +106,10 @@ namespace AILib
 							case MachineType.Player:
 								switch (command.Item1.PrefixCmd)
                                 {
-
+									case CommandType.AskForConnect:
+										break;
+									default:
+										break;
                                 }
 								break;
 							default:

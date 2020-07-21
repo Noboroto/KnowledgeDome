@@ -6,13 +6,13 @@
 		{
 		}
 
-		public override bool Contains(int id)
+		public override bool Contains(object id)
 		{
 			using (Enumerator enumerator = GetEnumerator())
 			{
 				while (enumerator.MoveNext())
 				{
-					if (enumerator.Current.ID == id)
+					if (enumerator.Current.ID == (int)id)
 					{
 						return true;
 					}

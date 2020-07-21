@@ -39,18 +39,8 @@ namespace KDLib
 			File.WriteAllText("Matches.etai", AIEncoder.GetCode(text), Encoding.UTF8);*/
 		}
 
-		public override bool Contains(int id)
+		public override bool Contains(object id)
 		{
-			using (Enumerator enumerator = GetEnumerator())
-			{
-				while (enumerator.MoveNext())
-				{
-					if (enumerator.Current.Players.Contains(id))
-					{
-						return true;
-					}
-				}
-			}
 			return false;
 		}
 
