@@ -34,11 +34,11 @@ namespace KDLib
             }
         }
 
-		private static async Task<bool> IsValidConnection(IPAddress ip, int iPort)
+		private static async Task<bool> IsValidConnection(IPAddress ip)
 		{
 			using (TcpClient tcp = new TcpClient())
 			{
-				var taskconnect = tcp.ConnectAsync(ip, iPort);
+				var taskconnect = tcp.ConnectAsync(ip, Data.PortForValidCheck);
 				var timer = Task.Delay(500);
 
 				var result = await Task.WhenAny(new[] { taskconnect, timer });
@@ -66,17 +66,18 @@ namespace KDLib
 		{
 			try
 			{
-				if (await IsValidConnection(ServerAddress, Data.PortForChecker))
+				if (await IsValidConnection(ServerAddress))
                 {
 					_IsServerOnline = true;
 					_ServerIP = ServerAddress;
 
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
-					ThisClient.Connect(ServerAddress, Data.PortForChecker);
+					OnlClient.Connect(ServerAddress, Data.PortForChecker);
 
-					SendCommand(new KDCommand(CommandType.AskForConnect), ThisClient);
+					SendCommand(new KDCommand(CommandType.AskForConnect), OnlClient);
 					
 					ListenFromServer();
+					CheckServer();
 				}
 				else
                 {
@@ -95,15 +96,15 @@ namespace KDLib
             }
 		}
 
-		private static async void CheckServer ()
+		private static async void CheckServer()
         {
 			while (true)
             {
 				try
                 {
-					if (await IsValidConnection(ServerIP, Data.PortForChecker))
+					if (await IsValidConnection(ServerIP))
 					{
-
+						if (!_IsServerOnline) Connect(ServerIP).Wait();
 						_IsServerOnline = true;
 						SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus),  OnlClient);
 					}
@@ -117,10 +118,10 @@ namespace KDLib
 					throw ae.Flatten();
 				}
 				catch
-                {
-					continue;
-                }
-            }
+				{
+					throw;
+				}
+			}
 		}
 
 		public static void SendCommand(KDCommand Command, TcpClient tcp)
@@ -150,16 +151,15 @@ namespace KDLib
 					{
 						information = await ReadFromStream.ReadToEndAsync();
 					}
+					catch (AggregateException ae)
+					{
+						throw ae.Flatten();
+					}
 					catch
 					{
-						continue;
+						throw;
 					}
-					if (information != "")
-					{
-						Data.Commands.Add(JsonConvert.DeserializeObject<KDCommand>(information));
-						continue;
-					}
-					break;
+					if (information != "") Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(information));
 				}
 			}
 		}

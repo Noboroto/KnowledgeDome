@@ -12,11 +12,11 @@
 
 		private static MatchList _Matches;
 
-		private static KDCommandList _Commands;
+        public const int PortForTCP = 2644;
 
-		public static int PortForTCP = 2644;
+		public const int PortForChecker = 2645;
 
-		public static int PortForChecker = 2645;
+		public const int PortForValidCheck = 2647;
 
 		public static MachineType ThisMacineType
         {
@@ -42,19 +42,9 @@
             }
         }
 
-		public static KDCommandList Commands
-        {
-            get
-            {
-				return _Commands;
-            }
-			set
-            {
-				_Commands = value;
-            }
-        }
+        public static KDCommandList Commands { get; set; }
 
-		public static int CurrentMatchIndex
+        public static int CurrentMatchIndex
         {
             get
             {

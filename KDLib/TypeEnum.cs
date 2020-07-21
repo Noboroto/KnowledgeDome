@@ -21,14 +21,8 @@ namespace KDLib
     public enum MachineType
     {
         Server,
-        [Description("Thí sinh 1")]
-        Player_1,
-        [Description("Thí sinh 2")]
-        Player_2,
-        [Description("Thí sinh 3")]
-        Player_3,
-        [Description("Thí sinh 4")]
-        Player_4,
+        [Description("Thí sinh")]
+        Player,
         MC,
         [Description("Khán giả")]
         Viewer

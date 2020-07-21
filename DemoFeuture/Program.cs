@@ -9,6 +9,8 @@ using System.IO;
 using System.Net;
 using System.Windows;
 using KDLib.KDException;
+using System.Threading;
+using System.Net.Sockets;
 
 namespace DemoFeuture
 {
@@ -28,8 +30,13 @@ namespace DemoFeuture
                     Console.WriteLine(e.Message);
                 }
             }
-
-            Console.WriteLine("End");
+            TcpClient tb = new TcpClient();
+            Console.WriteLine("End " + (tb.Client == null).ToString());
+            using (tb = new TcpClient())
+            {
+                Console.WriteLine("End " + (tb.Client == null).ToString());
+            }
+            Console.WriteLine("End " + (tb.Client == null).ToString());
             Console.ReadKey();
         }
     }

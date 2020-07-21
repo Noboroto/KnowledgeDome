@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System;
+using System.Diagnostics;
 
 namespace AILib
 {
@@ -15,27 +16,108 @@ namespace AILib
 	{
 		private static TcpListener ListenerCenter;
 
-		private static List<TcpClient> Clients;
+		private static TcpListener CheckerCenter;
 
-		private static Dictionary <MachineType, int> _ClientOnline;
+		private static TcpListener ValidCenter;
 
-		private static Thread AcceptClientThread;
+		private static List<TcpClient> TCPClients;
 
-		private static Thread[] ClientListenerThreads;
+		private static List<TcpClient> OnlineCLients;
 
-		private static Thread SendMessageThread;
-
-		public static 
-
+		private static Queue<Tuple<KDCommand,int>> OnlineCommands;
 
 		public static void Start()
 		{
-			ListenerCenter = new TcpListener(IPAddress.Any, 2644);
-			Clients = new List<TcpClient>();
-			ClientListenerThreads = new Thread[10];
+			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
+			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
+			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
+			
+			TCPClients = new List<TcpClient>();
+			OnlineCommands = new Queue<Tuple<KDCommand, int>>();
+			OnlineCLients = new List<TcpClient>();
+			
 			ListenerCenter.Start();
+			CheckerCenter.Start();
+			ValidCenter.Start();
+
 			AcceptClient();
+			AcceptVaid();
+			AcceptChecker();
 		}
+
+		private async static void AcceptVaid()
+		{
+			while (true)
+			{
+				if (ValidCenter.Pending())
+				{
+					await ValidCenter.AcceptTcpClientAsync();
+				}
+			}
+		}
+
+		private async static void AcceptChecker()
+		{
+			ProcessCommandChecker();
+			while (true)
+			{
+				if (ListenerCenter.Pending())
+				{
+					OnlineCLients.Add(await CheckerCenter.AcceptTcpClientAsync());
+					ListenFromChecker(OnlineCLients.Count - 1);
+				}
+			}
+		}
+
+		private static async void ListenFromChecker(int Pos)
+		{
+			using (StreamReader ReadFromStream = new StreamReader(OnlineCLients[Pos].GetStream()))
+			{
+				string command;
+				while (true)
+				{
+					command = "";
+					try
+					{
+						command = await ReadFromStream.ReadToEndAsync();
+					}
+					catch
+					{
+						OnlineCLients.RemoveAt(Pos);
+						return;
+					}
+					if (command != null)
+						OnlineCommands.Enqueue(new Tuple<KDCommand, int>(JsonConvert.DeserializeObject<KDCommand>(command), Pos));
+				}
+			}
+		}
+
+		private static async void ProcessCommandChecker()
+        {
+			Action action = () =>
+			{
+				while (true)
+                {
+					while (OnlineCommands.Count > 0)
+                    {
+						Tuple<KDCommand,int> command = OnlineCommands.Dequeue();
+						switch (command.Item1.Machine)
+                        {
+							case MachineType.Player:
+								switch (command.Item1.PrefixCmd)
+                                {
+
+                                }
+								break;
+							default:
+								break;
+                        }
+
+                    }
+                }
+			};
+			await new Task(action);
+        }
 
 		private async static void AcceptClient()
 		{
@@ -43,53 +125,39 @@ namespace AILib
 			{
 				if (ListenerCenter.Pending())
 				{
-					Clients.Add(await ListenerCenter.AcceptTcpClientAsync());
+					TCPClients.Add(await ListenerCenter.AcceptTcpClientAsync());
+					ListenFromClient(TCPClients.Count - 1);
 				}
 			}
 		}
 
-		private static void StartListenFromClient(int nClient)
+		private static async void ListenFromClient(int Pos)
 		{
-			ClientListenerThreads[nClient] = new Thread(ListenFromClient);
-			ClientListenerThreads[nClient].IsBackground = true;
-			ClientListenerThreads[nClient].Start(nClient);
-		}
-
-		private static void ListenFromClient(int Pos)
-		{
-			StreamReader ReadFromStream = new StreamReader(Clients[Pos].GetStream());
-			while (true)
+			using (StreamReader ReadFromStream = new StreamReader(TCPClients[Pos].GetStream()))
 			{
-				byte[] array = new byte[1024];
-				int num2 = 0;
-				try
+				string command;
+				while (true)
 				{
-					num2 = stream.Read(array, 0, 1024);
-				}
-				catch
-				{
-					DataProvider dataProvider = new DataProvider("[", "]", AIObjectBase.TagDefinition('w', "disconnect=" + num.ToString()), haskey: false);
-					Commands.Add(dataProvider.Children[0]);
-					ClientConnected--;
-					break;
-				}
-				if (num2 == 0)
-				{
-					break;
-				}
-				foreach (DataProvider child in new DataProvider("[", "]", GetEncodedMessage(Encoding.GetString(array, 0, num2)), haskey: false).Children)
-				{
-					Commands.Add(child);
+					command = "";
+					try
+					{
+						command = await ReadFromStream.ReadToEndAsync();
+					}
+					catch
+					{ 
+						TCPClients.RemoveAt(Pos);
+						return;
+					}
+					if (command != null) Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
 			}
-			Clients[num] = null;
 		}
 
-		public static async void SendCommand(KDCommand Command)
+		public static void SendCommand(KDCommand Command)
 		{
 			try
 			{
-				await SendMessage(JsonConvert.SerializeObject(Command)).Wait();
+				SendMessage(JsonConvert.SerializeObject(Command));
 			}
 			catch (AggregateException ae)
 			{
@@ -103,27 +171,27 @@ namespace AILib
 
 		private static async void SendMessage(string command)
 		{
-			for (int i = 0; i < Clients.Count; i++)
+			try
 			{
-				if (Clients[i] != null)
+				List<Task> tasks = new List<Task>();
+				foreach (var client in TCPClients)
 				{
-					try
+					if (client.Client == null) continue;
+					using (StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true })
 					{
-						using (StreamWriter WriteToStream = new StreamWriter(Clients[i].GetStream()) { AutoFlush = true })
-						{
-							await WriteToStream.WriteAsync(command);
-						}
+						tasks.Add(WriteToStream.WriteAsync(command));
 					}
-					catch (AggregateException ae)
-					{
-						throw ae.Flatten();
-					}
-					catch
-                    {
-						throw;
-                    }
 				}
+				await Task.WhenAll(tasks);
 			}
+			catch (AggregateException ae)
+			{
+				throw ae.Flatten();
+			}
+			catch
+            {
+				throw;
+            }
 		}
 	}
 }

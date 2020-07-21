@@ -1,6 +1,8 @@
-﻿namespace KDLib
+﻿using System.Collections.Generic;
+
+namespace KDLib
 {
-    public class KDCommandList : KDCollectionBase<KDCommand>
+    public class KDCommandList : Queue<KDCommand>
     {
 
 	}
