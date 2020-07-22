@@ -83,6 +83,7 @@ namespace AILib
 					}
 					catch
 					{
+						OnlineCLients[Pos].Close();
 						OnlineCLients.RemoveAt(Pos);
 						return;
 					}
@@ -107,6 +108,7 @@ namespace AILib
 								switch (command.Item1.PrefixCmd)
                                 {
 									case CommandType.AskForConnect:
+
 										break;
 									default:
 										break;

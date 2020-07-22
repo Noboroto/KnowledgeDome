@@ -7,16 +7,12 @@ namespace KDLib
 {
 	public class Obstacle
 	{
-		private ObstacleQuestion _obstacleQuestion;
-
-		private List<ObstacleRowQuestion> _RowList;
-
-		[JsonIgnore]
+        [JsonIgnore]
 		public int ID
 		{
 			get
 			{
-				return _obstacleQuestion.ID;
+				return obstacleQuestion.ID;
 			}
 		}
 
@@ -25,7 +21,7 @@ namespace KDLib
 		{
 			get
 			{
-				return _obstacleQuestion.CharCount;
+				return obstacleQuestion.CharCount;
 			}
 		}
 
@@ -34,7 +30,7 @@ namespace KDLib
 		{
 			get
 			{
-				return _obstacleQuestion.Content;
+				return obstacleQuestion.Content;
 			}
 		}
 
@@ -43,7 +39,7 @@ namespace KDLib
 		{
 			get
 			{
-				return _obstacleQuestion.Image;
+				return obstacleQuestion.Image;
 			}
 		}
 
@@ -52,47 +48,17 @@ namespace KDLib
 		{
 			get
 			{
-				return _obstacleQuestion.BitmapImage;
+				return obstacleQuestion.BitmapImage;
 			}
 		}
-		[JsonProperty]
-		public ObstacleQuestion obstacleQuestion
-		{
-			get
-			{
-				return _obstacleQuestion;
-			}
-			set
-			{
-				_obstacleQuestion = value;
-			}
-		}
-		[JsonProperty]
-		public List<ObstacleRowQuestion> RowList
-        {
-			get
-            {
-				return _RowList;
-            }
-			set
-            {
-				_RowList = value;
-            }
-        }
+        [JsonProperty]
+        public ObstacleQuestion obstacleQuestion { get; set; }
+        [JsonProperty]
+        public List<ObstacleRowQuestion> RowList { get; set; }
 
-		public Obstacle()
+        public Obstacle()
 		{
 			RowList = new List<ObstacleRowQuestion>();
-		}
-
-		/// <summary>
-		/// Returns JSON string
-		/// </summary>
-		/// <returns></returns>
-
-		public static int Comparer(Obstacle a, Obstacle b)
-		{
-			return ObstacleQuestion.Comparer(a.obstacleQuestion, b.obstacleQuestion);
 		}
 	}
 }

@@ -6,40 +6,13 @@ namespace KDLib
 {
 	public class Player : KDObjectBase
 	{
-		private string _ID;
+        private byte[] _Avatar;
 
-		private string _Name;
+        public string ID { get; set; }
 
-		private byte[] _Avatar;
+        public string Name { get; set; }
 
-		private int _Score;
-
-		public string ID
-		{
-			get
-			{
-				return _ID;
-			}
-			set
-			{
-				_ID = value;
-			}
-		}
-
-		public string Name
-		{
-			get
-			{
-				return _Name;
-			}
-			set
-			{
-				_Name = value;
-				OnPropertyChanged("Name");
-			}
-		}
-
-		[JsonIgnore]
+        [JsonIgnore]
 		public byte[] RawAvatar
 		{
 			get
@@ -50,7 +23,6 @@ namespace KDLib
 			{
 				_Avatar = value;
 				File.WriteAllBytes("Images/Players/" + ID + ".png", RawAvatar);
-				OnPropertyChanged("Avatar");
 			}
 		}
 
@@ -67,20 +39,9 @@ namespace KDLib
 			}
 		}
 
-		public int Score
-		{
-			get
-			{
-				return _Score;
-			}
-			set
-			{
-				_Score = value;
-				OnPropertyChanged("Score");
-			}
-		}
+        public int Score { get; set; }
 
-		private Player()
+        private Player()
 		{
 			_Avatar = new byte[0];
 		}
@@ -91,12 +52,6 @@ namespace KDLib
 			ID = id;
 			Name = name;
 			if (File.Exists("Images\\Players\\" + ID.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + ID.ToString() + ".png");
-		}
-
-		public void GetValueFrom(Player p)
-		{
-			Name = p.Name;
-			RawAvatar = p.RawAvatar;
 		}
 	}
 }

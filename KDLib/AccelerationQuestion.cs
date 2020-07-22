@@ -6,37 +6,14 @@ namespace KDLib
 {
 	public class AccelerationQuestion : Question
 	{
+        [JsonIgnore]
+        public ImageList HintImages { get; set; }
 
-		private ImageList _HintImages;
+        public string ImageType { get; set; }
 
-		private string _ImageType;
+		public int NumberOfImage { get; set; }
 
-		[JsonIgnore]
-		public ImageList HintImages
-		{
-			get
-			{
-				return _HintImages;
-			}
-			set
-			{
-				_HintImages = value;
-			}
-		}
-
-		public string ImageType
-        {
-            get
-            {
-				return _ImageType;
-            }
-			set
-            {
-				_ImageType = value;
-            }
-        }
-
-		[JsonConstructor]
+        [JsonConstructor]
 		public AccelerationQuestion(int id, string type, string content, string answer)
 			: base(id, content, answer)
 		{
@@ -47,34 +24,6 @@ namespace KDLib
 				HintImages.Add(File.ReadAllBytes("Tests\\Images\\" + ID.ToString() + "^" + num.ToString() + "." + type));
 				num++;
 			}
-		}
-
-		public void GetValueFrom(AccelerationQuestion question)
-		{
-			base.Content = question.Content;
-			base.Answer = question.Answer;
-			HintImages = question.HintImages;
-		}
-
-		public void RemoveImages()
-		{
-			for (int i = 0; i < HintImages.Count; i++)
-			{
-				File.Delete("Tests\\Images\\" + ID.ToString() + "^" + i.ToString() + ".png");
-			}
-		}
-
-		public static int CountComparer(AccelerationQuestion q1, AccelerationQuestion q2)
-		{
-			if (q1.HintImages.Count == q2.HintImages.Count)
-			{
-				return 0;
-			}
-			if (q1.HintImages.Count < q2.HintImages.Count)
-			{
-				return -1;
-			}
-			return 1;
 		}
 	}
 }

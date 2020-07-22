@@ -21,24 +21,6 @@ namespace KDLib
 		{
 		}
 
-		/// <summary>
-		/// Để cài sau
-		/// </summary>
-
-		public void Save()
-		{
-			/*string text = "";
-			using (Enumerator enumerator = GetEnumerator())
-			{
-				while (enumerator.MoveNext())
-				{
-					Match current = enumerator.Current;
-					text += current.TextData();
-				}
-			}
-			File.WriteAllText("Matches.etai", AIEncoder.GetCode(text), Encoding.UTF8);*/
-		}
-
 		public override bool Contains(object id)
 		{
 			return false;

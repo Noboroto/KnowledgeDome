@@ -28,24 +28,9 @@ namespace KDLib
 			Add((ImageSource)new ImageSourceConverter().ConvertFrom(image));
 		}
 
-		public new void Remove(ImageSource source)
-		{
-			int index = IndexOf(source);
-			RawImages.RemoveAt(index);
-			RemoveAt(index);
-		}
-
         public override bool Contains(object id)
         {
 			return true;
         }
-
-		public void Save(int ID, string ImageType)
-		{
-			for (int i = 0; i < base.Count; i++)
-			{
-				File.WriteAllBytes("Tests\\Images\\" + ID.ToString() + "^" + i.ToString() + "." + ImageType, RawImages[i]);
-			}
-		}
 	}
 }

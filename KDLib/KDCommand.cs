@@ -10,61 +10,29 @@ namespace KDLib
 {
     public class KDCommand
     {
-        private MachineType _Machine;
+        public MachineType Machine { get; set; }
 
-        private CommandType _PrefixCmd;
+        public CommandType PrefixCmd { get; set; }
 
-        private string _Content;
+        public string Content { get; set; }
 
-        public MachineType Machine
-        {
-            get
-            {
-                return _Machine;
-            }
-            set
-            {
-                _Machine = (MachineType)value;
-            }
-        }
-
-        public CommandType PrefixCmd
-        {
-            get
-            {
-                return _PrefixCmd;
-            }
-            set
-            {
-                _PrefixCmd = (CommandType)value;
-            }
-        }
-
-        public string Content
-        {
-            get
-            {
-                return _Content;
-            }
-            set
-            {
-                _Content = value;
-            }
-        }
+        public string ID { get; set; }
 
         public KDCommand (CommandType prefix, string cmd = "")
         {
-            _Machine = Data.ThisMacineType;
-            _PrefixCmd = prefix;
-            _Content = cmd;
+            Machine = Data.ThisMacineType;
+            PrefixCmd = prefix;
+            ID = Data.ID;
+            Content = cmd;
         }
 
         [JsonConstructor]
-        public KDCommand(MachineType type, CommandType prefix, string cmd = "")
+        public KDCommand(MachineType type, CommandType prefix, string id, string cmd = "")
         {
-            _Machine = type;
-            _PrefixCmd = prefix;
-            _Content = cmd;
+            Machine = type;
+            PrefixCmd = prefix;
+            Content = cmd;
+            ID = id;
         }
     }
 }

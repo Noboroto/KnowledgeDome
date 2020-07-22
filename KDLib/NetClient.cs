@@ -14,27 +14,11 @@ namespace KDLib
 
 		private static TcpClient OnlClient = new TcpClient();
 
-		private static IPAddress _ServerIP;
+        public static bool IsServerOnline { get; private set; }
 
-		private static bool _IsServerOnline;
+        public static IPAddress ServerIP { get; private set; }
 
-		public static bool IsServerOnline
-        {
-			get
-            {
-				return _IsServerOnline;
-            }
-        }
-
-		public static IPAddress ServerIP
-        {
-			get
-            {
-				return _ServerIP;
-            }
-        }
-
-		private static async Task<bool> IsValidConnection(IPAddress ip)
+        private static async Task<bool> IsValidConnection(IPAddress ip)
 		{
 			using (TcpClient tcp = new TcpClient())
 			{
@@ -68,8 +52,8 @@ namespace KDLib
 			{
 				if (await IsValidConnection(ServerAddress))
                 {
-					_IsServerOnline = true;
-					_ServerIP = ServerAddress;
+					IsServerOnline = true;
+					ServerIP = ServerAddress;
 
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
 					OnlClient.Connect(ServerAddress, Data.PortForChecker);
@@ -81,8 +65,8 @@ namespace KDLib
 				}
 				else
                 {
-					_IsServerOnline = false;
-					_ServerIP = IPAddress.Loopback;
+					IsServerOnline = false;
+					ServerIP = IPAddress.Loopback;
 					throw new IPNotFoundException();
                 }
 			}
@@ -104,13 +88,13 @@ namespace KDLib
                 {
 					if (await IsValidConnection(ServerIP))
 					{
-						if (!_IsServerOnline) Connect(ServerIP).Wait();
-						_IsServerOnline = true;
+						if (!IsServerOnline) Connect(ServerIP).Wait();
+						IsServerOnline = true;
 						SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus),  OnlClient);
 					}
 					else
 					{
-						_IsServerOnline = false;
+						IsServerOnline = false;
 					}
 				}
 				catch (AggregateException ae)

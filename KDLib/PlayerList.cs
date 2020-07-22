@@ -23,10 +23,6 @@ namespace KDLib
 		{
 		}
 
-		public PlayerList(string data, byte[] avatars)
-		{
-		}
-
 		public override bool Contains(object id)
 		{
 			using (Enumerator enumerator = GetEnumerator())

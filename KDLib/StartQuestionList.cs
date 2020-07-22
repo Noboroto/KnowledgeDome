@@ -48,28 +48,11 @@ namespace KDLib
 		public override void Add(StartQuestion sq)
 		{
 			base.Add(sq);
-			OnPropertyChanged(sq.Subject.ToString() + "Count");
 		}
 
 		public override void Remove(StartQuestion sq)
 		{
 			base.Remove(sq);
-			OnPropertyChanged(sq.Subject.ToString()+ "Count");
-		}
-
-		public void Edit(int index, string subject, string content, string answer)
-		{
-			/* EDIT LATER
-			string subject2 = base[index].Subject;
-			base[index].Subject = subject;
-			base[index].Content = content;
-			base[index].Answer = answer;
-			if (subject2 != subject)
-			{
-				OnPropertyChanged(GetChildListName(subject2) + "Count");
-				OnPropertyChanged(GetChildListName(subject) + "Count");
-			}
-			*/
 		}
 
 		public override bool Contains(object id)
@@ -85,17 +68,6 @@ namespace KDLib
 				}
 			}
 			return false;
-		}
-
-		public void Save()
-		{
-			//Bổ sung sau
-			//File.WriteAllText("Tests\\Start.etai", KDTextEncoder.GetCode(text), Encoding.UTF8);
-		}
-
-		public StartQuestion SearchFromID(int id)
-		{
-			return Find((StartQuestion sq) => sq.ID == id);
 		}
 	}
 }

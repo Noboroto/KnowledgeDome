@@ -5,107 +5,21 @@ namespace KDLib
 {
 	public class Match : KDObjectBase
 	{
-		private string _Name;
+        public StartQuestionList StartQuestions { get; set; }
 
-		private PlayerList _Players;
+        public ObstacleList Obstacles { get; set; }
 
-		private StartQuestionList _StartQuestions;
+        public AccelerationQuestionList AccelerationQuestions { get; set; }
 
-		private ObstacleList _Obstacles;
+        public FinishQuestionList FinishQuestions { get; set; }
 
-		private AccelerationQuestionList _AccelerationQuestions;
+        public ExtraQuestionList ExtraQuestions { get; set; }
 
-		private FinishQuestionList _FinishQuestions;
+        public string Name { get; private set; }
 
-		private ExtraQuestionList _ExtraQuestions;
+        public PlayerList Players { get; set; }
 
-		public StartQuestionList StartQuestions
-		{
-			get
-			{
-				return _StartQuestions;
-			}
-			set
-			{
-				_StartQuestions = value;
-			}
-		}
-
-		public ObstacleList Obstacles
-		{
-			get
-			{
-				return _Obstacles;
-			}
-			set
-			{
-				_Obstacles = value;
-			}
-		}
-
-		public AccelerationQuestionList AccelerationQuestions
-		{
-			get
-			{
-				return _AccelerationQuestions;
-			}
-			set
-			{
-				_AccelerationQuestions = value;
-			}
-		}
-
-		public FinishQuestionList FinishQuestions
-		{
-			get
-			{
-				return _FinishQuestions;
-			}
-			set
-			{
-				_FinishQuestions = value;
-			}
-		}
-
-		public ExtraQuestionList ExtraQuestions
-		{
-			get
-			{
-				return _ExtraQuestions;
-			}
-			set
-			{
-				_ExtraQuestions = value;
-			}
-		}
-
-		public string Name
-		{
-			get
-			{
-				return _Name;
-			}
-			private set
-			{
-				_Name = value;
-				OnPropertyChanged("Name");
-			}
-		}
-
-		public PlayerList Players
-		{
-			get
-			{
-				return _Players;
-			}
-			set
-			{
-				_Players = value;
-				OnPropertyChanged("Players");
-			}
-		}
-
-		public Match()
+        public Match()
 		{
 			Players = new PlayerList();
 			StartQuestions = new StartQuestionList();
@@ -113,7 +27,6 @@ namespace KDLib
 			AccelerationQuestions = new AccelerationQuestionList();
 			FinishQuestions = new FinishQuestionList();
 			ExtraQuestions = new ExtraQuestionList();
-			//Players.CollectionChanged += Players_CollectionChanged;
 		}
 		
 		[JsonConstructor]
@@ -131,11 +44,6 @@ namespace KDLib
 			: this()
 		{
 			Name = name;
-		}
-
-		private void Players_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-		{
-			OnPropertyChanged("Players");
 		}
 	}
 }

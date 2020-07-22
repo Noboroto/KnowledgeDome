@@ -7,24 +7,11 @@ namespace KDLib
 {
 	public class ObstacleQuestion : Question
 	{
-		private int _CharCount;
+        private byte[] _Image;
 
-		private byte[] _Image;
-
-		private string _ImageType;
-		[JsonProperty]
-		public int CharCount
-		{
-			get
-			{
-				return _CharCount;
-			}
-			set
-			{
-				_CharCount = value;
-			}
-		}
-		[JsonIgnore]
+        [JsonProperty]
+        public int CharCount { get; set; }
+        [JsonIgnore]
 		private byte[] RawImage
 		{
 			get
@@ -34,7 +21,7 @@ namespace KDLib
 			set
 			{
 				_Image = value;
-				File.WriteAllBytes("Tests\\Images\\" + ID.ToString() + "." +  _ImageType, RawImage);
+				File.WriteAllBytes("Tests\\Images\\" + ID.ToString() + "." +  ImageType, RawImage);
 			}
 		}
 
@@ -51,18 +38,8 @@ namespace KDLib
 			}
 		}
 
-		public string ImageType
-        {
-			get
-            {
-				return _ImageType;
-            }
-			set
-            {
-				_ImageType = value;
-            }
-        }
-		[JsonIgnore]
+        public string ImageType { get; set; }
+        [JsonIgnore]
 		public Bitmap BitmapImage => new Bitmap(new MemoryStream(RawImage));
 
 		public void GetValueFrom(ObstacleQuestion q)

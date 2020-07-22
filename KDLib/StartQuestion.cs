@@ -4,22 +4,9 @@ namespace KDLib
 {
 	public class StartQuestion : Question
 	{
-		private SubjectInfo _Subject;
+        public SubjectInfo Subject { get; set; }
 
-		public SubjectInfo Subject
-		{
-			get
-			{
-				return _Subject;
-			}
-			set
-			{
-				_Subject = (SubjectInfo)value;
-				OnPropertyChanged("Subject");
-			}
-		}
-
-		private SubjectInfo SubjectValue (string value)
+        private SubjectInfo SubjectValue (string value)
 		{
 			if (!KDConvert.StringToSubject.ContainsKey(value)) return SubjectInfo.Unknown;
 			else return KDConvert.StringToSubject[value];

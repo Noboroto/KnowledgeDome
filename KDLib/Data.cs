@@ -2,26 +2,17 @@
 {
 	public static class Data
 	{
-		private static MachineType _ThisMachine;
         public const int PortForTCP = 2644;
 
 		public const int PortForChecker = 2645;
 
 		public const int PortForValidCheck = 2647;
 
-		public static MachineType ThisMacineType
-        {
-            get
-            {
-				return _ThisMachine;
-            }
-            set
-            {
-				_ThisMachine = (MachineType)value;
-            }
-        }
+        public static MachineType ThisMacineType { get; set; }
 
         public static bool OnFocus { get; set; }
+
+        public static string ID { get; set; }
 
         public static KDCommandList Commands { get; set; }
 

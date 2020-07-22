@@ -18,26 +18,13 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Start");
-            try
+            var abc = new StartQuestion("Sinh học", "a", "cad", 12);
+            string a = JsonConvert.SerializeObject(abc);
+            using (StreamWriter stream = new StreamWriter(File.Open(@"ABC.json", FileMode.Create)))
             {
-                NetClient.Connect("192.168.12.1");
+                stream.WriteLine(a);
+                var x = JsonConvert.DeserializeObject<StartQuestion>(a);
             }
-            catch (AggregateException ae)
-            {
-                foreach (var e in ae.InnerExceptions)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-            TcpClient tb = new TcpClient();
-            Console.WriteLine("End " + (tb.Client == null).ToString());
-            using (tb = new TcpClient())
-            {
-                Console.WriteLine("End " + (tb.Client == null).ToString());
-            }
-            Console.WriteLine("End " + (tb.Client == null).ToString());
-            Console.ReadKey();
         }
     }
 }

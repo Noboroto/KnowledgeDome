@@ -20,24 +20,11 @@ namespace KDLib
 		public override void Add(FinishQuestion item)
 		{
 			base.Add(item);
-			OnPropertyChanged("P" + item.Value.ToString() + "Count");
 		}
 
 		public override void Remove(FinishQuestion item)
 		{
 			base.Remove(item);
-			OnPropertyChanged("P" + item.Value.ToString() + "Count");
-		}
-
-		public void Edit(FinishQuestion q1, FinishQuestion q2)
-		{
-			int value = q1.Value;
-			q1.GetValueFrom(q2);
-			if (value != q1.Value)
-			{
-				OnPropertyChanged("P" + value.ToString() + "Count");
-				OnPropertyChanged("P" + q1.Value.ToString() + "Count");
-			}
 		}
 
 		public override bool Contains(object id)
@@ -53,29 +40,6 @@ namespace KDLib
 				}
 			}
 			return false;
-		}
-
-		/// <summary>
-		/// Làm sau
-		/// </summary>
-		public void Save()
-		{
-			/*
-			string text = "";
-			using (Enumerator enumerator = GetEnumerator())
-			{
-				while (enumerator.MoveNext())
-				{
-					FinishQuestion current = enumerator.Current;
-					text += current.TextData();
-				}
-			}
-			File.WriteAllText("Tests\\Finish.etai", AIEncoder.GetCode(text), Encoding.UTF8);*/
-		}
-
-		public FinishQuestion FromHashcode(int id)
-		{
-			return Find((FinishQuestion fq) => fq.ID == id);
 		}
 	}
 }
