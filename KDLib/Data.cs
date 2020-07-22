@@ -7,12 +7,12 @@
 		public const int PortForChecker = 2645;
 
 		public const int PortForValidCheck = 2647;
-
+        
         public static MachineType ThisMacineType { get; set; }
 
         public static bool OnFocus { get; set; }
 
-        public static string ID { get; set; }
+        public static int ID { get; set; }
 
         public static KDCommandList Commands { get; set; }
 

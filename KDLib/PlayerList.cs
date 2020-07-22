@@ -29,7 +29,7 @@ namespace KDLib
 			{
 				while (enumerator.MoveNext())
 				{
-					if (enumerator.Current.ID == id.ToString())
+					if (enumerator.Current.Username == id.ToString())
 					{
 						return true;
 					}

@@ -8,7 +8,9 @@ namespace KDLib
 	{
         private byte[] _Avatar;
 
-        public string ID { get; set; }
+        public string Username { get; set; }
+
+		public int ID { get; set; }
 
         public string Name { get; set; }
 
@@ -22,7 +24,7 @@ namespace KDLib
 			set
 			{
 				_Avatar = value;
-				File.WriteAllBytes("Images/Players/" + ID + ".png", RawAvatar);
+				File.WriteAllBytes("Images/Players/" + Username + ".png", RawAvatar);
 			}
 		}
 
@@ -47,11 +49,12 @@ namespace KDLib
 		}
 
 		[JsonConstructor]
-		public Player(string id, string name)
+		public Player(int id, string username, string name)
 		{
 			ID = id;
+			Username = username;
 			Name = name;
-			if (File.Exists("Images\\Players\\" + ID.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + ID.ToString() + ".png");
+			if (File.Exists("Images\\Players\\" + Username.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + Username.ToString() + ".png");
 		}
 	}
 }

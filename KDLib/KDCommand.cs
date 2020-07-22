@@ -16,7 +16,7 @@ namespace KDLib
 
         public string Content { get; set; }
 
-        public string ID { get; set; }
+        public int ID { get; set; }
 
         public KDCommand (CommandType prefix, string cmd = "")
         {
@@ -27,7 +27,7 @@ namespace KDLib
         }
 
         [JsonConstructor]
-        public KDCommand(MachineType type, CommandType prefix, string id, string cmd = "")
+        public KDCommand(MachineType type, CommandType prefix, int id, string cmd = "")
         {
             Machine = type;
             PrefixCmd = prefix;
