@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS0169: The field 'NetClient._ServerOnline' is never used
+dotnet_diagnostic.CS0169.severity = silent
