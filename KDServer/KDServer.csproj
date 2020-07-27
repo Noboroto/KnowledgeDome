@@ -150,5 +150,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KDLib\KDLib.csproj">
+      <Project>{9d12c589-1b51-4d59-a9da-cb9c21adb1f8}</Project>
+      <Name>KDLib</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
