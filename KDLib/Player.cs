@@ -8,8 +8,6 @@ namespace KDLib
 	{
         private byte[] _Avatar;
 
-        public string Username { get; set; }
-
 		public int ID { get; set; }
 
         public string Name { get; set; }
@@ -24,7 +22,7 @@ namespace KDLib
 			set
 			{
 				_Avatar = value;
-				File.WriteAllBytes("Images/Players/" + Username + ".png", RawAvatar);
+				File.WriteAllBytes("Images/Players/" + ID + ".png", RawAvatar);
 			}
 		}
 
@@ -52,9 +50,8 @@ namespace KDLib
 		public Player(int id, string username, string name)
 		{
 			ID = id;
-			Username = username;
 			Name = name;
-			if (File.Exists("Images\\Players\\" + Username.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + Username.ToString() + ".png");
+			if (File.Exists("Images\\Players\\" + ID.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + ID.ToString() + ".png");
 		}
 	}
 }

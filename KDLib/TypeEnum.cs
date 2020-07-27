@@ -29,22 +29,13 @@ namespace KDLib
     }
     public enum CommandType
     {
-        AskForConnect,
         Forcusing,
         LostForcus,
         Discconect,
-        Show,
-        Hide,
-        Answer,
         IsConnected,
-        Question,
-        Start,
-        Right,
-        ScoreEdited,
-        Wrong,
-        ShowImage,
-        HideImage,
-        NavigationTo,
-        OK,
+        AskForConnect,
+        RefuseConnect,
+        ClientList,
+        AccpetConnect
     }
 }

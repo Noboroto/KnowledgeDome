@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using KDLib.KDException;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 namespace KDLib
 {
@@ -15,6 +16,8 @@ namespace KDLib
 		private static TcpClient OnlClient = new TcpClient();
 
         public static bool IsServerOnline { get; private set; }
+
+		public static List<string> ClientComboBoxChoose { get; private set; }
 
         public static IPAddress ServerIP { get; private set; }
 
@@ -34,7 +37,7 @@ namespace KDLib
         {
 			try
             {
-				Connect(IPAddress.Parse(ip)).Wait();
+				Connect(IPAddress.Parse(ip));
             }
 			catch (AggregateException ae)
 			{
@@ -46,22 +49,18 @@ namespace KDLib
             }
         }
 
-		public static async Task Connect(IPAddress ServerAddress)
+		public static void Connect(IPAddress ServerAddress)
 		{
 			try
 			{
-				if (await IsValidConnection(ServerAddress))
+				if (IsValidConnection(ServerAddress).Result)
                 {
 					IsServerOnline = true;
 					ServerIP = ServerAddress;
 
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
-					OnlClient.Connect(ServerAddress, Data.PortForChecker);
 
-					SendCommand(new KDCommand(CommandType.AskForConnect), OnlClient);
-					
 					ListenFromServer();
-					CheckServer();
 				}
 				else
                 {
@@ -80,7 +79,7 @@ namespace KDLib
             }
 		}
 
-		private static async void CheckServer()
+		private static async void CheckOnlineServer()
         {
 			while (true)
             {
@@ -88,7 +87,7 @@ namespace KDLib
                 {
 					if (await IsValidConnection(ServerIP))
 					{
-						if (!IsServerOnline) Connect(ServerIP).Wait();
+						if (!IsServerOnline) Connect(ServerIP);
 						IsServerOnline = true;
 						SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus),  OnlClient);
 					}
@@ -107,6 +106,35 @@ namespace KDLib
 				}
 			}
 		}
+
+		private static async void ProcessCommand ()
+        {
+			Action ThisAction = () =>
+			{
+				while (true)
+                {
+					if (Data.Commands.Count > 0)
+                    {
+						switch (Data.Commands.Peek().PrefixCmd)
+                        {
+							case CommandType.ClientList:
+								ClientComboBoxChoose = JsonConvert.DeserializeObject<List<string>>(Data.Commands.Dequeue().Content);
+								continue;
+							case CommandType.AccpetConnect:
+								OnlClient.Connect(ServerIP, Data.PortForChecker);
+								Data.Commands.Dequeue();
+								continue;
+							case CommandType.RefuseConnect:
+								ThisClient.Close();
+								return;
+							default:
+								continue;
+                        }
+                    }
+                }
+			};
+			await new Task(ThisAction);
+        }
 
 		public static void SendCommand(KDCommand Command, TcpClient tcp)
 		{
@@ -135,6 +163,10 @@ namespace KDLib
 					{
 						information = await ReadFromStream.ReadToEndAsync();
 					}
+					catch (ObjectDisposedException)
+                    {
+						return;
+                    }
 					catch (AggregateException ae)
 					{
 						throw ae.Flatten();

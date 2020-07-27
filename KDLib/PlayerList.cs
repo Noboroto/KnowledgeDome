@@ -29,7 +29,7 @@ namespace KDLib
 			{
 				while (enumerator.MoveNext())
 				{
-					if (enumerator.Current.Username == id.ToString())
+					if (enumerator.Current.ID == (int)id)
 					{
 						return true;
 					}
@@ -37,6 +37,11 @@ namespace KDLib
 			}
 			return false;
 		}
+
+		public Player FindFromName (string name)
+        {
+			return Find((Player p) => p.Name == name);
+        }
 
 		private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{

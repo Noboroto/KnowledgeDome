@@ -27,7 +27,7 @@
         /// </summary>
         public static void Initialize()
 		{
-
+            ID = -1;
 		}
     }
 }

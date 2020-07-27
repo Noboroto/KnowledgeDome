@@ -24,7 +24,9 @@ namespace AILib
 
 		private static List<TcpClient> OnlineCLients;
 
-		private static Queue<Tuple<KDCommand,int>> OnlineCommands;
+		private static Dictionary<int, int> OnlineStatus;
+
+		private static Queue<KDCommand> OnlineCommands;
 
 		public static void Start()
 		{
@@ -33,7 +35,7 @@ namespace AILib
 			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
 			
 			TCPClients = new List<TcpClient>();
-			OnlineCommands = new Queue<Tuple<KDCommand, int>>();
+			OnlineCommands = new Queue<KDCommand>();
 			OnlineCLients = new List<TcpClient>();
 			
 			ListenerCenter.Start();
@@ -81,6 +83,10 @@ namespace AILib
 					{
 						command = await ReadFromStream.ReadToEndAsync();
 					}
+					catch (InvalidOperationException)
+                    {
+						continue;
+                    }
 					catch
 					{
 						OnlineCLients[Pos].Close();
@@ -88,7 +94,7 @@ namespace AILib
 						return;
 					}
 					if (command != null)
-						OnlineCommands.Enqueue(new Tuple<KDCommand, int>(JsonConvert.DeserializeObject<KDCommand>(command), Pos));
+						OnlineCommands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
 			}
 		}
@@ -101,14 +107,17 @@ namespace AILib
                 {
 					while (OnlineCommands.Count > 0)
                     {
-						Tuple<KDCommand,int> command = OnlineCommands.Dequeue();
-						switch (command.Item1.Machine)
+						KDCommand command = OnlineCommands.Dequeue();
+						switch (command.Machine)
                         {
 							case MachineType.Player:
-								switch (command.Item1.PrefixCmd)
+								switch (command.PrefixCmd)
                                 {
-									case CommandType.AskForConnect:
-
+									case CommandType.Forcusing:
+										OnlineStatus[command.ID] = 1;
+										break;
+									case CommandType.LostForcus:
+										OnlineStatus[command.ID] = -1;
 										break;
 									default:
 										break;
@@ -117,7 +126,6 @@ namespace AILib
 							default:
 								break;
                         }
-
                     }
                 }
 			};
@@ -158,11 +166,11 @@ namespace AILib
 			}
 		}
 
-		public static void SendCommand(KDCommand Command)
+		public static void SendCommandToOne(KDCommand Command, int pos)
 		{
 			try
 			{
-				SendMessage(JsonConvert.SerializeObject(Command));
+				SendMessageToOne(JsonConvert.SerializeObject(Command), TCPClients[pos]);
 			}
 			catch (AggregateException ae)
 			{
@@ -174,7 +182,43 @@ namespace AILib
 			}
 		}
 
-		private static async void SendMessage(string command)
+		private static async void SendMessageToOne(string message, TcpClient client)
+		{
+			try
+			{
+				if (client.Client == null) return; 
+				using (StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true })
+				{
+					await WriteToStream.WriteAsync(message);
+				}
+			}
+			catch (AggregateException ae)
+			{
+				throw ae.Flatten();
+			}
+			catch
+            {
+				throw;
+            }
+		}
+
+		public static void SendCommandToAll(KDCommand Command)
+		{
+			try
+			{
+				SendMessageToAll(JsonConvert.SerializeObject(Command));
+			}
+			catch (AggregateException ae)
+			{
+				throw ae.Flatten();
+			}
+			catch
+			{
+				throw;
+			}
+		}
+
+		private static async void SendMessageToAll(string command)
 		{
 			try
 			{
@@ -194,9 +238,9 @@ namespace AILib
 				throw ae.Flatten();
 			}
 			catch
-            {
+			{
 				throw;
-            }
+			}
 		}
 	}
 }
