@@ -3,6 +3,7 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,23 +17,20 @@ namespace KDLib
 
         public string Content { get; set; }
 
-        public int ID { get; set; }
+        public EndPoint ID { get; set; }
 
-        public KDCommand (CommandType prefix, string cmd = "")
+        public KDCommand (CommandType prefix, EndPoint local, string cmd = "")
+        : this (Data.ThisMacineType, prefix, local, cmd)
         {
-            Machine = Data.ThisMacineType;
-            PrefixCmd = prefix;
-            ID = Data.ID;
-            Content = cmd;
         }
 
         [JsonConstructor]
-        public KDCommand(MachineType type, CommandType prefix, int id, string cmd = "")
+        public KDCommand(MachineType type, CommandType prefix, EndPoint local, string cmd = "")
         {
             Machine = type;
             PrefixCmd = prefix;
             Content = cmd;
-            ID = id;
+            ID = local;
         }
     }
 }

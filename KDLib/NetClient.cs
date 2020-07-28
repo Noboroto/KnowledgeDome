@@ -33,11 +33,11 @@ namespace KDLib
 			}
 		}
 
-		public static void Connect(string ip)
+		public async static void Connect(string ip)
         {
 			try
             {
-				Connect(IPAddress.Parse(ip));
+				await Connect(IPAddress.Parse(ip));
             }
 			catch (AggregateException ae)
 			{
@@ -49,7 +49,7 @@ namespace KDLib
             }
         }
 
-		public static void Connect(IPAddress ServerAddress)
+		public async static Task Connect(IPAddress ServerAddress)
 		{
 			try
 			{
@@ -60,12 +60,16 @@ namespace KDLib
 
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
 
-					ListenFromServer();
+					var Tasks = new List<Task>();
+					Tasks.Add(ListenFromServer());
+					Tasks.Add(ProcessCommand());
+
+					await Task.WhenAll(Tasks.ToArray());
 				}
 				else
                 {
 					IsServerOnline = false;
-					ServerIP = IPAddress.Loopback;
+					ServerIP = null;
 					throw new IPNotFoundException();
                 }
 			}
@@ -79,35 +83,40 @@ namespace KDLib
             }
 		}
 
-		private static async void CheckOnlineServer()
+		private static Task CheckOnlineServer()
         {
-			while (true)
-            {
-				try
-                {
-					if (await IsValidConnection(ServerIP))
-					{
-						if (!IsServerOnline) Connect(ServerIP);
-						IsServerOnline = true;
-						SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus),  OnlClient);
-					}
-					else
-					{
-						IsServerOnline = false;
-					}
-				}
-				catch (AggregateException ae)
+			Action ThisAction = () =>
+			{
+				while (true)
 				{
-					throw ae.Flatten();
+					try
+					{
+						if (ThisClient.Client.Poll(500, SelectMode.SelectRead) && ThisClient.Client.Available == 0)
+						{
+							if (!IsServerOnline) Connect(ServerIP).Start();
+							IsServerOnline = true;
+							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint), OnlClient);;
+							Task.Delay(1000);
+						}
+						else
+						{
+							IsServerOnline = false;
+						}
+					}
+					catch (AggregateException ae)
+					{
+						throw ae.Flatten();
+					}
+					catch
+					{
+						throw;
+					}
 				}
-				catch
-				{
-					throw;
-				}
-			}
+			};
+			return Task.Factory.StartNew(ThisAction);
 		}
 
-		private static async void ProcessCommand ()
+		private static Task ProcessCommand ()
         {
 			Action ThisAction = () =>
 			{
@@ -115,32 +124,37 @@ namespace KDLib
                 {
 					if (Data.Commands.Count > 0)
                     {
-						switch (Data.Commands.Peek().PrefixCmd)
+						KDCommand command = Data.Commands.Peek();
+						switch (command.PrefixCmd)
                         {
 							case CommandType.ClientList:
 								ClientComboBoxChoose = JsonConvert.DeserializeObject<List<string>>(Data.Commands.Dequeue().Content);
-								continue;
+								goto EndCommand;
 							case CommandType.AccpetConnect:
 								OnlClient.Connect(ServerIP, Data.PortForChecker);
-								Data.Commands.Dequeue();
-								continue;
+								CheckOnlineServer();
+								goto EndCommand;
 							case CommandType.RefuseConnect:
 								ThisClient.Close();
+								Data.Commands.Clear();
 								return;
+							EndCommand:
+								command = Data.Commands.Dequeue();
+								continue;
 							default:
 								continue;
                         }
                     }
                 }
 			};
-			await new Task(ThisAction);
-        }
+			return Task.Factory.StartNew(ThisAction);
+		}
 
-		public static void SendCommand(KDCommand Command, TcpClient tcp)
+		public static async void SendCommand(KDCommand Command, TcpClient tcp)
 		{
 			try
             {
-				SendMessage(JsonConvert.SerializeObject(Command), tcp).Wait();
+				await SendMessage(JsonConvert.SerializeObject(Command), tcp);
             }
 			catch (AggregateException ae)
 			{
@@ -152,21 +166,47 @@ namespace KDLib
             }
 		}
 
-		private static async void ListenFromServer()
+		private static Task ListenFromServer()
 		{
-			using (StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream()))
+			Action ThisAction = () =>
 			{
-				while (true)
+				using (StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream()))
 				{
-					string information = "";
+					while (true)
+					{
+						string information = "";
+						try
+						{
+							information = ReadFromStream.ReadToEnd();
+						}
+						catch (ObjectDisposedException)
+						{
+							break;
+						}
+						catch (AggregateException ae)
+						{
+							throw ae.Flatten();
+						}
+						catch
+						{
+							throw;
+						}
+						if (information != "") Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(information));
+					}
+				}
+			};
+			return Task.Factory.StartNew(ThisAction);
+		}
+
+		private static Task SendMessage(string command, TcpClient tcp)
+		{
+			Action ThisAction = () => {
+				using (StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true })
+				{
 					try
 					{
-						information = await ReadFromStream.ReadToEndAsync();
+						WriteToStream.Write(command);
 					}
-					catch (ObjectDisposedException)
-                    {
-						return;
-                    }
 					catch (AggregateException ae)
 					{
 						throw ae.Flatten();
@@ -175,28 +215,9 @@ namespace KDLib
 					{
 						throw;
 					}
-					if (information != "") Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(information));
 				}
-			}
-		}
-
-		private static async Task SendMessage(string command, TcpClient tcp)
-		{
-			using (StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true })
-			{
-				try
-				{
-					await WriteToStream.WriteAsync(command);
-				}
-				catch (AggregateException ae)
-                {
-					throw ae.Flatten();
-                }
-				catch
-				{
-					throw;
-				}
-			}
+			};
+			return Task.Factory.StartNew(ThisAction);
 		}
 	}
 }

@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 using System;
 using System.Diagnostics;
 
-namespace AILib
+namespace KDLib
 {
-	public static class NetHost
+	public static class NetServer
 	{
 		private static TcpListener ListenerCenter;
 
@@ -20,108 +20,122 @@ namespace AILib
 
 		private static TcpListener ValidCenter;
 
-		private static List<TcpClient> TCPClients;
+		private static Dictionary<EndPoint, TcpClient> TCPClients;
 
-		private static List<TcpClient> OnlineCLients;
-
-		private static Dictionary<int, int> OnlineStatus;
+		private static Dictionary<EndPoint, TcpClient> OnlineCLients;
 
 		private static Queue<KDCommand> OnlineCommands;
 
-		public static void Start()
+		public static Dictionary <MachineType, Dictionary <EndPoint, int>> MachineState { get; private set; }
+
+		public static Dictionary<int, EndPoint> PlayerAvailable { get; private set; }
+
+		public async static void Start()
 		{
 			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
 			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
 			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
 			
-			TCPClients = new List<TcpClient>();
+			TCPClients = new Dictionary<EndPoint, TcpClient>();
 			OnlineCommands = new Queue<KDCommand>();
-			OnlineCLients = new List<TcpClient>();
-			
+			OnlineCLients = new Dictionary<EndPoint, TcpClient>();
+			PlayerAvailable = new Dictionary<int, EndPoint>();
+			MachineState = new Dictionary<MachineType, Dictionary<EndPoint, int>>();
+
 			ListenerCenter.Start();
 			CheckerCenter.Start();
 			ValidCenter.Start();
 
-			AcceptClient();
-			AcceptVaid();
-			AcceptChecker();
+			List<Task> tasks = new List<Task>();
+			tasks.Add(AcceptClient());
+			tasks.Add(AcceptVaid());
+			tasks.Add(AcceptChecker());
+
+			await Task.WhenAny(tasks.ToArray());
 		}
 
-		private async static void AcceptVaid()
+		//Don't change
+		private static Task AcceptVaid()
 		{
-			while (true)
+			Action ThisAction = () =>
 			{
-				if (ValidCenter.Pending())
-				{
-					await ValidCenter.AcceptTcpClientAsync();
-				}
-			}
-		}
-
-		private async static void AcceptChecker()
-		{
-			ProcessCommandChecker();
-			while (true)
-			{
-				if (ListenerCenter.Pending())
-				{
-					OnlineCLients.Add(await CheckerCenter.AcceptTcpClientAsync());
-					ListenFromChecker(OnlineCLients.Count - 1);
-				}
-			}
-		}
-
-		private static async void ListenFromChecker(int Pos)
-		{
-			using (StreamReader ReadFromStream = new StreamReader(OnlineCLients[Pos].GetStream()))
-			{
-				string command;
 				while (true)
 				{
-					command = "";
-					try
+					if (ValidCenter.Pending())
 					{
-						command = await ReadFromStream.ReadToEndAsync();
+						ValidCenter.AcceptTcpClient();
 					}
-					catch (InvalidOperationException)
-                    {
-						continue;
-                    }
-					catch
-					{
-						OnlineCLients[Pos].Close();
-						OnlineCLients.RemoveAt(Pos);
-						return;
-					}
-					if (command != null)
-						OnlineCommands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
-			}
+			};
+			return Task.Factory.StartNew(ThisAction);
 		}
 
-		private static async void ProcessCommandChecker()
+		private static Task AcceptChecker()
+		{
+			Action ThisAction = () =>
+			{
+				while (true)
+				{
+					if (ListenerCenter.Pending())
+					{
+						using (var client = CheckerCenter.AcceptTcpClient())
+						{
+							OnlineCLients[client.Client.RemoteEndPoint] = client;
+							ListenFromChecker(client.Client.RemoteEndPoint);
+						}
+					}
+				}
+			};
+			return Task.WhenAny(ProcessCommandChecker(), Task.Factory.StartNew(ThisAction));
+		}
+
+		private static Task ListenFromChecker(EndPoint Pos)
+		{
+			Action ThisAction = () =>
+			{
+				using (StreamReader ReadFromStream = new StreamReader(OnlineCLients[Pos].GetStream()))
+				{
+					string command;
+					while (true)
+					{
+						command = "";
+						try
+						{
+							command = ReadFromStream.ReadToEnd();
+						}
+						catch (InvalidOperationException)
+						{
+							continue;
+						}
+						catch
+						{
+							OnlineCLients.Remove(Pos);
+							return;
+						}
+						if (command != null)
+							OnlineCommands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
+					}
+				}
+			};
+			return Task.Factory.StartNew(ThisAction);
+		}
+
+		private static Task ProcessCommandChecker()
         {
-			Action action = () =>
+			Action ThisAction = () =>
 			{
 				while (true)
                 {
 					while (OnlineCommands.Count > 0)
                     {
 						KDCommand command = OnlineCommands.Dequeue();
-						switch (command.Machine)
+						switch (command.PrefixCmd)
                         {
-							case MachineType.Player:
-								switch (command.PrefixCmd)
-                                {
-									case CommandType.Forcusing:
-										OnlineStatus[command.ID] = 1;
-										break;
-									case CommandType.LostForcus:
-										OnlineStatus[command.ID] = -1;
-										break;
-									default:
-										break;
-                                }
+							case CommandType.Forcusing:
+								MachineState[command.Machine][command.ID] = 1;
+								break;
+							case CommandType.LostForcus:
+								MachineState[command.Machine][command.ID] = -1;
 								break;
 							default:
 								break;
@@ -129,44 +143,96 @@ namespace AILib
                     }
                 }
 			};
-			await new Task(action);
+			return Task.Factory.StartNew(ThisAction);
         }
 
-		private async static void AcceptClient()
+		private static Task AcceptClient()
 		{
-			while (true)
+			Action ThisAction = () =>
 			{
-				if (ListenerCenter.Pending())
-				{
-					TCPClients.Add(await ListenerCenter.AcceptTcpClientAsync());
-					ListenFromClient(TCPClients.Count - 1);
-				}
-			}
-		}
-
-		private static async void ListenFromClient(int Pos)
-		{
-			using (StreamReader ReadFromStream = new StreamReader(TCPClients[Pos].GetStream()))
-			{
-				string command;
 				while (true)
 				{
-					command = "";
-					try
+					if (ListenerCenter.Pending())
 					{
-						command = await ReadFromStream.ReadToEndAsync();
+						using (TcpClient client = ListenerCenter.AcceptTcpClient())
+						{
+							TCPClients[client.Client.RemoteEndPoint] = client;
+							ListenFromClient(client.Client.RemoteEndPoint).Start();
+						}
 					}
-					catch
-					{ 
-						TCPClients.RemoveAt(Pos);
-						return;
-					}
-					if (command != null) Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
-			}
+			};
+			return Task.Factory.StartNew(ThisAction);
 		}
 
-		public static void SendCommandToOne(KDCommand Command, int pos)
+		private static Task ListenFromClient(EndPoint Pos)
+		{
+			Action ThisAction = () =>
+			{
+				using (StreamReader ReadFromStream = new StreamReader(TCPClients[Pos].GetStream()))
+				{
+					string command;
+					while (true)
+					{
+						command = "";
+						try
+						{
+							command = ReadFromStream.ReadToEnd();
+						}
+						catch
+						{
+							TCPClients.Remove(Pos);
+							return;
+						}
+						if (command != null) Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
+					}
+				}
+			};
+			return Task.WhenAny(Task.Factory.StartNew(ThisAction), ProcessCommandClient());
+		}
+
+		private static Task ProcessCommandClient()
+        {
+			Action ThisAction = () =>
+			{
+				while (true)
+				{
+					while (Data.Commands.Count > 0)
+					{
+						KDCommand command = Data.Commands.Peek();
+						switch (Data.Commands.Peek().PrefixCmd)
+						{
+							case CommandType.AskForConnect:
+								if (command.Content == Data.KeyMC || command.Content == Data.KeyViewer)
+                                {
+									SendCommandToOne(new KDCommand(CommandType.RefuseConnect, null), command.ID);
+									goto EndCommand;
+								}
+								int ID = Data.Matches[Data.CurrentMatchIndex].Players.FindFromName(command.Content).ID;
+								if (PlayerAvailable[ID] == null)
+                                {
+									SendCommandToOne(new KDCommand(CommandType.RefuseConnect, null), command.ID);
+									TCPClients[command.ID].Close();
+                                }
+								else
+                                {
+									PlayerAvailable[ID] = command.ID;
+									SendCommandToOne(new KDCommand(CommandType.AccpetConnect, null), command.ID);
+								}
+								goto EndCommand;
+							EndCommand:
+								command = Data.Commands.Dequeue();
+								continue;
+							default:
+								continue;
+						}
+					}
+				}
+			};
+			return Task.Factory.StartNew(ThisAction);
+		}
+
+		public static void SendCommandToOne(KDCommand Command, EndPoint pos)
 		{
 			try
 			{
@@ -223,9 +289,8 @@ namespace AILib
 			try
 			{
 				List<Task> tasks = new List<Task>();
-				foreach (var client in TCPClients)
+				foreach (var client in TCPClients.Values)
 				{
-					if (client.Client == null) continue;
 					using (StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true })
 					{
 						tasks.Add(WriteToStream.WriteAsync(command));
