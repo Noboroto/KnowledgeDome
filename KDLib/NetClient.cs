@@ -33,11 +33,11 @@ namespace KDLib
 			}
 		}
 
-		public static void Connect(string ip)
+		public async static void Connect(string ip)
         {
 			try
             {
-				Connect(IPAddress.Parse(ip));
+				await Connect(IPAddress.Parse(ip));
             }
 			catch (AggregateException ae)
 			{
@@ -49,7 +49,7 @@ namespace KDLib
             }
         }
 
-		public static void Connect(IPAddress ServerAddress)
+		public async static Task Connect(IPAddress ServerAddress)
 		{
 			try
 			{
@@ -60,12 +60,16 @@ namespace KDLib
 
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
 
-					ListenFromServer();
+					var Tasks = new List<Task>();
+					Tasks.Add(ListenFromServer());
+					Tasks.Add(ProcessCommand());
+
+					await Task.WhenAll(Tasks.ToArray());
 				}
 				else
                 {
 					IsServerOnline = false;
-					ServerIP = IPAddress.Loopback;
+					ServerIP = null;
 					throw new IPNotFoundException();
                 }
 			}
@@ -79,32 +83,36 @@ namespace KDLib
             }
 		}
 
-		private static async void CheckOnlineServer()
+		private static Task CheckOnlineServer()
         {
-			while (true)
-            {
-				try
-                {
-					if (await IsValidConnection(ServerIP))
-					{
-						if (!IsServerOnline) Connect(ServerIP);
-						IsServerOnline = true;
-						SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus),  OnlClient);
-					}
-					else
-					{
-						IsServerOnline = false;
-					}
-				}
-				catch (AggregateException ae)
+			Action ThisAction = () =>
+			{
+				while (true)
 				{
-					throw ae.Flatten();
+					try
+					{
+						if (IsValidConnection(ServerIP).Result)
+						{
+							if (!IsServerOnline) Connect(ServerIP).Start();
+							IsServerOnline = true;
+							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus), OnlClient);
+						}
+						else
+						{
+							IsServerOnline = false;
+						}
+					}
+					catch (AggregateException ae)
+					{
+						throw ae.Flatten();
+					}
+					catch
+					{
+						throw;
+					}
 				}
-				catch
-				{
-					throw;
-				}
-			}
+			};
+			return Task.Factory.StartNew(ThisAction);
 		}
 
 		private static Task ProcessCommand ()
@@ -119,14 +127,18 @@ namespace KDLib
                         {
 							case CommandType.ClientList:
 								ClientComboBoxChoose = JsonConvert.DeserializeObject<List<string>>(Data.Commands.Dequeue().Content);
-								continue;
+								goto EndCommand;
 							case CommandType.AccpetConnect:
 								OnlClient.Connect(ServerIP, Data.PortForChecker);
-								Data.Commands.Dequeue();
-								continue;
+								CheckOnlineServer();
+								goto EndCommand;
 							case CommandType.RefuseConnect:
 								ThisClient.Close();
+								Data.Commands.Clear();
 								return;
+							EndCommand:
+								Data.Commands.Dequeue();
+								continue;
 							default:
 								continue;
                         }
