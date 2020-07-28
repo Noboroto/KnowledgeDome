@@ -91,11 +91,12 @@ namespace KDLib
 				{
 					try
 					{
-						if (IsValidConnection(ServerIP).Result)
+						if (ThisClient.Client.Poll(500, SelectMode.SelectRead) && ThisClient.Client.Available == 0)
 						{
 							if (!IsServerOnline) Connect(ServerIP).Start();
 							IsServerOnline = true;
-							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus), OnlClient);
+							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint), OnlClient);;
+							Task.Delay(1000);
 						}
 						else
 						{
@@ -123,7 +124,8 @@ namespace KDLib
                 {
 					if (Data.Commands.Count > 0)
                     {
-						switch (Data.Commands.Peek().PrefixCmd)
+						KDCommand command = Data.Commands.Peek();
+						switch (command.PrefixCmd)
                         {
 							case CommandType.ClientList:
 								ClientComboBoxChoose = JsonConvert.DeserializeObject<List<string>>(Data.Commands.Dequeue().Content);
@@ -137,7 +139,7 @@ namespace KDLib
 								Data.Commands.Clear();
 								return;
 							EndCommand:
-								Data.Commands.Dequeue();
+								command = Data.Commands.Dequeue();
 								continue;
 							default:
 								continue;

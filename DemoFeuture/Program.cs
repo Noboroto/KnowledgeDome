@@ -18,7 +18,7 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            NetServer.Start();
+            Console.WriteLine(System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable().ToString());
             Console.ReadKey();
         }
     }

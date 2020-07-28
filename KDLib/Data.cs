@@ -1,7 +1,15 @@
-﻿namespace KDLib
+﻿using System.Collections.Generic;
+using System.Net;
+using System.Security.Cryptography;
+
+namespace KDLib
 {
 	public static class Data
 	{
+        public const string KeyMC = "MC";
+
+        public const string KeyViewer = "Viewer";
+
         public const int PortForTCP = 2644;
 
 		public const int PortForChecker = 2645;
@@ -12,7 +20,7 @@
 
         public static bool OnFocus { get; set; }
 
-        public static int ID { get; set; }
+        public static List<string> ListIP { get; private set; }
 
         public static KDCommandList Commands { get; set; }
 
@@ -27,7 +35,7 @@
         /// </summary>
         public static void Initialize()
 		{
-            ID = -1;
-		}
+            Commands = new KDCommandList();
+        }
     }
 }

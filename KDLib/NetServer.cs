@@ -20,13 +20,15 @@ namespace KDLib
 
 		private static TcpListener ValidCenter;
 
-		private static List<TcpClient> TCPClients;
+		private static Dictionary<EndPoint, TcpClient> TCPClients;
 
-		private static List<TcpClient> OnlineCLients;
-
-		private static Dictionary<int, int> OnlineStatus;
+		private static Dictionary<EndPoint, TcpClient> OnlineCLients;
 
 		private static Queue<KDCommand> OnlineCommands;
+
+		public static Dictionary <MachineType, Dictionary <EndPoint, int>> MachineState { get; private set; }
+
+		public static Dictionary<int, EndPoint> PlayerAvailable { get; private set; }
 
 		public async static void Start()
 		{
@@ -34,10 +36,12 @@ namespace KDLib
 			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
 			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
 			
-			TCPClients = new List<TcpClient>();
+			TCPClients = new Dictionary<EndPoint, TcpClient>();
 			OnlineCommands = new Queue<KDCommand>();
-			OnlineCLients = new List<TcpClient>();
-			
+			OnlineCLients = new Dictionary<EndPoint, TcpClient>();
+			PlayerAvailable = new Dictionary<int, EndPoint>();
+			MachineState = new Dictionary<MachineType, Dictionary<EndPoint, int>>();
+
 			ListenerCenter.Start();
 			CheckerCenter.Start();
 			ValidCenter.Start();
@@ -50,6 +54,7 @@ namespace KDLib
 			await Task.WhenAny(tasks.ToArray());
 		}
 
+		//Don't change
 		private static Task AcceptVaid()
 		{
 			Action ThisAction = () =>
@@ -73,15 +78,18 @@ namespace KDLib
 				{
 					if (ListenerCenter.Pending())
 					{
-						OnlineCLients.Add(CheckerCenter.AcceptTcpClient());
-						ListenFromChecker(OnlineCLients.Count - 1);
+						using (var client = CheckerCenter.AcceptTcpClient())
+						{
+							OnlineCLients[client.Client.RemoteEndPoint] = client;
+							ListenFromChecker(client.Client.RemoteEndPoint);
+						}
 					}
 				}
 			};
 			return Task.WhenAny(ProcessCommandChecker(), Task.Factory.StartNew(ThisAction));
 		}
 
-		private static Task ListenFromChecker(int Pos)
+		private static Task ListenFromChecker(EndPoint Pos)
 		{
 			Action ThisAction = () =>
 			{
@@ -101,8 +109,7 @@ namespace KDLib
 						}
 						catch
 						{
-							OnlineCLients[Pos].Close();
-							OnlineCLients.RemoveAt(Pos);
+							OnlineCLients.Remove(Pos);
 							return;
 						}
 						if (command != null)
@@ -122,20 +129,13 @@ namespace KDLib
 					while (OnlineCommands.Count > 0)
                     {
 						KDCommand command = OnlineCommands.Dequeue();
-						switch (command.Machine)
+						switch (command.PrefixCmd)
                         {
-							case MachineType.Player:
-								switch (command.PrefixCmd)
-                                {
-									case CommandType.Forcusing:
-										OnlineStatus[command.ID] = 1;
-										break;
-									case CommandType.LostForcus:
-										OnlineStatus[command.ID] = -1;
-										break;
-									default:
-										break;
-                                }
+							case CommandType.Forcusing:
+								MachineState[command.Machine][command.ID] = 1;
+								break;
+							case CommandType.LostForcus:
+								MachineState[command.Machine][command.ID] = -1;
 								break;
 							default:
 								break;
@@ -154,15 +154,18 @@ namespace KDLib
 				{
 					if (ListenerCenter.Pending())
 					{
-						TCPClients.Add(ListenerCenter.AcceptTcpClient());
-						ListenFromClient(TCPClients.Count - 1).Start();
+						using (TcpClient client = ListenerCenter.AcceptTcpClient())
+						{
+							TCPClients[client.Client.RemoteEndPoint] = client;
+							ListenFromClient(client.Client.RemoteEndPoint).Start();
+						}
 					}
 				}
 			};
 			return Task.Factory.StartNew(ThisAction);
 		}
 
-		private static Task ListenFromClient(int Pos)
+		private static Task ListenFromClient(EndPoint Pos)
 		{
 			Action ThisAction = () =>
 			{
@@ -178,17 +181,58 @@ namespace KDLib
 						}
 						catch
 						{
-							TCPClients.RemoveAt(Pos);
+							TCPClients.Remove(Pos);
 							return;
 						}
 						if (command != null) Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 					}
 				}
 			};
+			return Task.WhenAny(Task.Factory.StartNew(ThisAction), ProcessCommandClient());
+		}
+
+		private static Task ProcessCommandClient()
+        {
+			Action ThisAction = () =>
+			{
+				while (true)
+				{
+					while (Data.Commands.Count > 0)
+					{
+						KDCommand command = Data.Commands.Peek();
+						switch (Data.Commands.Peek().PrefixCmd)
+						{
+							case CommandType.AskForConnect:
+								if (command.Content == Data.KeyMC || command.Content == Data.KeyViewer)
+                                {
+									SendCommandToOne(new KDCommand(CommandType.RefuseConnect, null), command.ID);
+									goto EndCommand;
+								}
+								int ID = Data.Matches[Data.CurrentMatchIndex].Players.FindFromName(command.Content).ID;
+								if (PlayerAvailable[ID] == null)
+                                {
+									SendCommandToOne(new KDCommand(CommandType.RefuseConnect, null), command.ID);
+									TCPClients[command.ID].Close();
+                                }
+								else
+                                {
+									PlayerAvailable[ID] = command.ID;
+									SendCommandToOne(new KDCommand(CommandType.AccpetConnect, null), command.ID);
+								}
+								goto EndCommand;
+							EndCommand:
+								command = Data.Commands.Dequeue();
+								continue;
+							default:
+								continue;
+						}
+					}
+				}
+			};
 			return Task.Factory.StartNew(ThisAction);
 		}
 
-		public static void SendCommandToOne(KDCommand Command, int pos)
+		public static void SendCommandToOne(KDCommand Command, EndPoint pos)
 		{
 			try
 			{
@@ -245,9 +289,8 @@ namespace KDLib
 			try
 			{
 				List<Task> tasks = new List<Task>();
-				foreach (var client in TCPClients)
+				foreach (var client in TCPClients.Values)
 				{
-					if (client.Client == null) continue;
 					using (StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true })
 					{
 						tasks.Add(WriteToStream.WriteAsync(command));

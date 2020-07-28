@@ -25,7 +25,8 @@ namespace KDLib
         Player,
         MC,
         [Description("Khán giả")]
-        Viewer
+        Viewer,
+        None
     }
     public enum CommandType
     {
