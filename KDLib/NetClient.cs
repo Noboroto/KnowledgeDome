@@ -107,7 +107,7 @@ namespace KDLib
 			}
 		}
 
-		private static async void ProcessCommand ()
+		private static Task ProcessCommand ()
         {
 			Action ThisAction = () =>
 			{
@@ -133,14 +133,14 @@ namespace KDLib
                     }
                 }
 			};
-			await new Task(ThisAction);
-        }
+			return Task.Factory.StartNew(ThisAction);
+		}
 
-		public static void SendCommand(KDCommand Command, TcpClient tcp)
+		public static async void SendCommand(KDCommand Command, TcpClient tcp)
 		{
 			try
             {
-				SendMessage(JsonConvert.SerializeObject(Command), tcp).Wait();
+				await SendMessage(JsonConvert.SerializeObject(Command), tcp);
             }
 			catch (AggregateException ae)
 			{
@@ -152,21 +152,47 @@ namespace KDLib
             }
 		}
 
-		private static async void ListenFromServer()
+		private static Task ListenFromServer()
 		{
-			using (StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream()))
+			Action ThisAction = () =>
 			{
-				while (true)
+				using (StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream()))
 				{
-					string information = "";
+					while (true)
+					{
+						string information = "";
+						try
+						{
+							information = ReadFromStream.ReadToEnd();
+						}
+						catch (ObjectDisposedException)
+						{
+							break;
+						}
+						catch (AggregateException ae)
+						{
+							throw ae.Flatten();
+						}
+						catch
+						{
+							throw;
+						}
+						if (information != "") Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(information));
+					}
+				}
+			};
+			return Task.Factory.StartNew(ThisAction);
+		}
+
+		private static Task SendMessage(string command, TcpClient tcp)
+		{
+			Action ThisAction = () => {
+				using (StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true })
+				{
 					try
 					{
-						information = await ReadFromStream.ReadToEndAsync();
+						WriteToStream.Write(command);
 					}
-					catch (ObjectDisposedException)
-                    {
-						return;
-                    }
 					catch (AggregateException ae)
 					{
 						throw ae.Flatten();
@@ -175,28 +201,9 @@ namespace KDLib
 					{
 						throw;
 					}
-					if (information != "") Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(information));
 				}
-			}
-		}
-
-		private static async Task SendMessage(string command, TcpClient tcp)
-		{
-			using (StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true })
-			{
-				try
-				{
-					await WriteToStream.WriteAsync(command);
-				}
-				catch (AggregateException ae)
-                {
-					throw ae.Flatten();
-                }
-				catch
-				{
-					throw;
-				}
-			}
+			};
+			return Task.Factory.StartNew(ThisAction);
 		}
 	}
 }

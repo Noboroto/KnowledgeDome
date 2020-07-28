@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 using System;
 using System.Diagnostics;
 
-namespace AILib
+namespace KDLib
 {
-	public static class NetHost
+	public static class NetServer
 	{
 		private static TcpListener ListenerCenter;
 
@@ -28,7 +28,7 @@ namespace AILib
 
 		private static Queue<KDCommand> OnlineCommands;
 
-		public static void Start()
+		public async static void Start()
 		{
 			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
 			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
@@ -42,66 +42,80 @@ namespace AILib
 			CheckerCenter.Start();
 			ValidCenter.Start();
 
-			AcceptClient();
-			AcceptVaid();
-			AcceptChecker();
+			List<Task> tasks = new List<Task>();
+			tasks.Add(AcceptClient());
+			tasks.Add(AcceptVaid());
+			tasks.Add(AcceptChecker());
+
+			await Task.WhenAny(tasks.ToArray());
 		}
 
-		private async static void AcceptVaid()
+		private static Task AcceptVaid()
 		{
-			while (true)
+			Action ThisAction = () =>
 			{
-				if (ValidCenter.Pending())
-				{
-					await ValidCenter.AcceptTcpClientAsync();
-				}
-			}
-		}
-
-		private async static void AcceptChecker()
-		{
-			ProcessCommandChecker();
-			while (true)
-			{
-				if (ListenerCenter.Pending())
-				{
-					OnlineCLients.Add(await CheckerCenter.AcceptTcpClientAsync());
-					ListenFromChecker(OnlineCLients.Count - 1);
-				}
-			}
-		}
-
-		private static async void ListenFromChecker(int Pos)
-		{
-			using (StreamReader ReadFromStream = new StreamReader(OnlineCLients[Pos].GetStream()))
-			{
-				string command;
 				while (true)
 				{
-					command = "";
-					try
+					if (ValidCenter.Pending())
 					{
-						command = await ReadFromStream.ReadToEndAsync();
+						ValidCenter.AcceptTcpClient();
 					}
-					catch (InvalidOperationException)
-                    {
-						continue;
-                    }
-					catch
-					{
-						OnlineCLients[Pos].Close();
-						OnlineCLients.RemoveAt(Pos);
-						return;
-					}
-					if (command != null)
-						OnlineCommands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
-			}
+			};
+			return Task.Factory.StartNew(ThisAction);
 		}
 
-		private static async void ProcessCommandChecker()
+		private static Task AcceptChecker()
+		{
+			Action ThisAction = () =>
+			{
+				while (true)
+				{
+					if (ListenerCenter.Pending())
+					{
+						OnlineCLients.Add(CheckerCenter.AcceptTcpClient());
+						ListenFromChecker(OnlineCLients.Count - 1);
+					}
+				}
+			};
+			return Task.WhenAny(ProcessCommandChecker(), Task.Factory.StartNew(ThisAction));
+		}
+
+		private static Task ListenFromChecker(int Pos)
+		{
+			Action ThisAction = () =>
+			{
+				using (StreamReader ReadFromStream = new StreamReader(OnlineCLients[Pos].GetStream()))
+				{
+					string command;
+					while (true)
+					{
+						command = "";
+						try
+						{
+							command = ReadFromStream.ReadToEnd();
+						}
+						catch (InvalidOperationException)
+						{
+							continue;
+						}
+						catch
+						{
+							OnlineCLients[Pos].Close();
+							OnlineCLients.RemoveAt(Pos);
+							return;
+						}
+						if (command != null)
+							OnlineCommands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
+					}
+				}
+			};
+			return Task.Factory.StartNew(ThisAction);
+		}
+
+		private static Task ProcessCommandChecker()
         {
-			Action action = () =>
+			Action ThisAction = () =>
 			{
 				while (true)
                 {
@@ -129,41 +143,49 @@ namespace AILib
                     }
                 }
 			};
-			await new Task(action);
+			return Task.Factory.StartNew(ThisAction);
         }
 
-		private async static void AcceptClient()
+		private static Task AcceptClient()
 		{
-			while (true)
+			Action ThisAction = () =>
 			{
-				if (ListenerCenter.Pending())
-				{
-					TCPClients.Add(await ListenerCenter.AcceptTcpClientAsync());
-					ListenFromClient(TCPClients.Count - 1);
-				}
-			}
-		}
-
-		private static async void ListenFromClient(int Pos)
-		{
-			using (StreamReader ReadFromStream = new StreamReader(TCPClients[Pos].GetStream()))
-			{
-				string command;
 				while (true)
 				{
-					command = "";
-					try
+					if (ListenerCenter.Pending())
 					{
-						command = await ReadFromStream.ReadToEndAsync();
+						TCPClients.Add(ListenerCenter.AcceptTcpClient());
+						ListenFromClient(TCPClients.Count - 1).Start();
 					}
-					catch
-					{ 
-						TCPClients.RemoveAt(Pos);
-						return;
-					}
-					if (command != null) Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
-			}
+			};
+			return Task.Factory.StartNew(ThisAction);
+		}
+
+		private static Task ListenFromClient(int Pos)
+		{
+			Action ThisAction = () =>
+			{
+				using (StreamReader ReadFromStream = new StreamReader(TCPClients[Pos].GetStream()))
+				{
+					string command;
+					while (true)
+					{
+						command = "";
+						try
+						{
+							command = ReadFromStream.ReadToEnd();
+						}
+						catch
+						{
+							TCPClients.RemoveAt(Pos);
+							return;
+						}
+						if (command != null) Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
+					}
+				}
+			};
+			return Task.Factory.StartNew(ThisAction);
 		}
 
 		public static void SendCommandToOne(KDCommand Command, int pos)

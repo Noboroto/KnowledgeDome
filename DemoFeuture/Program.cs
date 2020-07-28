@@ -18,13 +18,8 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            var abc = new StartQuestion("Sinh học", "a", "cad", 12);
-            string a = JsonConvert.SerializeObject(abc);
-            using (StreamWriter stream = new StreamWriter(File.Open(@"ABC.json", FileMode.Create)))
-            {
-                stream.WriteLine(a);
-                var x = JsonConvert.DeserializeObject<StartQuestion>(a);
-            }
+            NetServer.Start();
+            Console.ReadKey();
         }
     }
 }
