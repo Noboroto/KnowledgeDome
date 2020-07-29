@@ -8,6 +8,8 @@ namespace KDLib
 	{
         private byte[] _Avatar;
 
+		private int _Score;
+
 		public int ID { get; set; }
 
         public string Name { get; set; }
@@ -39,7 +41,19 @@ namespace KDLib
 			}
 		}
 
-        public int Score { get; set; }
+		[JsonIgnore]
+        public int Score 
+		{ 
+			get
+            {
+				return _Score;
+            }
+			set
+            {
+				_Score = value;
+				OnPropertyChanged("score");
+            }
+		}
 
         private Player()
 		{

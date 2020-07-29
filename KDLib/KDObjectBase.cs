@@ -6,11 +6,11 @@ namespace KDLib
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		internal void OnPropertyChanged(string name)
+		public void OnPropertyChanged(string name)
 		{
-			if (this.PropertyChanged != null)
+			if (PropertyChanged != null)
 			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+				PropertyChanged(this, new PropertyChangedEventArgs(name));
 			}
 		}
 	}

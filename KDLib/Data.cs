@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Security.Cryptography;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace KDLib
 {
@@ -15,6 +15,8 @@ namespace KDLib
 		public const int PortForChecker = 2645;
 
 		public const int PortForValidCheck = 2647;
+
+        public static event EventHandler<PropertyChangedEventArgs> StaticPropertiesChanged;
         
         public static MachineType ThisMacineType { get; set; }
 
@@ -36,6 +38,14 @@ namespace KDLib
         public static void Initialize()
 		{
             Commands = new KDCommandList();
+        }
+
+        private static void NotifyStaticPropertyChanged (string propertyName)
+        {
+            if (StaticPropertiesChanged != null)
+            {
+                StaticPropertiesChanged(null, new PropertyChangedEventArgs(propertyName);
+            }
         }
     }
 }
