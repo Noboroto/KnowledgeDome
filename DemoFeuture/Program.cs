@@ -18,7 +18,22 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable().ToString());
+            {
+                try
+                {
+                    NetServer.Start();
+                }
+                catch (AggregateException ae)
+                {
+                    string s = "";
+                    foreach (var e in ae.InnerExceptions) s += e.Message + "\n";
+                    MessageBox.Show(s);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+            }
             Console.ReadKey();
         }
     }

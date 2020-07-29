@@ -13,17 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace KDClients
+namespace KDClients.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ConnectUI.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ConnectUI : Page
     {
-        public MainWindow()
+        public ConnectUI()
         {
             InitializeComponent();
-            MainFrame.Source = new Uri(@"Views\ConnectUI.xaml", UriKind.Relative);
         }
     }
 }

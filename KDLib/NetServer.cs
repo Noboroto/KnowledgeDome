@@ -30,7 +30,7 @@ namespace KDLib
 
 		public static Dictionary<int, EndPoint> PlayerAvailable { get; private set; }
 
-		public async static void Start()
+		public static void Start()
 		{
 			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
 			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
@@ -50,8 +50,6 @@ namespace KDLib
 			tasks.Add(AcceptClient());
 			tasks.Add(AcceptVaid());
 			tasks.Add(AcceptChecker());
-
-			await Task.WhenAny(tasks.ToArray());
 		}
 
 		//Don't change
@@ -59,10 +57,16 @@ namespace KDLib
 		{
 			Action ThisAction = () =>
 			{
+				int t = 0;
 				while (true)
 				{
+					t = (t > 100) ? 0 : t;
+					Console.WriteLine("checking..." + t);
+					Task.Delay(1000).Wait();
+					t++;
 					if (ValidCenter.Pending())
 					{
+						Console.WriteLine("CHECKED... at " + t);
 						ValidCenter.AcceptTcpClient();
 					}
 				}

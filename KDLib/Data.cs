@@ -44,7 +44,7 @@ namespace KDLib
         {
             if (StaticPropertiesChanged != null)
             {
-                StaticPropertiesChanged(null, new PropertyChangedEventArgs(propertyName);
+                StaticPropertiesChanged(null, new PropertyChangedEventArgs(propertyName));
             }
         }
     }
