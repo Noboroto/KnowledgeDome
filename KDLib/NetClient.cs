@@ -21,23 +21,23 @@ namespace KDLib
 
         public static IPAddress ServerIP { get; private set; }
 
-        private static async Task<bool> IsValidConnection(IPAddress ip)
+        private static bool IsValidConnection(IPAddress ip)
 		{
 			using (TcpClient tcp = new TcpClient())
 			{
 				var taskconnect = tcp.ConnectAsync(ip, Data.PortForValidCheck);
 				var timer = Task.Delay(500);
 
-				var result = await Task.WhenAny(new[] { taskconnect, timer });
-				return result == taskconnect;
+				var result = Task.WaitAny(new[] { taskconnect, timer });
+				return result == 0;
 			}
 		}
 
-		public async static void Connect(string ip)
+		public static void Connect(string ip)
         {
 			try
             {
-				await Connect(IPAddress.Parse(ip));
+				Connect(IPAddress.Parse(ip)).Wait();
             }
 			catch (AggregateException ae)
 			{
@@ -53,11 +53,11 @@ namespace KDLib
 		{
 			try
 			{
-				if (IsValidConnection(ServerAddress).Result)
+				if (IsValidConnection(ServerAddress))
                 {
 					IsServerOnline = true;
 					ServerIP = ServerAddress;
-
+					return;
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
 
 					var Tasks = new List<Task>();

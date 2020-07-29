@@ -1,0 +1,36 @@
+﻿<Page x:Class="KDClients.Views.ConnectUI"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:KDClients.Views"
+      xmlns:viewmodel="clr-namespace:KDClients.ViewModels"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      DataContext="{StaticResource ConnectVM}"
+      Title="ConnectUI">
+    <Grid>
+        <materialDesign:Card VerticalAlignment="Center" HorizontalAlignment="Center" Width="400">
+            <DockPanel Margin="20" 
+                       VerticalAlignment="Stretch" 
+                       HorizontalAlignment="Stretch" >
+                <Button Margin="10" 
+                        Command="{Binding TryConnectCmd}"
+                        CommandParameter="{Binding ElementName=IPText, Path=Text}"
+                        MaxWidth="100" 
+                        FontSize="18" 
+                        Content="Kết nối" 
+                        DockPanel.Dock="Bottom"/>
+                <Label DockPanel.Dock="Left" 
+                       FontSize="24" 
+                       VerticalAlignment="Center" 
+                       Content="IP máy chủ"/>
+                <TextBox Margin="10" 
+                         Name="IPText"
+                         DockPanel.Dock="Right" 
+                         FontSize="24"/>
+            </DockPanel>
+        </materialDesign:Card>
+    </Grid>
+</Page>
