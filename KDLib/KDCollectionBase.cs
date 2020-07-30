@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace KDLib
 {
@@ -14,37 +15,45 @@ namespace KDLib
 		public new virtual void Add(T item)
 		{
 			base.Add(item);
-			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+			NotifyCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
 		}
 
 		public new virtual void Remove(T item)
 		{
 			base.Remove(item);
-			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+			NotifyCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
 		}
 
 		public new virtual void Sort(Comparison<T> comparer)
 		{
 			base.Sort(comparer);
-			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+			NotifyCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 
 		public abstract bool Contains(object id);
 
-		internal void OnPropertyChanged(string propertyname)
+		public void NotifyPropertyChanged([CallerMemberName] string name = "")
 		{
-			if (this.PropertyChanged != null)
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+		}
+
+		public void NotifyPropertyChanged(params string[] names)
+		{
+			if (PropertyChanged != null)
 			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyname));
+				foreach (var name in names)
+				{
+					PropertyChanged(this, new PropertyChangedEventArgs(name));
+				}
 			}
 		}
 
-		internal void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
+		internal void NotifyCollectionChanged(NotifyCollectionChangedEventArgs args)
 		{
 			if (this.CollectionChanged != null)
 			{
-				this.CollectionChanged(this, args);
-				OnPropertyChanged("Count");
+				CollectionChanged(this, args);
+				NotifyPropertyChanged(nameof(Count));
 			}
 		}
 	}

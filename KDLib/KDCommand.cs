@@ -11,6 +11,10 @@ namespace KDLib
 {
     public class KDCommand
     {
+        #region PrivateMembers
+        #endregion
+
+        #region PublicProperties
         public MachineType Machine { get; set; }
 
         public CommandType PrefixCmd { get; set; }
@@ -18,6 +22,7 @@ namespace KDLib
         public string Content { get; set; }
 
         public EndPoint ID { get; set; }
+        #endregion
 
         public KDCommand (CommandType prefix, EndPoint local, string cmd = "")
         : this (Data.ThisMacineType, prefix, local, cmd)

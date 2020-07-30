@@ -5,7 +5,11 @@ namespace KDLib
 {
 	public class Match : KDObjectBase
 	{
-        public StartQuestionList StartQuestions { get; set; }
+		#region PrivateMembers
+		#endregion
+
+		#region PublicProperties
+		public StartQuestionList StartQuestions { get; set; }
 
         public ObstacleList Obstacles { get; set; }
 
@@ -18,6 +22,7 @@ namespace KDLib
         public string Name { get; private set; }
 
         public PlayerList Players { get; set; }
+        #endregion
 
         public Match()
 		{

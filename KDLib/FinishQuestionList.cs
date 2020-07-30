@@ -4,14 +4,11 @@ namespace KDLib
 {
 	public class FinishQuestionList : KDCollectionBase<FinishQuestion>
 	{
-		[JsonIgnore]
-		public int P10Count => FindAll((FinishQuestion q) => q.Value == 10).Count;
+		#region PrivateMembers
+		#endregion
 
-		[JsonIgnore]
-		public int P20Count => FindAll((FinishQuestion q) => q.Value == 20).Count;
-
-		[JsonIgnore]
-		public int P30Count => FindAll((FinishQuestion q) => q.Value == 30).Count;
+		#region PublicProperties
+		#endregion
 
 		public FinishQuestionList()
 		{

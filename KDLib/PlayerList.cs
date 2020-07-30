@@ -45,7 +45,7 @@ namespace KDLib
 
 		private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+			NotifyCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 	}
 }

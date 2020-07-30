@@ -6,12 +6,42 @@ namespace KDLib
 {
 	public class AccelerationQuestion : Question
 	{
+        #region PrivateMembers
+        private string _ImageType;
+
+		private int _NumberOfImage;
+        #endregion
+
+        #region PublicProperties
         [JsonIgnore]
         public ImageList HintImages { get; set; }
 
-        public string ImageType { get; set; }
+        public string ImageType
+        {
+			get
+            {
+				return _ImageType;
+            }
+			set
+            {
+				_ImageType = value;
+				NotifyPropertyChanged();
+            }
+        }
 
-		public int NumberOfImage { get; set; }
+		public int NumberOfImage 
+		{
+            get
+            {
+				return _NumberOfImage;
+            }
+			set
+            {
+				_NumberOfImage = value;
+				NotifyPropertyChanged();
+            }
+		}
+        #endregion
 
         [JsonConstructor]
 		public AccelerationQuestion(int id, string type, string content, string answer)

@@ -2,6 +2,12 @@
 {
 	public class ExtraQuestionList : KDCollectionBase<ExtraQuestion>
 	{
+		#region PrivateMembers
+		#endregion
+
+		#region PublicProperties
+		#endregion
+
 		public ExtraQuestionList()
 		{
 		}

@@ -14,7 +14,8 @@ namespace KDLib
 {
 	public static class NetServer
 	{
-		private static TcpListener ListenerCenter;
+        #region PrivateMembers
+        private static TcpListener ListenerCenter;
 
 		private static TcpListener CheckerCenter;
 
@@ -25,12 +26,15 @@ namespace KDLib
 		private static Dictionary<EndPoint, TcpClient> OnlineCLients;
 
 		private static Queue<KDCommand> OnlineCommands;
+        #endregion
 
-		public static Dictionary <MachineType, Dictionary <EndPoint, int>> MachineState { get; private set; }
+        #region PublicProperies
+        public static Dictionary <MachineType, Dictionary <EndPoint, int>> MachineState { get; private set; }
 
 		public static Dictionary<int, EndPoint> PlayerAvailable { get; private set; }
+        #endregion
 
-		public static void Start()
+        public static void Start()
 		{
 			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
 			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);

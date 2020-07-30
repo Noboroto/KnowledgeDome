@@ -13,9 +13,20 @@ namespace KDLib
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void NotifyPropertyChanged([CallerMemberName] string name = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public void NotifyPropertyChanged(params string[] names)
+        {
+            if (PropertyChanged != null)
+            {
+                foreach (var name in names)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs(name));
+                }
+            }
         }
     }
     public class KDUICommand<T> : ICommand

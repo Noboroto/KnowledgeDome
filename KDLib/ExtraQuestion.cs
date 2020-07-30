@@ -4,7 +4,13 @@ namespace KDLib
 {
 	public class ExtraQuestion : Question
 	{
-		[JsonConstructor]
+        #region PrivateMembers
+        #endregion
+
+        #region PublicProperties
+        #endregion
+
+        [JsonConstructor]
 		public ExtraQuestion(int id, string question, string answer)
 			: base(id,question, answer)
 		{

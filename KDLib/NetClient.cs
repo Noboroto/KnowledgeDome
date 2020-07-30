@@ -11,15 +11,19 @@ namespace KDLib
 {
     public static class NetClient
     {
-		private static TcpClient ThisClient = new TcpClient();
+        #region PrivateMembers
+        private static TcpClient ThisClient = new TcpClient();
 
 		private static TcpClient OnlClient = new TcpClient();
+        #endregion
 
+        #region PublicProperties
         public static bool IsServerOnline { get; private set; }
 
 		public static List<string> ClientComboBoxChoose { get; private set; }
 
         public static IPAddress ServerIP { get; private set; }
+        #endregion
 
         private static bool IsValidConnection(IPAddress ip)
 		{

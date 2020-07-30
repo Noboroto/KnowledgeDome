@@ -2,6 +2,11 @@
 {
     public class KDTextEncoder
     {
+		#region PrivateMembers
+		#endregion
+
+		#region PublicProperties
+		#endregion
 		public static string GetCode(string rawdata)
 		{
 			string text = "";

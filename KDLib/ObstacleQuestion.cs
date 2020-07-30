@@ -7,11 +7,26 @@ namespace KDLib
 {
 	public class ObstacleQuestion : Question
 	{
+        #region PrivateMembers
         private byte[] _Image;
+		private int _CharCount;
+        #endregion
 
-        [JsonProperty]
-        public int CharCount { get; set; }
-        [JsonIgnore]
+        #region PublicProperties
+        public int CharCount
+        {
+			get
+            {
+				return _CharCount;
+            }
+			set
+            {
+				_CharCount = value;
+				NotifyPropertyChanged();
+            }
+        }
+        
+		[JsonIgnore]
 		private byte[] RawImage
 		{
 			get
@@ -37,19 +52,13 @@ namespace KDLib
 				return null;
 			}
 		}
-
         public string ImageType { get; set; }
-        [JsonIgnore]
+        
+		[JsonIgnore]
 		public Bitmap BitmapImage => new Bitmap(new MemoryStream(RawImage));
+        #endregion
 
-		public void GetValueFrom(ObstacleQuestion q)
-		{
-			CharCount = q.CharCount;
-			Content = q.Content;
-			RawImage = q.RawImage;	
-		}
-
-		[JsonConstructor]
+        [JsonConstructor]
 		public ObstacleQuestion(int id, int charcount, string type, string content)
 			: base(id, content, "")
 		{
@@ -57,6 +66,13 @@ namespace KDLib
 			CharCount = charcount;
 		}
 
+		public void GetValueFrom(ObstacleQuestion q)
+		{
+			CharCount = q.CharCount;
+			Content = q.Content;
+			RawImage = q.RawImage;	
+		}
+		
 		public static int Comparer(ObstacleQuestion a, ObstacleQuestion b)
 		{
 			return string.Compare(a.Content, b.Content);

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace KDLib
 {
@@ -6,12 +7,12 @@ namespace KDLib
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public void NotifyPropertyChange(string name)
+		public void NotifyPropertyChanged([CallerMemberName] string name = "")
 		{
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-		public void NotifyPropertyChange (params string[] names)
+		public void NotifyPropertyChanged (params string[] names)
         {
 			if (PropertyChanged != null)
             {

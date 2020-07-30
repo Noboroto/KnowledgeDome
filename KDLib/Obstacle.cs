@@ -7,6 +7,10 @@ namespace KDLib
 {
 	public class Obstacle
 	{
+        #region PrivateMembers
+        #endregion
+        
+		#region PublicPRoperties
         [JsonIgnore]
 		public int ID
 		{
@@ -55,7 +59,7 @@ namespace KDLib
         public ObstacleQuestion obstacleQuestion { get; set; }
         [JsonProperty]
         public List<ObstacleRowQuestion> RowList { get; set; }
-
+        #endregion
         public Obstacle()
 		{
 			RowList = new List<ObstacleRowQuestion>();

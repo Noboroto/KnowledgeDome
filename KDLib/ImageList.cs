@@ -6,14 +6,18 @@ namespace KDLib
 {
 	public class ImageList : KDCollectionBase<ImageSource>
 	{
+		#region PrivateMembers	
 		private List<byte[]> RawImages;
+		#endregion
 
+		#region PublicProperties
 		public ImageList()
 		{
 			RawImages = new List<byte[]>();
 		}
+        #endregion
 
-		public ImageList(ImageList images)
+        public ImageList(ImageList images)
 			: this()
 		{
 			foreach (byte[] rawImage in images.RawImages)

@@ -2,10 +2,39 @@
 {
 	public abstract class Question : KDObjectBase
 	{
-        public string Content { get; set; }
+		#region PrivateMembers
+		private string _Content;
+		private string _Answer;
+        #endregion
 
-        public string Answer { get; set; }
+        #region PublicProperties
+        public string Content
+        {
+			get
+            {
+				return _Content;
+            }
+			set
+            {
+				_Content = value;
+				NotifyPropertyChanged();
+            }
+        }
+
+        public string Answer
+        {
+			get
+            {
+                return _Answer;
+            }
+            set
+            {
+                _Answer = value;
+                NotifyPropertyChanged();
+            }
+        }
         public int ID { get; set; }
+        #endregion
 
         internal Question(int id, string content, string answer)
 		{

@@ -4,7 +4,24 @@ namespace KDLib
 {
 	public class StartQuestion : Question
 	{
-        public SubjectInfo Subject { get; set; }
+		#region PrivateMembers
+		private SubjectInfo _Subject;
+        #endregion
+
+        #region PublicPropeties
+        public SubjectInfo Subject
+        {
+			get
+            {
+				return _Subject;
+            }
+			set
+            {
+				_Subject = (SubjectInfo)value;
+				NotifyPropertyChanged();
+            }
+        }
+        #endregion
 
         private SubjectInfo SubjectValue (string value)
 		{

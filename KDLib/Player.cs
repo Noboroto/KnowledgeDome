@@ -51,7 +51,7 @@ namespace KDLib
 			set
             {
 				_Score = value;
-				NotifyPropertyChange("score");
+				NotifyPropertyChanged("score");
             }
 		}
 

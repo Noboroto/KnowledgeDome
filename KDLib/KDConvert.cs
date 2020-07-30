@@ -5,6 +5,10 @@ namespace KDLib
 {
     public static class KDConvert
     {
+        #region PrivateMembers
+        #endregion
+
+        #region PublicMembers
         public static UTF8Encoding UTF8Encoder = new UTF8Encoding();
         public static Dictionary<string, SubjectInfo> StringToSubject = new Dictionary<string, SubjectInfo>()
         {
@@ -37,5 +41,6 @@ namespace KDLib
             [SubjectInfo.Physics] = "Vật lý",
             [SubjectInfo.Unknown] = "Không xác định"
         };
+        #endregion
     }
 }

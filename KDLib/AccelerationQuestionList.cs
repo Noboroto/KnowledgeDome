@@ -5,16 +5,13 @@ namespace KDLib
 {
 	public class AccelerationQuestionList : KDCollectionBase<AccelerationQuestion>
 	{
-		[JsonIgnore]
-		private int IQCount => FindAll((AccelerationQuestion q) => q.HintImages.Count == 1).Count;
+        #region PrivateMembers
+        #endregion
 
-		[JsonIgnore]
-		private int ImageStringCount => FindAll((AccelerationQuestion q) => q.HintImages.Count > 2).Count;
+        #region PublicProperties
+        #endregion
 
-		[JsonIgnore]
-		private int JigsawCount => FindAll((AccelerationQuestion q) => q.HintImages.Count == 2).Count;
-
-		public AccelerationQuestionList()
+        public AccelerationQuestionList()
 		{
 
 		}
