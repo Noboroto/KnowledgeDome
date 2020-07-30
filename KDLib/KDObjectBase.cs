@@ -6,12 +6,20 @@ namespace KDLib
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public void OnPropertyChanged(string name)
+		public void NotifyPropertyChange(string name)
 		{
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+		public void NotifyPropertyChange (params string[] names)
+        {
 			if (PropertyChanged != null)
-			{
-				PropertyChanged(this, new PropertyChangedEventArgs(name));
-			}
-		}
+            {
+				foreach (var name in names)
+                {
+					PropertyChanged(this, new PropertyChangedEventArgs(name));
+                }
+            }
+        }
 	}
 }
