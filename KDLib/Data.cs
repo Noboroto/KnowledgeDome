@@ -52,7 +52,6 @@ namespace KDLib
 
         public static MatchList Matches { get; set; }
         #endregion
-
         /// <summary>
         /// (Làm sau) chuẩn bị dữ liệu
         /// </summary>

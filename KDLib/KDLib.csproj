@@ -74,7 +74,6 @@
     <Compile Include="PlayerList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KDConvert.cs" />
-    <Compile Include="KDViewModelBase.cs" />
     <Compile Include="Question.cs" />
     <Compile Include="StartQuestion.cs" />
     <Compile Include="StartQuestionList.cs" />
