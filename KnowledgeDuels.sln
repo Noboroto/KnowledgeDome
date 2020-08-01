@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWPF", "DemoWPF\DemoWPF.csproj", "{9E493100-7FD2-483E-B643-4B2D42DA4990}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KDCtrlLib", "KDCtrlLib\KDCtrlLib.csproj", "{4E77AEE8-91E3-4206-B08E-D21CC11C71E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +30,14 @@ Global
 		{01F157EE-8B40-4477-8384-FC3D4CAC80D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01F157EE-8B40-4477-8384-FC3D4CAC80D4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{01F157EE-8B40-4477-8384-FC3D4CAC80D4}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{9E493100-7FD2-483E-B643-4B2D42DA4990}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E493100-7FD2-483E-B643-4B2D42DA4990}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E493100-7FD2-483E-B643-4B2D42DA4990}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E493100-7FD2-483E-B643-4B2D42DA4990}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E77AEE8-91E3-4206-B08E-D21CC11C71E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E77AEE8-91E3-4206-B08E-D21CC11C71E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E77AEE8-91E3-4206-B08E-D21CC11C71E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E77AEE8-91E3-4206-B08E-D21CC11C71E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
