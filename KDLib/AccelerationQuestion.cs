@@ -24,8 +24,7 @@ namespace KDLib
             }
 			set
             {
-				_ImageType = value;
-				NotifyPropertyChanged();
+                Set(nameof(ImageType), ref _ImageType, value);
             }
         }
 
@@ -37,8 +36,7 @@ namespace KDLib
             }
 			set
             {
-				_NumberOfImage = value;
-				NotifyPropertyChanged();
+                Set(nameof(NumberOfImage), ref _NumberOfImage, value);
             }
 		}
         #endregion

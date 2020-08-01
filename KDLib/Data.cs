@@ -20,13 +20,9 @@ namespace KDLib
         #endregion
 
         #region PrivateMembers
-        private static event EventHandler<PropertyChangedEventArgs> StaticPropertiesChanged;
         #endregion
 
         #region PublicProperties
-
-        public static int _CurrentMatchIndex;
-
         public static MachineType ThisMacineType { get; set; }
 
         public static bool OnFocus { get; set; }
@@ -35,18 +31,7 @@ namespace KDLib
 
         public static KDCommandList Commands { get; set; }
 
-        public static int CurrentMatchIndex 
-        {
-            get
-            {
-                return _CurrentMatchIndex;
-            }
-            set
-            {
-                _CurrentMatchIndex = value;
-                NotifyStaticPropertyChanged();
-            }
-        }
+        public static int CurrentMatchIndex { get; set; }
 
         public static int CurrentPlayer { get; set; }
 
@@ -58,22 +43,6 @@ namespace KDLib
         public static void Initialize()
 		{
             Commands = new KDCommandList();
-        }
-
-        private static void NotifyStaticPropertyChanged ([CallerMemberName] string propertyName = "")
-        {
-            StaticPropertiesChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private static void NotifyStaticPropertyChanged(params string[] Names)
-        {
-            if (StaticPropertiesChanged != null)
-            {
-                foreach (var propertyName in Names)
-                {
-                    StaticPropertiesChanged(null, new PropertyChangedEventArgs(propertyName));
-                }
-            }
         }
     }
 }

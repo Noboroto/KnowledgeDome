@@ -1,23 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace KDLib
 {
 	public class PlayerList : KDCollectionBase<Player>
 	{
-		public override void Add(Player item)
-		{
-			base.Add(item);
-			item.PropertyChanged += Item_PropertyChanged;
-		}
-
-		public override void Remove(Player item)
-		{
-			item.PropertyChanged -= Item_PropertyChanged;
-			base.Remove(item);
-		}
-
 		[JsonConstructor]
 		public PlayerList()
 		{
@@ -25,7 +14,7 @@ namespace KDLib
 
 		public override bool Contains(object id)
 		{
-			using (Enumerator enumerator = GetEnumerator())
+			using (var enumerator = GetEnumerator())
 			{
 				while (enumerator.MoveNext())
 				{
@@ -40,12 +29,7 @@ namespace KDLib
 
 		public Player FindFromName (string name)
         {
-			return Find((Player p) => p.Name == name);
+			return this.Where((Player p) => p.Name == name).First();
         }
-
-		private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			NotifyCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-		}
 	}
 }
