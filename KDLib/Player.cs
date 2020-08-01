@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using GalaSoft.MvvmLight;
+using Newtonsoft.Json;
 using System.IO;
 using System.Windows.Media;
 
 namespace KDLib
 {
-	public class Player : KDObjectBase
+	public class Player : ObservableObject
 	{
         private byte[] _Avatar;
 
@@ -50,8 +51,7 @@ namespace KDLib
             }
 			set
             {
-				_Score = value;
-				NotifyPropertyChanged("score");
+				Set(nameof(Score), ref _Score, value);
             }
 		}
 

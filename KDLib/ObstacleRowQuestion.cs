@@ -19,8 +19,7 @@ namespace KDLib
             }
 			set
             {
-				_CharCount = value;
-				NotifyPropertyChanged();
+				Set(nameof(CharCount), ref _CharCount, value);
             }
         }
         #endregion

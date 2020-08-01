@@ -17,8 +17,7 @@ namespace KDLib
             }
 			set
             {
-				_Value = value;
-				NotifyPropertyChanged();
+                Set(nameof(Value), ref _Value, value);
             }
         }
         #endregion

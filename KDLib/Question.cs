@@ -1,7 +1,9 @@
-﻿namespace KDLib
+﻿using GalaSoft.MvvmLight;
+
+namespace KDLib
 {
-	public abstract class Question : KDObjectBase
-	{
+	public abstract class Question : ObservableObject
+    {
 		#region PrivateMembers
 		private string _Content;
 		private string _Answer;
@@ -16,8 +18,7 @@
             }
 			set
             {
-				_Content = value;
-				NotifyPropertyChanged();
+                Set(nameof(Content),ref _Content, value);
             }
         }
 
@@ -29,8 +30,7 @@
             }
             set
             {
-                _Answer = value;
-                NotifyPropertyChanged();
+                Set(nameof(Answer), ref _Answer, value);
             }
         }
         public int ID { get; set; }

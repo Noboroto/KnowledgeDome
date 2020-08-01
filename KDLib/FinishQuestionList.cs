@@ -14,19 +14,9 @@ namespace KDLib
 		{
 		}
 
-		public override void Add(FinishQuestion item)
-		{
-			base.Add(item);
-		}
-
-		public override void Remove(FinishQuestion item)
-		{
-			base.Remove(item);
-		}
-
 		public override bool Contains(object id)
 		{
-			using (Enumerator enumerator = GetEnumerator())
+			using (var enumerator = GetEnumerator())
 			{
 				while (enumerator.MoveNext())
 				{

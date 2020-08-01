@@ -14,7 +14,7 @@
 
 		public override bool Contains(object id)
 		{
-			using (Enumerator enumerator = GetEnumerator())
+			using (var enumerator = GetEnumerator())
 			{
 				while (enumerator.MoveNext())
 				{

@@ -5,18 +5,6 @@ namespace KDLib
 {
 	public class MatchList : KDCollectionBase<Match>
 	{
-		public override void Add(Match item)
-		{
-			base.Add(item);
-			item.PropertyChanged += Item_PropertyChanged;
-		}
-
-		public override void Remove(Match item)
-		{
-			item.PropertyChanged -= Item_PropertyChanged;
-			base.Remove(item);
-		}
-
 		public MatchList()
 		{
 		}
@@ -24,11 +12,6 @@ namespace KDLib
 		public override bool Contains(object id)
 		{
 			return false;
-		}
-
-		private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			NotifyCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 	}
 }

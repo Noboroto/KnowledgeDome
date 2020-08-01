@@ -55,6 +55,7 @@ namespace KDLib
 
 		public async static Task Connect(IPAddress ServerAddress)
 		{
+			await Task.Delay(1);
 			try
 			{
 				if (IsValidConnection(ServerAddress))
@@ -62,13 +63,14 @@ namespace KDLib
 					IsServerOnline = true;
 					ServerIP = ServerAddress;
 					return;
+					/*
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
 
 					var Tasks = new List<Task>();
 					Tasks.Add(ListenFromServer());
 					Tasks.Add(ProcessCommand());
-
-					await Task.WhenAll(Tasks.ToArray());
+					
+					await Task.WhenAll(Tasks.ToArray());*/
 				}
 				else
                 {
