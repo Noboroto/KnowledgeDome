@@ -6,6 +6,7 @@ using KDLib.KDException;
 using System.IO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KDLib
 {
@@ -25,23 +26,25 @@ namespace KDLib
         public static IPAddress ServerIP { get; private set; }
         #endregion
 
-        private static bool IsValidConnection(IPAddress ip)
+        private async static Task<bool> IsValidConnection(IPAddress ip)
 		{
 			using (TcpClient tcp = new TcpClient())
 			{
 				var taskconnect = tcp.ConnectAsync(ip, Data.PortForValidCheck);
 				var timer = Task.Delay(500);
 
-				var result = Task.WaitAny(new[] { taskconnect, timer });
-				return result == 0;
+				var result = await Task.WhenAny(new[] { taskconnect, timer });
+				return result == taskconnect;
 			}
 		}
 
-		public static void Connect(string ip)
+		public async static Task Connect(string ip)
         {
 			try
             {
-				Connect(IPAddress.Parse(ip)).Wait();
+				IPAddress tmp;
+				if (IPAddress.TryParse(ip, out tmp)) await Connect(tmp);
+				else throw new IPWrongFormat();
             }
 			catch (AggregateException ae)
 			{
@@ -55,10 +58,9 @@ namespace KDLib
 
 		public async static Task Connect(IPAddress ServerAddress)
 		{
-			await Task.Delay(1);
 			try
 			{
-				if (IsValidConnection(ServerAddress))
+				if (await IsValidConnection(ServerAddress))
                 {
 					IsServerOnline = true;
 					ServerIP = ServerAddress;
@@ -89,9 +91,9 @@ namespace KDLib
             }
 		}
 
-		private static Task CheckOnlineServer()
+		private async static void CheckOnlineServer()
         {
-			Action ThisAction = () =>
+			Action ThisAction = async () =>
 			{
 				while (true)
 				{
@@ -99,10 +101,10 @@ namespace KDLib
 					{
 						if (ThisClient.Client.Poll(500, SelectMode.SelectRead) && ThisClient.Client.Available == 0)
 						{
-							if (!IsServerOnline) Connect(ServerIP).Start();
+							if (!IsServerOnline) await Connect(ServerIP);
 							IsServerOnline = true;
 							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint), OnlClient);;
-							Task.Delay(1000);
+							await Task.Delay(1000);
 						}
 						else
 						{
@@ -119,10 +121,10 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.Factory.StartNew(ThisAction);
+			await Task.Factory.StartNew(ThisAction);
 		}
 
-		private static Task ProcessCommand ()
+		private async static Task ProcessCommand ()
         {
 			Action ThisAction = () =>
 			{
@@ -153,7 +155,7 @@ namespace KDLib
                     }
                 }
 			};
-			return Task.Factory.StartNew(ThisAction);
+			await Task.Factory.StartNew(ThisAction);
 		}
 
 		public static async void SendCommand(KDCommand Command, TcpClient tcp)
