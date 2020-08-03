@@ -54,6 +54,7 @@ namespace KDLib
 			tasks.Add(AcceptClient());
 			tasks.Add(AcceptVaid());
 			tasks.Add(AcceptChecker());
+			Task.WaitAll(tasks.ToArray());
 		}
 
 		//Don't change
@@ -97,35 +98,33 @@ namespace KDLib
 			return Task.WhenAny(ProcessCommandChecker(), Task.Factory.StartNew(ThisAction));
 		}
 
-		private static Task ListenFromChecker(EndPoint Pos)
+		private async static void ListenFromChecker(EndPoint Pos)
 		{
 			Action ThisAction = () =>
 			{
-				using (StreamReader ReadFromStream = new StreamReader(OnlineCLients[Pos].GetStream()))
+				StreamReader ReadFromStream = new StreamReader(OnlineCLients[Pos].GetStream());
+				string command;
+				while (true)
 				{
-					string command;
-					while (true)
+					command = "";
+					try
 					{
-						command = "";
-						try
-						{
-							command = ReadFromStream.ReadToEnd();
-						}
-						catch (InvalidOperationException)
-						{
-							continue;
-						}
-						catch
-						{
-							OnlineCLients.Remove(Pos);
-							return;
-						}
-						if (command != null)
-							OnlineCommands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
+						command = ReadFromStream.ReadToEnd();
 					}
+					catch (InvalidOperationException)
+					{
+						continue;
+					}
+					catch
+					{
+						OnlineCLients.Remove(Pos);
+						return;
+					}
+					if (command != null)
+						OnlineCommands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
 			};
-			return Task.Factory.StartNew(ThisAction);
+			await Task.Factory.StartNew(ThisAction);
 		}
 
 		private static Task ProcessCommandChecker()
@@ -154,49 +153,51 @@ namespace KDLib
 			return Task.Factory.StartNew(ThisAction);
         }
 
-		private static Task AcceptClient()
+		private async static Task AcceptClient()
 		{
 			Action ThisAction = () =>
 			{
+				TcpClient client = new TcpClient();
 				while (true)
 				{
 					if (ListenerCenter.Pending())
 					{
-						using (TcpClient client = ListenerCenter.AcceptTcpClient())
-						{
-							TCPClients[client.Client.RemoteEndPoint] = client;
-							ListenFromClient(client.Client.RemoteEndPoint).Start();
-						}
+						client = ListenerCenter.AcceptTcpClient();
+						TCPClients[client.Client.RemoteEndPoint] = client;
+						var list = new List<string>();
+						list.Add("abc");
+						list.Add("bcd");
+						list.Add("def");
+						SendCommandToOne(client.Client.RemoteEndPoint, new KDCommand(CommandType.ClientList, client.Client.LocalEndPoint as IPEndPoint, JsonConvert.SerializeObject(list)));
+						ListenFromClient(client.Client.RemoteEndPoint);
 					}
 				}
 			};
-			return Task.Factory.StartNew(ThisAction);
+			await Task.Factory.StartNew(ThisAction);
 		}
 
-		private static Task ListenFromClient(EndPoint Pos)
+		private async static void ListenFromClient(EndPoint Pos)
 		{
 			Action ThisAction = () =>
 			{
-				using (StreamReader ReadFromStream = new StreamReader(TCPClients[Pos].GetStream()))
+				StreamReader ReadFromStream = new StreamReader(TCPClients[Pos].GetStream());
+				string command;
+				while (true)
 				{
-					string command;
-					while (true)
+					command = "";
+					try
 					{
-						command = "";
-						try
-						{
-							command = ReadFromStream.ReadToEnd();
-						}
-						catch
-						{
-							TCPClients.Remove(Pos);
-							return;
-						}
-						if (command != null) Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
+						command = ReadFromStream.ReadToEnd();
 					}
+					catch
+					{
+						TCPClients.Remove(Pos);
+						return;
+					}
+					if (command != null) Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
 			};
-			return Task.WhenAny(Task.Factory.StartNew(ThisAction), ProcessCommandClient());
+			await Task.WhenAny(Task.Factory.StartNew(ThisAction), ProcessCommandClient());
 		}
 
 		private static Task ProcessCommandClient()
@@ -213,19 +214,19 @@ namespace KDLib
 							case CommandType.AskForConnect:
 								if (command.Content == Data.KeyMC || command.Content == Data.KeyViewer)
                                 {
-									SendCommandToOne(new KDCommand(CommandType.RefuseConnect, null), command.ID);
+									SendCommandToOne(command.ID, new KDCommand(CommandType.RefuseConnect, null));
 									goto EndCommand;
 								}
 								int ID = Data.Matches[Data.CurrentMatchIndex].Players.FindFromName(command.Content).ID;
 								if (PlayerAvailable[ID] == null)
                                 {
-									SendCommandToOne(new KDCommand(CommandType.RefuseConnect, null), command.ID);
+									SendCommandToOne(command.ID, new KDCommand(CommandType.RefuseConnect, null));
 									TCPClients[command.ID].Close();
                                 }
 								else
                                 {
 									PlayerAvailable[ID] = command.ID;
-									SendCommandToOne(new KDCommand(CommandType.AccpetConnect, null), command.ID);
+									SendCommandToOne(command.ID, new KDCommand(CommandType.AccpetConnect, null));
 								}
 								goto EndCommand;
 							EndCommand:
@@ -240,7 +241,7 @@ namespace KDLib
 			return Task.Factory.StartNew(ThisAction);
 		}
 
-		public static void SendCommandToOne(KDCommand Command, EndPoint pos)
+		public static void SendCommandToOne(EndPoint pos, KDCommand Command)
 		{
 			try
 			{
@@ -260,11 +261,9 @@ namespace KDLib
 		{
 			try
 			{
-				if (client.Client == null) return; 
-				using (StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true })
-				{
-					await WriteToStream.WriteAsync(message);
-				}
+				if (client.Client == null) return;
+				StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true };
+				await WriteToStream.WriteAsync(message);
 			}
 			catch (AggregateException ae)
 			{
@@ -299,10 +298,8 @@ namespace KDLib
 				List<Task> tasks = new List<Task>();
 				foreach (var client in TCPClients.Values)
 				{
-					using (StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true })
-					{
-						tasks.Add(WriteToStream.WriteAsync(command));
-					}
+					StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true };
+					tasks.Add(WriteToStream.WriteAsync(command));
 				}
 				await Task.WhenAll(tasks);
 			}

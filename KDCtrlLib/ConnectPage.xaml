@@ -30,14 +30,14 @@
 					DockPanel.Dock="Bottom"/>
 				<Label 
 					DockPanel.Dock="Left" 
-					FontSize="24" 
+					FontSize="20" 
 					VerticalAlignment="Center" 
 					Content="IP máy chủ"/>
 				<TextBox 
 					Margin="10" 
 					Name="IPText"
 					DockPanel.Dock="Right" 
-					FontSize="24"/>
+					FontSize="20"/>
 			</DockPanel>
 		</materialDesign:Card>
         <materialDesign:Snackbar 

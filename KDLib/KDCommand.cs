@@ -21,21 +21,34 @@ namespace KDLib
 
         public string Content { get; set; }
 
-        public EndPoint ID { get; set; }
+        public string IP { get; set; }
+
+        public int Port { get; set; }
+
+        [JsonIgnore]
+        public IPEndPoint ID
+        {
+            get
+            {
+                return new IPEndPoint(IPAddress.Parse(IP), Port);
+            }
+        }
+
         #endregion
 
-        public KDCommand (CommandType prefix, EndPoint local, string cmd = "")
-        : this (Data.ThisMacineType, prefix, local, cmd)
+        public KDCommand(CommandType prefix, IPEndPoint local, string cmd = "")
+        : this(Data.ThisMacineType, prefix, local.Address.ToString(), local.Port, cmd)
         {
         }
 
         [JsonConstructor]
-        public KDCommand(MachineType type, CommandType prefix, EndPoint local, string cmd = "")
+        public KDCommand(MachineType type, CommandType prefix, string localIP, int localPort, string cmd = "")
         {
             Machine = type;
             PrefixCmd = prefix;
             Content = cmd;
-            ID = local;
+            IP = localIP;
+            Port = localPort;
         }
     }
 }

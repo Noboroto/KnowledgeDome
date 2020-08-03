@@ -18,6 +18,7 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
+            Data.Initialize();
             {
                 try
                 {
