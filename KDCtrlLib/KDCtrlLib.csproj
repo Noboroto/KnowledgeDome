@@ -81,9 +81,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interface\IHandleEvent.cs" />
+    <Compile Include="MessageForUI\NavigateToCmd.cs" />
     <Compile Include="MessageForUI\SnackbarNoticeMessage.cs" />
     <Compile Include="ViewModel\ConnectViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="ConnectPage.xaml">
       <Generator>MSBuild:Compile</Generator>

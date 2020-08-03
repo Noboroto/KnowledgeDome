@@ -29,15 +29,15 @@ namespace KDCtrlLib.ViewModel
         public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-            SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<MainWindowViewModel>();
             SimpleIoc.Default.Register<ConnectViewModel>();
         }
 
-        public static MainViewModel Main
+        public static MainWindowViewModel MainWindow
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
+                return ServiceLocator.Current.GetInstance<MainWindowViewModel>();
             }
         }
 

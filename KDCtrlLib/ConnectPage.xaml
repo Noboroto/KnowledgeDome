@@ -40,10 +40,12 @@
 					FontSize="24"/>
 			</DockPanel>
 		</materialDesign:Card>
-		<materialDesign:Snackbar 
+        <materialDesign:Snackbar 
 			x:Name="NoticeBar" 
             MessageQueue="{materialDesign:MessageQueue}"
 			HorizontalAlignment="Center" 
-            VerticalAlignment="Top"/>
+            VerticalAlignment="Top"
+            >
+        </materialDesign:Snackbar>
 	</Grid>
 </Page>
