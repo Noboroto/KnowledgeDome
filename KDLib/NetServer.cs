@@ -9,6 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace KDLib
 {
@@ -32,19 +35,42 @@ namespace KDLib
         public static Dictionary <MachineType, Dictionary <EndPoint, int>> MachineState { get; private set; }
 
 		public static Dictionary<int, EndPoint> PlayerAvailable { get; private set; }
-        #endregion
+		#endregion
 
-        public static void Start()
+		#region INotifyStaticPropertyChanged
+		private static event EventHandler<PropertyChangedEventArgs> StaticPropertiesChanged;
+
+		private static void NotifyStaticPropertyChanged([CallerMemberName] string propertyName = "")
 		{
-			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
-			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
-			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
-			
+			StaticPropertiesChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+		}
+
+		private static void NotifyStaticPropertyChanged(params string[] Names)
+		{
+			if (StaticPropertiesChanged != null)
+			{
+				foreach (var propertyName in Names)
+				{
+					StaticPropertiesChanged(null, new PropertyChangedEventArgs(propertyName));
+				}
+			}
+		}
+		#endregion
+
+		public static void Initialize()
+        {
 			TCPClients = new Dictionary<EndPoint, TcpClient>();
 			OnlineCommands = new Queue<KDCommand>();
 			OnlineCLients = new Dictionary<EndPoint, TcpClient>();
 			PlayerAvailable = new Dictionary<int, EndPoint>();
 			MachineState = new Dictionary<MachineType, Dictionary<EndPoint, int>>();
+		}
+
+		public static void Start()
+		{
+			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
+			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
+			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
 
 			ListenerCenter.Start();
 			CheckerCenter.Start();
@@ -164,10 +190,10 @@ namespace KDLib
 					{
 						client = ListenerCenter.AcceptTcpClient();
 						TCPClients[client.Client.RemoteEndPoint] = client;
-						var list = new List<string>();
-						list.Add("abc");
-						list.Add("bcd");
-						list.Add("def");
+						var list = new ObservableCollection<InfoToChoose>();
+						list.Add(new InfoToChoose("abc"));
+						list.Add(new InfoToChoose("adbc"));
+						list.Add(new InfoToChoose("aadabc"));
 						SendCommandToOne(client.Client.RemoteEndPoint, new KDCommand(CommandType.ClientList, client.Client.LocalEndPoint as IPEndPoint, JsonConvert.SerializeObject(list)));
 						ListenFromClient(client.Client.RemoteEndPoint);
 					}
@@ -263,7 +289,9 @@ namespace KDLib
 			{
 				if (client.Client == null) return;
 				StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true };
-				await WriteToStream.WriteAsync(message);
+				await WriteToStream.WriteLineAsync(message);
+				Console.WriteLine(client.Client.RemoteEndPoint.ToString() + " " +  message.Length.ToString());
+				Console.WriteLine(message);
 			}
 			catch (AggregateException ae)
 			{

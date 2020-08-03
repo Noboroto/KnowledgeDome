@@ -48,6 +48,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -71,6 +72,7 @@
     <Compile Include="FinishQuestion.cs" />
     <Compile Include="FinishQuestionList.cs" />
     <Compile Include="ImageList.cs" />
+    <Compile Include="InfoToChoose.cs" />
     <Compile Include="KDCollectionBase.cs" />
     <Compile Include="KDCommand.cs" />
     <Compile Include="KDCommandList.cs" />

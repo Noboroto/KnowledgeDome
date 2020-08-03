@@ -9,5 +9,5 @@
         Title="MainWindow" Height="450" Width="800"
 	    DataContext="{Binding MainWindow, Source={StaticResource Locator}}"
 		>
-    <Frame x:Name="MyFrame"/>
+    <Frame x:Name="MyFrame" NavigationUIVisibility="Hidden"/>
 </Window>

@@ -7,29 +7,35 @@ using KDLib;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace KDCtrlLib.ViewModel
 {
-	public class ConnectViewModel : ViewModelBase, IHandleEvent
+	public class ConnectViewModel : ViewModelBase, IHandleExeception
 	{
-		#region Command
-		public RelayCommand<string> TryConnectCmd { get; set; }
+        #region Command
+        private const string AcceptString = "Kết nối thành công";
+		public ICommand TryConnectCmd { get; set; }
 		#endregion
 
 		public ConnectViewModel ()
 		{
-			TryConnectCmd = new RelayCommand<string>
-			(
-				async (s) =>
-				{
-                    Messenger.Default.Send(new SnackbarNoticeMessage(await GetsyncException(NetClient.Connect(s))));
+            TryConnectCmd = new RelayCommand<string>
+            (
+                async (s) =>
+                {
+                    string message = await GetException(NetClient.Connect(s));
+                    Messenger.Default.Send(new SnackbarNoticeMessage(message));
+                    if (message == AcceptString) Messenger.Default.Send(new NavigateToMessage(new RolePage()));
                 },
 				(s) =>
-				{
+				{ 
 					return !string.IsNullOrEmpty(s) && IsValidIPString(s);
 				}
 			);
+           
 		}
+
 
         private bool IsValidIPString(string s)
         {
@@ -42,12 +48,29 @@ namespace KDCtrlLib.ViewModel
             return true;
         }
 
-        public async Task<string> GetsyncException(Task t)
+        public async Task<string> GetException(Task t)
         {
-            string s = "Kết nối thành công";
+            string s = AcceptString;
+            await Task.Run(() => {
+                while (!t.IsCompleted) { }
+                if (t.Status == TaskStatus.Faulted)
+                {
+                    s = "";
+                    foreach (var e in t.Exception.InnerExceptions)
+                    {
+                        s += e.Message + "\n";
+                    }
+                }
+            });
+            return s;
+        }
+
+        public async Task<string> GetException(Action t)
+        {
+            string s = AcceptString;
             try
             {
-                await t;
+                t();
             }
             catch (AggregateException ae)
             {
@@ -58,6 +81,7 @@ namespace KDCtrlLib.ViewModel
             {
                 s = e.Message;
             }
+            await Task.Delay(0);
             return s;
         }
     }

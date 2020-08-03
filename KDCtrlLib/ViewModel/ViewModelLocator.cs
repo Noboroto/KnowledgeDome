@@ -31,6 +31,7 @@ namespace KDCtrlLib.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             SimpleIoc.Default.Register<MainWindowViewModel>();
             SimpleIoc.Default.Register<ConnectViewModel>();
+            SimpleIoc.Default.Register<RoleViewModel>();
         }
 
         public static MainWindowViewModel MainWindow
@@ -38,6 +39,14 @@ namespace KDCtrlLib.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<MainWindowViewModel>();
+            }
+        }
+
+        public static RoleViewModel Role
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<RoleViewModel>();
             }
         }
 

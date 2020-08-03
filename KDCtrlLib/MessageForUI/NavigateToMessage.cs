@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace KDCtrlLib.MessageForUI
 {
-    public class NavigateToCmd
+    public class NavigateToMessage
     {
-        public NavigateToCmd ()
+        public Page Target { get; set; }
+        public NavigateToMessage (Page target)
         {
-
+            Target = target;
         }
     }
 }

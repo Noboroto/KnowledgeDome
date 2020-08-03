@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace KDCtrlLib.Interface
 {
-    public interface IHandleEvent
+    public interface IHandleExeception
     {
-        Task<string> GetsyncException(Task t);
+        Task<string> GetException(Task t);
+        Task<string> GetException(Action a);
     }
 }
