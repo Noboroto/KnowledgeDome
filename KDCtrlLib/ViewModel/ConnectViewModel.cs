@@ -4,16 +4,9 @@ using GalaSoft.MvvmLight.Messaging;
 using KDCtrlLib.Interface;
 using KDCtrlLib.MessageForUI;
 using KDLib;
-using KDLib.KDException;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 
 namespace KDCtrlLib.ViewModel
 {
@@ -51,7 +44,7 @@ namespace KDCtrlLib.ViewModel
 
         public async Task<string> GetsyncException(Task t)
         {
-            string s = "Thành công";
+            string s = "Kết nối thành công";
             try
             {
                 await t;

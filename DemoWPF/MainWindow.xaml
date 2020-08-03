@@ -7,7 +7,7 @@
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
-		DataContext="{Binding  Source={StaticResource Locator}}"
+	    DataContext="{Binding MainWindow, Source={StaticResource Locator}}"
 		>
     <Frame x:Name="MyFrame"/>
 </Window>
