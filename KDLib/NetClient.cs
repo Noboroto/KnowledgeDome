@@ -3,30 +3,83 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using KDLib.KDException;
+using GalaSoft.MvvmLight;
 using System.IO;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace KDLib
 {
-    public static class NetClient
-    {
-        #region PrivateMembers
-        private static TcpClient ThisClient = new TcpClient();
+	public static class NetClient 
+	{
+		#region PrivateMembers
+		private static TcpClient ThisClient = new TcpClient();
+
+		private static ObservableCollection<InfoToChoose> _ClientComboBoxChoose;
 
 		private static TcpClient OnlClient = new TcpClient();
-        #endregion
+		#endregion
 
-        #region PublicProperties
-        public static bool IsServerOnline { get; private set; }
+		#region PublicProperties
+		public static bool IsServerOnline { get; private set; }
 
-		public static List<string> ClientComboBoxChoose { get; private set; }
+		public static ObservableCollection<InfoToChoose> ClientComboBoxChoose
+		{
+			get
+			{
+				return _ClientComboBoxChoose;
+			}
+			set
+			{
+				_ClientComboBoxChoose = value;
+				NotifyStaticPropertyChanged();
+			}
+		}
 
-        public static IPAddress ServerIP { get; private set; }
-        #endregion
+		public static void AddObservationCollectionAsync<T>(ICollection<T> collection, T item)
+		{
+			Action<T> addMethod = collection.Add;
+			Application.Current.Dispatcher.BeginInvoke(addMethod, item);
+		}
 
-        private async static Task<bool> IsValidConnection(IPAddress ip)
+		public static IPAddress ServerIP { get; private set; }
+		#endregion
+
+		#region INotifyStaticPropertyChanged
+		private static event EventHandler<PropertyChangedEventArgs> StaticPropertiesChanged;
+
+		private static void NotifyStaticPropertyChanged([CallerMemberName] string propertyName = "")
+		{
+			if (StaticPropertiesChanged != null)
+            {
+				StaticPropertiesChanged.Invoke(null, new PropertyChangedEventArgs(propertyName));
+            }
+		}
+
+		private static void NotifyStaticPropertyChanged(params string[] Names)
+		{
+			if (StaticPropertiesChanged != null)
+			{
+				foreach (var propertyName in Names)
+				{
+					StaticPropertiesChanged(null, new PropertyChangedEventArgs(propertyName));
+				}
+			}
+		}
+		#endregion
+
+		public static void Initialize()
+        {
+			ClientComboBoxChoose = new ObservableCollection<InfoToChoose>();
+        }
+
+		private async static Task<bool> IsValidConnection(IPAddress ip)
 		{
 			using (TcpClient tcp = new TcpClient())
 			{
@@ -39,56 +92,58 @@ namespace KDLib
 		}
 
 		public async static Task Connect(string ip)
-        {
+		{
 			try
-            {
+			{
 				IPAddress tmp;
 				if (IPAddress.TryParse(ip, out tmp)) await Connect(tmp);
 				else throw new IPWrongFormat();
-            }
+			}
 			catch (AggregateException ae)
 			{
 				throw ae.Flatten();
 			}
 			catch
-            {
+			{
 				throw;
-            }
-        }
+			}
+		}
 
 		public async static Task Connect(IPAddress ServerAddress)
 		{
 			try
 			{
 				if (await IsValidConnection(ServerAddress))
-                {
+				{
 					IsServerOnline = true;
 					ServerIP = ServerAddress;
 					
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
 
-					ListenFromServer();
-					ProcessCommand();
+					var tasks = new List<Task> ();
+					tasks.Add(ListenFromServer());
+					tasks.Add(ProcessCommand());
+					//await Task.WhenAny(tasks);
 				}
 				else
-                {
+				{
 					IsServerOnline = false;
 					ServerIP = null;
 					throw new IPNotFoundException();
-                }
+				}
 			}
 			catch (AggregateException ae)
 			{
 				throw ae.Flatten();
 			}
 			catch
-            {
+			{
 				throw;
-            }
+			}
 		}
 
 		private async static void CheckOnlineServer()
-        {
+		{
 			Action ThisAction = async () =>
 			{
 				while (true)
@@ -109,7 +164,15 @@ namespace KDLib
 					}
 					catch (AggregateException ae)
 					{
-						throw ae.Flatten();
+						foreach (var e in ae.InnerExceptions)
+						{
+							if (e is IOException) continue;
+							if (e is SocketException)
+							{
+								ThisClient.Close();
+								break;
+							}
+						}
 					}
 					catch
 					{
@@ -120,19 +183,22 @@ namespace KDLib
 			await Task.Factory.StartNew(ThisAction);
 		}
 
-		private async static void ProcessCommand ()
-        {
+		private async static Task ProcessCommand ()
+		{
 			Action ThisAction = () =>
 			{
 				while (true)
-                {
+				{
 					if (Data.Commands.Count > 0)
-                    {
+					{
 						KDCommand command = Data.Commands.Peek();
 						switch (command.PrefixCmd)
-                        {
+						{
 							case CommandType.ClientList:
-								ClientComboBoxChoose = JsonConvert.DeserializeObject<List<string>>(command.Content);
+								foreach (var c in JsonConvert.DeserializeObject<ObservableCollection<InfoToChoose>>(command.Content))
+                                {
+									AddObservationCollectionAsync(ClientComboBoxChoose, c);
+                                }
 								goto EndCommand;
 							case CommandType.AccpetConnect:
 								OnlClient.Connect(ServerIP, Data.PortForChecker);
@@ -147,9 +213,9 @@ namespace KDLib
 								continue;
 							default:
 								continue;
-                        }
-                    }
-                }
+						}
+					}
+				}
 			};
 			await Task.Factory.StartNew(ThisAction);
 		}
@@ -157,49 +223,65 @@ namespace KDLib
 		public static async void SendCommand(KDCommand Command, TcpClient tcp)
 		{
 			try
-            {
+			{
 				await SendMessage(JsonConvert.SerializeObject(Command), tcp);
-            }
+			}
 			catch (AggregateException ae)
 			{
-				throw ae.Flatten();
+				foreach (var e in ae.InnerExceptions)
+				{
+					if (e is IOException) continue;
+					if (e is SocketException)
+					{
+						ThisClient.Close();
+						break;
+					}
+				}
 			}
 			catch
-            {
+			{
 				throw;
-            }
+			}
 		}
 
-		private async static void ListenFromServer()
+		private async static Task ListenFromServer()
 		{
 			Action ThisAction = () =>
 			{
-				using (StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream()))
+				StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream());
+				bool CanLive = true;
+				while (true && CanLive)
 				{
-					while (true)
+					string information = "";
+					try
 					{
-						string information = "";
-						try
-						{
-							information = ReadFromStream.ReadToEnd();
-						}
-						catch (ObjectDisposedException)
-						{
-							break;
-						}
-						catch (AggregateException ae)
-						{
-							throw ae.Flatten();
-						}
-						catch
-						{
-							throw;
-						}
-						if (information != "") Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(information));
+						information = ReadFromStream.ReadLineAsync().Result;
 					}
+					catch (ObjectDisposedException)
+					{
+						break;
+					}
+					catch (AggregateException ae)
+					{
+						foreach (var e in ae.InnerExceptions)
+						{
+							if (e is SocketException || e is IOException)
+							{
+								ThisClient.Close();
+								CanLive = false;
+								break;
+							}
+						}
+						throw ae.Flatten();
+					}
+					catch
+					{
+						throw;
+					}
+					if (information != "") Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(information));
 				}
 			};
-			await Task.Factory.StartNew(ThisAction);
+			await Task.Run(ThisAction);
 		}
 
 		private static Task SendMessage(string command, TcpClient tcp)
@@ -213,7 +295,15 @@ namespace KDLib
 					}
 					catch (AggregateException ae)
 					{
-						throw ae.Flatten();
+						foreach (var e in ae.InnerExceptions)
+						{
+							if (e is IOException) continue;
+							if (e is SocketException)
+							{
+								ThisClient.Close();
+								break;
+							}
+						}
 					}
 					catch
 					{

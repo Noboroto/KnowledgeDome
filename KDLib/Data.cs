@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -43,6 +44,8 @@ namespace KDLib
         public static void Initialize()
 		{
             Commands = new KDCommandList();
+            NetServer.Initialize();
+            NetClient.Initialize();
         }
     }
 }

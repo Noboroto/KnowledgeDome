@@ -17,10 +17,10 @@ namespace DemoWPF
     {
         public ICommand TryConnectCmd { get; set; }
         public MainWindow()
-        {
+        { 
+            Data.Initialize();
             InitializeComponent();
             MyFrame.Navigate(new ConnectPage());
-            Data.Initialize();
         }
     }
 }

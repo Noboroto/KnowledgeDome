@@ -7,16 +7,19 @@
 	  mc:Ignorable="d" 
 	  d:DesignHeight="450" d:DesignWidth="800"
 	  DataContext="{Binding Connect, Source={StaticResource Locator}}"
+      Loaded="OnNavigatedTo"
+      Unloaded="OnNavigatingFrom"
 	  >
 	<Page.Resources>
 		<ResourceDictionary Source="GlobalResource.xaml"/>
 	</Page.Resources>
-	<Grid>
-		<materialDesign:Card 
+    <Grid>
+        <materialDesign:Card 
 			VerticalAlignment="Center" 
 			HorizontalAlignment="Center" 
-			Width="400">
-			<DockPanel 
+			Width="400"
+            >
+            <DockPanel 
 				Margin="20" 
 				VerticalAlignment="Stretch" 
 				HorizontalAlignment="Stretch" >
@@ -33,11 +36,15 @@
 					FontSize="20" 
 					VerticalAlignment="Center" 
 					Content="IP máy chủ"/>
-				<TextBox 
+                <TextBox 
 					Margin="10" 
 					Name="IPText"
 					DockPanel.Dock="Right" 
-					FontSize="20"/>
+					FontSize="20">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding TryConnectCmd}" CommandParameter="{Binding ElementName=IPText, Path=Text, UpdateSourceTrigger=PropertyChanged}" Key="Enter"/>
+                    </TextBox.InputBindings>
+                </TextBox>
 			</DockPanel>
 		</materialDesign:Card>
         <materialDesign:Snackbar 

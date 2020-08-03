@@ -8,7 +8,7 @@ namespace KDLib.KDException
 {
     public class IPNotFoundException : Exception
     {
-        public IPNotFoundException() : base("Không tìm thấy địa chỉ IP")
+        public IPNotFoundException() : base("Không tìm thấy máy chủ")
         {
 
         }
