@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using KDCtrlLib;
+using KDLib;
 
 namespace DemoWPF
 {
@@ -19,6 +20,7 @@ namespace DemoWPF
         {
             InitializeComponent();
             MyFrame.Navigate(new ConnectPage());
+            Data.Initialize();
         }
     }
 }

@@ -64,15 +64,11 @@ namespace KDLib
                 {
 					IsServerOnline = true;
 					ServerIP = ServerAddress;
-					return;
-					/*
+					
 					ThisClient.Connect(ServerAddress, Data.PortForTCP);
 
-					var Tasks = new List<Task>();
-					Tasks.Add(ListenFromServer());
-					Tasks.Add(ProcessCommand());
-					
-					await Task.WhenAll(Tasks.ToArray());*/
+					ListenFromServer();
+					ProcessCommand();
 				}
 				else
                 {
@@ -103,7 +99,7 @@ namespace KDLib
 						{
 							if (!IsServerOnline) await Connect(ServerIP);
 							IsServerOnline = true;
-							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint), OnlClient);;
+							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint as IPEndPoint), OnlClient);;
 							await Task.Delay(1000);
 						}
 						else
@@ -124,7 +120,7 @@ namespace KDLib
 			await Task.Factory.StartNew(ThisAction);
 		}
 
-		private async static Task ProcessCommand ()
+		private async static void ProcessCommand ()
         {
 			Action ThisAction = () =>
 			{
@@ -136,7 +132,7 @@ namespace KDLib
 						switch (command.PrefixCmd)
                         {
 							case CommandType.ClientList:
-								ClientComboBoxChoose = JsonConvert.DeserializeObject<List<string>>(Data.Commands.Dequeue().Content);
+								ClientComboBoxChoose = JsonConvert.DeserializeObject<List<string>>(command.Content);
 								goto EndCommand;
 							case CommandType.AccpetConnect:
 								OnlClient.Connect(ServerIP, Data.PortForChecker);
@@ -147,7 +143,7 @@ namespace KDLib
 								Data.Commands.Clear();
 								return;
 							EndCommand:
-								command = Data.Commands.Dequeue();
+								if (Data.Commands.Count > 0) command = Data.Commands.Dequeue();
 								continue;
 							default:
 								continue;
@@ -174,7 +170,7 @@ namespace KDLib
             }
 		}
 
-		private static Task ListenFromServer()
+		private async static void ListenFromServer()
 		{
 			Action ThisAction = () =>
 			{
@@ -203,7 +199,7 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.Factory.StartNew(ThisAction);
+			await Task.Factory.StartNew(ThisAction);
 		}
 
 		private static Task SendMessage(string command, TcpClient tcp)
