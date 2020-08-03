@@ -75,6 +75,7 @@
     <Compile Include="KDCommand.cs" />
     <Compile Include="KDCommandList.cs" />
     <Compile Include="KDException\IPNotFoundException.cs" />
+    <Compile Include="KDException\IPWrongFormat.cs" />
     <Compile Include="KDTextEncoder.cs" />
     <Compile Include="Match.cs" />
     <Compile Include="MatchList.cs" />

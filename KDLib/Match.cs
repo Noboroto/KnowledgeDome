@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using GalaSoft.MvvmLight;
+using Newtonsoft.Json;
 using System.Collections.Specialized;
 
 namespace KDLib
 {
-	public class Match : KDObjectBase
+	public class Match : ObservableObject
 	{
 		#region PrivateMembers
 		#endregion

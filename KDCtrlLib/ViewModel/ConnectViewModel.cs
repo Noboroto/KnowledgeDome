@@ -1,0 +1,71 @@
+﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using KDCtrlLib.Interface;
+using KDCtrlLib.MessageForUI;
+using KDLib;
+using KDLib.KDException;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+
+namespace KDCtrlLib.ViewModel
+{
+	public class ConnectViewModel : ViewModelBase, IHandleEvent
+	{
+		#region Command
+		public RelayCommand<string> TryConnectCmd { get; set; }
+		#endregion
+
+		public ConnectViewModel ()
+		{
+			TryConnectCmd = new RelayCommand<string>
+			(
+				async (s) =>
+				{
+                    Messenger.Default.Send(new SnackbarNoticeMessage(await GetsyncException(NetClient.Connect(s))));
+                },
+				(s) =>
+				{
+					return !string.IsNullOrEmpty(s) && IsValidIPString(s);
+				}
+			);
+		}
+
+        private bool IsValidIPString(string s)
+        {
+            if (s.Count(c => c == '.') < 3) return false;
+            var SlitArray = s.Split('.');
+            foreach (var part in SlitArray)
+            {
+                if (part.Length < 1) return false;
+            }
+            return true;
+        }
+
+        public async Task<string> GetsyncException(Task t)
+        {
+            string s = "Thành công";
+            try
+            {
+                await t;
+            }
+            catch (AggregateException ae)
+            {
+                s = "";
+                foreach (var e in ae.InnerExceptions) s += e.Message + "\n";
+            }
+            catch (Exception e)
+            {
+                s = e.Message;
+            }
+            return s;
+        }
+    }
+}

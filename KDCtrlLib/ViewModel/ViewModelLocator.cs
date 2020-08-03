@@ -1,7 +1,7 @@
 /*
   In App.xaml:
   <Application.Resources>
-      <vm:ViewModelLocator xmlns:vm="clr-namespace:DemoWPF"
+      <vm:ViewModelLocator xmlns:vm="clr-namespace:KDCtrlLib"
                            x:Key="Locator" />
   </Application.Resources>
   
@@ -13,10 +13,9 @@
 */
 
 using CommonServiceLocator;
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 
-namespace DemoWPF.ViewModel
+namespace KDCtrlLib.ViewModel
 {
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -30,29 +29,26 @@ namespace DemoWPF.ViewModel
         public ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DataService>();
-            ////}
-
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<ConnectViewModel>();
         }
 
-        public MainViewModel Main
+        public static MainViewModel Main
         {
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
-        
+
+        public static ConnectViewModel Connect
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ConnectViewModel>();
+            }
+        }
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels
