@@ -16,11 +16,11 @@ namespace KDCtrlLib
         {
             get
             {
-                return (config.AppSettings.Settings["IP"].Value == null) ? "" : config.AppSettings.Settings["IP"].Value.ToString();
+                return (config.AppSettings.Settings["IP"] == null) ? "" : config.AppSettings.Settings["IP"].Value.ToString();
             }
             set
             {
-                if (config.AppSettings.Settings["IP"].Value == null) config.AppSettings.Settings.Add("IP", value);
+                if (config.AppSettings.Settings["IP"] == null) config.AppSettings.Settings.Add("IP", value);
                 else config.AppSettings.Settings["ID"].Value = value;
                 config.Save();
             }
