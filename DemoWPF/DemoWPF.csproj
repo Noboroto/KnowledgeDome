@@ -90,7 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KDCtrlLib\KDCtrlLib.csproj">
-      <Project>{143d4a54-24bf-4690-83b3-dc271e5c8209}</Project>
+      <Project>{a1827c69-78d5-46c2-a9e0-90561cefc3cc}</Project>
       <Name>KDCtrlLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\KDLib\KDLib.csproj">
