@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
-namespace KDCtrlLib
+namespace KDCtrlLib.Views
 {
     /// <summary>
     /// Interaction logic for UserControl1.xaml
@@ -38,7 +38,7 @@ namespace KDCtrlLib
             Task.Factory.StartNew(() => queue.Enqueue(snack.Message));
         }
 
-        public void NavigateTo (NavigateToMessage t)
+        public void NavigateTo(NavigateToMessage t)
         {
             this.NavigationService.Navigate(t.Target);
         }
