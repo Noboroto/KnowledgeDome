@@ -1,4 +1,4 @@
-﻿<Page x:Class="KDCtrlLib.ConnectPage"
+﻿<Page x:Class="KDCtrlLib.Views.ConnectPage"
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,9 +10,9 @@
       Loaded="OnNavigatedTo"
       Unloaded="OnNavigatingFrom"
 	  >
-	<Page.Resources>
-		<ResourceDictionary Source="GlobalResource.xaml"/>
-	</Page.Resources>
+    <Page.Resources>
+        <ResourceDictionary Source="GlobalResource.xaml"/>
+    </Page.Resources>
     <Grid>
         <materialDesign:Card 
 			VerticalAlignment="Center" 
@@ -23,7 +23,7 @@
 				Margin="20" 
 				VerticalAlignment="Stretch" 
 				HorizontalAlignment="Stretch" >
-				<Button 
+                <Button 
 					Margin="10" 
 					Command="{Binding TryConnectCmd}"
 					CommandParameter="{Binding ElementName=IPText, Path=Text}"
@@ -31,7 +31,7 @@
 					FontSize="18" 
 					Content="Kết nối" 
 					DockPanel.Dock="Bottom"/>
-				<Label 
+                <Label 
 					DockPanel.Dock="Left" 
 					FontSize="20" 
 					VerticalAlignment="Center" 
@@ -47,8 +47,8 @@
                         <KeyBinding Command="{Binding TryConnectCmd}" CommandParameter="{Binding ElementName=IPText, Path=Text, UpdateSourceTrigger=PropertyChanged}" Key="Enter"/>
                     </TextBox.InputBindings>
                 </TextBox>
-			</DockPanel>
-		</materialDesign:Card>
+            </DockPanel>
+        </materialDesign:Card>
         <materialDesign:Snackbar 
 			x:Name="NoticeBar" 
             MessageQueue="{materialDesign:MessageQueue}"
@@ -56,5 +56,5 @@
             VerticalAlignment="Top"
             >
         </materialDesign:Snackbar>
-	</Grid>
+    </Grid>
 </Page>
