@@ -1,6 +1,8 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using KDCtrlLib.Interface;
+using KDCtrlLib.MessageForUI;
 using KDLib;
 using System;
 using System.Collections.Generic;
@@ -27,10 +29,10 @@ namespace KDCtrlLib.ViewModel
 
         public RoleViewModel()
         {
-            AskPermision = new RelayCommand(
-                () =>
+            AskPermision = new RelayCommand<int>(
+                (i) =>
                 {
-                    MessageBox.Show(Choise.Name);
+                    if (i == -1) Messenger.Default.Send(new NoticeMessage("Chưa chọn chức năng client!"));
                 });
         }
 

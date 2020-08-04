@@ -1,10 +1,9 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
-using GalaSoft.MvvmLight.Threading;
 using KDCtrlLib.MessageForUI;
-using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Navigation;
 
 namespace KDCtrlLib.View
@@ -40,7 +39,17 @@ namespace KDCtrlLib.View
 
         public void NavigateTo(NavigateToMessage t)
         {
-            this.NavigationService.Navigate(t.Target);
+            NavigationService.Navigate(t.Target);
+        }
+
+        private void IPText_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    MessageBox.Show(e.Key.ToString());
+                    break;
+            }
         }
     }
 }
