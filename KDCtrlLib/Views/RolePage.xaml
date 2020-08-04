@@ -11,6 +11,8 @@
 	  xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 	  Title="RolePage"
       DataContext="{Binding Role, Source={StaticResource Locator}}"
+      Loaded="OnNavigatedTo"
+      Unloaded="OnNavigatingFrom"
       >
     <Page.Resources>
         <ResourceDictionary Source="GlobalResource.xaml"/>
@@ -25,23 +27,33 @@
 				Margin="20" 
 				VerticalAlignment="Stretch" 
 				HorizontalAlignment="Stretch" >
+                <TextBlock
+                    DockPanel.Dock="Top"
+                    Text="{Binding SelectedValue, ElementName=ChoiceBox}"
+                    />
                 <Button 
                     Command="{Binding AskPermision}"
+                    CommandParameter="{Binding SelectedIndex, ElementName=ChoiceBox}"
 					Margin="10" 
 					MaxWidth="120" 
 					FontSize="18"
 					Content="Xác nhận" 
 					DockPanel.Dock="Bottom"/>
                 <ComboBox 
+                    Name="ChoiceBox"
 					materialDesign:HintAssist.Hint="Đây là máy của"
                     ItemsSource="{Binding Path=(lib:NetClient.ClientComboBoxChoose), UpdateSourceTrigger=PropertyChanged}"
-                    SelectedItem="{Binding Choise, Mode=OneWayToSource}"
                     DisplayMemberPath="Name"
                     Margin="10" 
-					Name="RoleChoices"
 					DockPanel.Dock="Right" 
 					FontSize="20"/>
             </DockPanel>
         </materialDesign:Card>
+        <materialDesign:Snackbar 
+			x:Name="NoticeBar" 
+            MessageQueue="{materialDesign:MessageQueue}"
+			HorizontalAlignment="Center" 
+            VerticalAlignment="Top"
+            />
     </Grid>
 </Page>

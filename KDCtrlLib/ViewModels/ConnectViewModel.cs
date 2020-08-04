@@ -5,8 +5,10 @@ using KDCtrlLib.Interface;
 using KDCtrlLib.MessageForUI;
 using KDCtrlLib.View;
 using KDLib;
+using KDCtrlLib;
 using KDLib.KDException;
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -31,21 +33,23 @@ namespace KDCtrlLib.ViewModel
                     if (await NetClient.IsValidConnection(ServerIP))
                     {
                         Messenger.Default.Send(new NavigateToMessage(new RolePage()));
+                        ConfigurationSettings.IP = s;
+                        ConfigurationSettings.Save();
                         await NetClient.Connect(ServerIP);
                     }
                     else Messenger.Default.Send(new NoticeMessage(IPNotFoundException.message));
                 },
-				(s) =>
-				{ 
-					return !string.IsNullOrEmpty(s) && IsValidIPString(s);
-				}
-			);
-           
+                (s) =>
+                {
+                    return IsValidIPString(s);
+                }
+			);           
 		}
 
 
         private bool IsValidIPString(string s)
         {
+            if (string.IsNullOrEmpty(s)) return false;
             if (s.Count(c => c == '.') < 3) return false;
             var SlitArray = s.Split('.');
             foreach (var part in SlitArray)

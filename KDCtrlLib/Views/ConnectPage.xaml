@@ -39,12 +39,15 @@
                 <TextBox 
 					Margin="10" 
 					Name="IPText"
-                    DataContext="{Binding AppConfig,Source= {StaticResource Locator}}"
-                    Text="{Binding IP}"
+                    Text="{Binding Source={StaticResource Locator}, Path=AppConfig.IP}"
 					DockPanel.Dock="Right" 
-					FontSize="20">
+                    AcceptsReturn="False"
+					FontSize="20" KeyDown="IPText_KeyDown">
                     <TextBox.InputBindings>
-                        <KeyBinding Command="{Binding TryConnectCmd}" CommandParameter="{Binding ElementName=IPText, Path=Text, UpdateSourceTrigger=PropertyChanged}" Key="Enter"/>
+                        <KeyBinding Key="Return" 
+                                    Command="{Binding TryConnectCmd, Mode=OneWay}" 
+                                    CommandParameter="{Binding Text, ElementName=IPText, UpdateSourceTrigger=PropertyChanged}"
+									/>
                     </TextBox.InputBindings>
                 </TextBox>
             </DockPanel>
@@ -54,7 +57,6 @@
             MessageQueue="{materialDesign:MessageQueue}"
 			HorizontalAlignment="Center" 
             VerticalAlignment="Top"
-            >
-        </materialDesign:Snackbar>
+            />
     </Grid>
 </Page>
