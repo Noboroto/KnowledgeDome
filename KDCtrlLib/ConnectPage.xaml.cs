@@ -21,18 +21,18 @@ namespace KDCtrlLib
 
         protected void OnNavigatedTo(object sender, RoutedEventArgs e)
         {
-            Messenger.Default.Register<SnackbarNoticeMessage>(this, m => ReceiveChangeBackgroundMessage(m));
+            Messenger.Default.Register<NoticeMessage>(this, m => ReceiveChangeBackgroundMessage(m));
             Messenger.Default.Register<NavigateToMessage>(this, t => NavigateTo(t));
             IPText.Focus();
         }
 
         protected void OnNavigatingFrom(object sender, RoutedEventArgs e)
         {
-            Messenger.Default.Unregister<SnackbarNoticeMessage>(this, m => ReceiveChangeBackgroundMessage(m));
+            Messenger.Default.Unregister<NoticeMessage>(this, m => ReceiveChangeBackgroundMessage(m));
             Messenger.Default.Unregister<NavigateToMessage>(this, t => NavigateTo(t));
         }
 
-        public void ReceiveChangeBackgroundMessage(SnackbarNoticeMessage snack)
+        public void ReceiveChangeBackgroundMessage(NoticeMessage snack)
         {
             var queue = NoticeBar.MessageQueue;
             Task.Factory.StartNew(() => queue.Enqueue(snack.Message));

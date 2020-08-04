@@ -47,5 +47,10 @@ namespace KDLib
             NetServer.Initialize();
             NetClient.Initialize();
         }
+
+        public static void InitializeForDevelop()
+        {
+
+        }
     }
 }

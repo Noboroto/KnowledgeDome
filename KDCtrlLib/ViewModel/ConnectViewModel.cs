@@ -4,8 +4,11 @@ using GalaSoft.MvvmLight.Messaging;
 using KDCtrlLib.Interface;
 using KDCtrlLib.MessageForUI;
 using KDLib;
+using KDLib.KDException;
 using System;
+using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -14,6 +17,7 @@ namespace KDCtrlLib.ViewModel
 	public class ConnectViewModel : ViewModelBase, IHandleExeception
 	{
         #region Command
+        private IPAddress ServerIP;
         private const string AcceptString = "Kết nối thành công";
 		public ICommand TryConnectCmd { get; set; }
 		#endregion
@@ -24,9 +28,12 @@ namespace KDCtrlLib.ViewModel
             (
                 async (s) =>
                 {
-                    string message = await GetException(NetClient.Connect(s));
-                    Messenger.Default.Send(new SnackbarNoticeMessage(message));
-                    if (message == AcceptString) Messenger.Default.Send(new NavigateToMessage(new RolePage()));
+                    if (await NetClient.IsValidConnection(ServerIP))
+                    {
+                        Messenger.Default.Send(new NavigateToMessage(new RolePage()));
+                        await NetClient.Connect(ServerIP);
+                    }
+                    else Messenger.Default.Send(new NoticeMessage(IPNotFoundException.message));
                 },
 				(s) =>
 				{ 
@@ -45,7 +52,7 @@ namespace KDCtrlLib.ViewModel
             {
                 if (part.Length < 1) return false;
             }
-            return true;
+            return IPAddress.TryParse(s, out ServerIP);
         }
 
         public async Task<string> GetException(Task t)

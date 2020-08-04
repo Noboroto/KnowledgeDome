@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace KDCtrlLib.MessageForUI
 {
-    public class SnackbarNoticeMessage
+    public class NoticeMessage
     {
         public string Message { get; set; }
-        public SnackbarNoticeMessage(string m)
+        public NoticeMessage(string m)
         {
             Message = m;
         }
