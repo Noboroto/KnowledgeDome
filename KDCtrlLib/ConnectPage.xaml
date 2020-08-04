@@ -39,6 +39,8 @@
                 <TextBox 
 					Margin="10" 
 					Name="IPText"
+                    DataContext="{Binding AppConfig,Source= {StaticResource Locator}}"
+                    Text="{Binding IP}"
 					DockPanel.Dock="Right" 
 					FontSize="20">
                     <TextBox.InputBindings>

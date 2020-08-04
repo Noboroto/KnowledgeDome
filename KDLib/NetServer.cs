@@ -194,6 +194,7 @@ namespace KDLib
 						list.Add(new InfoToChoose("abc"));
 						list.Add(new InfoToChoose("adbc"));
 						list.Add(new InfoToChoose("aadabc"));
+						Console.WriteLine("ACCEPTED...");
 						SendCommandToOne(client.Client.RemoteEndPoint, new KDCommand(CommandType.ClientList, client.Client.LocalEndPoint as IPEndPoint, JsonConvert.SerializeObject(list)));
 						ListenFromClient(client.Client.RemoteEndPoint);
 					}

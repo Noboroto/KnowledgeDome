@@ -8,7 +8,8 @@ namespace KDLib.KDException
 {
     public class IPNotFoundException : Exception
     {
-        public IPNotFoundException() : base("Không tìm thấy máy chủ")
+        public static string message = "Không tìm thấy máy chủ";
+        public IPNotFoundException() : base(message)
         {
 
         }

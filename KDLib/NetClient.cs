@@ -79,7 +79,7 @@ namespace KDLib
 			ClientComboBoxChoose = new ObservableCollection<InfoToChoose>();
         }
 
-		private async static Task<bool> IsValidConnection(IPAddress ip)
+		public async static Task<bool> IsValidConnection(IPAddress ip)
 		{
 			using (TcpClient tcp = new TcpClient())
 			{
@@ -91,55 +91,19 @@ namespace KDLib
 			}
 		}
 
-		public async static Task Connect(string ip)
+		public static Task Connect(IPAddress ServerAddress)
 		{
-			try
+			var tasks = new List<Task>();
+			Task.Run(() =>
 			{
-				IPAddress tmp;
-				if (IPAddress.TryParse(ip, out tmp)) await Connect(tmp);
-				else throw new IPWrongFormat();
-			}
-			catch (AggregateException ae)
-			{
-				throw ae.Flatten();
-			}
-			catch
-			{
-				throw;
-			}
-		}
+				IsServerOnline = true;
+				ServerIP = ServerAddress;
 
-		public async static Task Connect(IPAddress ServerAddress)
-		{
-			try
-			{
-				if (await IsValidConnection(ServerAddress))
-				{
-					IsServerOnline = true;
-					ServerIP = ServerAddress;
-					
-					ThisClient.Connect(ServerAddress, Data.PortForTCP);
-
-					var tasks = new List<Task> ();
-					tasks.Add(ListenFromServer());
-					tasks.Add(ProcessCommand());
-					//await Task.WhenAny(tasks);
-				}
-				else
-				{
-					IsServerOnline = false;
-					ServerIP = null;
-					throw new IPNotFoundException();
-				}
-			}
-			catch (AggregateException ae)
-			{
-				throw ae.Flatten();
-			}
-			catch
-			{
-				throw;
-			}
+				ThisClient.Connect(ServerAddress, Data.PortForTCP);
+				tasks.Add(ListenFromServer());
+				tasks.Add(ProcessCommand());
+			});
+			return Task.WhenAll(tasks);
 		}
 
 		private async static void CheckOnlineServer()
@@ -164,15 +128,7 @@ namespace KDLib
 					}
 					catch (AggregateException ae)
 					{
-						foreach (var e in ae.InnerExceptions)
-						{
-							if (e is IOException) continue;
-							if (e is SocketException)
-							{
-								ThisClient.Close();
-								break;
-							}
-						}
+						throw ae.Flatten();
 					}
 					catch
 					{

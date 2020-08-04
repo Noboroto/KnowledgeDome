@@ -32,6 +32,7 @@ namespace KDCtrlLib.ViewModel
             SimpleIoc.Default.Register<MainWindowViewModel>();
             SimpleIoc.Default.Register<ConnectViewModel>();
             SimpleIoc.Default.Register<RoleViewModel>();
+            SimpleIoc.Default.Register<ConfigurationSettings>();
         }
 
         public static MainWindowViewModel MainWindow
@@ -55,6 +56,14 @@ namespace KDCtrlLib.ViewModel
             get
             {
                 return ServiceLocator.Current.GetInstance<ConnectViewModel>();
+            }
+        }
+
+        public static ConfigurationSettings AppConfig
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ConfigurationSettings>();
             }
         }
 
