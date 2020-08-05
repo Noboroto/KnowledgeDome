@@ -2,8 +2,6 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using KDLib.KDException;
-using GalaSoft.MvvmLight;
 using System.IO;
 using System;
 using System.Collections.Generic;
@@ -11,8 +9,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Collections.Specialized;
-using System.Linq;
 
 namespace KDLib
 {
@@ -21,9 +17,9 @@ namespace KDLib
 		#region PrivateMembers
 		private static TcpClient ThisClient = new TcpClient();
 
-		private static ObservableCollection<string> _ClientComboBoxChoose;
-
 		private static TcpClient OnlClient = new TcpClient();
+		
+		private static ObservableCollection<string> _ClientComboBoxChoose;
 		#endregion
 
 		#region PublicProperties
@@ -73,19 +69,24 @@ namespace KDLib
 			}
 		}
 		#endregion
-
+		/// <summary>
+		/// Initialize every things for a Client
+		/// </summary>
 		public static void Initialize()
         {
 			ClientComboBoxChoose = new ObservableCollection<string>();
         }
 
+		/// <param name="ip">The IP address you want to check</param>
+		/// <exception cref="ObjectDisposedException"/>
+		/// <exception cref="SocketException"/>
+		/// <returns>True if the parameter can be used for a connection; otherwise, false</returns>
 		public async static Task<bool> IsValidConnection(IPAddress ip)
 		{
 			using (TcpClient tcp = new TcpClient())
 			{
 				var taskconnect = tcp.ConnectAsync(ip, Data.PortForValidCheck);
 				var timer = Task.Delay(500);
-
 				var result = await Task.WhenAny(new[] { taskconnect, timer });
 				return result == taskconnect;
 			}
