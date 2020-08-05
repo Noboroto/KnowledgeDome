@@ -190,10 +190,10 @@ namespace KDLib
 					{
 						client = ListenerCenter.AcceptTcpClient();
 						TCPClients[client.Client.RemoteEndPoint] = client;
-						var list = new ObservableCollection<InfoToChoose>();
-						list.Add(new InfoToChoose("abc"));
-						list.Add(new InfoToChoose("adbc"));
-						list.Add(new InfoToChoose("aadabc"));
+						var list = new ObservableCollection<string>();
+						list.Add("abc");
+						list.Add("adbc");
+						list.Add("aadabc");
 						Console.WriteLine("ACCEPTED...");
 						SendCommandToOne(client.Client.RemoteEndPoint, new KDCommand(CommandType.ClientList, client.Client.LocalEndPoint as IPEndPoint, JsonConvert.SerializeObject(list)));
 						ListenFromClient(client.Client.RemoteEndPoint);

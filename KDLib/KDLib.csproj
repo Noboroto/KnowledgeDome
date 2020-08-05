@@ -72,7 +72,6 @@
     <Compile Include="FinishQuestion.cs" />
     <Compile Include="FinishQuestionList.cs" />
     <Compile Include="ImageList.cs" />
-    <Compile Include="InfoToChoose.cs" />
     <Compile Include="KDCollectionBase.cs" />
     <Compile Include="KDCommand.cs" />
     <Compile Include="KDCommandList.cs" />

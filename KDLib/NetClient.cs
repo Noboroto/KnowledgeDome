@@ -21,7 +21,7 @@ namespace KDLib
 		#region PrivateMembers
 		private static TcpClient ThisClient = new TcpClient();
 
-		private static ObservableCollection<InfoToChoose> _ClientComboBoxChoose;
+		private static ObservableCollection<string> _ClientComboBoxChoose;
 
 		private static TcpClient OnlClient = new TcpClient();
 		#endregion
@@ -29,7 +29,7 @@ namespace KDLib
 		#region PublicProperties
 		public static bool IsServerOnline { get; private set; }
 
-		public static ObservableCollection<InfoToChoose> ClientComboBoxChoose
+		public static ObservableCollection<string> ClientComboBoxChoose
 		{
 			get
 			{
@@ -76,7 +76,7 @@ namespace KDLib
 
 		public static void Initialize()
         {
-			ClientComboBoxChoose = new ObservableCollection<InfoToChoose>();
+			ClientComboBoxChoose = new ObservableCollection<string>();
         }
 
 		public async static Task<bool> IsValidConnection(IPAddress ip)
@@ -151,7 +151,7 @@ namespace KDLib
 						switch (command.PrefixCmd)
 						{
 							case CommandType.ClientList:
-								foreach (var c in JsonConvert.DeserializeObject<ObservableCollection<InfoToChoose>>(command.Content))
+								foreach (var c in JsonConvert.DeserializeObject<ObservableCollection<string>>(command.Content))
                                 {
 									AddObservationCollectionAsync(ClientComboBoxChoose, c);
                                 }

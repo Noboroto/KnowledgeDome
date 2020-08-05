@@ -22,18 +22,35 @@ namespace KDCtrlLib.ViewModel
     public class RoleViewModel : ViewModelBase, IHandleExeception
     {
         #region ICommand
-        public ICommand AskPermision { get; set; }
+        public RelayCommand<string> AskPermision { get; set; }
         #endregion
 
-        public InfoToChoose Choise { get; set; }
+        private string _Choice = "";
+        public string Choice
+        {
+            get
+            {
+                return _Choice;
+            }
+            set
+            {
+                Set(nameof(Choice), ref _Choice, value);
+                if (!string.IsNullOrEmpty(_Choice)) AskPermision.RaiseCanExecuteChanged();
+            }
+        }
 
         public RoleViewModel()
         {
-            AskPermision = new RelayCommand<int>(
-                (i) =>
+            AskPermision = new RelayCommand<string>(
+                (s) =>
                 {
-                    if (i == -1) Messenger.Default.Send(new NoticeMessage("Chưa chọn chức năng client!"));
-                });
+                    Messenger.Default.Send(new NoticeMessage(s));
+                },
+                (s) =>
+                {
+                    return !string.IsNullOrEmpty(s);
+                }
+           );
         }
 
         public Task<string> GetException(Task t)

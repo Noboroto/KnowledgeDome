@@ -5,55 +5,56 @@
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 	  xmlns:local="clr-namespace:KDCtrlLib"
 	  xmlns:localvm="clr-namespace:KDCtrlLib.ViewModel"
-      xmlns:lib="clr-namespace:KDLib;assembly=KDLib"
+	  xmlns:lib="clr-namespace:KDLib;assembly=KDLib"
 	  mc:Ignorable="d" 
 	  d:DesignHeight="450" d:DesignWidth="800"
 	  xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 	  Title="RolePage"
-      DataContext="{Binding Role, Source={StaticResource Locator}}"
-      Loaded="OnNavigatedTo"
-      Unloaded="OnNavigatingFrom"
-      >
-    <Page.Resources>
-        <ResourceDictionary Source="GlobalResource.xaml"/>
-    </Page.Resources>
-    <Grid>
-        <materialDesign:Card
-            VerticalAlignment="Center" 
+	  DataContext="{Binding Role, Source={StaticResource Locator}}"
+	  Loaded="OnNavigatedTo"
+	  Unloaded="OnNavigatingFrom"
+	  >
+	<Page.Resources>
+		<ResourceDictionary Source="GlobalResource.xaml"/>
+	</Page.Resources>
+	<Grid>
+		<materialDesign:Card
+			VerticalAlignment="Center" 
 			HorizontalAlignment="Center" 
 			Width="350"
-        >
-            <DockPanel 
+			>
+			<DockPanel 
 				Margin="20" 
 				VerticalAlignment="Stretch" 
 				HorizontalAlignment="Stretch" >
-                <TextBlock
-                    DockPanel.Dock="Top"
-                    Text="{Binding SelectedValue, ElementName=ChoiceBox}"
-                    />
-                <Button 
-                    Command="{Binding AskPermision}"
-                    CommandParameter="{Binding SelectedIndex, ElementName=ChoiceBox}"
+				<TextBlock
+					DockPanel.Dock="Top"
+					Text="{Binding ElementName=ChoiceBox, Path=SelectedItem, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"
+					/>
+				<Button 
+					Command="{Binding AskPermision}"
+					CommandParameter="{Binding Choice, UpdateSourceTrigger=PropertyChanged}"
 					Margin="10" 
 					MaxWidth="120" 
 					FontSize="18"
 					Content="Xác nhận" 
 					DockPanel.Dock="Bottom"/>
                 <ComboBox 
-                    Name="ChoiceBox"
+					Name="ChoiceBox"
 					materialDesign:HintAssist.Hint="Đây là máy của"
-                    ItemsSource="{Binding Path=(lib:NetClient.ClientComboBoxChoose), UpdateSourceTrigger=PropertyChanged}"
-                    DisplayMemberPath="Name"
-                    Margin="10" 
+					ItemsSource="{Binding Path=(lib:NetClient.ClientComboBoxChoose), UpdateSourceTrigger=PropertyChanged}"
+					SelectedItem="{Binding Choice,Mode=OneWayToSource,NotifyOnSourceUpdated=True}"
+					Margin="10" 
 					DockPanel.Dock="Right" 
-					FontSize="20"/>
-            </DockPanel>
-        </materialDesign:Card>
-        <materialDesign:Snackbar 
+					FontSize="20">
+                </ComboBox>
+			</DockPanel>
+		</materialDesign:Card>
+		<materialDesign:Snackbar 
 			x:Name="NoticeBar" 
-            MessageQueue="{materialDesign:MessageQueue}"
+			MessageQueue="{materialDesign:MessageQueue}"
 			HorizontalAlignment="Center" 
-            VerticalAlignment="Top"
-            />
-    </Grid>
+			VerticalAlignment="Top"
+			/>
+	</Grid>
 </Page>
