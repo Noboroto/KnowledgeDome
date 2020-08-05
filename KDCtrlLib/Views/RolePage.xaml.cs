@@ -43,7 +43,7 @@ namespace KDCtrlLib.View
         public void ReceiveChangeBackgroundMessage(NoticeMessage snack)
         {
             var queue = NoticeBar.MessageQueue;
-            Task.Factory.StartNew(() => queue.Enqueue(snack.Message));
+            if (!string.IsNullOrEmpty(snack.Message)) Task.Factory.StartNew(() => queue.Enqueue(snack.Message));
         }
 
         public void NavigateTo(NavigateToMessage t)
