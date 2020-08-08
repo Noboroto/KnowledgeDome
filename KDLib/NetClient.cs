@@ -9,23 +9,25 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Threading;
 
 namespace KDLib
 {
-	public static class NetClient 
+	public static class NetClient
 	{
 		#region PrivateMembers
 		private static TcpClient ThisClient = new TcpClient();
+        private static TcpClient OnlClient = new TcpClient();
 
-		private static TcpClient OnlClient = new TcpClient();
-		
 		private static ObservableCollection<string> _ClientComboBoxChoose;
 		#endregion
 
 		#region PublicProperties
 		public static bool IsServerOnline { get; private set; }
 
-		public static ObservableCollection<string> ClientComboBoxChoose
+        public static CancellationTokenSource MustCancel { get; } = new CancellationTokenSource();
+
+        public static ObservableCollection<string> ClientComboBoxChoose
 		{
 			get
 			{
@@ -92,22 +94,22 @@ namespace KDLib
 			}
 		}
 
-		public static Task Connect(IPAddress ServerAddress)
+		public async static Task Connect(IPAddress ServerAddress)
 		{
 			var tasks = new List<Task>();
-			Task.Run(() =>
+			await Task.Run(() =>
 			{
 				IsServerOnline = true;
 				ServerIP = ServerAddress;
-
+				 
 				ThisClient.Connect(ServerAddress, Data.PortForTCP);
 				tasks.Add(ListenFromServer());
 				tasks.Add(ProcessCommand());
-			});
-			return Task.WhenAll(tasks);
+			}, MustCancel.Token);
+			await Task.WhenAll(tasks);
 		}
 
-		private async static void CheckOnlineServer()
+		private async static Task CheckOnlineServer()
 		{
 			Action ThisAction = async () =>
 			{
@@ -119,7 +121,7 @@ namespace KDLib
 						{
 							if (!IsServerOnline) await Connect(ServerIP);
 							IsServerOnline = true;
-							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint as IPEndPoint), OnlClient);;
+							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint as IPEndPoint), OnlClient).Start();
 							await Task.Delay(1000);
 						}
 						else
@@ -137,7 +139,7 @@ namespace KDLib
 					}
 				}
 			};
-			await Task.Run(ThisAction);
+			await Task.Run(ThisAction, MustCancel.Token);
 		}
 
 		private async static Task ProcessCommand ()
@@ -159,7 +161,7 @@ namespace KDLib
 								goto EndCommand;
 							case CommandType.AccpetConnect:
 								OnlClient.Connect(ServerIP, Data.PortForChecker);
-								CheckOnlineServer();
+								CheckOnlineServer().Start();
 								goto EndCommand;
 							case CommandType.RefuseConnect:
 								ThisClient.Close();
@@ -174,32 +176,10 @@ namespace KDLib
 					}
 				}
 			};
-			await Task.Run(ThisAction);
+			await Task.Run(ThisAction, MustCancel.Token);
 		}
 
-		public static async void SendCommand(KDCommand Command, TcpClient tcp)
-		{
-			try
-			{
-				await SendMessage(JsonConvert.SerializeObject(Command), tcp);
-			}
-			catch (AggregateException ae)
-			{
-				foreach (var e in ae.InnerExceptions)
-				{
-					if (e is IOException) continue;
-					if (e is SocketException)
-					{
-						ThisClient.Close();
-						break;
-					}
-				}
-			}
-			catch
-			{
-				throw;
-			}
-		}
+
 
 		private async static Task ListenFromServer()
 		{
@@ -238,10 +218,25 @@ namespace KDLib
 					if (information != "") Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(information));
 				}
 			};
-			await Task.Run(ThisAction);
+			await Task.Run(ThisAction, MustCancel.Token);
+		}
+		public static async Task SendCommand(KDCommand Command, TcpClient tcp)
+		{
+			try
+			{
+				await SendMessage(JsonConvert.SerializeObject(Command), tcp);
+			}
+			catch (AggregateException ae)
+			{
+				throw ae.Flatten();
+			}
+			catch
+			{
+				throw;
+			}
 		}
 
-		private static Task SendMessage(string command, TcpClient tcp)
+		private async static Task SendMessage(string command, TcpClient tcp)
 		{
 			Action ThisAction = () => {
 				using (StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true })
@@ -268,7 +263,7 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.Run(ThisAction);
+			await Task.Run(ThisAction, MustCancel.Token);
 		}
 	}
 }
