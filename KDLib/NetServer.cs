@@ -64,14 +64,13 @@ namespace KDLib
 			OnlineCLients = new Dictionary<EndPoint, TcpClient>();
 			PlayerAvailable = new Dictionary<int, EndPoint>();
 			MachineState = new Dictionary<MachineType, Dictionary<EndPoint, int>>();
+			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
+			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
+			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
 		}
 
 		public static void Start()
 		{
-			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
-			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
-			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
-
 			ListenerCenter.Start();
 			CheckerCenter.Start();
 			ValidCenter.Start();
