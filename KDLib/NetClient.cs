@@ -137,7 +137,7 @@ namespace KDLib
 					}
 				}
 			};
-			await Task.Factory.StartNew(ThisAction);
+			await Task.Run(ThisAction);
 		}
 
 		private async static Task ProcessCommand ()
@@ -174,7 +174,7 @@ namespace KDLib
 					}
 				}
 			};
-			await Task.Factory.StartNew(ThisAction);
+			await Task.Run(ThisAction);
 		}
 
 		public static async void SendCommand(KDCommand Command, TcpClient tcp)
@@ -268,7 +268,7 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.Factory.StartNew(ThisAction);
+			return Task.Run(ThisAction);
 		}
 	}
 }

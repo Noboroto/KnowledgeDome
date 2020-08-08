@@ -101,7 +101,7 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.Factory.StartNew(ThisAction);
+			return Task.Run(ThisAction);
 		}
 
 		private static Task AcceptChecker()
@@ -120,7 +120,7 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.WhenAny(ProcessCommandChecker(), Task.Factory.StartNew(ThisAction));
+			return Task.WhenAny(ProcessCommandChecker(), Task.Run(ThisAction));
 		}
 
 		private async static void ListenFromChecker(EndPoint Pos)
@@ -149,7 +149,7 @@ namespace KDLib
 						OnlineCommands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
 			};
-			await Task.Factory.StartNew(ThisAction);
+			await Task.Run(ThisAction);
 		}
 
 		private static Task ProcessCommandChecker()
@@ -175,7 +175,7 @@ namespace KDLib
                     }
                 }
 			};
-			return Task.Factory.StartNew(ThisAction);
+			return Task.Run(ThisAction);
         }
 
 		private async static Task AcceptClient()
@@ -199,7 +199,7 @@ namespace KDLib
 					}
 				}
 			};
-			await Task.Factory.StartNew(ThisAction);
+			await Task.Run(ThisAction);
 		}
 
 		private async static void ListenFromClient(EndPoint Pos)
@@ -223,7 +223,7 @@ namespace KDLib
 					if (command != null) Data.Commands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
 			};
-			await Task.WhenAny(Task.Factory.StartNew(ThisAction), ProcessCommandClient());
+			await Task.WhenAny(Task.Run(ThisAction), ProcessCommandClient());
 		}
 
 		private static Task ProcessCommandClient()
@@ -264,7 +264,7 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.Factory.StartNew(ThisAction);
+			return Task.Run(ThisAction);
 		}
 
 		public static void SendCommandToOne(EndPoint pos, KDCommand Command)
