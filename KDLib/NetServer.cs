@@ -69,7 +69,7 @@ namespace KDLib
 			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
 		}
 
-		public static void Start()
+		public static async Task Start()
 		{
 			ListenerCenter.Start();
 			CheckerCenter.Start();
@@ -79,7 +79,7 @@ namespace KDLib
 			tasks.Add(AcceptClient());
 			tasks.Add(AcceptVaid());
 			tasks.Add(AcceptChecker());
-			Task.WaitAll(tasks.ToArray());
+			await Task.WhenAny(tasks.ToArray());
 		}
 
 		//Don't change
@@ -134,7 +134,7 @@ namespace KDLib
 					command = "";
 					try
 					{
-						command = ReadFromStream.ReadToEnd();
+						command = ReadFromStream.ReadLine();
 					}
 					catch (InvalidOperationException)
 					{
