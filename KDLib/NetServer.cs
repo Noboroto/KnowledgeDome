@@ -33,7 +33,7 @@ namespace KDLib
 
         #region PublicProperies
         public static Dictionary <MachineType, Dictionary <EndPoint, int>> MachineState { get; private set; }
-
+		public static CancellationTokenSource tokenSource;
 		public static Dictionary<int, EndPoint> PlayerAvailable { get; private set; }
 		#endregion
 
@@ -59,6 +59,7 @@ namespace KDLib
 
 		public static void Initialize()
         {
+			tokenSource = new CancellationTokenSource();
 			TCPClients = new Dictionary<EndPoint, TcpClient>();
 			OnlineCommands = new Queue<KDCommand>();
 			OnlineCLients = new Dictionary<EndPoint, TcpClient>();
@@ -75,11 +76,15 @@ namespace KDLib
 			CheckerCenter.Start();
 			ValidCenter.Start();
 
-			List<Task> tasks = new List<Task>();
-			tasks.Add(AcceptClient());
-			tasks.Add(AcceptVaid());
-			tasks.Add(AcceptChecker());
-			await Task.WhenAny(tasks.ToArray());
+			List<Task> tasks = new List<Task> { AcceptClient(), AcceptVaid(), AcceptChecker() };
+			try
+			{
+				await Task.WhenAny(tasks.ToArray());
+			}
+			catch (OperationCanceledException)
+			{
+				return;
+			}
 		}
 
 		//Don't change
@@ -101,7 +106,7 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.Run(ThisAction);
+			return Task.Run(ThisAction, tokenSource.Token);
 		}
 
 		private static Task AcceptChecker()
@@ -120,10 +125,10 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.WhenAny(ProcessCommandChecker(), Task.Run(ThisAction));
+			return Task.WhenAny(ProcessCommandChecker(), Task.Run(ThisAction, tokenSource.Token));
 		}
 
-		private async static void ListenFromChecker(EndPoint Pos)
+		private static Task ListenFromChecker(EndPoint Pos)
 		{
 			Action ThisAction = () =>
 			{
@@ -149,7 +154,7 @@ namespace KDLib
 						OnlineCommands.Enqueue(JsonConvert.DeserializeObject<KDCommand>(command));
 				}
 			};
-			await Task.Run(ThisAction);
+			return Task.Run(ThisAction, tokenSource.Token);
 		}
 
 		private static Task ProcessCommandChecker()
@@ -189,12 +194,8 @@ namespace KDLib
 					{
 						client = ListenerCenter.AcceptTcpClient();
 						TCPClients[client.Client.RemoteEndPoint] = client;
-						var list = new ObservableCollection<string>();
-						list.Add("abc");
-						list.Add("adbc");
-						list.Add("aadabc");
 						Console.WriteLine("ACCEPTED...");
-						SendCommandToOne(client.Client.RemoteEndPoint, new KDCommand(CommandType.ClientList, client.Client.LocalEndPoint as IPEndPoint, JsonConvert.SerializeObject(list)));
+						SendCommandToOne(client.Client.RemoteEndPoint, new KDCommand(CommandType.ClientList, client.Client.LocalEndPoint as IPEndPoint, JsonConvert.SerializeObject(Data.NameMachine)));
 						ListenFromClient(client.Client.RemoteEndPoint);
 					}
 				}
@@ -264,14 +265,14 @@ namespace KDLib
 					}
 				}
 			};
-			return Task.Run(ThisAction);
+			return Task.Run(ThisAction, tokenSource.Token);
 		}
 
-		public static void SendCommandToOne(EndPoint pos, KDCommand Command)
+		public static async void SendCommandToOne(EndPoint pos, KDCommand Command)
 		{
 			try
 			{
-				SendMessageToOne(JsonConvert.SerializeObject(Command), TCPClients[pos]);
+				await SendMessageToOne(JsonConvert.SerializeObject(Command), TCPClients[pos]);
 			}
 			catch (AggregateException ae)
 			{
@@ -283,24 +284,27 @@ namespace KDLib
 			}
 		}
 
-		private static async void SendMessageToOne(string message, TcpClient client)
+		private static Task SendMessageToOne(string message, TcpClient client)
 		{
-			try
+			return Task.Run(async () =>
 			{
-				if (client.Client == null) return;
-				StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true };
-				await WriteToStream.WriteLineAsync(message);
-				Console.WriteLine(client.Client.RemoteEndPoint.ToString() + " " +  message.Length.ToString());
-				Console.WriteLine(message);
-			}
-			catch (AggregateException ae)
-			{
-				throw ae.Flatten();
-			}
-			catch
-            {
-				throw;
-            }
+				try
+				{
+					if (client.Client == null) return;
+					StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true };
+					await WriteToStream.WriteLineAsync(message);
+					Console.WriteLine(client.Client.RemoteEndPoint.ToString() + " " + message.Length.ToString());
+					Console.WriteLine(message);
+				}
+				catch (AggregateException ae)
+				{
+					throw ae.Flatten();
+				}
+				catch
+				{
+					throw;
+				}
+			});
 		}
 
 		public static void SendCommandToAll(KDCommand Command)

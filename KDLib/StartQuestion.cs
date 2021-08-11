@@ -6,46 +6,48 @@ namespace KDLib
 	{
 		#region PrivateMembers
 		private SubjectInfo _Subject;
-        #endregion
+		private string _Type;
+		#endregion
 
-        #region PublicPropeties
-        public SubjectInfo Subject
-        {
-			get
-            {
-				return _Subject;
-            }
-			set
-            {
-				Set(nameof(Subject), ref _Subject, (SubjectInfo)value);
-            }
-        }
-        #endregion
+		#region PublicPropeties
+		public SubjectInfo Subject
+		{
+			get => _Subject;
+			set => Set(ref _Subject, (SubjectInfo)value);
+		}
+		public string Type
+		{
+			get => _Type;
+			set => Set(ref _Type, (value == "vid" || value == "img") ? value : "txt");
+		}
+		#endregion
 
-        private SubjectInfo SubjectValue (string value)
+		private SubjectInfo SubjectValue (string value)
 		{
 			if (!KDConvert.StringToSubject.ContainsKey(value)) return SubjectInfo.Unknown;
 			else return KDConvert.StringToSubject[value];
 		}
 
-		public StartQuestion(string subject_name, string content, string answer, int id)
+		public StartQuestion(string subject_name, string type, string content, string answer, int id)
 			: base(id, content, answer)
 		{
 			Subject = SubjectValue (subject_name);
+			Type = type;
 		}
 
 		[JsonConstructor]
-		public StartQuestion(SubjectInfo subject, string content, string answer, int id)
+		public StartQuestion(int id, SubjectInfo subject, string type, string content, string answer)
 	: base(id, content, answer)
 		{
 			Subject = subject;
+			Type = type;
 		}
 
 		public void GetValueFrom(StartQuestion sq)
 		{
 			Subject = sq.Subject;
-			base.Content = sq.Content;
-			base.Answer = sq.Answer;
+			Content = sq.Content;
+			Answer = sq.Answer;
 		}
 
 		public static int SubjectComparer(StartQuestion a, StartQuestion b)

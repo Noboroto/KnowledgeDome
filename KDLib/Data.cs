@@ -18,6 +18,13 @@ namespace KDLib
 		public const int PortForChecker = 2645;
 
 		public const int PortForValidCheck = 2647;
+
+        public static readonly List<string> NameMachine = new List<string>
+        {
+            "Thí sinh",
+            "MC",
+            "Khán giả",
+        };
         #endregion
 
         #region PrivateMembers
@@ -41,10 +48,15 @@ namespace KDLib
         /// <summary>
         /// (Làm sau) chuẩn bị dữ liệu
         /// </summary>
-        public static void Initialize()
+        public static void ServerInitialize()
 		{
             Commands = new KDCommandList();
             NetServer.Initialize();
+        }
+
+        public static void ClientInitialize()
+        {
+            Commands = new KDCommandList();
             NetClient.Initialize();
         }
 

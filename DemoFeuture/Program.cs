@@ -18,11 +18,11 @@ namespace DemoFeuture
     {
         static void Main(string[] args)
         {
-            Data.Initialize();
+            Data.ServerInitialize();
             {
                 try
                 {
-                    NetServer.Start();
+                    NetServer.Start().Wait();
                 }
                 catch (AggregateException ae)
                 {

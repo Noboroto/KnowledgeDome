@@ -121,7 +121,7 @@ namespace KDLib
 						{
 							if (!IsServerOnline) await Connect(ServerIP);
 							IsServerOnline = true;
-							SendCommand(new KDCommand((Data.OnFocus) ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint as IPEndPoint), OnlClient).Start();
+							SendCommand(new KDCommand(Data.OnFocus ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint as IPEndPoint), OnlClient);
 							await Task.Delay(1000);
 						}
 						else
@@ -220,7 +220,7 @@ namespace KDLib
 			};
 			await Task.Run(ThisAction, MustCancel.Token);
 		}
-		public static async Task SendCommand(KDCommand Command, TcpClient tcp)
+		public static async void SendCommand(KDCommand Command, TcpClient tcp)
 		{
 			try
 			{

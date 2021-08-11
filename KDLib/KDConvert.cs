@@ -13,8 +13,10 @@ namespace KDLib
         public static Dictionary<string, SubjectInfo> StringToSubject = new Dictionary<string, SubjectInfo>()
         {
             ["Địa lý"] = SubjectInfo.Geography,
+            ["Địa lí"] = SubjectInfo.Geography,
             ["Hiểu biết chung"] = SubjectInfo.General,
             ["Hoá học"] = SubjectInfo.Chemistry,
+            ["Hóa học"] = SubjectInfo.Chemistry,
             ["Lịch sử"] = SubjectInfo.History,
             ["Lĩnh vực khác"] = SubjectInfo.Other,
             ["Nghệ thuật"] = SubjectInfo.Arts,
@@ -23,7 +25,8 @@ namespace KDLib
             ["Tiếng Anh"] = SubjectInfo.English,
             ["Toán học"] = SubjectInfo.Math,
             ["Văn học"] = SubjectInfo.Literature,
-            ["Vật lý"] = SubjectInfo.Physics
+            ["Vật lý"] = SubjectInfo.Physics,
+            ["Vật lí"] = SubjectInfo.Physics,
         };
         public static Dictionary<SubjectInfo, string> SubjectToString = new Dictionary<SubjectInfo, string>()
         {
