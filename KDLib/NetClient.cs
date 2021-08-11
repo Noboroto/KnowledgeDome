@@ -1,15 +1,16 @@
 ﻿using Newtonsoft.Json;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
-using System.IO;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace KDLib
 {
@@ -17,7 +18,7 @@ namespace KDLib
 	{
 		#region PrivateMembers
 		private static TcpClient ThisClient = new TcpClient();
-        private static TcpClient OnlClient = new TcpClient();
+		private static TcpClient OnlClient = new TcpClient();
 
 		private static ObservableCollection<string> _ClientComboBoxChoose;
 		#endregion
@@ -25,9 +26,9 @@ namespace KDLib
 		#region PublicProperties
 		public static bool IsServerOnline { get; private set; }
 
-        public static CancellationTokenSource MustCancel { get; } = new CancellationTokenSource();
+		public static CancellationTokenSource MustCancel { get; } = new CancellationTokenSource();
 
-        public static ObservableCollection<string> ClientComboBoxChoose
+		public static ObservableCollection<string> ClientComboBoxChoose
 		{
 			get
 			{
@@ -55,9 +56,9 @@ namespace KDLib
 		private static void NotifyStaticPropertyChanged([CallerMemberName] string propertyName = "")
 		{
 			if (StaticPropertiesChanged != null)
-            {
+			{
 				StaticPropertiesChanged.Invoke(null, new PropertyChangedEventArgs(propertyName));
-            }
+			}
 		}
 
 		private static void NotifyStaticPropertyChanged(params string[] Names)
@@ -75,9 +76,9 @@ namespace KDLib
 		/// Initialize every things for a Client
 		/// </summary>
 		public static void Initialize()
-        {
+		{
 			ClientComboBoxChoose = new ObservableCollection<string>();
-        }
+		}
 
 		/// <param name="ip">The IP address you want to check</param>
 		/// <exception cref="ObjectDisposedException"/>
@@ -101,7 +102,7 @@ namespace KDLib
 			{
 				IsServerOnline = true;
 				ServerIP = ServerAddress;
-				 
+
 				ThisClient.Connect(ServerAddress, Data.PortForTCP);
 				tasks.Add(ListenFromServer());
 				tasks.Add(ProcessCommand());
@@ -142,7 +143,7 @@ namespace KDLib
 			await Task.Run(ThisAction, MustCancel.Token);
 		}
 
-		private async static Task ProcessCommand ()
+		private async static Task ProcessCommand()
 		{
 			Action ThisAction = () =>
 			{
@@ -155,9 +156,9 @@ namespace KDLib
 						{
 							case CommandType.ClientList:
 								foreach (var c in JsonConvert.DeserializeObject<ObservableCollection<string>>(command.Content))
-                                {
+								{
 									AddObservationCollectionAsync(ClientComboBoxChoose, c);
-                                }
+								}
 								goto EndCommand;
 							case CommandType.AccpetConnect:
 								OnlClient.Connect(ServerIP, Data.PortForChecker);
@@ -238,7 +239,8 @@ namespace KDLib
 
 		private async static Task SendMessage(string command, TcpClient tcp)
 		{
-			Action ThisAction = () => {
+			Action ThisAction = () =>
+			{
 				using (StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true })
 				{
 					try

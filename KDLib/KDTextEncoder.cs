@@ -1,7 +1,7 @@
 ﻿namespace KDLib
 {
-    public class KDTextEncoder
-    {
+	public class KDTextEncoder
+	{
 		#region PrivateMembers
 		#endregion
 

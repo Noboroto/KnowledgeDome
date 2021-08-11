@@ -3,40 +3,40 @@
 namespace KDLib
 {
 	public abstract class Question : ObservableObject
-    {
+	{
 		#region PrivateMembers
 		private string _Content;
 		private string _Answer;
-        #endregion
+		#endregion
 
-        #region PublicProperties
-        public string Content
-        {
+		#region PublicProperties
+		public string Content
+		{
 			get
-            {
+			{
 				return _Content;
-            }
+			}
 			set
-            {
-                Set(nameof(Content),ref _Content, value);
-            }
-        }
+			{
+				Set(nameof(Content), ref _Content, value);
+			}
+		}
 
-        public string Answer
-        {
+		public string Answer
+		{
 			get
-            {
-                return _Answer;
-            }
-            set
-            {
-                Set(nameof(Answer), ref _Answer, value);
-            }
-        }
-        public int ID { get; set; }
-        #endregion
+			{
+				return _Answer;
+			}
+			set
+			{
+				Set(nameof(Answer), ref _Answer, value);
+			}
+		}
+		public int ID { get; set; }
+		#endregion
 
-        internal Question(int id, string content, string answer)
+		internal Question(int id, string content, string answer)
 		{
 			ID = id;
 			Content = content;

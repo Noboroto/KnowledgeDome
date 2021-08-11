@@ -13,63 +13,64 @@
 */
 
 using CommonServiceLocator;
+
 using GalaSoft.MvvmLight.Ioc;
 
 namespace KDCtrlLib.ViewModel
 {
-    /// <summary>
-    /// This class contains static references to all the view models in the
-    /// application and provides an entry point for the bindings.
-    /// </summary>
-    public class ViewModelLocator
-    {
-        /// <summary>
-        /// Initializes a new instance of the ViewModelLocator class.
-        /// </summary>
-        public ViewModelLocator()
-        {
-            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-            SimpleIoc.Default.Register<MainWindowViewModel>();
-            SimpleIoc.Default.Register<ConnectViewModel>();
-            SimpleIoc.Default.Register<RoleViewModel>();
-            SimpleIoc.Default.Register<ConfigurationSettings>();
-        }
+	/// <summary>
+	/// This class contains static references to all the view models in the
+	/// application and provides an entry point for the bindings.
+	/// </summary>
+	public class ViewModelLocator
+	{
+		/// <summary>
+		/// Initializes a new instance of the ViewModelLocator class.
+		/// </summary>
+		public ViewModelLocator()
+		{
+			ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
+			SimpleIoc.Default.Register<MainWindowViewModel>();
+			SimpleIoc.Default.Register<ConnectViewModel>();
+			SimpleIoc.Default.Register<RoleViewModel>();
+			SimpleIoc.Default.Register<ConfigurationSettings>();
+		}
 
-        public static MainWindowViewModel MainWindow
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<MainWindowViewModel>();
-            }
-        }
+		public static MainWindowViewModel MainWindow
+		{
+			get
+			{
+				return ServiceLocator.Current.GetInstance<MainWindowViewModel>();
+			}
+		}
 
-        public static RoleViewModel Role
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<RoleViewModel>();
-            }
-        }
+		public static RoleViewModel Role
+		{
+			get
+			{
+				return ServiceLocator.Current.GetInstance<RoleViewModel>();
+			}
+		}
 
-        public static ConnectViewModel Connect
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ConnectViewModel>();
-            }
-        }
+		public static ConnectViewModel Connect
+		{
+			get
+			{
+				return ServiceLocator.Current.GetInstance<ConnectViewModel>();
+			}
+		}
 
-        public static ConfigurationSettings AppConfig
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<ConfigurationSettings>();
-            }
-        }
+		public static ConfigurationSettings AppConfig
+		{
+			get
+			{
+				return ServiceLocator.Current.GetInstance<ConfigurationSettings>();
+			}
+		}
 
-        public static void Cleanup()
-        {
-            // TODO Clear the ViewModels
-        }
-    }
+		public static void Cleanup()
+		{
+			// TODO Clear the ViewModels
+		}
+	}
 }

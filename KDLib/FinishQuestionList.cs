@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace KDLib
+﻿namespace KDLib
 {
 	public class FinishQuestionList : KDCollectionBase<FinishQuestion>
 	{

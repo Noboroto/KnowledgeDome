@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Media;
-using Newtonsoft.Json;
 
 namespace KDLib
 {
 	public class Obstacle
 	{
-        #region PrivateMembers
-        #endregion
-        
+		#region PrivateMembers
+		#endregion
+
 		#region PublicPRoperties
-        [JsonIgnore]
+		[JsonIgnore]
 		public int ID
 		{
 			get
@@ -55,12 +56,12 @@ namespace KDLib
 				return obstacleQuestion.BitmapImage;
 			}
 		}
-        [JsonProperty]
-        public ObstacleQuestion obstacleQuestion { get; set; }
-        [JsonProperty]
-        public List<ObstacleRowQuestion> RowList { get; set; }
-        #endregion
-        public Obstacle()
+		[JsonProperty]
+		public ObstacleQuestion obstacleQuestion { get; set; }
+		[JsonProperty]
+		public List<ObstacleRowQuestion> RowList { get; set; }
+		#endregion
+		public Obstacle()
 		{
 			RowList = new List<ObstacleRowQuestion>();
 		}

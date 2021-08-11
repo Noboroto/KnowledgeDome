@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System.Collections.Specialized;
-using System.ComponentModel;
+
 using System.Linq;
 
 namespace KDLib
@@ -27,9 +26,9 @@ namespace KDLib
 			return false;
 		}
 
-		public Player FindFromName (string name)
-        {
+		public Player FindFromName(string name)
+		{
 			return this.Where((Player p) => p.Name == name).First();
-        }
+		}
 	}
 }

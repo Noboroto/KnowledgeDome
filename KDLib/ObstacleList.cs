@@ -1,6 +1,4 @@
-﻿using System.Collections.Specialized;
-
-namespace KDLib
+﻿namespace KDLib
 {
 	public class ObstacleList : KDCollectionBase<Obstacle>
 	{

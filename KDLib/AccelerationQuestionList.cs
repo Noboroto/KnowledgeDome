@@ -1,17 +1,14 @@
-﻿using Newtonsoft.Json;
-using System;
-
-namespace KDLib
+﻿namespace KDLib
 {
 	public class AccelerationQuestionList : KDCollectionBase<AccelerationQuestion>
 	{
-        #region PrivateMembers
-        #endregion
+		#region PrivateMembers
+		#endregion
 
-        #region PublicProperties
-        #endregion
+		#region PublicProperties
+		#endregion
 
-        public AccelerationQuestionList()
+		public AccelerationQuestionList()
 		{
 
 		}

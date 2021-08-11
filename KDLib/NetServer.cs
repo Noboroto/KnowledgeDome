@@ -1,24 +1,21 @@
-﻿using KDLib;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace KDLib
 {
 	public static class NetServer
 	{
-        #region PrivateMembers
-        private static TcpListener ListenerCenter;
+		#region PrivateMembers
+		private static TcpListener ListenerCenter;
 
 		private static TcpListener CheckerCenter;
 
@@ -29,10 +26,10 @@ namespace KDLib
 		private static Dictionary<EndPoint, TcpClient> OnlineCLients;
 
 		private static Queue<KDCommand> OnlineCommands;
-        #endregion
+		#endregion
 
-        #region PublicProperies
-        public static Dictionary <MachineType, Dictionary <EndPoint, int>> MachineState { get; private set; }
+		#region PublicProperies
+		public static Dictionary<MachineType, Dictionary<EndPoint, int>> MachineState { get; private set; }
 		public static CancellationTokenSource tokenSource;
 		public static Dictionary<int, EndPoint> PlayerAvailable { get; private set; }
 		#endregion
@@ -58,7 +55,7 @@ namespace KDLib
 		#endregion
 
 		public static void Initialize()
-        {
+		{
 			tokenSource = new CancellationTokenSource();
 			TCPClients = new Dictionary<EndPoint, TcpClient>();
 			OnlineCommands = new Queue<KDCommand>();
@@ -158,16 +155,16 @@ namespace KDLib
 		}
 
 		private static Task ProcessCommandChecker()
-        {
+		{
 			Action ThisAction = () =>
 			{
 				while (true)
-                {
+				{
 					while (OnlineCommands.Count > 0)
-                    {
+					{
 						KDCommand command = OnlineCommands.Dequeue();
 						switch (command.PrefixCmd)
-                        {
+						{
 							case CommandType.Forcusing:
 								MachineState[command.Machine][command.ID] = 1;
 								break;
@@ -176,12 +173,12 @@ namespace KDLib
 								break;
 							default:
 								break;
-                        }
-                    }
-                }
+						}
+					}
+				}
 			};
 			return Task.Run(ThisAction);
-        }
+		}
 
 		private async static Task AcceptClient()
 		{
@@ -228,7 +225,7 @@ namespace KDLib
 		}
 
 		private static Task ProcessCommandClient()
-        {
+		{
 			Action ThisAction = () =>
 			{
 				while (true)
@@ -240,18 +237,18 @@ namespace KDLib
 						{
 							case CommandType.AskForConnect:
 								if (command.Content == Data.KeyMC || command.Content == Data.KeyViewer)
-                                {
+								{
 									SendCommandToOne(command.ID, new KDCommand(CommandType.RefuseConnect, null));
 									goto EndCommand;
 								}
 								int ID = Data.Matches[Data.CurrentMatchIndex].Players.FindFromName(command.Content).ID;
 								if (PlayerAvailable[ID] == null)
-                                {
+								{
 									SendCommandToOne(command.ID, new KDCommand(CommandType.RefuseConnect, null));
 									TCPClients[command.ID].Close();
-                                }
+								}
 								else
-                                {
+								{
 									PlayerAvailable[ID] = command.ID;
 									SendCommandToOne(command.ID, new KDCommand(CommandType.AccpetConnect, null));
 								}

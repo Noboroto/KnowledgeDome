@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KDCtrlLib.MessageForUI
+﻿namespace KDCtrlLib.MessageForUI
 {
-    public class NoticeMessage
-    {
-        public string Message { get; set; }
-        public NoticeMessage(string m)
-        {
-            Message = m;
-        }
-    }
+	public class NoticeMessage
+	{
+		public string Message { get; set; }
+		public NoticeMessage(string m)
+		{
+			Message = m;
+		}
+	}
 }

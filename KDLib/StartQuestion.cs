@@ -22,7 +22,7 @@ namespace KDLib
 		}
 		#endregion
 
-		private SubjectInfo SubjectValue (string value)
+		private SubjectInfo SubjectValue(string value)
 		{
 			if (!KDConvert.StringToSubject.ContainsKey(value)) return SubjectInfo.Unknown;
 			else return KDConvert.StringToSubject[value];
@@ -31,7 +31,7 @@ namespace KDLib
 		public StartQuestion(string subject_name, string type, string content, string answer, int id)
 			: base(id, content, answer)
 		{
-			Subject = SubjectValue (subject_name);
+			Subject = SubjectValue(subject_name);
 			Type = type;
 		}
 

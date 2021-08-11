@@ -1,26 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using KDCtrlLib.View;
+
+using KDLib;
+
 using System.Windows;
 using System.Windows.Input;
-using KDCtrlLib.View;
-using KDLib;
 
 namespace DemoWPF
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
-    {
-        public ICommand TryConnectCmd { get; set; }
-        public MainWindow()
-        { 
-            Data.ClientInitialize();
-            InitializeComponent();
-            MyFrame.Navigate(new ConnectPage());
-        }
-    }
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	public partial class MainWindow : Window
+	{
+		public ICommand TryConnectCmd { get; set; }
+		public MainWindow()
+		{
+			Data.ClientInitialize();
+			InitializeComponent();
+			MyFrame.Navigate(new ConnectPage());
+		}
+	}
 }

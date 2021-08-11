@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Windows.Media;
 
 namespace KDLib
@@ -15,9 +14,9 @@ namespace KDLib
 		{
 			RawImages = new List<byte[]>();
 		}
-        #endregion
+		#endregion
 
-        public ImageList(ImageList images)
+		public ImageList(ImageList images)
 			: this()
 		{
 			foreach (byte[] rawImage in images.RawImages)
@@ -32,9 +31,9 @@ namespace KDLib
 			Add((ImageSource)new ImageSourceConverter().ConvertFrom(image));
 		}
 
-        public override bool Contains(object id)
-        {
+		public override bool Contains(object id)
+		{
 			return true;
-        }
+		}
 	}
 }

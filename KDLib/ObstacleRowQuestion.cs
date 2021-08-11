@@ -6,25 +6,25 @@ namespace KDLib
 	{
 		#region PrivateMembers
 		private int _CharCount;
-        #endregion
+		#endregion
 
-        #region PublicProperties
-        public int ObstacleParentID { get; set; }
+		#region PublicProperties
+		public int ObstacleParentID { get; set; }
 
-        public int CharCount
-        {
+		public int CharCount
+		{
 			get
-            {
+			{
 				return _CharCount;
-            }
+			}
 			set
-            {
+			{
 				Set(nameof(CharCount), ref _CharCount, value);
-            }
-        }
-        #endregion
+			}
+		}
+		#endregion
 
-        [JsonConstructor]
+		[JsonConstructor]
 		public ObstacleRowQuestion(int id, int parentID, int charcount, string content, string answer)
 			: base(id, content, answer)
 		{

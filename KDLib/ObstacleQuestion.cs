@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+
 using System.Drawing;
 using System.IO;
 using System.Windows.Media;
@@ -7,24 +8,24 @@ namespace KDLib
 {
 	public class ObstacleQuestion : Question
 	{
-        #region PrivateMembers
-        private byte[] _Image;
+		#region PrivateMembers
+		private byte[] _Image;
 		private int _CharCount;
-        #endregion
+		#endregion
 
-        #region PublicProperties
-        public int CharCount
-        {
+		#region PublicProperties
+		public int CharCount
+		{
 			get
-            {
+			{
 				return _CharCount;
-            }
+			}
 			set
-            {
+			{
 				Set(nameof(CharCount), ref _CharCount, value);
-            }
-        }
-        
+			}
+		}
+
 		[JsonIgnore]
 		private byte[] RawImage
 		{
@@ -35,7 +36,7 @@ namespace KDLib
 			set
 			{
 				_Image = value;
-				File.WriteAllBytes("Tests\\Images\\" + ID.ToString() + "." +  ImageType, RawImage);
+				File.WriteAllBytes("Tests\\Images\\" + ID.ToString() + "." + ImageType, RawImage);
 			}
 		}
 
@@ -51,13 +52,13 @@ namespace KDLib
 				return null;
 			}
 		}
-        public string ImageType { get; set; }
-        
+		public string ImageType { get; set; }
+
 		[JsonIgnore]
 		public Bitmap BitmapImage => new Bitmap(new MemoryStream(RawImage));
-        #endregion
+		#endregion
 
-        [JsonConstructor]
+		[JsonConstructor]
 		public ObstacleQuestion(int id, int charcount, string type, string content)
 			: base(id, content, "")
 		{
@@ -69,9 +70,9 @@ namespace KDLib
 		{
 			CharCount = q.CharCount;
 			Content = q.Content;
-			RawImage = q.RawImage;	
+			RawImage = q.RawImage;
 		}
-		
+
 		public static int Comparer(ObstacleQuestion a, ObstacleQuestion b)
 		{
 			return string.Compare(a.Content, b.Content);

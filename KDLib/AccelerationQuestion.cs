@@ -1,47 +1,47 @@
 ﻿using Newtonsoft.Json;
-using System.Drawing;
+
 using System.IO;
 
 namespace KDLib
 {
 	public class AccelerationQuestion : Question
 	{
-        #region PrivateMembers
-        private string _ImageType;
+		#region PrivateMembers
+		private string _ImageType;
 
 		private int _NumberOfImage;
-        #endregion
+		#endregion
 
-        #region PublicProperties
-        [JsonIgnore]
-        public ImageList HintImages { get; set; }
+		#region PublicProperties
+		[JsonIgnore]
+		public ImageList HintImages { get; set; }
 
-        public string ImageType
-        {
-			get
-            {
-				return _ImageType;
-            }
-			set
-            {
-                Set(nameof(ImageType), ref _ImageType, value);
-            }
-        }
-
-		public int NumberOfImage 
+		public string ImageType
 		{
-            get
-            {
-				return _NumberOfImage;
-            }
+			get
+			{
+				return _ImageType;
+			}
 			set
-            {
-                Set(nameof(NumberOfImage), ref _NumberOfImage, value);
-            }
+			{
+				Set(nameof(ImageType), ref _ImageType, value);
+			}
 		}
-        #endregion
 
-        [JsonConstructor]
+		public int NumberOfImage
+		{
+			get
+			{
+				return _NumberOfImage;
+			}
+			set
+			{
+				Set(nameof(NumberOfImage), ref _NumberOfImage, value);
+			}
+		}
+		#endregion
+
+		[JsonConstructor]
 		public AccelerationQuestion(int id, string type, string content, string answer)
 			: base(id, content, answer)
 		{

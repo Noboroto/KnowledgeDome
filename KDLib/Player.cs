@@ -1,5 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
+
 using Newtonsoft.Json;
+
 using System.IO;
 using System.Windows.Media;
 
@@ -7,15 +9,15 @@ namespace KDLib
 {
 	public class Player : ObservableObject
 	{
-        private byte[] _Avatar;
+		private byte[] _Avatar;
 
 		private int _Score;
 
 		public int ID { get; set; }
 
-        public string Name { get; set; }
+		public string Name { get; set; }
 
-        [JsonIgnore]
+		[JsonIgnore]
 		public byte[] RawAvatar
 		{
 			get
@@ -43,19 +45,19 @@ namespace KDLib
 		}
 
 		[JsonIgnore]
-        public int Score 
-		{ 
+		public int Score
+		{
 			get
-            {
+			{
 				return _Score;
-            }
+			}
 			set
-            {
+			{
 				Set(nameof(Score), ref _Score, value);
-            }
+			}
 		}
 
-        private Player()
+		private Player()
 		{
 			_Avatar = new byte[0];
 		}

@@ -1,7 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.ComponentModel;
-
-namespace KDLib
+﻿namespace KDLib
 {
 	public class MatchList : KDCollectionBase<Match>
 	{
