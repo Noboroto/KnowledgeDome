@@ -19,7 +19,7 @@ using System.Windows.Input;
 
 namespace KDCtrlLib.ViewModel
 {
-    public class RoleViewModel : ViewModelBase, IHandleExeception
+    public class RoleViewModel : ViewModelBase
     {
         #region ICommand
         public RelayCommand<string> AskPermision { get; set; }
@@ -51,16 +51,6 @@ namespace KDCtrlLib.ViewModel
                     return !string.IsNullOrEmpty(s);
                 }
            );
-        }
-
-        public Task<string> GetException(Task t)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> GetException(Action a)
-        {
-            throw new NotImplementedException();
         }
     }
 }
