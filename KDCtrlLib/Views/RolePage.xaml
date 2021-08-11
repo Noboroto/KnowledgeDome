@@ -4,8 +4,6 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:KDCtrlLib"
-	xmlns:localvm="clr-namespace:KDCtrlLib.ViewModel"
 	xmlns:lib="clr-namespace:KDLib;assembly=KDLib"
 	mc:Ignorable="d"
 	d:DesignHeight="450"
@@ -28,9 +26,6 @@
 				Margin="20"
 				VerticalAlignment="Stretch"
 				HorizontalAlignment="Stretch">
-				<TextBlock
-					DockPanel.Dock="Top"
-					Text="{Binding ElementName=ChoiceBox, Path=SelectedItem, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" />
 				<Button
 					Command="{Binding AskPermision}"
 					CommandParameter="{Binding Choice, UpdateSourceTrigger=PropertyChanged}"
@@ -44,7 +39,7 @@
 					materialDesign:HintAssist.Hint="Đây là máy của"
 					ItemsSource="{Binding Path=(lib:NetClient.ClientComboBoxChoose), UpdateSourceTrigger=PropertyChanged}"
 					SelectedItem="{Binding Choice,Mode=OneWayToSource,NotifyOnSourceUpdated=True}"
-					Margin="10"
+					Margin="10 15 10 10"
 					DockPanel.Dock="Right"
 					FontSize="20">
 				</ComboBox>
