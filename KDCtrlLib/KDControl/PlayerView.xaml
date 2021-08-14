@@ -8,61 +8,63 @@
 	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 	Height="auto"
 	MinWidth="300"
-	x:Name="UC"
-	>
+	x:Name="UC">
 	<materialDesign:Card
 		Background="{Binding ElementName=UC, Path=Background}"
-		materialDesign:ShadowAssist.ShadowDepth="Depth5"
-		>
-		<StackPanel
-			Margin="5"
-			MinWidth="250">
-			<StackPanel.Resources>
-				<Style
-					TargetType="TextBlock">
-					<Setter
-						Property="FontSize"
-						Value="40" />
-					<Setter
-						Property="TextAlignment"
-						Value="Center"/>
-					<Setter
-						Property="Foreground"
-						Value="{Binding ElementName=UC, Path=Foreground}"
-						/>
-					<Setter
-						Property="FontWeight"
-						Value="Black"
-						/>
-				</Style>
-			</StackPanel.Resources>
-			<Ellipse
-				Grid.Column="0"
-				Height="230"
-				Width="230"
-				Margin="15">
-				<Ellipse.Fill>
-					<ImageBrush
-						ImageSource="{Binding Avatar}" />
-				</Ellipse.Fill>
-			</Ellipse>
-			<TextBlock 
-				MaxWidth="350"
-				TextWrapping="Wrap"
-				Margin="5"
-				Width="auto"
-				Height="auto"
-				HorizontalAlignment="Center"
-				Text="{Binding Name}"
-				/>
+		materialDesign:ShadowAssist.ShadowDepth="Depth5">
+		<DockPanel>
+			<StackPanel
+				DockPanel.Dock="Top"
+				VerticalAlignment="Stretch"
+				HorizontalAlignment="Stretch"
+				MinWidth="250">
+				<StackPanel.Resources>
+					<Style
+						TargetType="TextBlock">
+						<Setter
+							Property="TextAlignment"
+							Value="Center" />
+						<Setter
+							Property="Foreground"
+							Value="{Binding ElementName=UC, Path=Foreground}" />
+						<Setter
+							Property="FontWeight"
+							Value="Black" />
+					</Style>
+				</StackPanel.Resources>
+				<Ellipse
+					Grid.Column="0"
+					Height="230"
+					Width="230"
+					Margin="15">
+					<Ellipse.Fill>
+						<ImageBrush
+							ImageSource="{Binding Avatar}" />
+					</Ellipse.Fill>
+				</Ellipse>
+				<TextBlock
+					VerticalAlignment="Center"
+					MaxWidth="350"
+					TextWrapping="Wrap"
+					Margin="5"
+					Width="auto"
+					Height="auto"
+					FontSize="40"
+					HorizontalAlignment="Center"
+					Text="{Binding Name}" />
+			</StackPanel>
 			<TextBlock
+				DockPanel.Dock="Bottom"
+				VerticalAlignment="Bottom"
 				Width="auto"
 				Height="auto"
-				Margin="5"
-				HorizontalAlignment="Center"
+				Margin="5 20 5 5"
+				FontSize="70"
+				TextAlignment="Center"
+				HorizontalAlignment="Stretch"
 				Grid.Column="1"
 				Grid.Row="1"
 				Text="{Binding Score}" />
-		</StackPanel>
+		</DockPanel>
 	</materialDesign:Card>
 </UserControl>

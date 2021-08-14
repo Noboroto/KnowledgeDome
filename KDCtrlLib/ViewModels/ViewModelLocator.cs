@@ -51,7 +51,7 @@ namespace KDCtrlLib.ViewModels
 
 		public static ConfigurationSettings AppConfig => ServiceLocator.Current.GetInstance<ConfigurationSettings>();
 
-		public static MainClientPageViewModel Main => ServiceLocator.Current.GetInstance<MainClientPageViewModel>();
+		public static MainClientPageViewModel MainClient => ServiceLocator.Current.GetInstance<MainClientPageViewModel>();
 
 		public static void Cleanup()
 		{

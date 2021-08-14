@@ -14,11 +14,16 @@ namespace KDCtrlLib.Views
 		public MainClientPage()
 		{
 			InitializeComponent();
-			var b = new Player(12, "", "adsasd asdasdasdas");
+			var b = new Player(12, "asdad");
+			Data.Matches = new MatchList();
+			Data.Matches.Add( new Match());
+			Data.Matches[0].Players = new PlayerList { b, b, b, b };
 			var show = new List<PlayerView> { first, second, third, fourth, fifth };
-			for (int i = 0; i < show.Count - 1; ++i)
+			int c = (show.Count < Data.Matches[0].Players.Count) ? show.Count : Data.Matches[0].Players.Count;
+			for (int i = 0; i < c; ++i)
 			{
-				show[i].PlayerData = b;
+				Data.Matches[0].Players[i].BackgroundColor = show[i].Background;
+				show[i].PlayerData = Data.Matches[0].Players[i];
 				show[i].Visibility = System.Windows.Visibility.Visible;
 			}
 		}

@@ -10,11 +10,10 @@ namespace KDLib
 	public class Player : ObservableObject
 	{
 		private byte[] _Avatar;
-
 		private int _Score;
-
+		[JsonIgnore]
+		public Brush BackgroundColor { get; set; }
 		public int ID { get; set; }
-
 		public string Name { get; set; }
 
 		[JsonIgnore]
@@ -63,7 +62,7 @@ namespace KDLib
 		}
 
 		[JsonConstructor]
-		public Player(int id, string username, string name)
+		public Player(int id, string name)
 		{
 			ID = id;
 			Name = name;
