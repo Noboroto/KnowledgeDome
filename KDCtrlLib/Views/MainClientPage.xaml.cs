@@ -14,10 +14,13 @@ namespace KDCtrlLib.Views
 		public MainClientPage()
 		{
 			InitializeComponent();
+			#region DEBUG DATA
 			var b = new Player(12, "asdad");
 			Data.Matches = new MatchList();
 			Data.Matches.Add( new Match());
 			Data.Matches[0].Players = new PlayerList { b, b, b, b };
+			#endregion
+
 			var show = new List<PlayerView> { first, second, third, fourth, fifth };
 			int c = (show.Count < Data.Matches[0].Players.Count) ? show.Count : Data.Matches[0].Players.Count;
 			for (int i = 0; i < c; ++i)
