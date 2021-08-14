@@ -1,6 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Windows.Controls;
 
 using KDLib;
+using KDCtrlLib.KDControl;
 
 namespace KDCtrlLib.Views
 {
@@ -12,6 +14,11 @@ namespace KDCtrlLib.Views
 		public MainClientPage()
 		{
 			InitializeComponent();
+			var show = new List<PlayerView> { first, second, third, fourth, fifth };
+			for (int i = 0; i < show.Count; ++i)
+			{
+				show[i].Visibility = System.Windows.Visibility.Visible;
+			}
 		}
 	}
 }

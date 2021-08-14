@@ -5,12 +5,46 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:KDCtrlLib.Views"
+	xmlns:control="clr-namespace:KDCtrlLib.KDControl"
 	>
 	<StackPanel
 		VerticalAlignment="Center"
 		HorizontalAlignment="Center"
 		Orientation="Horizontal"
 		>
-		
+		<StackPanel.Resources>
+			<Style
+				TargetType="control:PlayerView">
+				<Setter
+					Property="Margin"
+					Value="40" />
+			</Style>
+		</StackPanel.Resources>
+		<control:PlayerView
+			x:Name="first"
+			Visibility="Collapsed"
+			Background="#d71b3b"
+			Foreground="White"
+			/>
+		<control:PlayerView
+			x:Name="second"
+			Visibility="Collapsed"
+			Background="#e8d71e"
+			Foreground="Black" />
+		<control:PlayerView
+			x:Name="third"
+			Visibility="Collapsed"
+			Background="#16acea"
+			Foreground="Black" />
+		<control:PlayerView
+			x:Name="fourth"
+			Visibility="Collapsed"
+			Background="#3a6b35"
+			Foreground="White" />
+		<control:PlayerView
+			x:Name="fifth"
+			Visibility="Collapsed"
+			Background="#4203c9"
+			Foreground="White" />
 	</StackPanel>
 </Page>
