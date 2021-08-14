@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
-namespace KDCtrlLib.View
+namespace KDCtrlLib.Views
 {
 	/// <summary>
 	/// Interaction logic for RolePage.xaml

@@ -1,6 +1,6 @@
 using GalaSoft.MvvmLight;
 
-namespace KDCtrlLib.ViewModel
+namespace KDCtrlLib.ViewModels
 {
 	public class MainWindowViewModel : ViewModelBase
 	{

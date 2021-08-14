@@ -4,7 +4,7 @@ using GalaSoft.MvvmLight.Messaging;
 
 using KDCtrlLib.MessageForUI;
 
-namespace KDCtrlLib.ViewModel
+namespace KDCtrlLib.ViewModels
 {
 	public class RoleViewModel : ViewModelBase
 	{

@@ -1,8 +1,8 @@
 /*
   In App.xaml:
   <Application.Resources>
-      <vm:ViewModelLocator xmlns:vm="clr-namespace:KDCtrlLib"
-                           x:Key="Locator" />
+	  <vm:ViewModelLocator xmlns:vm="clr-namespace:KDCtrlLib"
+						   x:Key="Locator" />
   </Application.Resources>
   
   In the View:
@@ -16,7 +16,7 @@ using CommonServiceLocator;
 
 using GalaSoft.MvvmLight.Ioc;
 
-namespace KDCtrlLib.ViewModel
+namespace KDCtrlLib.ViewModels
 {
 	/// <summary>
 	/// This class contains static references to all the view models in the
@@ -33,40 +33,25 @@ namespace KDCtrlLib.ViewModel
 			SimpleIoc.Default.Register<MainWindowViewModel>();
 			SimpleIoc.Default.Register<ConnectViewModel>();
 			SimpleIoc.Default.Register<RoleViewModel>();
+			SimpleIoc.Default.Register<MainClientPageViewModel>();
 			SimpleIoc.Default.Register<ConfigurationSettings>();
 		}
 
-		public static MainWindowViewModel MainWindow
+		public static void Reload<TClass>() where TClass : class
 		{
-			get
-			{
-				return ServiceLocator.Current.GetInstance<MainWindowViewModel>();
-			}
+			SimpleIoc.Default.Unregister<TClass>();
+			SimpleIoc.Default.Register<TClass>();
 		}
 
-		public static RoleViewModel Role
-		{
-			get
-			{
-				return ServiceLocator.Current.GetInstance<RoleViewModel>();
-			}
-		}
+		public static MainWindowViewModel MainWindow => ServiceLocator.Current.GetInstance<MainWindowViewModel>();
 
-		public static ConnectViewModel Connect
-		{
-			get
-			{
-				return ServiceLocator.Current.GetInstance<ConnectViewModel>();
-			}
-		}
+		public static RoleViewModel Role => ServiceLocator.Current.GetInstance<RoleViewModel>();
 
-		public static ConfigurationSettings AppConfig
-		{
-			get
-			{
-				return ServiceLocator.Current.GetInstance<ConfigurationSettings>();
-			}
-		}
+		public static ConnectViewModel Connect => ServiceLocator.Current.GetInstance<ConnectViewModel>();
+
+		public static ConfigurationSettings AppConfig => ServiceLocator.Current.GetInstance<ConfigurationSettings>();
+
+		public static MainClientPageViewModel Main => ServiceLocator.Current.GetInstance<MainClientPageViewModel>();
 
 		public static void Cleanup()
 		{

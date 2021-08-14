@@ -68,6 +68,7 @@ namespace KDLib
 			ID = id;
 			Name = name;
 			if (File.Exists("Images\\Players\\" + ID.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + ID.ToString() + ".png");
+			else RawAvatar = File.ReadAllBytes("Images\\Players\\default.png");
 		}
 	}
 }

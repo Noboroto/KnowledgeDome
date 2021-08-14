@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 
-namespace KDCtrlLib.View
+namespace KDCtrlLib.Views
 {
 	/// <summary>
 	/// Interaction logic for UserControl1.xaml

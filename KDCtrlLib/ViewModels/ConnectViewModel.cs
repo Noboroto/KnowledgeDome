@@ -4,7 +4,7 @@ using GalaSoft.MvvmLight.Messaging;
 
 using KDCtrlLib.Interface;
 using KDCtrlLib.MessageForUI;
-using KDCtrlLib.View;
+using KDCtrlLib.Views;
 
 using KDLib;
 using KDLib.KDException;
@@ -15,7 +15,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace KDCtrlLib.ViewModel
+namespace KDCtrlLib.ViewModels
 {
 	public class ConnectViewModel : ViewModelBase, IHandleExeception
 	{

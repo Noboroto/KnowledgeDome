@@ -1,4 +1,4 @@
-﻿using KDCtrlLib.View;
+﻿using KDCtrlLib.Views;
 
 using KDLib;
 
