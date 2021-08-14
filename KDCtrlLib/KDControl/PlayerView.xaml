@@ -24,6 +24,9 @@
 						Property="FontSize"
 						Value="40" />
 					<Setter
+						Property="TextAlignment"
+						Value="Center"/>
+					<Setter
 						Property="Foreground"
 						Value="{Binding ElementName=UC, Path=Foreground}"
 						/>
