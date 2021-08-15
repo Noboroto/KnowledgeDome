@@ -13,6 +13,8 @@ namespace KDLib
 		private int _Score;
 		[JsonIgnore]
 		public Brush BackgroundColor { get; set; }
+		[JsonIgnore]
+		public Brush ForegroundColor { get; set; }
 		public int ID { get; set; }
 		public string Name { get; set; }
 

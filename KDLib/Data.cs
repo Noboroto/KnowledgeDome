@@ -28,17 +28,13 @@ namespace KDLib
 
 		#region PublicProperties
 		public static MachineType ThisMacineType { get; set; }
-
 		public static bool OnFocus { get; set; }
-
 		public static List<string> ListIP { get; private set; }
-
 		public static KDCommandList Commands { get; set; }
-
 		public static int CurrentMatchIndex { get; set; }
-
-		public static int CurrentPlayer { get; set; }
-
+		public static int CurrentPlayerIndex { get; set; }
+		public static Match CurrentMatch { get; set; }
+		public static Player CurrentPlayer { get; set; }
 		public static MatchList Matches { get; set; }
 		#endregion
 		/// <summary>

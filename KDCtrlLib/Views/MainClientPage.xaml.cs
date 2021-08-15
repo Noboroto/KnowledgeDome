@@ -26,6 +26,7 @@ namespace KDCtrlLib.Views
 			for (int i = 0; i < c; ++i)
 			{
 				Data.Matches[0].Players[i].BackgroundColor = show[i].Background;
+				Data.Matches[0].Players[i].ForegroundColor = show[i].Foreground;
 				show[i].PlayerData = Data.Matches[0].Players[i];
 				show[i].Visibility = System.Windows.Visibility.Visible;
 			}
