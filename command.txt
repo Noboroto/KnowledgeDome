@@ -1,0 +1,11 @@
+Install-Package CommonServiceLocator -ProjectName KDLib
+Install-Package MvvmLightLibs -ProjectName KDLib
+Install-Package Newtonsoft.Json -ProjectName KDLib
+Install-Package CommonServiceLocator -ProjectName KDCtrlLib
+Install-Package MvvmLightLibs -ProjectName KDCtrlLib
+Install-Package MaterialDesignColors -ProjectName KDCtrlLib
+Install-Package MaterialDesignThemes -ProjectName KDCtrlLib
+Install-Package MaterialDesignColors -ProjectName DemoWPF
+Install-Package MaterialDesignThemes -ProjectName DemoWPF
+Install-Package Newtonsoft.Json -ProjectName DemoFeuture
+
