@@ -34,6 +34,7 @@ namespace KDCtrlLib.ViewModels
 			SimpleIoc.Default.Register<ConnectViewModel>();
 			SimpleIoc.Default.Register<RoleViewModel>();
 			SimpleIoc.Default.Register<MainClientPageViewModel>();
+			SimpleIoc.Default.Register<MainServerPageViewModel>();
 			SimpleIoc.Default.Register<ConfigurationSettings>();
 		}
 
@@ -52,6 +53,8 @@ namespace KDCtrlLib.ViewModels
 		public static ConfigurationSettings AppConfig => ServiceLocator.Current.GetInstance<ConfigurationSettings>();
 
 		public static MainClientPageViewModel MainClient => ServiceLocator.Current.GetInstance<MainClientPageViewModel>();
+
+		public static MainServerPageViewModel MainServer => ServiceLocator.Current.GetInstance<MainServerPageViewModel>();
 
 		public static void Cleanup()
 		{

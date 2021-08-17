@@ -6,7 +6,6 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:local="clr-namespace:DemoWPF"
 	WindowStyle="SingleBorderWindow"
-	WindowState="Maximized"
 	WindowStartupLocation="CenterScreen"
 	Title="MainWindow"
 	Height="450"

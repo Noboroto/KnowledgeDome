@@ -17,7 +17,7 @@ namespace DemoWPF
 		{
 			InitializeComponent();			
 			Data.ClientInitialize();
-			MyFrame.Navigate(new MainClientPage());
+			MyFrame.Navigate(new MainServerPage());
 		}
 	}
 }
