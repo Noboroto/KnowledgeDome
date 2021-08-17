@@ -72,8 +72,8 @@
   <ItemGroup>
     <Compile Include="ConfigurationSettings.cs" />
     <Compile Include="Interfaces\IHandleEvent.cs" />
-    <Compile Include="KDControl\PlayerView.xaml.cs">
-      <DependentUpon>PlayerView.xaml</DependentUpon>
+    <Compile Include="KDControl\PlayerMainClientView.xaml.cs">
+      <DependentUpon>PlayerMainClientView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MessageForUI\NavigateToMessage.cs" />
     <Compile Include="MessageForUI\SnackbarNoticeMessage.cs" />
@@ -109,7 +109,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="KDControl\PlayerView.xaml">
+    <Page Include="KDControl\PlayerMainClientView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -11,13 +11,13 @@ using System.Windows.Media.Imaging;
 namespace KDCtrlLib.KDControl
 {
 	/// <summary>
-	/// Interaction logic for PlayerView.xaml
+	/// Interaction logic for PlayerMainClientView.xaml
 	/// </summary>
-	public partial class PlayerView : UserControl
+	public partial class PlayerMainClientView : UserControl
 	{
 		public static readonly DependencyProperty SizeProperty =
 			DependencyProperty.Register("Size", typeof(int),
-										typeof(PlayerView)
+										typeof(PlayerMainClientView)
 										);
 		public int Size
 		{
@@ -38,7 +38,7 @@ namespace KDCtrlLib.KDControl
 		public ImageSource Source => _PlayerData.Avatar;
 
 		public int RectangleSize => Size + 10;
-		public PlayerView()
+		public PlayerMainClientView()
 		{
 			InitializeComponent();
 		}

@@ -22,34 +22,34 @@
 		>
 		<StackPanel.Resources>
 			<Style
-				TargetType="control:PlayerView">
+				TargetType="control:PlayerMainClientView">
 				<Setter
 					Property="Margin"
 					Value="35" />
 			</Style>
 		</StackPanel.Resources>
-		<control:PlayerView
+		<control:PlayerMainClientView
 			x:Name="first"
 			Visibility="Collapsed"
 			Background="#d71b3b"
 			Foreground="White"
 			/>
-		<control:PlayerView
+		<control:PlayerMainClientView
 			x:Name="second"
 			Visibility="Collapsed"
 			Background="#e8d71e"
 			Foreground="Black" />
-		<control:PlayerView
+		<control:PlayerMainClientView
 			x:Name="third"
 			Visibility="Collapsed"
 			Background="#16acea"
 			Foreground="Black" />
-		<control:PlayerView
+		<control:PlayerMainClientView
 			x:Name="fourth"
 			Visibility="Collapsed"
 			Background="#3a6b35"
 			Foreground="White" />
-		<control:PlayerView
+		<control:PlayerMainClientView
 			x:Name="fifth"
 			Visibility="Collapsed"
 			Background="#4203c9"

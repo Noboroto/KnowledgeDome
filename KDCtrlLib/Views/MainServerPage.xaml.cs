@@ -34,7 +34,7 @@ namespace KDCtrlLib.Views
 			Data.Matches[0].Players = new PlayerList { b, b, b, b };
 			#endregion
 
-			var show = new List<PlayerView> { first, second, third, fourth, fifth };
+			var show = new List<PlayerMainClientView> { first, second, third, fourth, fifth };
 			int c = (show.Count < Data.Matches[0].Players.Count) ? show.Count : Data.Matches[0].Players.Count;
 			for (int i = 0; i < c; ++i)
 			{
