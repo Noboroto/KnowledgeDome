@@ -7,64 +7,127 @@
 	xmlns:local="clr-namespace:KDCtrlLib.KDControl"
 	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 	Height="auto"
-	MinWidth="300">
+	MinWidth="250">
+	<UserControl.Resources>
+		<ResourceDictionary
+			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
+	</UserControl.Resources>
 	<materialDesign:Card
 		Background="{Binding ElementName=UC, Path=Background}"
 		materialDesign:ShadowAssist.ShadowDepth="Depth5">
-		<DockPanel>
-			<StackPanel
-				DockPanel.Dock="Top"
-				VerticalAlignment="Stretch"
-				HorizontalAlignment="Stretch"
-				MinWidth="250">
-				<StackPanel.Resources>
-					<Style
-						TargetType="TextBlock">
-						<Setter
-							Property="TextAlignment"
-							Value="Center" />
-						<Setter
-							Property="Foreground"
-							Value="{Binding ElementName=UC, Path=Foreground}" />
-						<Setter
-							Property="FontWeight"
-							Value="Black" />
-					</Style>
-				</StackPanel.Resources>
-				<Ellipse
-					Grid.Column="0"
-					Height="230"
-					Width="230"
-					Margin="15">
-					<Ellipse.Fill>
-						<ImageBrush
-							ImageSource="{Binding Avatar}" />
-					</Ellipse.Fill>
-				</Ellipse>
-				<TextBlock
-					VerticalAlignment="Center"
-					MaxWidth="350"
-					TextWrapping="Wrap"
-					Margin="5"
+		<materialDesign:DialogHost
+			DialogClosing="DialogHost_DialogClosing"
+			>
+			<materialDesign:DialogHost.DialogContent>
+				<StackPanel
+					Margin="16"
+					>
+					<Label 
+						ContentStringFormat="Sửa điểm của {0}"
+						Content="{Binding Name}" 
+						/>
+					<TextBox
+						Margin="0 8 0 0"
+						x:Name="EditScore"
+						HorizontalAlignment="Stretch"
+						Text="{Binding Score, Mode=OneWay}" />
+					<StackPanel
+						Orientation="Horizontal"
+						HorizontalAlignment="Right">
+						<Button
+							Style="{StaticResource MaterialDesignFlatButton}"
+							IsCancel="True"
+							Margin="0 8 8 0"
+							Content="CANCEL"
+							Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" >
+							<Button.CommandParameter>
+								<system:Boolean
+									xmlns:system="clr-namespace:System;assembly=mscorlib">
+									False
+								</system:Boolean>
+							</Button.CommandParameter>
+						</Button>
+						<Button
+							Style="{StaticResource MaterialDesignFlatButton}"
+							IsDefault="True"
+							Margin="0 8 8 0"
+							Content="Sửa"
+							Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}">
+							<Button.CommandParameter>
+								<system:Boolean
+									xmlns:system="clr-namespace:System;assembly=mscorlib">
+									True
+								</system:Boolean>
+							</Button.CommandParameter>
+						</Button>
+					</StackPanel>
+				</StackPanel>
+			</materialDesign:DialogHost.DialogContent>
+			<StackPanel>
+				<DockPanel>
+					<StackPanel
+						DockPanel.Dock="Top"
+						VerticalAlignment="Stretch"
+						HorizontalAlignment="Stretch"
+						MinWidth="200">
+						<StackPanel.Resources>
+							<Style
+								TargetType="TextBlock">
+								<Setter
+									Property="TextAlignment"
+									Value="Center" />
+								<Setter
+									Property="Foreground"
+									Value="{Binding ElementName=UC, Path=Foreground}" />
+								<Setter
+									Property="FontWeight"
+									Value="Black" />
+							</Style>
+						</StackPanel.Resources>
+						<Ellipse
+							Grid.Column="0"
+							Height="180"
+							Width="180"
+							Margin="15">
+							<Ellipse.Fill>
+								<ImageBrush
+									ImageSource="{Binding Avatar}" />
+							</Ellipse.Fill>
+						</Ellipse>
+						<TextBlock
+							VerticalAlignment="Center"
+							MaxWidth="300"
+							TextWrapping="Wrap"
+							Margin="5"
+							Width="auto"
+							Height="auto"
+							FontSize="30"
+							HorizontalAlignment="Center"
+							Text="{Binding Name}" />
+					</StackPanel>
+					<TextBlock
+						DockPanel.Dock="Bottom"
+						VerticalAlignment="Bottom"
+						Width="auto"
+						Height="auto"
+						Margin="5 15 5 5"
+						FontSize="30"
+						TextAlignment="Center"
+						HorizontalAlignment="Stretch"
+						Grid.Column="1"
+						Grid.Row="1"
+						Text="{Binding Score}" />
+				</DockPanel>
+				<Button
+					Style="{StaticResource MaterialDesignRaisedLightButton}"
+					Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
 					Width="auto"
-					Height="auto"
-					FontSize="40"
-					HorizontalAlignment="Center"
-					Text="{Binding Name}" />
+					Height="70"
+					Content="Sửa điểm"
+					FontSize="25"
+					Margin="15"
+					/>
 			</StackPanel>
-			<TextBlock
-				DockPanel.Dock="Bottom"
-				VerticalAlignment="Bottom"
-				Width="auto"
-				Height="auto"
-				Margin="5 20 5 5"
-				FontSize="70"
-				TextAlignment="Center"
-				HorizontalAlignment="Stretch"
-				Grid.Column="1"
-				Grid.Row="1"
-				Text="{Binding Score}" />
-		</DockPanel>
+		</materialDesign:DialogHost>
 	</materialDesign:Card>
-
 </UserControl>

@@ -21,33 +21,33 @@
 			Orientation="Horizontal">
 			<WrapPanel.Resources>
 				<Style
-					TargetType="control:PlayerMainClientView">
+					TargetType="control:PlayerMainServerView">
 					<Setter
 						Property="Margin"
 						Value="35" />
 				</Style>
 			</WrapPanel.Resources>
-			<control:PlayerMainClientView
+			<control:PlayerMainServerView
 				x:Name="first"
 				Visibility="Collapsed"
 				Background="#d71b3b"
 				Foreground="White" />
-			<control:PlayerMainClientView
+			<control:PlayerMainServerView
 				x:Name="second"
 				Visibility="Collapsed"
 				Background="#e8d71e"
 				Foreground="Black" />
-			<control:PlayerMainClientView
+			<control:PlayerMainServerView
 				x:Name="third"
 				Visibility="Collapsed"
 				Background="#16acea"
 				Foreground="Black" />
-			<control:PlayerMainClientView
+			<control:PlayerMainServerView
 				x:Name="fourth"
 				Visibility="Collapsed"
 				Background="#3a6b35"
 				Foreground="White" />
-			<control:PlayerMainClientView
+			<control:PlayerMainServerView
 				x:Name="fifth"
 				Visibility="Collapsed"
 				Background="#4203c9"

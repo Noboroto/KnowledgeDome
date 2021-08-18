@@ -36,6 +36,7 @@ namespace KDCtrlLib.ViewModels
 			SimpleIoc.Default.Register<MainClientPageViewModel>();
 			SimpleIoc.Default.Register<MainServerPageViewModel>();
 			SimpleIoc.Default.Register<ConfigurationSettings>();
+			SimpleIoc.Default.Register<MainServerFramePageViewModel>();
 		}
 
 		public static void Reload<TClass>() where TClass : class
@@ -55,6 +56,8 @@ namespace KDCtrlLib.ViewModels
 		public static MainClientPageViewModel MainClient => ServiceLocator.Current.GetInstance<MainClientPageViewModel>();
 
 		public static MainServerPageViewModel MainServer => ServiceLocator.Current.GetInstance<MainServerPageViewModel>();
+
+		public static MainServerFramePageViewModel MainServerFrame => ServiceLocator.Current.GetInstance<MainServerFramePageViewModel>();
 
 		public static void Cleanup()
 		{
