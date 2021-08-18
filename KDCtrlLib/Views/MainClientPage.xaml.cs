@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
+﻿using KDCtrlLib.KDControl;
 
 using KDLib;
-using KDCtrlLib.KDControl;
+
+using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace KDCtrlLib.Views
 {
@@ -16,8 +17,10 @@ namespace KDCtrlLib.Views
 			InitializeComponent();
 			#region DEBUG DATA
 			var b = new Player(12, "asdad");
-			Data.Matches = new MatchList();
-			Data.Matches.Add( new Match());
+			Data.Matches = new MatchList
+			{
+				new Match()
+			};
 			Data.Matches[0].Players = new PlayerList { b, b, b, b };
 			#endregion
 

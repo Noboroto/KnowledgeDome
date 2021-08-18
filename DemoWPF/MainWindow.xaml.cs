@@ -15,7 +15,7 @@ namespace DemoWPF
 		public ICommand TryConnectCmd { get; set; }
 		public MainWindow()
 		{
-			InitializeComponent();			
+			InitializeComponent();
 			Data.ClientInitialize();
 			MyFrame.Navigate(new MainServerPage());
 		}

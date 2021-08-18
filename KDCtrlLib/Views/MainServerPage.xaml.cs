@@ -2,20 +2,8 @@
 
 using KDLib;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace KDCtrlLib.Views
 {
@@ -29,8 +17,10 @@ namespace KDCtrlLib.Views
 			InitializeComponent();
 			#region DEBUG DATA
 			var b = new Player(12, "asdad");
-			Data.Matches = new MatchList();
-			Data.Matches.Add(new Match());
+			Data.Matches = new MatchList
+			{
+				new Match()
+			};
 			Data.Matches[0].Players = new PlayerList { b, b, b, b };
 			#endregion
 
