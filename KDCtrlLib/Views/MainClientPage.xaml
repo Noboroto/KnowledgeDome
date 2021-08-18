@@ -15,44 +15,44 @@
 		<ResourceDictionary
 			Source="GlobalResource.xaml" />
 	</Page.Resources>
-	<StackPanel
-		VerticalAlignment="Center"
-		HorizontalAlignment="Center"
-		Orientation="Horizontal"
-		>
-		<StackPanel.Resources>
-			<Style
-				TargetType="control:PlayerMainClientView">
-				<Setter
-					Property="Margin"
-					Value="35" />
-			</Style>
-		</StackPanel.Resources>
-		<control:PlayerMainClientView
-			x:Name="first"
-			Visibility="Collapsed"
-			Background="#d71b3b"
-			Foreground="White"
-			/>
-		<control:PlayerMainClientView
-			x:Name="second"
-			Visibility="Collapsed"
-			Background="#e8d71e"
-			Foreground="Black" />
-		<control:PlayerMainClientView
-			x:Name="third"
-			Visibility="Collapsed"
-			Background="#16acea"
-			Foreground="Black" />
-		<control:PlayerMainClientView
-			x:Name="fourth"
-			Visibility="Collapsed"
-			Background="#3a6b35"
-			Foreground="White" />
-		<control:PlayerMainClientView
-			x:Name="fifth"
-			Visibility="Collapsed"
-			Background="#4203c9"
-			Foreground="White" />
-	</StackPanel>
+	<ScrollViewer>
+		<WrapPanel
+			VerticalAlignment="Center"
+			HorizontalAlignment="Center"
+			Orientation="Horizontal">
+			<WrapPanel.Resources>
+				<Style
+					TargetType="control:PlayerMainClientView">
+					<Setter
+						Property="Margin"
+						Value="35" />
+				</Style>
+			</WrapPanel.Resources>
+			<control:PlayerMainClientView
+				x:Name="first"
+				Visibility="Collapsed"
+				Background="#d71b3b"
+				Foreground="White" />
+			<control:PlayerMainClientView
+				x:Name="second"
+				Visibility="Collapsed"
+				Background="#e8d71e"
+				Foreground="Black" />
+			<control:PlayerMainClientView
+				x:Name="third"
+				Visibility="Collapsed"
+				Background="#16acea"
+				Foreground="Black" />
+			<control:PlayerMainClientView
+				x:Name="fourth"
+				Visibility="Collapsed"
+				Background="#3a6b35"
+				Foreground="White" />
+			<control:PlayerMainClientView
+				x:Name="fifth"
+				Visibility="Collapsed"
+				Background="#4203c9"
+				Foreground="White" />
+		</WrapPanel>
+	</ScrollViewer>
 </Page>
