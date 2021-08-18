@@ -22,15 +22,6 @@ namespace KDCtrlLib.KDControl
 	/// </summary>
 	public partial class PlayerMainServerView : UserControl
 	{
-		public static readonly DependencyProperty SizeProperty =
-			DependencyProperty.Register("Size", typeof(int),
-										typeof(PlayerMainServerView)
-										);
-		public int Size
-		{
-			get => (int)GetValue(SizeProperty);
-			set => SetValue(SizeProperty, value);
-		}
 		private Player _PlayerData;
 
 		public Player PlayerData
@@ -43,8 +34,6 @@ namespace KDCtrlLib.KDControl
 			}
 		}
 		public ImageSource Source => _PlayerData.Avatar;
-
-		public int RectangleSize => Size + 10;
 		public PlayerMainServerView()
 		{
 			InitializeComponent();
