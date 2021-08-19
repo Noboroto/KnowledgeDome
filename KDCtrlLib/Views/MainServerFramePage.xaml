@@ -59,10 +59,10 @@
 					Height="auto" />
 			</Grid.RowDefinitions>
 			<ListBox
-				FontFamily="Times New Roman"
 				IsTextSearchEnabled="False"
 				FontSize="18"
 				DockPanel.Dock="Top"
+				FontFamily="Segoe UI"
 				x:Name="Chatting"
 				VirtualizingStackPanel.IsVirtualizing="True"
 				Foreground="White"
@@ -103,7 +103,7 @@
 		<ListBox
 			Grid.Column="2"
 			Grid.Row="2"
-			FontFamily="Times New Roman"
+			FontFamily="Segoe UI"
 			IsTextSearchEnabled="False"
 			FontSize="18"
 			x:Name="Logging"
