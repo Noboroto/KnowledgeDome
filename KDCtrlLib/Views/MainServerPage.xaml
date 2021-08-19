@@ -27,6 +27,7 @@
 						Value="20" />
 				</Style>
 			</WrapPanel.Resources>
+			<control:StartQuestionClientView />
 			<control:PlayerMainServerView
 				x:Name="first"
 				Visibility="Collapsed"

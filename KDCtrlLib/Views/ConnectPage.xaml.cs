@@ -11,7 +11,7 @@ using System.Windows.Navigation;
 namespace KDCtrlLib.Views
 {
 	/// <summary>
-	/// Interaction logic for UserControl1.xaml
+	/// Interaction logic for KDProgressBar.xaml
 	/// </summary>
 	public partial class ConnectPage : Page
 	{

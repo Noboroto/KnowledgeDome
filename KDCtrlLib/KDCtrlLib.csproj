@@ -81,6 +81,10 @@
     <Compile Include="KDControls\StartQuestionClientView.xaml.cs">
       <DependentUpon>StartQuestionClientView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="KDControls\KDProgressBar.xaml.cs">
+      <DependentUpon>KDProgressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="KDConverters\CompareConverter.cs" />
     <Compile Include="KDConverters\RectConverter.cs" />
     <Compile Include="MessageForUI\NavigateToMessage.cs" />
     <Compile Include="MessageForUI\SnackbarNoticeMessage.cs" />
@@ -129,6 +133,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="KDControls\StartQuestionClientView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="KDControls\KDProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
