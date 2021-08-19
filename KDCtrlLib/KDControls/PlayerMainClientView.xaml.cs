@@ -3,7 +3,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace KDCtrlLib.kdcontrols
+namespace KDCtrlLib.KDControls
 {
 	/// <summary>
 	/// Interaction logic for PlayerMainClientView.xaml
