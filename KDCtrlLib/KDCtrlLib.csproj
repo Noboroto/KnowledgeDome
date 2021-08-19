@@ -72,10 +72,10 @@
   <ItemGroup>
     <Compile Include="ConfigurationSettings.cs" />
     <Compile Include="Interfaces\IHandleEvent.cs" />
-    <Compile Include="KDControl\PlayerMainClientView.xaml.cs">
+    <Compile Include="KDControls\PlayerMainClientView.xaml.cs">
       <DependentUpon>PlayerMainClientView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="KDControl\PlayerMainServerView.xaml.cs">
+    <Compile Include="KDControls\PlayerMainServerView.xaml.cs">
       <DependentUpon>PlayerMainServerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MessageForUI\NavigateToMessage.cs" />
@@ -116,11 +116,11 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="KDControl\PlayerMainClientView.xaml">
+    <Page Include="KDControls\PlayerMainClientView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="KDControl\PlayerMainServerView.xaml">
+    <Page Include="KDControls\PlayerMainServerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

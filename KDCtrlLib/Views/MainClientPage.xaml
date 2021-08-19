@@ -9,7 +9,7 @@
 	TextElement.FontSize="14"
 	FontFamily="{materialDesign:MaterialDesignFont}"
 	DataContext="{Binding MainClient, Source={StaticResource Locator}}"
-	xmlns:control="clr-namespace:KDCtrlLib.KDControl"
+	xmlns:control="clr-namespace:KDCtrlLib.kdcontrols"
 	>
 	<Page.Resources>
 		<ResourceDictionary

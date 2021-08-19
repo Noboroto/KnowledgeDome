@@ -1,4 +1,4 @@
-﻿using KDCtrlLib.KDControl;
+﻿using KDCtrlLib.kdcontrols;
 
 using KDLib;
 
