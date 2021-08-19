@@ -41,7 +41,11 @@
 		<Rectangle.Fill>
 			<VisualBrush>
 				<VisualBrush.Visual>
-					<Grid>
+					<Grid
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						Background="#9c7150"
+						>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition
 								Width="auto" />
@@ -62,11 +66,14 @@
 							<Style
 								TargetType="ProgressBar">
 								<Setter
+									Property="VerticalAlignment"
+									Value="Center" />
+								<Setter
 									Property="Template"
 									Value="{DynamicResource KDProgressBar}" />
 								<Setter
 									Property="Value"
-									Value="50" />
+									Value="0" />
 								<Setter
 									Property="Height"
 									Value="100" />
@@ -79,6 +86,7 @@
 							x:Name="First"
 							Grid.Column="0"
 							Grid.Row="0"
+							Value="20"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch" />
 						<ProgressBar
@@ -88,37 +96,12 @@
 						<ProgressBar
 							x:Name="Third"
 							Grid.Column="2"
-							Grid.Row="0"
-							RenderTransformOrigin="0.5,0.5">
-							<ProgressBar.RenderTransform>
-								<TransformGroup>
-									<ScaleTransform />
-									<SkewTransform />
-									<RotateTransform
-										Angle="90" />
-									<TranslateTransform />
-								</TransformGroup>
-							</ProgressBar.RenderTransform>
+							Grid.Row="0">
 						</ProgressBar>
-
 						<ProgressBar
 							x:Name="Fourth"
 							Grid.Column="2"
-							Grid.Row="1"
-							RenderTransformOrigin="0.5,0.5">
-							<ProgressBar.RenderTransform>
-								<TransformGroup>
-									<ScaleTransform
-										ScaleY="-1"
-										ScaleX="1" />
-									<SkewTransform
-										AngleY="0"
-										AngleX="0" />
-									<RotateTransform
-										Angle="90" />
-									<TranslateTransform />
-								</TransformGroup>
-							</ProgressBar.RenderTransform>
+							Grid.Row="1">
 						</ProgressBar>
 						<ProgressBar
 							x:Name="Fifth"
@@ -134,32 +117,12 @@
 						<ProgressBar
 							x:Name="Seventh"
 							Grid.Column="0"
-							Grid.Row="2"
-							RenderTransformOrigin="0.5,0.5">
-							<ProgressBar.RenderTransform>
-								<TransformGroup>
-									<ScaleTransform />
-									<SkewTransform />
-									<RotateTransform
-										Angle="270" />
-									<TranslateTransform />
-								</TransformGroup>
-							</ProgressBar.RenderTransform>
+							Grid.Row="2">
 						</ProgressBar>
 						<ProgressBar
 							x:Name="Eighth"
 							Grid.Column="0"
-							Grid.Row="1"
-							RenderTransformOrigin="0.5,0.5">
-							<ProgressBar.RenderTransform>
-								<TransformGroup>
-									<ScaleTransform />
-									<SkewTransform />
-									<RotateTransform
-										Angle="270" />
-									<TranslateTransform />
-								</TransformGroup>
-							</ProgressBar.RenderTransform>
+							Grid.Row="1">
 						</ProgressBar>
 						<TextBox
 							x:Name="QuestionBox"

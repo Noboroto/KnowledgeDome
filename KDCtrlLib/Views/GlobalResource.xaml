@@ -19,7 +19,7 @@
 						Height="5.5"
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Center"
-						Fill="#9c7150"
+						Fill="#4d371d"
 						SnapsToDevicePixels="True" />
 					<Rectangle
 						x:Name="PART_Indicator"
