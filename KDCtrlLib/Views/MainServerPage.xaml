@@ -24,7 +24,7 @@
 					TargetType="control:PlayerMainServerView">
 					<Setter
 						Property="Margin"
-						Value="35" />
+						Value="20" />
 				</Style>
 			</WrapPanel.Resources>
 			<control:PlayerMainServerView
