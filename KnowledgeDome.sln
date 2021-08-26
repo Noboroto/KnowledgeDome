@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KDLib", "KDLib\KDLib.csproj", "{9D12C589-1B51-4D59-A9DA-CB9C21ADB1F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoFeature", "DemoFeuture\DemoFeature.csproj", "{01F157EE-8B40-4477-8384-FC3D4CAC80D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoFeature", "DemoFeature\DemoFeature.csproj", "{01F157EE-8B40-4477-8384-FC3D4CAC80D4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{27659497-BB4B-47C3-80BE-69DF36E01BE4}"
 	ProjectSection(SolutionItems) = preProject
