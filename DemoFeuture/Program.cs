@@ -3,7 +3,7 @@
 using System;
 using System.Windows;
 
-namespace DemoFeuture
+namespace DemoFeature
 {
 	class Program
 	{
