@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{01F157EE-8B40-4477-8384-FC3D4CAC80D4}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>DemoFeuture</RootNamespace>
-    <AssemblyName>DemoFeuture</AssemblyName>
+    <RootNamespace>DemoFeature</RootNamespace>
+    <AssemblyName>DemoFeature</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
