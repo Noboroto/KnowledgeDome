@@ -1,5 +1,5 @@
 ﻿<Page
-	x:Class="KDCtrlLib.Views.MainServerPage"
+	x:Class="KDCtrlLib.Views.Server.MainServerPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -12,7 +12,7 @@
 	xmlns:control="clr-namespace:KDCtrlLib.KDControls">
 	<Page.Resources>
 		<ResourceDictionary
-			Source="GlobalResource.xaml" />
+			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
 	</Page.Resources>
 	<ScrollViewer>
 		<WrapPanel
@@ -27,7 +27,6 @@
 						Value="20" />
 				</Style>
 			</WrapPanel.Resources>
-			<control:StartQuestionClientView />
 			<control:PlayerMainServerView
 				x:Name="first"
 				Visibility="Collapsed"

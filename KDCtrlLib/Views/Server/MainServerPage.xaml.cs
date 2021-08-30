@@ -5,7 +5,7 @@ using KDLib;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
-namespace KDCtrlLib.Views
+namespace KDCtrlLib.Views.Server
 {
     /// <summary>
     /// Interaction logic for MainServerPage.xaml

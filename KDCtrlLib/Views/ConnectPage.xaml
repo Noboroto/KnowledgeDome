@@ -13,7 +13,7 @@
 	Unloaded="OnNavigatingFrom">
 	<Page.Resources>
 		<ResourceDictionary
-			Source="GlobalResource.xaml" />
+			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
 	</Page.Resources>
 	<Grid>
 		<materialDesign:Card

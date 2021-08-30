@@ -78,9 +78,6 @@
     <Compile Include="KDControls\PlayerMainServerView.xaml.cs">
       <DependentUpon>PlayerMainServerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="KDControls\StartQuestionClientView.xaml.cs">
-      <DependentUpon>StartQuestionClientView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="KDControls\KDProgressBar.xaml.cs">
       <DependentUpon>KDProgressBar.xaml</DependentUpon>
     </Compile>
@@ -91,8 +88,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ConnectViewModel.cs" />
     <Compile Include="ViewModels\MainClientPageViewModel.cs" />
-    <Compile Include="ViewModels\MainServerFramePageViewModel.cs" />
-    <Compile Include="ViewModels\MainServerPageViewModel.cs" />
+    <Compile Include="ViewModels\Server\MainServerFramePageViewModel.cs" />
+    <Compile Include="ViewModels\Server\MainServerPageViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
@@ -102,10 +99,10 @@
     <Compile Include="Views\MainClientPage.xaml.cs">
       <DependentUpon>MainClientPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MainServerFramePage.xaml.cs">
+    <Compile Include="Views\Server\MainServerFramePage.xaml.cs">
       <DependentUpon>MainServerFramePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MainServerPage.xaml.cs">
+    <Compile Include="Views\Server\MainServerPage.xaml.cs">
       <DependentUpon>MainServerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RolePage.xaml.cs">
@@ -122,17 +119,20 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ViewModels\MC\" />
+    <Folder Include="ViewModels\Player\" />
+    <Folder Include="ViewModels\Viewer\" />
+    <Folder Include="Views\MC\" />
+    <Folder Include="Views\Player\" />
+    <Folder Include="Views\Viewer\" />
+  </ItemGroup>
   <ItemGroup>
     <Page Include="KDControls\PlayerMainClientView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="KDControls\PlayerMainServerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="KDControls\StartQuestionClientView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -152,11 +152,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainServerFramePage.xaml">
+    <Page Include="Views\Server\MainServerFramePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainServerPage.xaml">
+    <Page Include="Views\Server\MainServerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
