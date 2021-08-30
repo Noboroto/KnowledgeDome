@@ -16,6 +16,8 @@ using CommonServiceLocator;
 
 using GalaSoft.MvvmLight.Ioc;
 
+using KDCtrlLib.ViewModels.Server;
+
 namespace KDCtrlLib.ViewModels
 {
 	/// <summary>

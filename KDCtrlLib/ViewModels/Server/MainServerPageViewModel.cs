@@ -1,4 +1,4 @@
-﻿namespace KDCtrlLib.ViewModels
+﻿namespace KDCtrlLib.ViewModels.Server
 {
 	public class MainServerPageViewModel
 	{
