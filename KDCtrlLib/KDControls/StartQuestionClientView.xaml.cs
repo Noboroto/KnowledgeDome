@@ -15,14 +15,14 @@ using System.Windows.Shapes;
 
 namespace KDCtrlLib.KDControls
 {
-	/// <summary>
-	/// Interaction logic for StartQuestionClientView.xaml
-	/// </summary>
-	public partial class StartQuestionClientView : UserControl
-	{
-		public StartQuestionClientView()
-		{
-			InitializeComponent();
-		}
-	}
+    /// <summary>
+    /// Interaction logic for StartQuestionClientView.xaml
+    /// </summary>
+    public partial class StartQuestionClientView : UserControl
+    {
+        public StartQuestionClientView()
+        {
+            InitializeComponent();
+        }
+    }
 }

@@ -2,11 +2,11 @@
 
 namespace KDCtrlLib.ViewModels
 {
-	public class MainClientPageViewModel : ViewModelBase
-	{
-		public MainClientPageViewModel()
-		{
+    public class MainClientPageViewModel : ViewModelBase
+    {
+        public MainClientPageViewModel()
+        {
 
-		}
-	}
+        }
+    }
 }

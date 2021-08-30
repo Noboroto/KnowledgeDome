@@ -4,46 +4,46 @@ using System.Net;
 
 namespace KDLib
 {
-	public class KDCommand
-	{
-		#region PrivateMembers
-		#endregion
+    public class KDCommand
+    {
+        #region PrivateMembers
+        #endregion
 
-		#region PublicProperties
-		public MachineType Machine { get; set; }
+        #region PublicProperties
+        public MachineType Machine { get; set; }
 
-		public CommandType PrefixCmd { get; set; }
+        public CommandType PrefixCmd { get; set; }
 
-		public string Content { get; set; }
+        public string Content { get; set; }
 
-		public string IP { get; set; }
+        public string IP { get; set; }
 
-		public int Port { get; set; }
+        public int Port { get; set; }
 
-		[JsonIgnore]
-		public IPEndPoint ID
-		{
-			get
-			{
-				return new IPEndPoint(IPAddress.Parse(IP), Port);
-			}
-		}
+        [JsonIgnore]
+        public IPEndPoint ID
+        {
+            get
+            {
+                return new IPEndPoint(IPAddress.Parse(IP), Port);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		public KDCommand(CommandType prefix, IPEndPoint local, string cmd = "")
-		: this(Data.ThisMacineType, prefix, local.Address.ToString(), local.Port, cmd)
-		{
-		}
+        public KDCommand(CommandType prefix, IPEndPoint local, string cmd = "")
+        : this(Data.ThisMacineType, prefix, local.Address.ToString(), local.Port, cmd)
+        {
+        }
 
-		[JsonConstructor]
-		public KDCommand(MachineType type, CommandType prefix, string localIP, int localPort, string cmd = "")
-		{
-			Machine = type;
-			PrefixCmd = prefix;
-			Content = cmd;
-			IP = localIP;
-			Port = localPort;
-		}
-	}
+        [JsonConstructor]
+        public KDCommand(MachineType type, CommandType prefix, string localIP, int localPort, string cmd = "")
+        {
+            Machine = type;
+            PrefixCmd = prefix;
+            Content = cmd;
+            IP = localIP;
+            Port = localPort;
+        }
+    }
 }

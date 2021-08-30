@@ -7,17 +7,17 @@ using System.Windows.Input;
 
 namespace DemoWPF
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
-	{
-		public ICommand TryConnectCmd { get; set; }
-		public MainWindow()
-		{
-			InitializeComponent();
-			Data.ClientInitialize();
-			MyFrame.Navigate(new MainServerFramePage());
-		}
-	}
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        public ICommand TryConnectCmd { get; set; }
+        public MainWindow()
+        {
+            InitializeComponent();
+            Data.ClientInitialize();
+            MyFrame.Navigate(new MainServerFramePage());
+        }
+    }
 }

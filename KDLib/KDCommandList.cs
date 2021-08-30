@@ -2,8 +2,8 @@
 
 namespace KDLib
 {
-	public class KDCommandList : Queue<KDCommand>
-	{
+    public class KDCommandList : Queue<KDCommand>
+    {
 
-	}
+    }
 }
