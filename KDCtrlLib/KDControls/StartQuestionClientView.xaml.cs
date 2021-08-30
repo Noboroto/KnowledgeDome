@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -18,7 +19,7 @@ namespace KDCtrlLib.KDControls
 	/// <summary>
 	/// Interaction logic for StartQuestionClientView.xaml
 	/// </summary>
-	public partial class StartQuestionClientView : UserControl
+	public partial class StartQuestionClientView : RangeBase
 	{
 		public StartQuestionClientView()
 		{
