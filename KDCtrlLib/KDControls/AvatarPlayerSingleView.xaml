@@ -8,7 +8,7 @@
 	MinWidth="300"
 	x:Name="UC">
 	<materialDesign:Card
-		Background="{Binding ElementName=UC, Path=PlayerData.BackgroundColor}"
+		Background="{Binding ElementName=UC, Path=Background}"
 		materialDesign:ShadowAssist.ShadowDepth="Depth5">
 		<DockPanel>
 			<StackPanel
@@ -24,7 +24,7 @@
 							Value="Center" />
 						<Setter
 							Property="Foreground"
-							Value="{Binding ElementName=UC, Path=PlayerData.ForegroundColor}" />
+							Value="{Binding ElementName=UC, Path=Foreground}" />
 						<Setter
 							Property="FontWeight"
 							Value="Black" />

@@ -99,8 +99,8 @@
     <Compile Include="Views\MainClientPage.xaml.cs">
       <DependentUpon>MainClientPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlayerView\StartRoundPlayerView.xaml.cs">
-      <DependentUpon>StartRoundPlayerView.xaml</DependentUpon>
+    <Compile Include="Views\StartRoundViewerPlayerPage.xaml.cs">
+      <DependentUpon>StartRoundViewerPlayerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ServerView\MainServerFramePage.xaml.cs">
       <DependentUpon>MainServerFramePage.xaml</DependentUpon>
@@ -127,6 +127,7 @@
     <Folder Include="ViewModels\Player\" />
     <Folder Include="ViewModels\Viewer\" />
     <Folder Include="Views\MC\" />
+    <Folder Include="Views\PlayerView\" />
     <Folder Include="Views\Viewer\" />
   </ItemGroup>
   <ItemGroup>
@@ -154,7 +155,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlayerView\StartRoundPlayerView.xaml">
+    <Page Include="Views\StartRoundViewerPlayerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
