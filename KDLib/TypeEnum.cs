@@ -2,6 +2,12 @@
 
 namespace KDLib
 {
+    public enum AttachmentType
+    {
+        None,
+        Video,
+        Image
+    }
     public enum SubjectInfo
     {
         Geography,
