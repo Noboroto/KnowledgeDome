@@ -16,8 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWPF", "DemoWPF\DemoWPF.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KDCtrlLib", "KDCtrlLib\KDCtrlLib.csproj", "{A1827C69-78D5-46C2-A9E0-90561CEFC3CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnowledgeCreatory", "KnowledgeCreatory\KnowledgeCreatory.csproj", "{37B783D5-7D5B-4EDE-9A94-18943DF260DF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,10 +38,6 @@ Global
 		{A1827C69-78D5-46C2-A9E0-90561CEFC3CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1827C69-78D5-46C2-A9E0-90561CEFC3CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1827C69-78D5-46C2-A9E0-90561CEFC3CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37B783D5-7D5B-4EDE-9A94-18943DF260DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37B783D5-7D5B-4EDE-9A94-18943DF260DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37B783D5-7D5B-4EDE-9A94-18943DF260DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37B783D5-7D5B-4EDE-9A94-18943DF260DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
