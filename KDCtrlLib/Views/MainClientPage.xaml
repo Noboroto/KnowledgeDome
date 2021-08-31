@@ -30,7 +30,6 @@
 			</WrapPanel.Resources>
 			<control:PlayerMainClientView
 				x:Name="first"
-				ShowScore="True"
 				Visibility="Collapsed"
 				Background="#d71b3b"
 				Foreground="White" />
