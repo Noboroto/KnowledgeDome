@@ -115,20 +115,21 @@
 			Foreground="#da371c"
 			Background="#a48a61"
 			materialDesign:TransitionAssist.DisableTransitions="True"
-			Value="75"
+			Value="{Binding Timer}"
+			Minimum="0"
+			Maximum="60"
 			Width="auto"
 			Height="35"
 			Margin="25 0 5 5"
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Bottom" />
-		<Label
+		<TextBlock
+			Text="{Binding Timer, StringFormat=N0}"
 			VerticalAlignment="Center"
 			HorizontalAlignment="Center"
 			FontSize="20"
 			Grid.Row="1"
-			Grid.Column="0">
-			58
-		</Label>
+			Grid.Column="0" />
 		<materialDesign:Card
 			Width="{Binding ElementName=QuestionCard, Path=ActualHeight}"
 			Grid.Column="1"
@@ -145,13 +146,12 @@
 				BorderThickness="5"
 				BorderBrush="#a48a61">
 				<TextBlock
+					Text="{Binding QuestCount, StringFormat='Đã xong {0} câu'}"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Center"
 					Name="Counter"
 					FontSize="20"
-					TextAlignment="Center">
-					Đã xong n câu
-				</TextBlock>
+					TextAlignment="Center" />
 			</Border>
 		</materialDesign:Card>
 	</Grid>
