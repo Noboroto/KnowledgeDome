@@ -16,7 +16,7 @@ namespace KDCtrlLib.Views
         {
             InitializeComponent();
             #region DEBUG DATA
-            var b = new Player(12, "asdad");
+            Player b = new Player(12, "asdad");
             Data.Matches = new MatchList
             {
                 new Match()
@@ -24,7 +24,7 @@ namespace KDCtrlLib.Views
             Data.Matches[0].Players = new PlayerList { b, b, b, b };
             #endregion
 
-            var show = new List<PlayerMainClientView> { first, second, third, fourth, fifth };
+            List<PlayerMainClientView> show = new List<PlayerMainClientView> { first, second, third, fourth, fifth };
             int c = (show.Count < Data.Matches[0].Players.Count) ? show.Count : Data.Matches[0].Players.Count;
             for (int i = 0; i < c; ++i)
             {
