@@ -1,5 +1,6 @@
 ﻿using KDCtrlLib.Views;
 using KDCtrlLib.Views.ServerView;
+using KDCtrlLib.Views.PlayerView;
 
 using KDLib;
 
@@ -18,7 +19,7 @@ namespace DemoWPF
         {
             InitializeComponent();
             Data.ClientInitialize();
-            MyFrame.Navigate(new MainServerFramePage());
+            MyFrame.Navigate(new StartRoundPlayerPage());
         }
     }
 }
