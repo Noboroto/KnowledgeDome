@@ -3,7 +3,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace KDCtrlLib.Views.PlayerView
+namespace KDCtrlLib.Views
 {
 	/// <summary>
 	/// Interaction logic for StartRoundPlayerPage.xaml
