@@ -26,7 +26,7 @@ namespace KDCtrlLib.Views.Server
 
             var show = new List<PlayerMainServerView> { first, second, third, fourth, fifth };
             int c = (show.Count < Data.Matches[0].Players.Count) ? show.Count : Data.Matches[0].Players.Count;
-            for (int i = 0; i < 1; ++i)
+            for (int i = 0; i < c; ++i)
             {
                 Data.Matches[0].Players[i].BackgroundColor = show[i].Background;
                 Data.Matches[0].Players[i].ForegroundColor = show[i].Foreground;
