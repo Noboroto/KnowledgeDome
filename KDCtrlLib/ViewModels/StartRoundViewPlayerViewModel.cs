@@ -21,6 +21,8 @@ namespace KDCtrlLib.ViewModels
 			get => _CurrentQuestion;
 			set => Set(ref _CurrentQuestion, value);
 		}
+
+
 		public StartRoundViewPlayerViewModel()
 		{
 			var b = new Player(12, "asdasd")
