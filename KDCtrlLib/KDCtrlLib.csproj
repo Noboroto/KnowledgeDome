@@ -99,9 +99,6 @@
     <Compile Include="Views\MainClientPage.xaml.cs">
       <DependentUpon>MainClientPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\StartRoundPlayerPage.xaml.cs">
-      <DependentUpon>StartRoundPlayerPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ServerView\MainServerFramePage.xaml.cs">
       <DependentUpon>MainServerFramePage.xaml</DependentUpon>
     </Compile>
@@ -152,10 +149,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MainClientPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\StartRoundPlayerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
