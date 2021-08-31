@@ -10,7 +10,13 @@ namespace KDLib
 
         #region PublicMembers
         public static UTF8Encoding UTF8Encoder = new UTF8Encoding();
-        public static Dictionary<string, SubjectInfo> StringToSubject = new Dictionary<string, SubjectInfo>()
+        public static readonly Dictionary<string, AttachmentType> StringToAttachmentType = new Dictionary<string, AttachmentType>
+        {
+            ["None"] = AttachmentType.None,
+            ["Image"] = AttachmentType.Image,
+            ["Video"] = AttachmentType.Video
+        };
+        public static readonly Dictionary<string, SubjectInfo> StringToSubject = new Dictionary<string, SubjectInfo>()
         {
             ["Địa lý"] = SubjectInfo.Geography,
             ["Địa lí"] = SubjectInfo.Geography,
@@ -28,7 +34,7 @@ namespace KDLib
             ["Vật lý"] = SubjectInfo.Physics,
             ["Vật lí"] = SubjectInfo.Physics,
         };
-        public static Dictionary<SubjectInfo, string> SubjectToString = new Dictionary<SubjectInfo, string>()
+        public static readonly Dictionary<SubjectInfo, string> SubjectToString = new Dictionary<SubjectInfo, string>()
         {
             [SubjectInfo.Geography] = "Địa lý",
             [SubjectInfo.General] = "Hiểu biết chung",
