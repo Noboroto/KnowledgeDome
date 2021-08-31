@@ -10,18 +10,13 @@ namespace KDCtrlLib.KDControls
 	/// </summary>
 	public partial class AvatarPlayerSingleView : UserControl
 	{
-		private Player _PlayerData;
 
 		public Player PlayerData
 		{
-			get => _PlayerData;
-			set
-			{
-				_PlayerData = value;
-				DataContext = _PlayerData;
-			}
+			get => (Player)DataContext;
+			set => DataContext = value;
 		}
-		public ImageSource Source => _PlayerData.Avatar;
+		public ImageSource Source => ((Player)DataContext).Avatar;
 		public AvatarPlayerSingleView()
 		{
 			InitializeComponent();

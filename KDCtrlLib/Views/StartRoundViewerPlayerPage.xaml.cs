@@ -19,8 +19,6 @@ namespace KDCtrlLib.Views
 				ForegroundColor = Brushes.Black
 			};
 			Avatar.PlayerData = b;
-			Avatar.Background = b.BackgroundColor;
-			Avatar.Foreground = b.ForegroundColor;
 		}
 	}
 }
