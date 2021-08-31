@@ -67,7 +67,7 @@ namespace KDCtrlLib.ViewModels
 
         public static MainServerFramePageViewModel MainServerFrame => ServiceLocator.Current.GetInstance<MainServerFramePageViewModel>();
 
-        public static StartRoundViewPlayerViewModel StartRoundViewPlayerView => ServiceLocator.Current.GetInstance<StartRoundViewPlayerViewModel>();
+        public static StartRoundViewPlayerViewModel StartRoundViewPlayer => ServiceLocator.Current.GetInstance<StartRoundViewPlayerViewModel>();
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

@@ -13,12 +13,6 @@ namespace KDCtrlLib.Views
 		public StartRoundViewerPlayerPage()
 		{
 			InitializeComponent();
-			var b = new Player(12, "asdasd")
-			{
-				BackgroundColor = (Brush)new BrushConverter().ConvertFromString(@"#16acea"),
-				ForegroundColor = Brushes.Black
-			};
-			Avatar.PlayerData = b;
 		}
 	}
 }

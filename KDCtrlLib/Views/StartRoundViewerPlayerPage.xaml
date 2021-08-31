@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	DataContext="{Binding StartRoundViewPlayer, Source={StaticResource Locator}}"
 	xmlns:control="clr-namespace:KDCtrlLib.KDControls"
 	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 	TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -34,8 +35,8 @@
 				Height="2*" />
 		</Grid.RowDefinitions>
 		<control:AvatarPlayerSingleView
+			DataContext="{Binding CurrentPlayer}"
 			Grid.ColumnSpan="2"
-			x:Name="Avatar"
 			VerticalAlignment="Center"
 			HorizontalAlignment="Center"
 			Grid.Row="0"
@@ -70,10 +71,10 @@
 					<TextBlock
 						Margin="20"
 						TextWrapping="Wrap"
-						Name="QuestionTextBlock"
-						TextBlock.FontSize="50"
+						FontSize="50"
+						DataContext="{Binding CurrentQuestion}"
+						Text="{Binding Content}"
 						TextAlignment="Left">
-						Câu hỏi
 					</TextBlock>
 				</ScrollViewer>
 			</Border>
@@ -101,9 +102,9 @@
 					Name="ScoreTextBlock"
 					FontSize="100"
 					FontWeight="Bold"
-					TextAlignment="Center">
-					200
-				</TextBlock>
+					DataContext="{Binding CurrentPlayer}"
+					Text="{Binding Score}"
+					TextAlignment="Center" />
 			</Border>
 		</materialDesign:Card>
 		<ProgressBar
