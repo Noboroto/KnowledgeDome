@@ -72,6 +72,9 @@
   <ItemGroup>
     <Compile Include="ConfigurationSettings.cs" />
     <Compile Include="Interfaces\IHandleEvent.cs" />
+    <Compile Include="KDControls\AvatarPlayerSingleView.xaml.cs">
+      <DependentUpon>AvatarPlayerSingleView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="KDControls\PlayerMainClientView.xaml.cs">
       <DependentUpon>PlayerMainClientView.xaml</DependentUpon>
     </Compile>
@@ -125,6 +128,10 @@
     <Folder Include="Views\Viewer\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="KDControls\AvatarPlayerSingleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="KDControls\PlayerMainClientView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
