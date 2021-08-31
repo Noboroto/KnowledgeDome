@@ -18,7 +18,7 @@ namespace DemoWPF
         {
             InitializeComponent();
             Data.ClientInitialize();
-            MyFrame.Navigate(new MainServerFramePage());
+            MyFrame.Navigate(new StartRoundViewerPlayerPage());
         }
     }
 }
