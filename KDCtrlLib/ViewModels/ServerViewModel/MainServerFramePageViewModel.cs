@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KDCtrlLib.ViewModels.Server
+namespace KDCtrlLib.ViewModels.ServerViewModel
 {
     public class MainServerFramePageViewModel
     {

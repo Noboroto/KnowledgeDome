@@ -5,7 +5,7 @@ using System.Windows.Threading;
 
 using KDLib;
 
-namespace KDCtrlLib.Views.Server
+namespace KDCtrlLib.Views.ServerView
 {
     /// <summary>
     /// Interaction logic for MainServerFramePage.xaml

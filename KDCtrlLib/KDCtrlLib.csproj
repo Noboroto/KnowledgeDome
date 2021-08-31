@@ -88,8 +88,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ConnectViewModel.cs" />
     <Compile Include="ViewModels\MainClientPageViewModel.cs" />
-    <Compile Include="ViewModels\Server\MainServerFramePageViewModel.cs" />
-    <Compile Include="ViewModels\Server\MainServerPageViewModel.cs" />
+    <Compile Include="ViewModels\ServerViewModel\MainServerFramePageViewModel.cs" />
+    <Compile Include="ViewModels\ServerViewModel\MainServerPageViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
@@ -99,10 +99,13 @@
     <Compile Include="Views\MainClientPage.xaml.cs">
       <DependentUpon>MainClientPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Server\MainServerFramePage.xaml.cs">
+    <Compile Include="Views\PlayerView\StartRoundPlayerView.xaml.cs">
+      <DependentUpon>StartRoundPlayerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ServerView\MainServerFramePage.xaml.cs">
       <DependentUpon>MainServerFramePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Server\MainServerPage.xaml.cs">
+    <Compile Include="Views\ServerView\MainServerPage.xaml.cs">
       <DependentUpon>MainServerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RolePage.xaml.cs">
@@ -124,7 +127,6 @@
     <Folder Include="ViewModels\Player\" />
     <Folder Include="ViewModels\Viewer\" />
     <Folder Include="Views\MC\" />
-    <Folder Include="Views\Player\" />
     <Folder Include="Views\Viewer\" />
   </ItemGroup>
   <ItemGroup>
@@ -152,11 +154,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Server\MainServerFramePage.xaml">
+    <Page Include="Views\PlayerView\StartRoundPlayerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Server\MainServerPage.xaml">
+    <Page Include="Views\ServerView\MainServerFramePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ServerView\MainServerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

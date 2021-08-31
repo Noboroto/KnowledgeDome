@@ -1,5 +1,5 @@
 ﻿using KDCtrlLib.Views;
-using KDCtrlLib.Views.Server;
+using KDCtrlLib.Views.ServerView;
 
 using KDLib;
 
