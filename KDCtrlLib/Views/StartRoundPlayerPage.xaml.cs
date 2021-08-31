@@ -6,11 +6,11 @@ using System.Windows.Media;
 namespace KDCtrlLib.Views
 {
 	/// <summary>
-	/// Interaction logic for StartRoundViewerPlayerPage.xaml
+	/// Interaction logic for StartRoundPlayerPage.xaml
 	/// </summary>
-	public partial class StartRoundViewerPlayerPage : Page
+	public partial class StartRoundPlayerPage : Page
 	{
-		public StartRoundViewerPlayerPage()
+		public StartRoundPlayerPage()
 		{
 			InitializeComponent();
 			var b = new Player(12, "asdasd")
