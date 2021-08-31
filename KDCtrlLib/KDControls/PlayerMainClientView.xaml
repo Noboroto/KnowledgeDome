@@ -53,6 +53,7 @@
 					Text="{Binding Name}" />
 			</StackPanel>
 			<TextBlock
+				Visibility="{Binding ElementName=UC, Path=ScoreVisibility}"
 				DockPanel.Dock="Bottom"
 				VerticalAlignment="Bottom"
 				Width="auto"
