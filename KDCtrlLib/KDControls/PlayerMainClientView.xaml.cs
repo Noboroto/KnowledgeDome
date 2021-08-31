@@ -2,7 +2,6 @@
 
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows;
 
 namespace KDCtrlLib.KDControls
 {
@@ -12,15 +11,7 @@ namespace KDCtrlLib.KDControls
     public partial class PlayerMainClientView : UserControl
     {
         private Player _PlayerData;
-        public static DependencyProperty ShowScoreProperty = DependencyProperty.Register(nameof(ShowScore), typeof(bool), typeof(PlayerMainClientView), new PropertyMetadata(true));
 
-        public bool ShowScore
-		{
-            get => (bool)GetValue(ShowScoreProperty);
-            set => SetValue(ShowScoreProperty, value);
-		}
-
-        Visibility ScoreVisibility => (ShowScore) ? Visibility.Visible : Visibility.Hidden;
         public Player PlayerData
         {
             get => _PlayerData;
