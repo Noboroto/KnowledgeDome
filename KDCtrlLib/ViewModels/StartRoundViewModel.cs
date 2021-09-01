@@ -10,18 +10,45 @@ using System;
 using System.Windows.Input;
 using System.Collections.Generic;
 using System.Windows;
+using System.Threading;
 
 namespace KDCtrlLib.ViewModels
 {
 	public class StartRoundViewModel : ViewModelBase
 	{
 		private const int TIME_LIMIT = 60;
+		private const double TIME_AMOUNT = 0.01;
 
+		private CancellationTokenSource cancellation = new CancellationTokenSource();
 		private Player _CurrentPlayer;
 		private StartQuestion _CurrentQuestion;
 		private int _QuestCount;
 		private double _Timer;
+		private bool _Running;
+		private bool _TimerEnable;
+		private bool _DoneEnable;
+		private bool _SoundEnable;
 
+		public bool TimerEnable
+		{
+			get => _TimerEnable;
+			set => Set(ref _TimerEnable, value);
+		}
+		public bool DoneEnable
+		{
+			get => _DoneEnable;
+			set => Set(ref _DoneEnable, value);
+		}
+		public bool Running
+		{
+			get => _Running;
+			set => Set(ref _Running, value);
+		}
+		public bool SoundEnable
+		{
+			get => _SoundEnable;
+			set => Set(ref _SoundEnable, value);
+		}
 		public Player CurrentPlayer
 		{
 			get => _CurrentPlayer;
@@ -46,6 +73,9 @@ namespace KDCtrlLib.ViewModels
 		public ICommand StartTimmerCmd { get; set; }
 		public ICommand RightCmd { get; set; }
 		public ICommand WrongCmd { get; set; }
+		public ICommand SoundCmd { get; set; }
+		public ICommand StopCmd { get; set; }
+		public ICommand DoneCmd { get; set; }
 
 		public StartRoundViewModel()
 		{
@@ -54,22 +84,12 @@ namespace KDCtrlLib.ViewModels
 			#endregion
 
 			#region INIT
+			DoneEnable = false;
+			SoundEnable = false;
+			TimerEnable = true;
+			Running = false;
 			Timer = TIME_LIMIT;
 			CurrentPlayer = Data.CurrentMatch.Players[Data.CurrentPlayerIndex];
-			#endregion
-
-			#region SERVER INIT
-			if (Data.ThisMacineType == MachineType.Server)
-			{
-				try
-				{
-					CurrentQuestion = GetNewQuestion(Data.CurrentMatch.StartQuestions);
-				}
-				catch (ArgumentOutOfRangeException)
-				{
-					MessageBox.Show("Đã hết câu hỏi");
-				}
-			}
 			#endregion
 
 			#region CLIENT INIT
@@ -80,10 +100,62 @@ namespace KDCtrlLib.ViewModels
 			#endregion
 
 			#region Cmd
-			StartTimmerCmd = new RelayCommand(async () => await TimerStart());
+			StartTimmerCmd = new RelayCommand(async () =>
+			{
+				try
+				{
+					TimerEnable = false;
+					Running = true;
+					await TimerStart();
+				}
+				catch (OperationCanceledException)
+				{
+					Timer = 0;
+				}
+				finally
+				{
+					cancellation.Dispose();
+				}
+			});
 			RightCmd = new RelayCommand(() => RightAns());
 			WrongCmd = new RelayCommand(() => WrongAns());
+			SoundCmd = new RelayCommand(() => { return; });
+			StopCmd = new RelayCommand(() => 
+			{
+				var res = MessageBox.Show("Bạn có muốn dừng khẩn cấp không?", "Dừng khẩn cấp", MessageBoxButton.YesNo, MessageBoxImage.Stop);
+				if (res == MessageBoxResult.No)
+					return;
+				if (!cancellation.IsCancellationRequested) cancellation.Cancel();
+				Running = false;
+				DoneEnable = true;
+			});
+			DoneCmd = new RelayCommand(()=> { return; });
 			#endregion
+		}
+		private Task TimerStart()
+		{
+			return Task.Run(async () =>
+			{
+				try
+				{
+					CurrentQuestion = GetNewQuestion(Data.CurrentMatch.StartQuestions);
+					SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
+				}
+				catch (ArgumentOutOfRangeException)
+				{
+					MessageBox.Show("Đã hết câu hỏi");
+					return;
+				}
+				while (Timer > 0)
+				{
+					Timer -= TIME_AMOUNT;
+					cancellation.Token.ThrowIfCancellationRequested();
+					await Task.Delay(System.TimeSpan.FromSeconds(TIME_AMOUNT));
+				}
+				Running = false;
+				DoneEnable = true;
+			}, cancellation.Token
+			);
 		}
 
 
@@ -104,19 +176,6 @@ namespace KDCtrlLib.ViewModels
 			return tmp;
 		}
 
-		private Task TimerStart()
-		{
-			return Task.Run(async () =>
-			{
-				while (Timer > 0)
-				{
-					Timer -= 0.01;
-					await Task.Delay(System.TimeSpan.FromSeconds(0.01));
-				}
-			}
-			);
-		}
-
 		private void RightAns()
 		{
 			if (Data.CurrentMatch.StartQuestions.Count <= 0)
@@ -127,6 +186,7 @@ namespace KDCtrlLib.ViewModels
 			CurrentPlayer.Score += 10;
 			QuestCount++;
 			CurrentQuestion = GetNewQuestion(Data.CurrentMatch.StartQuestions);
+			SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Right));
 		}
 
@@ -139,6 +199,7 @@ namespace KDCtrlLib.ViewModels
 			}
 			QuestCount++;
 			CurrentQuestion = GetNewQuestion(Data.CurrentMatch.StartQuestions);
+			SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Wrong));
 		}
 

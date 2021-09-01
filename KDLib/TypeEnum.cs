@@ -6,6 +6,7 @@ namespace KDLib
     {
         None,
         Video,
+        Sound,
         Image
     }
     public enum SubjectInfo

@@ -112,6 +112,9 @@
     <Compile Include="Views\RolePage.xaml.cs">
       <DependentUpon>RolePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ServerView\StartRoundServerView.xaml.cs">
+      <DependentUpon>StartRoundServerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\StartRoundViewerPlayerPage.xaml.cs">
       <DependentUpon>StartRoundViewerPlayerPage.xaml</DependentUpon>
     </Compile>
@@ -170,6 +173,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RolePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ServerView\StartRoundServerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

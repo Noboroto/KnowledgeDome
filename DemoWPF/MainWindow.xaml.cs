@@ -1,5 +1,5 @@
 ﻿using KDCtrlLib.Views.MCView;
-
+using KDCtrlLib.Views.ServerView;
 using KDLib;
 
 using System.Windows;
@@ -17,7 +17,7 @@ namespace DemoWPF
 		{
 			InitializeComponent();
 			Data.ClientInitialize();
-			MyFrame.Navigate(new StartRoundMCView());
+			MyFrame.Navigate(new StartRoundServerView());
 		}
 	}
 }
