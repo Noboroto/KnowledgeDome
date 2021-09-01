@@ -6,7 +6,7 @@ namespace KDLib
     {
         #region PrivateMembers
         private SubjectInfo _Subject;
-        private string _Type;
+        private AttachmentType _AttachmentInfo;
         #endregion
 
         #region PublicPropeties
@@ -15,10 +15,10 @@ namespace KDLib
             get => _Subject;
             set => Set(ref _Subject, (SubjectInfo)value);
         }
-        public string Type
+        public AttachmentType AttachmentInfo
         {
-            get => _Type;
-            set => Set(ref _Type, (value == "vid" || value == "img") ? value : "txt");
+            get => _AttachmentInfo;
+            set => Set(ref _AttachmentInfo, (AttachmentType)value);
         }
         #endregion
 
@@ -28,19 +28,25 @@ namespace KDLib
             else return KDConvert.StringToSubject[value];
         }
 
-        public StartQuestion(string subject_name, string type, string content, string answer, int id)
+        private AttachmentType AttachmentTypeValue(string value)
+        {
+            if (!KDConvert.StringToAttachmentType.ContainsKey(value)) return AttachmentType.None;
+            else return KDConvert.StringToAttachmentType[value];
+        }
+
+        public StartQuestion(string subject_name, string content, string answer, int id, string attachmenttype = "none")
             : base(id, content, answer)
         {
             Subject = SubjectValue(subject_name);
-            Type = type;
+            AttachmentInfo = AttachmentTypeValue(attachmenttype);
         }
 
         [JsonConstructor]
-        public StartQuestion(int id, SubjectInfo subject, string type, string content, string answer)
+        public StartQuestion(int id, SubjectInfo subject, string content, string answer, AttachmentType type)
     : base(id, content, answer)
         {
             Subject = subject;
-            Type = type;
+            AttachmentInfo = type;
         }
 
         public void GetValueFrom(StartQuestion sq)
@@ -48,6 +54,7 @@ namespace KDLib
             Subject = sq.Subject;
             Content = sq.Content;
             Answer = sq.Answer;
+            AttachmentInfo = sq.AttachmentInfo;
         }
 
         public static int SubjectComparer(StartQuestion a, StartQuestion b)
