@@ -100,6 +100,9 @@
     <Compile Include="Views\MainClientPage.xaml.cs">
       <DependentUpon>MainClientPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MCView\StartRoundMCView.xaml.cs">
+      <DependentUpon>StartRoundMCView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ServerView\MainServerFramePage.xaml.cs">
       <DependentUpon>MainServerFramePage.xaml</DependentUpon>
     </Compile>
@@ -127,9 +130,7 @@
     <Folder Include="ViewModels\MC\" />
     <Folder Include="ViewModels\Player\" />
     <Folder Include="ViewModels\Viewer\" />
-    <Folder Include="Views\MC\" />
     <Folder Include="Views\PlayerView\" />
-    <Folder Include="Views\Viewer\" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="KDControls\AvatarPlayerSingleView.xaml">
@@ -153,6 +154,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MainClientPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MCView\StartRoundMCView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
