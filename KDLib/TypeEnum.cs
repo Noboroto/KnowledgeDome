@@ -43,6 +43,10 @@ namespace KDLib
         AskForConnect,
         RefuseConnect,
         ClientList,
-        AccpetConnect
+        AccpetConnect,
+        Right,
+        Wrong,
+        NextQuestAt,
+        NavigateToNextPage
     }
 }

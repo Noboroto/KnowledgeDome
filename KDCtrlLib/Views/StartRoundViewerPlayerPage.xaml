@@ -4,7 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	DataContext="{Binding StartRoundViewPlayer, Source={StaticResource Locator}}"
+	DataContext="{Binding StartRound, Source={StaticResource Locator}}"
 	xmlns:control="clr-namespace:KDCtrlLib.KDControls"
 	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 	TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -49,6 +49,11 @@
 					ScaleY="1.2" />
 			</control:AvatarPlayerSingleView.RenderTransform>
 		</control:AvatarPlayerSingleView>
+		<Button
+			Command="{Binding RightCmd}"
+			>
+			Test
+		</Button>
 		<materialDesign:Card
 			Grid.Row="2"
 			x:Name="QuestionCard"

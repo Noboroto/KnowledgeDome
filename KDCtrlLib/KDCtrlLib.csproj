@@ -92,7 +92,7 @@
     <Compile Include="ViewModels\ServerViewModel\MainServerPageViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
-    <Compile Include="ViewModels\StartRoundViewPlayerViewModel.cs" />
+    <Compile Include="ViewModels\StartRoundViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\ConnectPage.xaml.cs">
       <DependentUpon>ConnectPage.xaml</DependentUpon>

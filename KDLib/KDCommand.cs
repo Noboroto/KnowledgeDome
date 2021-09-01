@@ -31,6 +31,11 @@ namespace KDLib
 
         #endregion
 
+        public KDCommand(CommandType prefix, string cmd = "")
+        : this(Data.ThisMacineType, prefix, Data.ListIP[0], Data.PortForTCP, cmd)
+		{
+
+		}
         public KDCommand(CommandType prefix, IPEndPoint local, string cmd = "")
         : this(Data.ThisMacineType, prefix, local.Address.ToString(), local.Port, cmd)
         {
