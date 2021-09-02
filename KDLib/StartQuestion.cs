@@ -34,11 +34,6 @@ namespace KDLib
 			else return KDConvert.StringToAttachmentType[value];
 		}
 
-		public StartQuestion() : base(0, "", "")
-		{
-
-		}
-
 		public StartQuestion(string subject_name, string content, string answer, int id, string attachmenttype = "none")
 			: base(id, content, answer)
 		{
