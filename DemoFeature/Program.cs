@@ -9,23 +9,14 @@ namespace DemoFeature
     {
         static void Main(string[] args)
         {
-            Data.ServerInitialize();
+            string server = Console.ReadLine();
+            string client = Console.ReadLine();
+            string subnet = NetClient.GetSubnetMask(System.Net.IPAddress.Parse(server)).ToString();
+            if (NetClient.CheckWhetherInSameNetwork(server, subnet, client))
             {
-                try
-                {
-                    NetServer.Start().Wait();
-                }
-                catch (AggregateException ae)
-                {
-                    string s = "";
-                    foreach (var e in ae.InnerExceptions) s += e.Message + "\n";
-                    MessageBox.Show(s);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message);
-                }
+                Console.WriteLine("OK");
             }
+            else Console.WriteLine("NO");
             Console.ReadKey();
         }
     }

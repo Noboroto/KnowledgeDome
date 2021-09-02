@@ -1,31 +1,38 @@
-﻿namespace KDLib
+﻿using Newtonsoft.Json;
+
+namespace KDLib
 {
-    public class AccelerationQuestionList : KDCollectionBase<AccelerationQuestion>
-    {
-        #region PrivateMembers
-        #endregion
+	public class AccelerationQuestionList : KDCollectionBase<AccelerationQuestion>
+	{
+		#region PrivateMembers
+		#endregion
 
-        #region PublicProperties
-        #endregion
+		#region PublicProperties
+		#endregion
 
-        public AccelerationQuestionList()
-        {
+		public AccelerationQuestionList()
+		{
 
-        }
+		}
 
-        public override bool Contains(object id)
-        {
-            using (var enumerator = GetEnumerator())
-            {
-                while (enumerator.MoveNext())
-                {
-                    if (enumerator.Current.ID == (int)id)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-    }
+		public override bool Contains(object id)
+		{
+			using (var enumerator = GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					if (enumerator.Current.ID == (int)id)
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		public override string ToJson()
+		{
+			return JsonConvert.SerializeObject(this);
+		}
+	}
 }

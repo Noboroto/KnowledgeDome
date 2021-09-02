@@ -6,64 +6,74 @@ using System.Windows.Media;
 
 namespace KDLib
 {
-    public class Obstacle
-    {
-        #region PrivateMembers
-        #endregion
+	public class Obstacle
+	{
+		#region PrivateMembers
+		#endregion
 
-        #region PublicPRoperties
-        [JsonIgnore]
-        public int ID
-        {
-            get
-            {
-                return obstacleQuestion.ID;
-            }
-        }
+		#region PublicPRoperties
+		[JsonIgnore]
+		public int ID
+		{
+			get
+			{
+				return obstacleQuestion.ID;
+			}
+		}
 
-        [JsonIgnore]
-        public int CharCount
-        {
-            get
-            {
-                return obstacleQuestion.CharCount;
-            }
-        }
+		[JsonIgnore]
+		public int CharCount
+		{
+			get
+			{
+				return obstacleQuestion.CharCount;
+			}
+		}
 
-        [JsonIgnore]
-        public string Content
-        {
-            get
-            {
-                return obstacleQuestion.Content;
-            }
-        }
+		[JsonIgnore]
+		public string Content
+		{
+			get
+			{
+				return obstacleQuestion.Content;
+			}
+		}
 
-        [JsonIgnore]
-        public ImageSource Image
-        {
-            get
-            {
-                return obstacleQuestion.Image;
-            }
-        }
+		[JsonIgnore]
+		public ImageSource Image
+		{
+			get
+			{
+				return obstacleQuestion.Image;
+			}
+		}
 
-        [JsonIgnore]
-        public Bitmap BitmapImage
-        {
-            get
-            {
-                return obstacleQuestion.BitmapImage;
-            }
-        }
-        [JsonProperty]
-        public ObstacleQuestion obstacleQuestion { get; set; }
-        [JsonProperty]
-        public List<ObstacleRowQuestion> RowList { get; set; }
-        #endregion
-        public Obstacle()
-        {
-            RowList = new List<ObstacleRowQuestion>();
-        }
-    }
+		[JsonIgnore]
+		public Bitmap BitmapImage
+		{
+			get
+			{
+				return obstacleQuestion.BitmapImage;
+			}
+		}
+		[JsonProperty]
+		public ObstacleQuestion obstacleQuestion { get; set; }
+		[JsonProperty]
+		public List<ObstacleRowQuestion> RowList { get; set; }
+		#endregion
+		public Obstacle()
+		{
+			RowList = new List<ObstacleRowQuestion>();
+		}
+
+		public static Obstacle FromJson(string source)
+		{
+			return JsonConvert.DeserializeObject<Obstacle>(source);
+		}
+
+		public string ToJson()
+		{
+			return JsonConvert.SerializeObject(this);
+		}
+	}
 }
