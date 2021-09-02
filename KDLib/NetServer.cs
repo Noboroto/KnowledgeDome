@@ -325,6 +325,7 @@ namespace KDLib
             try
             {
                 List<Task> tasks = new List<Task>();
+                if (TCPClients == null) return;
                 foreach (var client in TCPClients.Values)
                 {
                     StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true };
@@ -332,6 +333,10 @@ namespace KDLib
                 }
                 await Task.WhenAll(tasks);
             }
+            catch (NullReferenceException)
+			{
+                return;
+			}
             catch (AggregateException ae)
             {
                 throw ae.Flatten();
@@ -340,6 +345,20 @@ namespace KDLib
             {
                 throw;
             }
+        }
+
+        public static List <string> GetLocalIPAddress()
+        {
+            var result = new List<string>();
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    result.Add(ip.ToString());
+                }
+            }
+            return result;
         }
     }
 }

@@ -92,12 +92,16 @@
     <Compile Include="ViewModels\ServerViewModel\MainServerPageViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
+    <Compile Include="ViewModels\StartRoundViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\ConnectPage.xaml.cs">
       <DependentUpon>ConnectPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainClientPage.xaml.cs">
       <DependentUpon>MainClientPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MCView\StartRoundMCView.xaml.cs">
+      <DependentUpon>StartRoundMCView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ServerView\MainServerFramePage.xaml.cs">
       <DependentUpon>MainServerFramePage.xaml</DependentUpon>
@@ -107,6 +111,12 @@
     </Compile>
     <Compile Include="Views\RolePage.xaml.cs">
       <DependentUpon>RolePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ServerView\StartRoundServerView.xaml.cs">
+      <DependentUpon>StartRoundServerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StartRoundViewerPlayerPage.xaml.cs">
+      <DependentUpon>StartRoundViewerPlayerPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -123,9 +133,7 @@
     <Folder Include="ViewModels\MC\" />
     <Folder Include="ViewModels\Player\" />
     <Folder Include="ViewModels\Viewer\" />
-    <Folder Include="Views\MC\" />
     <Folder Include="Views\PlayerView\" />
-    <Folder Include="Views\Viewer\" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="KDControls\AvatarPlayerSingleView.xaml">
@@ -152,6 +160,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\MCView\StartRoundMCView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ServerView\MainServerFramePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -161,6 +173,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RolePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ServerView\StartRoundServerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StartRoundViewerPlayerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

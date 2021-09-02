@@ -6,6 +6,7 @@ namespace KDLib
     {
         None,
         Video,
+        Sound,
         Image
     }
     public enum SubjectInfo
@@ -43,6 +44,10 @@ namespace KDLib
         AskForConnect,
         RefuseConnect,
         ClientList,
-        AccpetConnect
+        AccpetConnect,
+        Right,
+        Wrong,
+        NextQuestAt,
+        NavigateToNextPage
     }
 }

@@ -14,6 +14,7 @@ namespace KDLib
         {
             ["None"] = AttachmentType.None,
             ["Image"] = AttachmentType.Image,
+            ["Sound"] = AttachmentType.Sound,
             ["Video"] = AttachmentType.Video
         };
         public static readonly Dictionary<string, SubjectInfo> StringToSubject = new Dictionary<string, SubjectInfo>()

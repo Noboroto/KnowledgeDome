@@ -1,6 +1,5 @@
-﻿using KDCtrlLib.Views;
+﻿using KDCtrlLib.Views.MCView;
 using KDCtrlLib.Views.ServerView;
-
 using KDLib;
 
 using System.Windows;
@@ -8,17 +7,17 @@ using System.Windows.Input;
 
 namespace DemoWPF
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
-    {
-        public ICommand TryConnectCmd { get; set; }
-        public MainWindow()
-        {
-            InitializeComponent();
-            Data.ClientInitialize();
-            //MyFrame.Navigate(new StartRoundPlayerPage());
-        }
-    }
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	public partial class MainWindow : Window
+	{
+		public ICommand TryConnectCmd { get; set; }
+		public MainWindow()
+		{
+			InitializeComponent();
+			Data.ClientInitialize();
+			MyFrame.Navigate(new StartRoundServerView());
+		}
+	}
 }

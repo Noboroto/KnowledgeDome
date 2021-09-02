@@ -39,6 +39,12 @@ namespace KDCtrlLib.ViewModels
             SimpleIoc.Default.Register<MainServerPageViewModel>();
             SimpleIoc.Default.Register<ConfigurationSettings>();
             SimpleIoc.Default.Register<MainServerFramePageViewModel>();
+            SimpleIoc.Default.Register<StartRoundViewModel>();
+        }
+
+        public static void ClearData<TClass> () where TClass : class
+		{
+            SimpleIoc.Default.Unregister<TClass>();
         }
 
         public static void Reload<TClass>() where TClass : class
@@ -61,6 +67,7 @@ namespace KDCtrlLib.ViewModels
 
         public static MainServerFramePageViewModel MainServerFrame => ServiceLocator.Current.GetInstance<MainServerFramePageViewModel>();
 
+        public static StartRoundViewModel StartRound => ServiceLocator.Current.GetInstance<StartRoundViewModel>();
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

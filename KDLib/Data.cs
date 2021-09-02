@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Media;
 
 namespace KDLib
 {
@@ -34,7 +35,6 @@ namespace KDLib
         public static int CurrentMatchIndex { get; set; }
         public static int CurrentPlayerIndex { get; set; }
         public static Match CurrentMatch { get; set; }
-        public static Player CurrentPlayer { get; set; }
         public static MatchList Matches { get; set; }
         #endregion
         /// <summary>
@@ -42,7 +42,8 @@ namespace KDLib
         /// </summary>
         public static void ServerInitialize()
         {
-            Commands = new KDCommandList();
+            ThisMacineType = MachineType.Server;
+            Initialize();
             NetServer.Initialize();
         }
 
@@ -52,9 +53,27 @@ namespace KDLib
             NetClient.Initialize();
         }
 
-        public static void InitializeForDevelop()
+        public static void Initialize()
         {
-
+            Commands = new KDCommandList();
+            ListIP = NetServer.GetLocalIPAddress();
+			CurrentMatch = new Match();
+			CurrentMatch.Players = new PlayerList();
+        }
+        public static void InitializeForDevelop()
+		{
+            ThisMacineType = MachineType.Server;
+            Initialize();
+            CurrentPlayerIndex = 0;
+			CurrentMatch.Players.Add(new Player(12, "asdasd")
+            {
+                BackgroundColor = (Brush)new BrushConverter().ConvertFromString(@"#16acea"),
+                ForegroundColor = Brushes.Black
+            });
+            for (int i = 0; i < 100; ++i)
+            {
+				CurrentMatch.StartQuestions.Add(new StartQuestion("Toán học", "Toán học " + i, "no", i));
+            };
         }
     }
 }
