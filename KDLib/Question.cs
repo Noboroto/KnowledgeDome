@@ -42,5 +42,10 @@ namespace KDLib
             Content = content;
             Answer = answer;
         }
+
+        internal string ToJson ()
+		{
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+		}
     }
 }
