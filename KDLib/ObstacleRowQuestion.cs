@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using System.IO;
+
 namespace KDLib
 {
 	public class ObstacleRowQuestion : Question
@@ -35,6 +37,16 @@ namespace KDLib
 		public static ObstacleRowQuestion FromJson(string source)
 		{
 			return JsonConvert.DeserializeObject<ObstacleRowQuestion>(source);
+		}
+		public static ObstacleRowQuestion ReadFromFile(string path = @"Tests\ObstacleRowQuestion.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\ObstacleRowQuestion.json")
+		{
+			File.WriteAllText(path, ToJson());
 		}
 	}
 }

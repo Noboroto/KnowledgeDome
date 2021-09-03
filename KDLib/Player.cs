@@ -81,5 +81,15 @@ namespace KDLib
 		{
 			return JsonConvert.DeserializeObject<Player>(source);
 		}
+		public static Player ReadFromFile(string path = @"Tests\Player.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\Player.json")
+		{
+			File.WriteAllText(path, ToJson());
+		}
 	}
 }

@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using System.IO;
+
 namespace KDLib
 {
 	public class FinishQuestionList : KDCollectionBase<FinishQuestion>
@@ -37,6 +39,18 @@ namespace KDLib
 		public static FinishQuestionList FromJson(string source)
 		{
 			return JsonConvert.DeserializeObject<FinishQuestionList>(source);
+		}
+
+
+		public static FinishQuestionList ReadFromFile(string path = @"Tests\FinishQuestionList.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\FinishQuestionList.json")
+		{
+			File.WriteAllText(path, ToJson());
 		}
 	}
 }
