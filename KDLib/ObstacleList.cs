@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using System.IO;
+
 namespace KDLib
 {
 	public class ObstacleList : KDCollectionBase<Obstacle>
@@ -31,6 +33,17 @@ namespace KDLib
 		public override string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
+		}
+
+		public static ObstacleList ReadFromFile(string path = @"Tests\ObstacleList.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\ObstacleList.json")
+		{
+			File.WriteAllText(path, ToJson());
 		}
 	}
 }

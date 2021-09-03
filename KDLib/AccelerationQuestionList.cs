@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using System.IO;
+
 namespace KDLib
 {
 	public class AccelerationQuestionList : KDCollectionBase<AccelerationQuestion>
@@ -33,6 +35,22 @@ namespace KDLib
 		public override string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
+		}
+
+		public static AccelerationQuestionList FromJson(string json)
+		{
+			return JsonConvert.DeserializeObject<AccelerationQuestionList>(json);
+		}
+
+		public static AccelerationQuestionList ReadFromFile(string path = @"Tests\AccelerationQuestionList.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\AccelerationQuestionList.json")
+		{
+			File.WriteAllText(path, ToJson());
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using System.IO;
 using System.Linq;
 
 namespace KDLib
@@ -38,6 +39,16 @@ namespace KDLib
 		public override string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
+		}
+		public static PlayerList ReadFromFile(string path = @"Tests\PlayerList.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\PlayerList.json")
+		{
+			File.WriteAllText(path, ToJson());
 		}
 	}
 }

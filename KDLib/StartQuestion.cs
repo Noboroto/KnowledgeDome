@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using System.IO;
+
 namespace KDLib
 {
 	public class StartQuestion : Question
@@ -42,11 +44,11 @@ namespace KDLib
 		}
 
 		[JsonConstructor]
-		public StartQuestion(int id, SubjectInfo subject, string content, string answer, AttachmentType type)
+		public StartQuestion(int id, SubjectInfo subject, string content, string answer, AttachmentType attachmenttype = AttachmentType.None)
 	: base(id, content, answer)
 		{
 			Subject = subject;
-			AttachmentInfo = type;
+			AttachmentInfo = attachmenttype;
 		}
 
 		public static int SubjectComparer(StartQuestion a, StartQuestion b)
@@ -59,6 +61,18 @@ namespace KDLib
 		public static StartQuestion FromJson(string source)
 		{
 			return JsonConvert.DeserializeObject<StartQuestion>(source);
+		}
+
+
+		public static StartQuestion ReadFromFile(string path = @"Tests\StartQuestion.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\StartQuestionlayerList.json")
+		{
+			File.WriteAllText(path, ToJson());
 		}
 	}
 }

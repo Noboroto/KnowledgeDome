@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using System.IO;
+
 namespace KDLib
 {
 	public class ExtraQuestion : Question
@@ -19,6 +21,17 @@ namespace KDLib
 		public static ExtraQuestion FromJson(string source)
 		{
 			return JsonConvert.DeserializeObject<ExtraQuestion>(source);
+		}
+
+		public static ExtraQuestion ReadFromFile(string path = @"Tests\ExtraQuestion.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\ExtraQuestion.json")
+		{
+			File.WriteAllText(path, ToJson());
 		}
 	}
 }

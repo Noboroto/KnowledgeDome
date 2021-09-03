@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Media;
 
 namespace KDLib
@@ -74,6 +75,17 @@ namespace KDLib
 		public string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
+		}
+
+		public static Obstacle ReadFromFile(string path = @"Tests\Obstacle.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\Obstacle.json")
+		{
+			File.WriteAllText(path, ToJson());
 		}
 	}
 }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Media;
+using System.IO;
 
 namespace KDLib
 {
@@ -63,6 +63,7 @@ namespace KDLib
 		{
 			Commands = new KDCommandList();
 			ListIP = NetServer.GetLocalIPAddress();
+			if (!Directory.Exists(@"Tests\")) Directory.CreateDirectory("Tests");
 			StartQuestions = new StartQuestionList();
 			Obstacles = new ObstacleList();
 			AccelerationQuestions = new AccelerationQuestionList();

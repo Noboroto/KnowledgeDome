@@ -75,5 +75,16 @@ namespace KDLib
 		{
 			return JsonConvert.DeserializeObject<ObstacleQuestion>(source);
 		}
+
+		public static ObstacleQuestion ReadFromFile(string path = @"Tests\ObstacleQuestion.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\ObstacleQuestion.json")
+		{
+			File.WriteAllText(path, ToJson());
+		}
 	}
 }

@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using System.IO;
+
 namespace KDLib
 {
 	public class MatchInfoList : KDCollectionBase<MatchInfo>
@@ -20,6 +22,17 @@ namespace KDLib
 		public override string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
+		}
+
+		public static MatchInfoList ReadFromFile(string path = @"Tests\MatchInfoList.json")
+		{
+			if (!File.Exists(path)) return null;
+			return FromJson(File.ReadAllText(path));
+		}
+
+		public void WriteToFile(string path = @"Tests\MatchInfoList.json")
+		{
+			File.WriteAllText(path, ToJson());
 		}
 	}
 }
