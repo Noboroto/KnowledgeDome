@@ -35,8 +35,13 @@ namespace KDLib
 		public static KDCommandList Commands { get; set; }
 		public static int CurrentMatchIndex { get; set; }
 		public static int CurrentPlayerIndex { get; set; }
-		public static Match CurrentMatch { get; set; }
-		public static MatchList Matches { get; set; }
+		public static MatchInfo CurrentMatch { get; set; }
+		public static MatchInfoList MatchInfos { get; set; }
+		public static StartQuestionList StartQuestions { get; set; }
+		public static ObstacleList Obstacles { get; set; }
+		public static AccelerationQuestionList AccelerationQuestions { get; set; }
+		public static FinishQuestionList FinishQuestions { get; set; }
+		public static ExtraQuestionList ExtraQuestions { get; set; }
 		#endregion
 		/// <summary>
 		/// (Làm sau) chuẩn bị dữ liệu
@@ -58,25 +63,12 @@ namespace KDLib
 		{
 			Commands = new KDCommandList();
 			ListIP = NetServer.GetLocalIPAddress();
-			CurrentMatch = new Match
-			{
-				Players = new PlayerList()
-			};
-		}
-		public static void InitializeForDevelop()
-		{
-			ThisMacineType = MachineType.Server;
-			Initialize();
-			CurrentPlayerIndex = 0;
-			CurrentMatch.Players.Add(new Player(12, "asdasd")
-			{
-				BackgroundColor = (Brush)new BrushConverter().ConvertFromString(@"#16acea"),
-				ForegroundColor = Brushes.Black
-			});
-			for (int i = 0; i < 100; ++i)
-			{
-				CurrentMatch.StartQuestions.Add(new StartQuestion("Toán học", "Toán học " + i, "no", i));
-			};
+			StartQuestions = new StartQuestionList();
+			Obstacles = new ObstacleList();
+			AccelerationQuestions = new AccelerationQuestionList();
+			FinishQuestions = new FinishQuestionList();
+			ExtraQuestions = new ExtraQuestionList();
+			MatchInfos = new MatchInfoList();
 		}
 	}
 }

@@ -2,9 +2,9 @@
 
 namespace KDLib
 {
-	public class MatchList : KDCollectionBase<Match>
+	public class MatchInfoList : KDCollectionBase<MatchInfo>
 	{
-		public MatchList()
+		public MatchInfoList()
 		{
 		}
 
@@ -13,9 +13,9 @@ namespace KDLib
 			return false;
 		}
 
-		public static MatchList FromJson(string source)
+		public static MatchInfoList FromJson(string source)
 		{
-			return JsonConvert.DeserializeObject<MatchList>(source);
+			return JsonConvert.DeserializeObject<MatchInfoList>(source);
 		}
 		public override string ToJson()
 		{

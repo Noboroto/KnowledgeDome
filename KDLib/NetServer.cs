@@ -241,7 +241,7 @@ namespace KDLib
 									SendCommandToOne(command.ID, new KDCommand(CommandType.RefuseConnect, null));
 									goto EndCommand;
 								}
-								int ID = Data.Matches[Data.CurrentMatchIndex].Players.FindFromName(command.Content).ID;
+								int ID = Data.MatchInfos[Data.CurrentMatchIndex].Players.FindFromName(command.Content).ID;
 								if (PlayerAvailable[ID] == null)
 								{
 									SendCommandToOne(command.ID, new KDCommand(CommandType.RefuseConnect, null));
