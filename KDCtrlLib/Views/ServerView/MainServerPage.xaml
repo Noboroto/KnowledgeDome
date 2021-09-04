@@ -3,6 +3,8 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:materialDesignConverters="clr-namespace:MaterialDesignThemes.Wpf.Converters;assembly=MaterialDesignThemes.Wpf"
 	TextElement.Foreground="{DynamicResource MaterialDesignBody}"
 	Background="{DynamicResource MaterialDesignPaper}"
 	TextElement.FontWeight="Medium"
@@ -11,8 +13,14 @@
 	DataContext="{Binding Main, Source={StaticResource Locator}}"
 	xmlns:control="clr-namespace:KDCtrlLib.KDControls">
 	<Page.Resources>
-		<ResourceDictionary
-			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary
+					Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
+				<ResourceDictionary
+					Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
 	</Page.Resources>
 	<Grid>
 		<Grid.ColumnDefinitions>
@@ -54,15 +62,9 @@
 		</ScrollViewer>
 		<StackPanel
 			Orientation="Vertical">
-			<StackPanel.Resources>
-				<Style
-					TargetType="{x:Type Button}"
-					BasedOn="{StaticResource MaterialDesignRaisedSecondaryButton}"
-					>
-				</Style>
-			</StackPanel.Resources>
-
-
+			<Button
+				ToolTip="Resource name: MaterialDesignRaisedSecondaryLightButton"
+				Content="LIGHT"/>
 		</StackPanel>
 	</Grid>
 </Page>
