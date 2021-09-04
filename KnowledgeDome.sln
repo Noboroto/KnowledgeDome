@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KDCtrlLib", "KDCtrlLib\KDCt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnowledgeCreatory", "KnowledgeCreatory\KnowledgeCreatory.csproj", "{37B783D5-7D5B-4EDE-9A94-18943DF260DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KDServer", "KDServer\KDServer.csproj", "{156FBA37-EA38-47C1-ADAA-C39A78505638}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{37B783D5-7D5B-4EDE-9A94-18943DF260DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37B783D5-7D5B-4EDE-9A94-18943DF260DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37B783D5-7D5B-4EDE-9A94-18943DF260DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{156FBA37-EA38-47C1-ADAA-C39A78505638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{156FBA37-EA38-47C1-ADAA-C39A78505638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{156FBA37-EA38-47C1-ADAA-C39A78505638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{156FBA37-EA38-47C1-ADAA-C39A78505638}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
