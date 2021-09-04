@@ -10,4 +10,8 @@
     <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KDLib\KDLib.csproj" />
+  </ItemGroup>
+
 </Project>
