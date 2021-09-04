@@ -28,7 +28,13 @@ namespace KDCtrlLib.ViewModels
 		private bool _TimerEnable;
 		private bool _DoneEnable;
 		private bool _SoundEnable;
+		private int _StoreItemCounter;
 
+		public int StoreItemCounter
+		{
+			get => _StoreItemCounter;
+			set => Set(ref _StoreItemCounter, value);
+		}
 		public bool TimerEnable
 		{
 			get => _TimerEnable;
@@ -80,9 +86,9 @@ namespace KDCtrlLib.ViewModels
 		public StartRoundViewModel()
 		{
 			#region DEBUG_DATA
-			Data.InitializeForDevelop();
+			Data.Initialize();
 			#endregion
-
+			
 			#region INIT
 			DoneEnable = false;
 			SoundEnable = false;
@@ -138,12 +144,12 @@ namespace KDCtrlLib.ViewModels
 			{
 				try
 				{
-					CurrentQuestion = GetNewQuestion(Data.CurrentMatch.StartQuestions);
+					CurrentQuestion = GetNewQuestion(Data.StartQuestions);
 					SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
 				}
 				catch (ArgumentOutOfRangeException)
 				{
-					MessageBox.Show("Đã hết câu hỏi");
+					cancellation.Cancel();
 					return;
 				}
 				while (Timer > 0)
@@ -173,32 +179,42 @@ namespace KDCtrlLib.ViewModels
 			var tmp = source[index];
 			source.RemoveAt(index);
 			NetServer.SendCommandToAll(new KDCommand(CommandType.NextQuestAt, index.ToString()));
+			StoreItemCounter = source.Count;
 			return tmp;
+		}
+
+		private void OutOfQuestion()
+		{
+			MessageBox.Show("Đã hết câu hỏi");
+			Running = false;
+			DoneEnable = true;
+			cancellation.Cancel();
 		}
 
 		private void RightAns()
 		{
-			if (Data.CurrentMatch.StartQuestions.Count <= 0)
+			if (Data.StartQuestions.Count <= 0)
 			{
-				MessageBox.Show("Đã hết câu hỏi");
+				OutOfQuestion();
 				return;
 			}
 			CurrentPlayer.Score += 10;
 			QuestCount++;
-			CurrentQuestion = GetNewQuestion(Data.CurrentMatch.StartQuestions);
+			CurrentQuestion = GetNewQuestion(Data.StartQuestions);
 			SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Right));
 		}
 
 		private void WrongAns()
 		{
-			if (Data.CurrentMatch.StartQuestions.Count <= 0)
+			if (Data.StartQuestions.Count <= 0)
 			{
-				MessageBox.Show("Đã hết câu hỏi");
+				OutOfQuestion();
+				OutOfQuestion();
 				return;
 			}
 			QuestCount++;
-			CurrentQuestion = GetNewQuestion(Data.CurrentMatch.StartQuestions);
+			CurrentQuestion = GetNewQuestion(Data.StartQuestions);
 			SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Wrong));
 		}
@@ -215,7 +231,7 @@ namespace KDCtrlLib.ViewModels
 						switch (command.PrefixCmd)
 						{
 							case CommandType.NextQuestAt:
-								CurrentQuestion = Data.CurrentMatch.StartQuestions[int.Parse(command.Content)];
+								CurrentQuestion = Data.StartQuestions[int.Parse(command.Content)];
 								break;
 							case CommandType.Right:
 								CurrentPlayer.Score++;

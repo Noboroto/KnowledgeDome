@@ -8,50 +8,61 @@
 	TextElement.FontWeight="Medium"
 	TextElement.FontSize="14"
 	FontFamily="{materialDesign:MaterialDesignFont}"
-	DataContext="{Binding MainServer, Source={StaticResource Locator}}"
+	DataContext="{Binding Main, Source={StaticResource Locator}}"
 	xmlns:control="clr-namespace:KDCtrlLib.KDControls">
 	<Page.Resources>
 		<ResourceDictionary
 			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
 	</Page.Resources>
-	<ScrollViewer>
-		<WrapPanel
-			VerticalAlignment="Center"
-			HorizontalAlignment="Center"
-			Orientation="Horizontal">
-			<WrapPanel.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+			<ColumnDefinition Width="auto" />
+		</Grid.ColumnDefinitions>
+		<ScrollViewer
+			Grid.Column="0"
+			>
+			<WrapPanel
+				VerticalAlignment="Center"
+				HorizontalAlignment="Center"
+				Orientation="Horizontal">
+				<ListBox
+					ItemsSource="{Binding CurrentMatch.Players}">
+					<ListBox.ItemContainerStyle>
+						<Style
+							TargetType="ListBoxItem">
+							<Setter
+								Property="Template">
+								<Setter.Value>
+									<ControlTemplate
+										TargetType="ListBoxItem">
+										<control:PlayerMainServerView
+											Margin="20" />
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</ListBox.ItemContainerStyle>
+					<ListBox.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel
+								Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ListBox.ItemsPanel>
+				</ListBox>
+			</WrapPanel>
+		</ScrollViewer>
+		<StackPanel
+			Orientation="Vertical">
+			<StackPanel.Resources>
 				<Style
-					TargetType="control:PlayerMainServerView">
-					<Setter
-						Property="Margin"
-						Value="20" />
+					TargetType="{x:Type Button}"
+					BasedOn="{StaticResource MaterialDesignRaisedSecondaryButton}"
+					>
 				</Style>
-			</WrapPanel.Resources>
-			<control:PlayerMainServerView
-				x:Name="first"
-				Visibility="Collapsed"
-				Background="#d71b3b"
-				Foreground="White" />
-			<control:PlayerMainServerView
-				x:Name="second"
-				Visibility="Collapsed"
-				Background="#e8d71e"
-				Foreground="Black" />
-			<control:PlayerMainServerView
-				x:Name="third"
-				Visibility="Collapsed"
-				Background="#16acea"
-				Foreground="Black" />
-			<control:PlayerMainServerView
-				x:Name="fourth"
-				Visibility="Collapsed"
-				Background="#3a6b35"
-				Foreground="White" />
-			<control:PlayerMainServerView
-				x:Name="fifth"
-				Visibility="Collapsed"
-				Background="#4203c9"
-				Foreground="White" />
-		</WrapPanel>
-	</ScrollViewer>
+			</StackPanel.Resources>
+
+
+		</StackPanel>
+	</Grid>
 </Page>

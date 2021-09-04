@@ -22,6 +22,8 @@ namespace KDLib
 			get => _AttachmentInfo;
 			set => Set(ref _AttachmentInfo, (AttachmentType)value);
 		}
+
+		public string SubjectName => KDConvert.SubjectToString[Subject];
 		#endregion
 
 		private SubjectInfo SubjectValue(string value)
@@ -34,11 +36,6 @@ namespace KDLib
 		{
 			if (!KDConvert.StringToAttachmentType.ContainsKey(value)) return AttachmentType.None;
 			else return KDConvert.StringToAttachmentType[value];
-		}
-
-		public StartQuestion() : base(0, "", "")
-		{
-
 		}
 
 		public StartQuestion(string subject_name, string content, string answer, int id, string attachmenttype = "none")

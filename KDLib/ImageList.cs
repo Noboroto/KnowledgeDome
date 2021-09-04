@@ -30,15 +30,5 @@ namespace KDLib
 			RawImages.Add(image);
 			Add((ImageSource)new ImageSourceConverter().ConvertFrom(image));
 		}
-
-		public override bool Contains(object id)
-		{
-			return true;
-		}
-
-		public override string ToJson()
-		{
-			return string.Empty;
-		}
 	}
 }

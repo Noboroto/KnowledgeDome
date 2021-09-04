@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using System.Collections.Generic;
 using System.IO;
 
 namespace KDLib
@@ -16,7 +17,12 @@ namespace KDLib
 		{
 		}
 
-		public override bool Contains(object id)
+		public FinishQuestionList(IList <FinishQuestion> list) : base(list)
+		{
+
+		}
+
+		public bool Contains(object id)
 		{
 			using (var enumerator = GetEnumerator())
 			{
@@ -31,7 +37,7 @@ namespace KDLib
 			return false;
 		}
 
-		public override string ToJson()
+		public string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
 		}
@@ -44,7 +50,7 @@ namespace KDLib
 
 		public static FinishQuestionList ReadFromFile(string path = @"Tests\FinishQuestionList.json")
 		{
-			if (!File.Exists(path)) return null;
+			if (!File.Exists(path)) return new FinishQuestionList();
 			return FromJson(File.ReadAllText(path));
 		}
 

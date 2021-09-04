@@ -8,7 +8,7 @@
 	TextElement.FontWeight="Medium"
 	TextElement.FontSize="14"
 	FontFamily="{materialDesign:MaterialDesignFont}"
-	DataContext="{Binding MainClient, Source={StaticResource Locator}}"
+	DataContext="{Binding Main, Source={StaticResource Locator}}"
 	xmlns:control="clr-namespace:KDCtrlLib.KDControls"
 	>
 	<Page.Resources>
@@ -20,39 +20,31 @@
 			VerticalAlignment="Center"
 			HorizontalAlignment="Center"
 			Orientation="Horizontal">
-			<WrapPanel.Resources>
-				<Style
-					TargetType="control:PlayerMainClientView">
-					<Setter
-						Property="Margin"
-						Value="35" />
-				</Style>
-			</WrapPanel.Resources>
-			<control:PlayerMainClientView
-				x:Name="first"
-				Visibility="Collapsed"
-				Background="#d71b3b"
-				Foreground="White" />
-			<control:PlayerMainClientView
-				x:Name="second"
-				Visibility="Collapsed"
-				Background="#e8d71e"
-				Foreground="Black" />
-			<control:PlayerMainClientView
-				x:Name="third"
-				Visibility="Collapsed"
-				Background="#16acea"
-				Foreground="Black" />
-			<control:PlayerMainClientView
-				x:Name="fourth"
-				Visibility="Collapsed"
-				Background="#3a6b35"
-				Foreground="White" />
-			<control:PlayerMainClientView
-				x:Name="fifth"
-				Visibility="Collapsed"
-				Background="#4203c9"
-				Foreground="White" />
+			<ListBox
+				IsHitTestVisible="False"
+				ItemsSource="{Binding CurrentMatch.Players}">
+				<ListBox.ItemContainerStyle>
+					<Style
+						TargetType="ListBoxItem">
+						<Setter
+							Property="Template">
+							<Setter.Value>
+								<ControlTemplate
+									TargetType="ListBoxItem">
+									<control:PlayerMainServerView
+										Margin="20" />
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</ListBox.ItemContainerStyle>
+				<ListBox.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel
+							Orientation="Horizontal" />
+					</ItemsPanelTemplate>
+				</ListBox.ItemsPanel>
+			</ListBox>
 		</WrapPanel>
 	</ScrollViewer>
 </Page>

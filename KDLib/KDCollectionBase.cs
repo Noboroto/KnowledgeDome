@@ -1,11 +1,17 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace KDLib
 {
 	public abstract class KDCollectionBase<T> : ObservableCollection<T>
 	{
-		public abstract bool Contains(object id);
+		public KDCollectionBase() : base()
+		{
 
-		public abstract string ToJson();
+		}
+		public KDCollectionBase(IList<T> list) : base (list)
+		{
+
+		}
 	}
 }
