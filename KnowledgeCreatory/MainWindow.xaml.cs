@@ -23,6 +23,10 @@ namespace KnowledgeCreatory
         public MainWindow()
         {
             InitializeComponent();
+            #if DEBUG
+                KDLib.Utilities.ReadKeyFromConfig();
+                KDLib.Utilities.DemoEncryption();
+            #endif
         }
     }
 }
