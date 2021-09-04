@@ -9,30 +9,36 @@ namespace KDLib
 	public class MatchInfo : ObservableObject
 	{
 		#region PrivateMembers
+		private string _Name;
+		private PlayerList _Players;
 		#endregion
 
 		#region PublicProperties
 
-		public string Name { get; private set; }
-
-		public PlayerList Players { get; set; }
-		#endregion
-
-		public MatchInfo()
+		public string Name
 		{
-			Players = new PlayerList();
+			get => _Name;
+			private set => Set(ref _Name, value);
 		}
 
-		[JsonConstructor]
-		public MatchInfo(PlayerList players)
+		public PlayerList Players
 		{
+			get => _Players;
+			set => Set(ref _Players, value);
+		}
+		#endregion
+
+
+		[JsonConstructor]
+		public MatchInfo(string name, PlayerList players)
+		{
+			Name = name;
 			Players = players;
 		}
 
-		public MatchInfo(string name)
-			: this()
+		public MatchInfo(string name = "No Name")
+			: this(name, new PlayerList())
 		{
-			Name = name;
 		}
 
 		public string ToJson()

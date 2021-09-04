@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using System.Collections.Generic;
 using System.IO;
 
 namespace KDLib
@@ -10,7 +11,12 @@ namespace KDLib
 		{
 		}
 
-		public override bool Contains(object id)
+		public MatchInfoList(IList<MatchInfo> list):base(list)
+		{
+
+		}
+
+		public bool Contains(object id)
 		{
 			return false;
 		}
@@ -19,14 +25,14 @@ namespace KDLib
 		{
 			return JsonConvert.DeserializeObject<MatchInfoList>(source);
 		}
-		public override string ToJson()
+		public string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
 		}
 
 		public static MatchInfoList ReadFromFile(string path = @"Tests\MatchInfoList.json")
 		{
-			if (!File.Exists(path)) return null;
+			if (!File.Exists(path)) return new MatchInfoList();
 			return FromJson(File.ReadAllText(path));
 		}
 

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -48,7 +49,12 @@ namespace KDLib
 
 		}
 
-		public override bool Contains(object id)
+		public StartQuestionList(IList <StartQuestion> list) : base (list)
+		{
+
+		}
+
+		public bool Contains(object id)
 		{
 			using (var enumerator = GetEnumerator())
 			{
@@ -67,13 +73,13 @@ namespace KDLib
 			return JsonConvert.DeserializeObject<StartQuestionList>(source);
 		}
 
-		public override string ToJson()
+		public string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
 		}
-		public static StartQuestionList ReadFromFile(string path = "StartQuestionList.json")
+		public static StartQuestionList ReadFromFile(string path = @"Tests\StartQuestionList.json")
 		{
-			if (!File.Exists(path)) return null;
+			if (!File.Exists(path)) return new StartQuestionList();
 			return FromJson(File.ReadAllText(path));
 		}
 

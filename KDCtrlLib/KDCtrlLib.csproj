@@ -87,9 +87,8 @@
     <Compile Include="MessageForUI\SnackbarNoticeMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ConnectViewModel.cs" />
-    <Compile Include="ViewModels\MainClientPageViewModel.cs" />
-    <Compile Include="ViewModels\ServerViewModel\MainServerFramePageViewModel.cs" />
-    <Compile Include="ViewModels\ServerViewModel\MainServerPageViewModel.cs" />
+    <Compile Include="ViewModels\MainServerFramePageViewModel.cs" />
+    <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
     <Compile Include="ViewModels\StartRoundViewModel.cs" />
@@ -130,9 +129,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\MC\" />
-    <Folder Include="ViewModels\Player\" />
-    <Folder Include="ViewModels\Viewer\" />
     <Folder Include="Views\PlayerView\" />
   </ItemGroup>
   <ItemGroup>

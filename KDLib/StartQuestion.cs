@@ -22,6 +22,8 @@ namespace KDLib
 			get => _AttachmentInfo;
 			set => Set(ref _AttachmentInfo, (AttachmentType)value);
 		}
+
+		public string SubjectName => KDConvert.SubjectToString[Subject];
 		#endregion
 
 		private SubjectInfo SubjectValue(string value)

@@ -16,7 +16,6 @@ using CommonServiceLocator;
 
 using GalaSoft.MvvmLight.Ioc;
 
-using KDCtrlLib.ViewModels.ServerViewModel;
 
 namespace KDCtrlLib.ViewModels
 {
@@ -35,8 +34,7 @@ namespace KDCtrlLib.ViewModels
             SimpleIoc.Default.Register<MainWindowViewModel>();
             SimpleIoc.Default.Register<ConnectViewModel>();
             SimpleIoc.Default.Register<RoleViewModel>();
-            SimpleIoc.Default.Register<MainClientPageViewModel>();
-            SimpleIoc.Default.Register<MainServerPageViewModel>();
+            SimpleIoc.Default.Register<MainPageViewModel>();
             SimpleIoc.Default.Register<ConfigurationSettings>();
             SimpleIoc.Default.Register<MainServerFramePageViewModel>();
             SimpleIoc.Default.Register<StartRoundViewModel>();
@@ -61,9 +59,8 @@ namespace KDCtrlLib.ViewModels
 
         public static ConfigurationSettings AppConfig => ServiceLocator.Current.GetInstance<ConfigurationSettings>();
 
-        public static MainClientPageViewModel MainClient => ServiceLocator.Current.GetInstance<MainClientPageViewModel>();
 
-        public static MainServerPageViewModel MainServer => ServiceLocator.Current.GetInstance<MainServerPageViewModel>();
+        public static MainPageViewModel Main => ServiceLocator.Current.GetInstance<MainPageViewModel>();
 
         public static MainServerFramePageViewModel MainServerFrame => ServiceLocator.Current.GetInstance<MainServerFramePageViewModel>();
 

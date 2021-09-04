@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using System.Collections.Generic;
 using System.IO;
 
 namespace KDLib
@@ -15,8 +16,11 @@ namespace KDLib
 		public ExtraQuestionList()
 		{
 		}
+		public ExtraQuestionList(IList<ExtraQuestion> list) :base (list)
+		{
 
-		public override bool Contains(object id)
+		}
+		public bool Contains(object id)
 		{
 			using (var enumerator = GetEnumerator())
 			{
@@ -31,7 +35,7 @@ namespace KDLib
 			return false;
 		}
 
-		public override string ToJson()
+		public string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
 		}
@@ -42,7 +46,7 @@ namespace KDLib
 		}
 		public static ExtraQuestionList ReadFromFile(string path = @"Tests\ExtraQuestionList.json")
 		{
-			if (!File.Exists(path)) return null;
+			if (!File.Exists(path)) return new ExtraQuestionList();
 			return FromJson(File.ReadAllText(path));
 		}
 

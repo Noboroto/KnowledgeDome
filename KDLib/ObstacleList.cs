@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using System.Collections.Generic;
 using System.IO;
 
 namespace KDLib
@@ -11,7 +12,12 @@ namespace KDLib
 
 		}
 
-		public override bool Contains(object id)
+		public ObstacleList(IList<Obstacle> list) : base (list)
+		{
+
+		}
+
+		public bool Contains(object id)
 		{
 			using (var enumerator = GetEnumerator())
 			{
@@ -30,14 +36,14 @@ namespace KDLib
 		{
 			return JsonConvert.DeserializeObject<ObstacleList>(source);
 		}
-		public override string ToJson()
+		public string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
 		}
 
 		public static ObstacleList ReadFromFile(string path = @"Tests\ObstacleList.json")
 		{
-			if (!File.Exists(path)) return null;
+			if (!File.Exists(path)) return new ObstacleList();
 			return FromJson(File.ReadAllText(path));
 		}
 
