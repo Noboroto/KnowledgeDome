@@ -7,8 +7,8 @@
 	xmlns:local="clr-namespace:KDServer"
 	mc:Ignorable="d"
 	Title="Knowledge Dome Server"
-	Height="450"
-	Width="800">
+	WindowState="Maximized"
+	>
 	<Frame
 		Source="pack://application:,,,/KDCtrlLib;component/Views/ServerView/MainServerFramePage.xaml"
 		NavigationUIVisibility="Hidden" />

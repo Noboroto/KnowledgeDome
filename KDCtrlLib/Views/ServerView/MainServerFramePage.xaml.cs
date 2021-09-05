@@ -16,7 +16,6 @@ namespace KDCtrlLib.Views.ServerView
         public MainServerFramePage()
         {
             InitializeComponent();
-            MainFrame.Navigate(new MainServerPage());
             Dispatcher.Invoke(DispatcherPriority.Input,
                 new Action(delegate ()
                 {

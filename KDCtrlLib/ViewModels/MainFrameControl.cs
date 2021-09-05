@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KDCtrlLib.ViewModels
 {
-    public class MainServerFramePageViewModel
+    public class MainFrameControl
     {
     }
 }

@@ -16,24 +16,76 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary
-					Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
+					Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml" />
 				<ResourceDictionary
-					Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+					Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Page.Resources>
-	<Grid>
+	<Grid
+		HorizontalAlignment="Stretch"
+		VerticalAlignment="Stretch"
+		>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition />
+			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="auto" />
 		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition
+				Height="auto" />
+			<RowDefinition
+				Height="*" />
+		</Grid.RowDefinitions>
+		<StackPanel
+			Margin="25"
+			Grid.Row="0"
+			Grid.Column="0"
+			Grid.ColumnSpan="2"
+			Orientation="Horizontal"
+			VerticalAlignment="Center"
+			HorizontalAlignment="Center">
+			<TextBlock
+				VerticalAlignment="Center"
+				FontSize="30"
+				>
+				IP đã chọn:
+			</TextBlock>
+			<ComboBox
+				Margin="10 10 50 10"
+				VerticalAlignment="Center"
+				FontSize="30"
+				SelectedIndex="0"
+				MinWidth="200"
+				>
+				<ComboBoxItem>
+					192.168.1.1
+				</ComboBoxItem>
+			</ComboBox>
+			<TextBlock
+				Margin="50 0 0 0"
+				VerticalAlignment="Center"
+				FontSize="30">
+				Trận đã chọn:
+			</TextBlock>
+			<ComboBox
+				Margin="10 10 50 10"
+				VerticalAlignment="Center"
+				FontSize="30"
+				SelectedIndex="0"
+				MinWidth="200">
+				<ComboBoxItem>
+					Test Match
+				</ComboBoxItem>
+			</ComboBox>
+		</StackPanel>
 		<ScrollViewer
+			Grid.Row="1"
 			Grid.Column="0"
 			>
-			<WrapPanel
+			<Grid
 				VerticalAlignment="Center"
 				HorizontalAlignment="Center"
-				Orientation="Horizontal">
+				>
 				<ListBox
 					ItemsSource="{Binding CurrentMatch.Players}">
 					<ListBox.ItemContainerStyle>
@@ -53,18 +105,80 @@
 					</ListBox.ItemContainerStyle>
 					<ListBox.ItemsPanel>
 						<ItemsPanelTemplate>
-							<StackPanel
+							<WrapPanel
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
 								Orientation="Horizontal" />
 						</ItemsPanelTemplate>
 					</ListBox.ItemsPanel>
 				</ListBox>
-			</WrapPanel>
+			</Grid>
 		</ScrollViewer>
 		<StackPanel
+			Grid.Row="1"
+			VerticalAlignment="Center"
+			Grid.Column="1"
 			Orientation="Vertical">
+			<StackPanel.Resources>
+				<Style
+					TargetType="Button"
+					BasedOn="{StaticResource MaterialDesignRaisedButton}">
+					<Setter
+						Property="BorderThickness"
+						Value="0"
+						/>
+					<Setter
+						Property="Background" 
+						Value="#4caf50"
+						/>
+					<Setter
+						Property="Foreground"
+						Value="#000000" />
+					<Setter
+						Property="Margin"
+						Value="0 5 0 5" />
+					<Setter
+						Property="FontSize"
+						Value="18"
+						/>
+				</Style>
+			</StackPanel.Resources>
 			<Button
-				ToolTip="Resource name: MaterialDesignRaisedSecondaryLightButton"
-				Content="LIGHT"/>
+				Background="#fff176"
+				Name="SettingsButton"
+				>
+				<StackPanel
+					Height="{Binding ElementName=SettingsButton, Path=ActualHeight}"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Orientation="Horizontal"
+					>
+					<materialDesign:PackIcon
+						Width="20"
+						Height="20"
+						VerticalAlignment="Center"
+						Kind="Cog" />
+					<TextBlock
+						TextAlignment="Left"
+						FontFamily="{Binding ElementName=SettingsButton, Path=FontFamily}"
+						FontSize="{Binding ElementName=SettingsButton, Path=FontSize}"
+						Height="auto"
+						Margin="5 4 0 0"
+						VerticalAlignment="Center"
+						Text="Cài đặt"
+						/>
+				</StackPanel>
+			</Button>
+			<Button
+				Content="Khởi động"/>
+			<Button
+				Content="VCNV" />
+			<Button
+				Content="Tăng tốc" />
+			<Button
+				Content="Về đích" />
+			<Button
+				Content="Câu hỏi phụ" />
 		</StackPanel>
 	</Grid>
 </Page>

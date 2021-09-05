@@ -10,7 +10,7 @@
 	TextElement.FontWeight="Medium"
 	TextElement.FontSize="14"
 	FontFamily="{materialDesign:MaterialDesignFont}"
-	DataContext="{Binding MainServerFrame, Source={StaticResource Locator}}">
+	DataContext="{Binding MainFrame, Source={StaticResource Locator}}">
 	<Page.Resources>
 		<ResourceDictionary
 			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
@@ -18,7 +18,7 @@
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition
-				Width="3*" />
+				Width="5*" />
 			<ColumnDefinition
 				Width="5" />
 			<ColumnDefinition
@@ -33,7 +33,8 @@
 				Height="*" />
 		</Grid.RowDefinitions>
 		<Frame
-			x:Name="MainFrame"
+			Source="pack://application:,,,/KDCtrlLib;component/Views/ServerView/MainServerPage.xaml"
+			NavigationUIVisibility="Hidden"
 			Grid.Column="0"
 			Grid.Row="0"
 			Grid.RowSpan="3" />
