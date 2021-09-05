@@ -72,20 +72,29 @@
 				HorizontalAlignment="Stretch"
 				VerticalAlignment="Stretch"
 				SelectionMode="Single">
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<StackPanel
-							Orientation="Horizontal">
-							<TextBlock
-								Foreground="{Binding ForegroundColor}"
-								Text="{Binding Info}"
-								/>
-							<TextBlock 
-								Text="{Binding Message}"
-								/>
-						</StackPanel>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
+				<ListBox.ItemContainerStyle>
+					<Style
+						TargetType="ListBoxItem">
+						<Setter
+							Property="Template">
+							<Setter.Value>
+								<ControlTemplate
+									TargetType="ListBoxItem">
+									<WrapPanel
+										Orientation="Horizontal">
+										<TextBlock
+											Foreground="{Binding ForegroundColor}"
+											Text="{Binding Info}" />
+										<TextBlock
+											TextWrapping="Wrap"
+											Text="{Binding Message}">
+										</TextBlock>
+									</WrapPanel>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</ListBox.ItemContainerStyle>
 			</ListBox>
 			<TextBox
 				x:Name="SendMessage"
@@ -113,17 +122,26 @@
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Stretch"
 			SelectionMode="Single">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<StackPanel
-						Orientation="Horizontal">
-						<TextBlock
-							Text="{Binding Info}" />
-						<TextBlock
-							Text="{Binding Message}" />
-					</StackPanel>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
+			<ListBox.ItemContainerStyle>
+				<Style
+					TargetType="ListBoxItem">
+					<Setter
+						Property="Template">
+						<Setter.Value>
+							<ControlTemplate
+								TargetType="ListBoxItem">
+								<StackPanel
+									Orientation="Horizontal">
+									<TextBlock
+										Text="{Binding Info}" />
+									<TextBlock
+										Text="{Binding Message}" />
+								</StackPanel>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</ListBox.ItemContainerStyle>
 		</ListBox>
 	</Grid>
 </Page>
