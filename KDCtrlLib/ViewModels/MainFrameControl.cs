@@ -57,7 +57,7 @@ namespace KDCtrlLib.ViewModels
 			#region Client
             if (Data.ThisMacineType != Machine.Server)
 			{
-                Messenger.Default.Send(new NavigateToMessage(@"RolePage.xaml"));
+                Messenger.Default.Send(new NavigateToMessage(@"ConnectPage.xaml"));
             }
 			#endregion
 

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+
+using System.Collections.Generic;
 using System.IO;
 
 namespace KDLib
@@ -15,13 +17,6 @@ namespace KDLib
 		public const int PortForChecker = 2645;
 
 		public const int PortForValidCheck = 2647;
-
-		public static readonly List<string> NameMachine = new List<string>
-		{
-			"Thí sinh",
-			"MC",
-			"Khán giả",
-		};
 		#endregion
 
 		#region PrivateMembers
@@ -55,8 +50,18 @@ namespace KDLib
 
 		public static void ClientInitialize()
 		{
-			Commands = new KDCommandList();
+			ThisMacineType = Machine.None;
 			NetClient.Initialize();
+		}
+
+		public static string ToJson<T>(T o)
+		{
+			return JsonConvert.SerializeObject(o);
+		}
+
+		public static T FromJosn<T> (string source)
+		{
+			return JsonConvert.DeserializeObject<T>(source);
 		}
 
 		private static void Initialize()

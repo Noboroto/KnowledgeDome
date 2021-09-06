@@ -22,7 +22,6 @@ namespace DemoFeature
             custom.Players.Add(new Player(2, "Nhật Nam"));
             custom.Players.Add(new Player(3, "Tâm Uyên"));
 
-            Data.Initialize();
             Data.MatchInfos.Add(first);
             Data.MatchInfos.Add(custom);
 

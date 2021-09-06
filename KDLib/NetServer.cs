@@ -65,9 +65,10 @@ namespace KDLib
 			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
 			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
 			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
+			Start();
 		}
 
-		public static async Task Start()
+		public static async void Start()
 		{
 			ListenerCenter.Start();
 			CheckerCenter.Start();
@@ -84,21 +85,15 @@ namespace KDLib
 			}
 		}
 
-		//Don't change
 		private static Task AcceptVaid()
 		{
 			Action ThisAction = () =>
 			{
-				int t = 0;
 				while (true)
 				{
-					t = (t > 100) ? 0 : t;
-					Console.WriteLine("checking..." + t);
 					Task.Delay(1000).Wait();
-					t++;
 					if (ValidCenter.Pending())
 					{
-						Console.WriteLine("CHECKED... at " + t);
 						ValidCenter.AcceptTcpClient();
 					}
 				}
@@ -191,8 +186,14 @@ namespace KDLib
 					{
 						client = ListenerCenter.AcceptTcpClient();
 						TCPClients[client.Client.RemoteEndPoint] = client;
-						Console.WriteLine("ACCEPTED...");
-						SendCommandToOne(client.Client.RemoteEndPoint, new KDCommand(CommandType.ClientList, client.Client.LocalEndPoint as IPEndPoint, JsonConvert.SerializeObject(Data.NameMachine)));
+						var Role = new List<string>();
+						foreach(var x in Data.CurrentMatch.Players)
+						{
+							Role.Add(x.Name);
+						};
+						Role.Add("MC");
+						Role.Add("Khán giả");
+						SendCommandToOne(client.Client.RemoteEndPoint, new KDCommand(CommandType.ClientList, Data.ToJson(Role)));
 						ListenFromClient(client.Client.RemoteEndPoint);
 					}
 				}

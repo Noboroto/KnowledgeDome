@@ -20,8 +20,6 @@ namespace KDLib
 		#region PrivateMembers
 		private static TcpClient ThisClient = new TcpClient();
 		private static TcpClient OnlClient = new TcpClient();
-
-		private static ObservableCollection<string> _ClientComboBoxChoose;
 		#endregion
 
 		#region PublicProperties
@@ -29,56 +27,15 @@ namespace KDLib
 
 		public static CancellationTokenSource MustCancel { get; } = new CancellationTokenSource();
 
-		public static ObservableCollection<string> ClientComboBoxChoose
-		{
-			get
-			{
-				return _ClientComboBoxChoose;
-			}
-			set
-			{
-				_ClientComboBoxChoose = value;
-				NotifyStaticPropertyChanged();
-			}
-		}
-
-		public static void AddObservationCollectionAsync<T>(ICollection<T> collection, T item)
-		{
-			Action<T> addMethod = collection.Add;
-			Application.Current.Dispatcher.BeginInvoke(addMethod, item);
-		}
 
 		public static IPAddress ServerIP { get; private set; }
 		#endregion
 
-		#region INotifyStaticPropertyChanged
-		private static event EventHandler<PropertyChangedEventArgs> StaticPropertiesChanged;
-
-		private static void NotifyStaticPropertyChanged([CallerMemberName] string propertyName = "")
-		{
-			if (StaticPropertiesChanged != null)
-			{
-				StaticPropertiesChanged.Invoke(null, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-
-		private static void NotifyStaticPropertyChanged(params string[] Names)
-		{
-			if (StaticPropertiesChanged != null)
-			{
-				foreach (var propertyName in Names)
-				{
-					StaticPropertiesChanged(null, new PropertyChangedEventArgs(propertyName));
-				}
-			}
-		}
-		#endregion
 		/// <summary>
 		/// Initialize every things for a Client
 		/// </summary>
 		public static void Initialize()
 		{
-			ClientComboBoxChoose = new ObservableCollection<string>();
 		}
 
 		/// <param name="ip">The IP address you want to check</param>
@@ -155,12 +112,6 @@ namespace KDLib
 						KDCommand command = Data.Commands.Peek();
 						switch (command.PrefixCmd)
 						{
-							case CommandType.ClientList:
-								foreach (var c in JsonConvert.DeserializeObject<ObservableCollection<string>>(command.Content))
-								{
-									AddObservationCollectionAsync(ClientComboBoxChoose, c);
-								}
-								goto EndCommand;
 							case CommandType.AccpetConnect:
 								OnlClient.Connect(ServerIP, Data.PortForChecker);
 								CheckOnlineServer().Start();
