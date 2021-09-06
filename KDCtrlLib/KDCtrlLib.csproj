@@ -96,6 +96,9 @@
     <Compile Include="Views\ConnectPage.xaml.cs">
       <DependentUpon>ConnectPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MainClientFramePage.xaml.cs">
+      <DependentUpon>MainClientFramePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainClientPage.xaml.cs">
       <DependentUpon>MainClientPage.xaml</DependentUpon>
     </Compile>
@@ -151,6 +154,10 @@
     <Page Include="Views\GlobalResource.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MainClientFramePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainClientPage.xaml">
       <SubType>Designer</SubType>

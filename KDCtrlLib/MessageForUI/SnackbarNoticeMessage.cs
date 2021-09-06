@@ -1,9 +1,11 @@
-﻿namespace KDCtrlLib.MessageForUI
+﻿using KDLib;
+
+namespace KDCtrlLib.MessageForUI
 {
-    public class NoticeMessage
+    public class LoggingMessage
     {
-        public string Message { get; set; }
-        public NoticeMessage(string m)
+        public LogViewerInfo Message { get; set; }
+        public LoggingMessage(LogViewerInfo m)
         {
             Message = m;
         }

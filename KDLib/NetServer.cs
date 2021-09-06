@@ -29,7 +29,7 @@ namespace KDLib
 		#endregion
 
 		#region PublicProperies
-		public static Dictionary<MachineType, Dictionary<EndPoint, int>> MachineState { get; private set; }
+		public static Dictionary<Machine, Dictionary<EndPoint, int>> MachineState { get; private set; }
 		public static CancellationTokenSource tokenSource;
 		public static Dictionary<int, EndPoint> PlayerAvailable { get; private set; }
 		#endregion
@@ -61,7 +61,7 @@ namespace KDLib
 			OnlineCommands = new Queue<KDCommand>();
 			OnlineCLients = new Dictionary<EndPoint, TcpClient>();
 			PlayerAvailable = new Dictionary<int, EndPoint>();
-			MachineState = new Dictionary<MachineType, Dictionary<EndPoint, int>>();
+			MachineState = new Dictionary<Machine, Dictionary<EndPoint, int>>();
 			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
 			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
 			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);

@@ -4,7 +4,6 @@ using GalaSoft.MvvmLight.Messaging;
 
 using KDCtrlLib.Interface;
 using KDCtrlLib.MessageForUI;
-using KDCtrlLib.Views;
 
 using KDLib;
 using KDLib.KDException;
@@ -33,12 +32,12 @@ namespace KDCtrlLib.ViewModels
                 {
                     if (await NetClient.IsValidConnection(ServerIP))
                     {
-                        Messenger.Default.Send(new NavigateToMessage(new RolePage()));
+                        Messenger.Default.Send(new NavigateToMessage(@"ServerView/MainServerPage.xaml"));
                         ConfigurationSettings.IP = s;
                         ConfigurationSettings.Save();
                         await NetClient.Connect(ServerIP);
                     }
-                    else Messenger.Default.Send(new NoticeMessage(IPNotFoundException.message));
+                    //else Messenger.Default.Send(new LoggingMessage(IPNotFoundException.message));
                 },
                 (s) =>
                 {

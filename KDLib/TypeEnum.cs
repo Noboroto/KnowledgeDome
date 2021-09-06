@@ -25,7 +25,7 @@ namespace KDLib
 		Physics,
 		Unknown
 	}
-	public enum MachineType
+	public enum Machine
 	{
 		Server,
 		[Description("Thí sinh")]
@@ -35,6 +35,17 @@ namespace KDLib
 		Viewer,
 		None
 	}
+
+	public enum LogType
+	{
+		Server,
+		Player,
+		MC,
+		Viewer,
+		Warn,
+		Error
+	}
+
 	public enum CommandType
 	{
 		Forcusing,

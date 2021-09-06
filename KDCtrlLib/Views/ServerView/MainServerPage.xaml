@@ -54,13 +54,10 @@
 				Margin="10 10 50 10"
 				VerticalAlignment="Center"
 				FontSize="30"
+				SelectedItem="{Binding SelectedIP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+				ItemsSource="{Binding IPs}"
 				SelectedIndex="0"
-				MinWidth="200"
-				>
-				<ComboBoxItem>
-					192.168.1.1
-				</ComboBoxItem>
-			</ComboBox>
+				MinWidth="200" />
 			<TextBlock
 				Margin="50 0 0 0"
 				VerticalAlignment="Center"
@@ -68,15 +65,14 @@
 				Trận đã chọn:
 			</TextBlock>
 			<ComboBox
+				ItemsSource="{Binding matches}"
+				SelectedItem="{Binding CurrentMatch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+				DisplayMemberPath="Name"
 				Margin="10 10 50 10"
 				VerticalAlignment="Center"
 				FontSize="30"
 				SelectedIndex="0"
-				MinWidth="200">
-				<ComboBoxItem>
-					Test Match
-				</ComboBoxItem>
-			</ComboBox>
+				MinWidth="200" />
 		</StackPanel>
 		<ScrollViewer
 			Grid.Row="1"

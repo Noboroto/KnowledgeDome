@@ -8,30 +8,37 @@ namespace KDLib
 	public class LogViewerInfo : ObservableObject
 	{
 		private string _Message;
-		private MachineType _machineType;
+		private LogType _logtype;
 		private DateTime _dateTime;
 
 		public Brush ForegroundColor
 		{
 			get
 			{
-				switch (_machineType)
+				switch (_logtype)
 				{
-					case MachineType.MC:
+					case LogType.Player:
+						return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#cc5869"));
+					case LogType.MC:
 						return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#03a9f4"));
-					case MachineType.Server:
+					case LogType.Server:
 						return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8bc34a"));
+					case LogType.Viewer:
+						return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6c26ad"));
+					case LogType.Warn:
+						return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#e0dd1b"));
 					default:
-						return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFF0808"));
+						return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#ff0000"));
 				}
 			}
 		}
-		public string Info => _dateTime.ToString("HH:mm:ss - ") + _machineType.ToString() + ": ";
+		public string Info => _dateTime.ToString("HH:mm:ss-") + _logtype.ToString() + ": ";
 		public string Message => _Message;
-		public LogViewerInfo(MachineType machine, string mess)
+		public LogType Type => _logtype;
+		public LogViewerInfo(LogType logtype, string mess)
 		{
 			Set(ref _dateTime, DateTime.Now);
-			Set(ref _machineType, machine);
+			Set(ref _logtype, logtype);
 			Set(ref _Message, mess);
 		}
 	}

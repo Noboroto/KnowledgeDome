@@ -4,6 +4,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:cmd="http://www.galasoft.ch/mvvmlight"
+	xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 	TextElement.Foreground="{DynamicResource MaterialDesignBody}"
 	Background="{DynamicResource MaterialDesignPaper}"
@@ -33,7 +35,7 @@
 				Height="*" />
 		</Grid.RowDefinitions>
 		<Frame
-			Source="pack://application:,,,/KDCtrlLib;component/Views/ServerView/MainServerPage.xaml"
+			Source="{Binding FrameSource}"
 			NavigationUIVisibility="Hidden"
 			Grid.Column="0"
 			Grid.Row="0"
@@ -60,11 +62,12 @@
 					Height="auto" />
 			</Grid.RowDefinitions>
 			<ListBox
+				ItemsSource="{Binding Chatting}"
 				IsTextSearchEnabled="False"
 				FontSize="18"
 				DockPanel.Dock="Top"
 				FontFamily="Segoe UI"
-				x:Name="Chatting"
+				Name="Chatting"
 				VirtualizingStackPanel.IsVirtualizing="True"
 				Foreground="White"
 				Grid.Column="2"
@@ -98,7 +101,6 @@
 			</ListBox>
 			<TextBox
 				x:Name="SendMessage"
-				KeyDown="TextBox_KeyDown"
 				Margin="0 10 0 10"
 				Grid.Row="1"
 				TextWrapping="Wrap"
@@ -107,8 +109,19 @@
 				AcceptsReturn="False"
 				VerticalScrollBarVisibility="Auto"
 				SpellCheck.IsEnabled="False"
+				Text="{Binding WaitingSend, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
 				materialDesign:HintAssist.Hint="Gửi đến MC"
-				Height="auto" />
+				Height="auto">
+				<i:Interaction.Triggers>
+					<i:EventTrigger
+						EventName="KeyDown">
+						<cmd:EventToCommand
+							PassEventArgsToCommand="True"
+							Command="{Binding SendCmd}"
+							/>
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</TextBox>
 		</Grid>
 		<ListBox
 			Grid.Column="2"
@@ -117,6 +130,7 @@
 			IsTextSearchEnabled="False"
 			FontSize="18"
 			x:Name="Logging"
+			ItemsSource="{Binding LogsView}"
 			VirtualizingStackPanel.IsVirtualizing="True"
 			Foreground="White"
 			HorizontalAlignment="Stretch"
@@ -130,13 +144,16 @@
 						<Setter.Value>
 							<ControlTemplate
 								TargetType="ListBoxItem">
-								<StackPanel
+								<WrapPanel
 									Orientation="Horizontal">
 									<TextBlock
+										Foreground="{Binding ForegroundColor}"
 										Text="{Binding Info}" />
 									<TextBlock
-										Text="{Binding Message}" />
-								</StackPanel>
+										TextWrapping="Wrap"
+										Text="{Binding Message}">
+									</TextBlock>
+								</WrapPanel>
 							</ControlTemplate>
 						</Setter.Value>
 					</Setter>

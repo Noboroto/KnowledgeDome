@@ -1,4 +1,4 @@
-﻿using KDCtrlLib.Views.ServerView;
+﻿using KDLib;
 
 using System.Windows;
 
@@ -12,6 +12,7 @@ namespace KDServer
 		public MainWindow()
 		{
 			InitializeComponent();
+			Data.ServerInitialize();
 		}
 	}
 }

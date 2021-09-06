@@ -86,7 +86,6 @@ namespace KDCtrlLib.ViewModels
 		public StartRoundViewModel()
 		{
 			#region DEBUG_DATA
-			Data.Initialize();
 			#endregion
 			
 			#region INIT
@@ -99,7 +98,7 @@ namespace KDCtrlLib.ViewModels
 			#endregion
 
 			#region CLIENT INIT
-			if (Data.ThisMacineType != MachineType.Server)
+			if (Data.ThisMacineType != Machine.Server)
 			{
 				StartCommandChecker();
 			}

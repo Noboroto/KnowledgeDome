@@ -31,7 +31,7 @@ namespace KDCtrlLib.ViewModels
             AskPermision = new RelayCommand<string>(
                 (s) =>
                 {
-                    Messenger.Default.Send(new NoticeMessage(s));
+                    //Messenger.Default.Send(new LoggingMessage(s));
                 },
                 (s) =>
                 {

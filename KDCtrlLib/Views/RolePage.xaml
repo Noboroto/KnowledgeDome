@@ -9,9 +9,7 @@
 	TextElement.FontWeight="Medium"
 	TextElement.FontSize="14"
 	FontFamily="{materialDesign:MaterialDesignFont}"
-	DataContext="{Binding Role, Source={StaticResource Locator}}"
-	Loaded="OnNavigatedTo"
-	Unloaded="OnNavigatingFrom">
+	DataContext="{Binding Role, Source={StaticResource Locator}}">
 	<Page.Resources>
 		<ResourceDictionary
 			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />

@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 
 using KDLib;
+using KDCtrlLib.MessageForUI;
 
-using System.Windows;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace KDCtrlLib.ViewModels
@@ -11,43 +13,51 @@ namespace KDCtrlLib.ViewModels
     public class MainPageViewModel : ViewModelBase
     {
         private MatchInfo _CurrentMatch;
-        private MatchInfoList _matches;
-        private int _SelectedMatchIndex;
-
-        public MatchInfoList matches
+        public ObservableCollection<string> IPs { get; set; }
+        public string SelectedIP
 		{
-            get => _matches;
-            set => Set(ref _matches, value);
+            get => Data.ChooseIP;
+            set
+            {               
+                Data.ChooseIP = value;
+                RaisePropertyChanged(nameof(SelectedIP));
+                Messenger.Default.Send(new LoggingMessage(KDLogger.Info($"{nameof(SelectedIP)}: {SelectedIP}")));
+            }
 		}
+        public MatchInfoList matches => Data.MatchInfos;
         public MatchInfo CurrentMatch
         {
             get => _CurrentMatch;
             set
             {
                 Set(ref _CurrentMatch, value);
+                Messenger.Default.Send(new LoggingMessage(KDLogger.Info($"SelectedMatch: {CurrentMatch.Name}")));
             }
         }
         public int SelectedMatchIndex
         {
-            get => _SelectedMatchIndex;
+            get => Data.CurrentMatchIndex;
             set
-            {
-                Set(ref _SelectedMatchIndex, value);
+            {                
                 Data.CurrentMatchIndex = value;
+                RaisePropertyChanged(nameof(SelectedMatchIndex));
             }
         }
 
-        public ICommand ChangeSource { get; }
-        public MainPageViewModel()
+		#region Command
+        public ICommand StartRoundCmd { get; set; }
+        public ICommand ObstacleRoundCmd { get; set; }
+        public ICommand SettingCmd { get; set; }
+        public ICommand AccelerateCmd { get; set; }
+        public ICommand FinishCmd { get; set; }
+        public ICommand ExtraCmd { get; set; }
+		#endregion
+
+		public MainPageViewModel()
         {
-            Data.Initialize();
+            IPs = new ObservableCollection<string>(NetServer.GetLocalIPAddress());
             SelectedMatchIndex = 0;
-            matches = Data.MatchInfos;
             CurrentMatch = Data.MatchInfos[0];
-            ChangeSource = new RelayCommand(() =>
-            {
-                CurrentMatch = Data.MatchInfos[1];
-            });
         }
     }
 }

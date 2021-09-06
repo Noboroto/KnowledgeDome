@@ -10,7 +10,7 @@ namespace KDLib
 		#endregion
 
 		#region PublicProperties
-		public MachineType Machine { get; set; }
+		public Machine Machine { get; set; }
 
 		public CommandType PrefixCmd { get; set; }
 
@@ -41,7 +41,7 @@ namespace KDLib
 		}
 
 		[JsonConstructor]
-		public KDCommand(MachineType type, CommandType prefix, string localIP, int localPort, string cmd = "")
+		public KDCommand(Machine type, CommandType prefix, string localIP, int localPort, string cmd = "")
 		{
 			Machine = type;
 			PrefixCmd = prefix;

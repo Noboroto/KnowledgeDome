@@ -29,9 +29,8 @@ namespace KDLib
 
 		#region PublicProperties
 		public static string ChooseIP { get; set; }
-		public static MachineType ThisMacineType { get; set; }
+		public static Machine ThisMacineType { get; set; }
 		public static bool OnFocus { get; set; }
-		public static List<string> ListIP { get; private set; }
 		public static KDCommandList Commands { get; set; }
 		public static int CurrentMatchIndex { get; set; }
 		public static int CurrentPlayerIndex { get; set; }
@@ -49,7 +48,7 @@ namespace KDLib
 		/// </summary>
 		public static void ServerInitialize()
 		{
-			ThisMacineType = MachineType.Server;
+			ThisMacineType = Machine.Server;
 			Initialize();
 			NetServer.Initialize();
 		}
@@ -60,15 +59,12 @@ namespace KDLib
 			NetClient.Initialize();
 		}
 
-		public static void Initialize()
+		private static void Initialize()
 		{
-			#region DEVELOP_MODE
 			CurrentMatchIndex = 0;
 			CurrentPlayerIndex = 0;
-			#endregion
-
+			KDLogger.Initialize();
 			Commands = new KDCommandList();
-			ListIP = NetServer.GetLocalIPAddress();
 			if (!Directory.Exists(@"Tests\")) Directory.CreateDirectory("Tests");
 			StartQuestions = StartQuestionList.ReadFromFile();
 			Obstacles = ObstacleList.ReadFromFile();
