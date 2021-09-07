@@ -3,7 +3,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 
 using KDLib;
-using KDCtrlLib.MessageForUI;
+using KDLib.MessageForUI;
 
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -21,7 +21,7 @@ namespace KDCtrlLib.ViewModels
             {               
                 Data.ChooseIP = value;
                 RaisePropertyChanged(nameof(SelectedIP));
-                Messenger.Default.Send(new LoggingMessage(KDLogger.Info($"{nameof(SelectedIP)}: {SelectedIP}")));
+                Messenger.Default.Send(new LogMess(KDLogger.Info($"{nameof(SelectedIP)}: {SelectedIP}")));
             }
 		}
         public MatchInfoList matches => Data.MatchInfos;
@@ -31,7 +31,7 @@ namespace KDCtrlLib.ViewModels
             set
             {
                 Set(ref _CurrentMatch, value);
-                Messenger.Default.Send(new LoggingMessage(KDLogger.Info($"SelectedMatch: {CurrentMatch.Name}")));
+                Messenger.Default.Send(new LogMess(KDLogger.Info($"SelectedMatch: {CurrentMatch.Name}")));
             }
         }
         public int SelectedMatchIndex

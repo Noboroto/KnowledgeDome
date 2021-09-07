@@ -31,7 +31,7 @@
 							<Setter.Value>
 								<ControlTemplate
 									TargetType="ListBoxItem">
-									<control:PlayerMainServerView
+									<control:PlayerMainClientView
 										Margin="20" />
 								</ControlTemplate>
 							</Setter.Value>

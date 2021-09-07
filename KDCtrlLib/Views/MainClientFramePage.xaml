@@ -16,10 +16,100 @@
 		<ResourceDictionary
 			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
 	</Page.Resources>
-	<Frame
-		Source="{Binding FrameSource}"
-		NavigationUIVisibility="Hidden"
-		Grid.Column="0"
-		Grid.Row="0"
-		Grid.RowSpan="3" />
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition
+				Width="5*" />
+			<ColumnDefinition
+				Width="5" />
+			<ColumnDefinition
+				Width="auto" />
+		</Grid.ColumnDefinitions>
+		<Frame
+			Source="{Binding FrameSource}"
+			NavigationUIVisibility="Hidden"
+			Grid.Column="0"
+			Grid.Row="0"
+			Grid.RowSpan="3" />
+		<GridSplitter
+			Visibility="{Binding ChattingVisibility}"
+			Grid.Column="1"
+			Grid.RowSpan="3"
+			Width="5"
+			HorizontalAlignment="Stretch" />
+		<Grid
+			MinWidth="250"
+			Visibility="{Binding ChattingVisibility}"
+			Margin="10"
+			Grid.Column="2"
+			Grid.Row="0"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch">
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition
+					Height="auto" />
+			</Grid.RowDefinitions>
+			<ListBox
+				ItemsSource="{Binding Chatting}"
+				IsTextSearchEnabled="False"
+				FontSize="18"
+				DockPanel.Dock="Top"
+				FontFamily="Segoe UI"
+				Name="Chatting"
+				VirtualizingStackPanel.IsVirtualizing="True"
+				Foreground="White"
+				Grid.Column="2"
+				Grid.Row="0"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				SelectionMode="Single">
+				<ListBox.ItemContainerStyle>
+					<Style
+						TargetType="ListBoxItem">
+						<Setter
+							Property="Template">
+							<Setter.Value>
+								<ControlTemplate
+									TargetType="ListBoxItem">
+									<WrapPanel
+										Orientation="Horizontal">
+										<TextBlock
+											Foreground="{Binding ForegroundColor}"
+											Text="{Binding Info}" />
+										<TextBlock
+											TextWrapping="Wrap"
+											Text="{Binding Message}">
+										</TextBlock>
+									</WrapPanel>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</ListBox.ItemContainerStyle>
+			</ListBox>
+			<TextBox
+				x:Name="SendMessage"
+				Margin="0 10 0 10"
+				Grid.Row="1"
+				TextWrapping="Wrap"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Left"
+				AcceptsReturn="False"
+				VerticalScrollBarVisibility="Auto"
+				SpellCheck.IsEnabled="False"
+				Text="{Binding WaitingSend, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+				materialDesign:HintAssist.Hint="Gửi đến MC"
+				Height="auto">
+				<i:Interaction.Triggers>
+					<i:EventTrigger
+						EventName="KeyDown">
+						<cmd:EventToCommand
+							PassEventArgsToCommand="True"
+							Command="{Binding SendCmd}" />
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</TextBox>
+		</Grid>
+	</Grid>
 </Page>

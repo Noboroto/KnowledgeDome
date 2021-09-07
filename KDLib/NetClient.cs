@@ -1,14 +1,8 @@
-﻿using Newtonsoft.Json;
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,15 +13,10 @@ namespace KDLib
 	{
 		#region PrivateMembers
 		private static TcpClient ThisClient = new TcpClient();
-		private static TcpClient OnlClient = new TcpClient();
 		#endregion
 
 		#region PublicProperties
-		public static bool IsServerOnline { get; private set; }
-
 		public static CancellationTokenSource MustCancel { get; } = new CancellationTokenSource();
-
-
 		public static IPAddress ServerIP { get; private set; }
 		#endregion
 
@@ -53,131 +42,59 @@ namespace KDLib
 			}
 		}
 
-		public async static Task Connect(IPAddress ServerAddress)
+		public async static void Connect(IPAddress ServerAddress)
 		{
-			var tasks = new List<Task>();
 			await Task.Run(() =>
 			{
-				IsServerOnline = true;
 				ServerIP = ServerAddress;
-
-				ThisClient.Connect(ServerAddress, Data.PortForTCP);
-				tasks.Add(ListenFromServer());
-				tasks.Add(ProcessCommand());
+				ThisClient.ConnectAsync(ServerAddress, Data.PortForTCP);
 			}, MustCancel.Token);
-			await Task.WhenAll(tasks);
+			await ListenFromServer();
 		}
 
-		private async static Task CheckOnlineServer()
+		private static Task ListenFromServer()
 		{
-			Action ThisAction = async () =>
-			{
-				while (true)
-				{
-					try
-					{
-						if (ThisClient.Client.Poll(500, SelectMode.SelectRead) && ThisClient.Client.Available == 0)
-						{
-							if (!IsServerOnline) await Connect(ServerIP);
-							IsServerOnline = true;
-							SendCommand(new KDCommand(Data.OnFocus ? CommandType.Forcusing : CommandType.LostForcus, OnlClient.Client.LocalEndPoint as IPEndPoint), OnlClient);
-							await Task.Delay(1000);
-						}
-						else
-						{
-							IsServerOnline = false;
-						}
-					}
-					catch (AggregateException ae)
-					{
-						throw ae.Flatten();
-					}
-					catch
-					{
-						throw;
-					}
-				}
-			};
-			await Task.Run(ThisAction, MustCancel.Token);
-		}
-
-		private async static Task ProcessCommand()
-		{
-			Action ThisAction = () =>
-			{
-				while (true)
-				{
-					if (Data.Commands.Count > 0)
-					{
-						KDCommand command = Data.Commands.Peek();
-						switch (command.PrefixCmd)
-						{
-							case CommandType.AccpetConnect:
-								OnlClient.Connect(ServerIP, Data.PortForChecker);
-								CheckOnlineServer().Start();
-								goto EndCommand;
-							case CommandType.RefuseConnect:
-								ThisClient.Close();
-								Data.Commands.Clear();
-								return;
-							EndCommand:
-								if (Data.Commands.Count > 0) command = Data.Commands.Dequeue();
-								continue;
-							default:
-								continue;
-						}
-					}
-				}
-			};
-			await Task.Run(ThisAction, MustCancel.Token);
-		}
-
-
-
-		private async static Task ListenFromServer()
-		{
-			Action ThisAction = () =>
+			return Task.Run(() =>
 			{
 				StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream());
-				bool CanLive = true;
-				while (true && CanLive)
+				while (true)
 				{
 					string information = "";
 					try
 					{
-						information = ReadFromStream.ReadLineAsync().Result;
+						information = ReadFromStream.ReadLine();
 					}
-					catch (ObjectDisposedException)
+					catch (IOException)
+					{
+						continue;
+					}
+					catch (InvalidOperationException)
+					{
+						continue;
+					}
+					catch (SocketException)
 					{
 						break;
 					}
 					catch (AggregateException ae)
 					{
-						foreach (var e in ae.InnerExceptions)
-						{
-							if (e is SocketException || e is IOException)
-							{
-								ThisClient.Close();
-								CanLive = false;
-								break;
-							}
-						}
 						throw ae.Flatten();
 					}
-					catch
-					{
-						throw;
-					}
-					if (information != "") Data.Commands.Enqueue(KDCommand.FromJson(information));
+					if (KDCommand.FromJson(information) != null)
+						Data.Commands.Enqueue(KDCommand.FromJson(information));
 				}
-			};
-			await Task.Run(ThisAction, MustCancel.Token);
+			}, MustCancel.Token);
 		}
-		public static async void SendCommand(KDCommand Command, TcpClient tcp)
+
+		public static void SendCommand(KDCommand Command)
+		{
+			SendCommand(Command, ThisClient);
+		}
+		public static void SendCommand(KDCommand Command, TcpClient tcp)
 		{
 			try
 			{
-				await SendMessage(Command.ToJson(), tcp);
+				SendMessage(Command.ToJson(), tcp);
 			}
 			catch (AggregateException ae)
 			{
@@ -188,38 +105,25 @@ namespace KDLib
 				throw;
 			}
 		}
-
-		private async static Task SendMessage(string command, TcpClient tcp)
+		private static Task SendMessage(string command, TcpClient tcp)
 		{
-			Action ThisAction = () =>
+			return Task.Run(async () =>
 			{
-				using (StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true })
+				try
 				{
-					try
-					{
-						WriteToStream.Write(command);
-					}
-					catch (AggregateException ae)
-					{
-						foreach (var e in ae.InnerExceptions)
-						{
-							if (e is IOException) continue;
-							if (e is SocketException)
-							{
-								ThisClient.Close();
-								break;
-							}
-						}
-					}
-					catch
-					{
-						throw;
-					}
+					StreamWriter WriteToStream = new StreamWriter(tcp.GetStream()) { AutoFlush = true };
+					await WriteToStream.WriteLineAsync(command);
 				}
-			};
-			await Task.Run(ThisAction, MustCancel.Token);
+				catch (AggregateException ae)
+				{
+					throw ae.Flatten();
+				}
+				catch
+				{
+					throw;
+				}
+			}, MustCancel.Token);
 		}
-
 		public static bool CheckSameNetwork(string firstIP, string secondIP)
 		{
 			string subNet = GetSubnetMask(IPAddress.Parse(firstIP)).ToString();
@@ -243,7 +147,6 @@ namespace KDLib
 			ipInUint += (uint)byteIP[0];
 			return ipInUint;
 		}
-
 		public static IPAddress GetSubnetMask(IPAddress address)
 		{
 			foreach (NetworkInterface adapter in NetworkInterface.GetAllNetworkInterfaces())

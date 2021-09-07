@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 
-using KDCtrlLib.MessageForUI;
+using KDLib.MessageForUI;
 
 using System.Threading.Tasks;
 using System.Windows;

@@ -1,11 +1,11 @@
 ﻿using KDLib;
 
-namespace KDCtrlLib.MessageForUI
+namespace KDLib.MessageForUI
 {
-    public class LoggingMessage
+    public class LogMess
     {
         public LogViewerInfo Message { get; set; }
-        public LoggingMessage(LogViewerInfo m)
+        public LogMess(LogViewerInfo m)
         {
             Message = m;
         }

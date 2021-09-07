@@ -226,21 +226,35 @@ namespace KDCtrlLib.ViewModels
 				{
 					while (Data.Commands.Count > 0)
 					{
-						KDCommand command = Data.Commands.Dequeue();
-						switch (command.PrefixCmd)
+						try
 						{
-							case CommandType.NextQuestAt:
-								CurrentQuestion = Data.StartQuestions[int.Parse(command.Content)];
-								break;
-							case CommandType.Right:
-								CurrentPlayer.Score++;
-								QuestCount++;
-								break;
-							case CommandType.Wrong:
-								QuestCount++;
-								break;
-							default:
-								break;
+							KDCommand command = Data.Commands.Peek();
+							switch (command.PrefixCmd)
+							{
+								case CommandType.NextQuestAt:
+									CurrentQuestion = Data.StartQuestions[int.Parse(command.Content)];
+									goto EndCommand;
+								case CommandType.Right:
+									CurrentPlayer.Score++;
+									QuestCount++;
+									goto EndCommand;
+								case CommandType.Wrong:
+									QuestCount++; 
+									goto EndCommand;
+								EndCommand:
+									if (Data.Commands.Count > 0) Data.Commands.Dequeue();
+									continue;
+								default:
+									break;
+							}
+						}
+						catch (NullReferenceException)
+						{
+							continue;
+						}
+						catch (InvalidOperationException)
+						{
+							continue;
 						}
 					}
 				}

@@ -6,7 +6,7 @@ namespace KDCtrlLib
 {
     public class ConfigurationSettings : ViewModelBase
     {
-        private static Configuration config;
+        private static Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
         public static string IP
         {
@@ -22,10 +22,6 @@ namespace KDCtrlLib
                     else config.AppSettings.Settings["IP"].Value = value;
                 }
             }
-        }
-        public ConfigurationSettings()
-        {
-            config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
         }
 
         public static void Save()

@@ -104,6 +104,8 @@
     <Compile Include="LogViewerInfo.cs" />
     <Compile Include="MatchInfo.cs" />
     <Compile Include="MatchInfoList.cs" />
+    <Compile Include="MessengerForUI\NavigateToMessage.cs" />
+    <Compile Include="MessengerForUI\LogMess.cs" />
     <Compile Include="NetClient.cs" />
     <Compile Include="NetServer.cs" />
     <Compile Include="Obstacle.cs" />

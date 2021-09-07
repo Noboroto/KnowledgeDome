@@ -1,14 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using GalaSoft.MvvmLight.Messaging;
+
+using KDLib.MessageForUI;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace KDLib
 {
@@ -17,53 +18,24 @@ namespace KDLib
 		#region PrivateMembers
 		private static TcpListener ListenerCenter;
 
-		private static TcpListener CheckerCenter;
-
 		private static TcpListener ValidCenter;
 
-		private static Dictionary<EndPoint, TcpClient> TCPClients;
-
-		private static Dictionary<EndPoint, TcpClient> OnlineCLients;
-
-		private static Queue<KDCommand> OnlineCommands;
+		private static Dictionary<IPAddress, TcpClient> TCPClients;
 		#endregion
 
 		#region PublicProperies
-		public static Dictionary<Machine, Dictionary<EndPoint, int>> MachineState { get; private set; }
 		public static CancellationTokenSource tokenSource;
-		public static Dictionary<int, EndPoint> PlayerAvailable { get; private set; }
-		#endregion
-
-		#region INotifyStaticPropertyChanged
-		private static event EventHandler<PropertyChangedEventArgs> StaticPropertiesChanged;
-
-		private static void NotifyStaticPropertyChanged([CallerMemberName] string propertyName = "")
-		{
-			StaticPropertiesChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
-		}
-
-		private static void NotifyStaticPropertyChanged(params string[] Names)
-		{
-			if (StaticPropertiesChanged != null)
-			{
-				foreach (var propertyName in Names)
-				{
-					StaticPropertiesChanged(null, new PropertyChangedEventArgs(propertyName));
-				}
-			}
-		}
+		public static Dictionary<int, IPAddress> PlayerAvailable { get; private set; }
+		public static List<IPAddress> MCAvailable { get; private set; }
 		#endregion
 
 		public static void Initialize()
 		{
+			MCAvailable = new List<IPAddress>();
 			tokenSource = new CancellationTokenSource();
-			TCPClients = new Dictionary<EndPoint, TcpClient>();
-			OnlineCommands = new Queue<KDCommand>();
-			OnlineCLients = new Dictionary<EndPoint, TcpClient>();
-			PlayerAvailable = new Dictionary<int, EndPoint>();
-			MachineState = new Dictionary<Machine, Dictionary<EndPoint, int>>();
+			TCPClients = new Dictionary<IPAddress, TcpClient>();
+			PlayerAvailable = new Dictionary<int, IPAddress>();
 			ListenerCenter = new TcpListener(IPAddress.Any, Data.PortForTCP);
-			CheckerCenter = new TcpListener(IPAddress.Any, Data.PortForChecker);
 			ValidCenter = new TcpListener(IPAddress.Any, Data.PortForValidCheck);
 			Start();
 		}
@@ -71,17 +43,25 @@ namespace KDLib
 		public static async void Start()
 		{
 			ListenerCenter.Start();
-			CheckerCenter.Start();
 			ValidCenter.Start();
+			ProcessCommandClient();
 
-			List<Task> tasks = new List<Task> { AcceptClient(), AcceptVaid(), AcceptChecker() };
+			List<Task> tasks = new List<Task> { AcceptClient(), AcceptVaid() };
 			try
 			{
 				await Task.WhenAny(tasks.ToArray());
 			}
+			catch (AggregateException)
+			{
+				MessageBox.Show("alalala");
+			}
 			catch (OperationCanceledException)
 			{
 				return;
+			}
+			catch
+			{
+				MessageBox.Show("aodalsdjkj");
 			}
 		}
 
@@ -101,80 +81,6 @@ namespace KDLib
 			return Task.Run(ThisAction, tokenSource.Token);
 		}
 
-		private static Task AcceptChecker()
-		{
-			Action ThisAction = () =>
-			{
-				while (true)
-				{
-					if (ListenerCenter.Pending())
-					{
-						using (var client = CheckerCenter.AcceptTcpClient())
-						{
-							OnlineCLients[client.Client.RemoteEndPoint] = client;
-							ListenFromChecker(client.Client.RemoteEndPoint);
-						}
-					}
-				}
-			};
-			return Task.WhenAny(ProcessCommandChecker(), Task.Run(ThisAction, tokenSource.Token));
-		}
-
-		private static Task ListenFromChecker(EndPoint Pos)
-		{
-			Action ThisAction = () =>
-			{
-				StreamReader ReadFromStream = new StreamReader(OnlineCLients[Pos].GetStream());
-				string command;
-				while (true)
-				{
-					command = "";
-					try
-					{
-						command = ReadFromStream.ReadLine();
-					}
-					catch (InvalidOperationException)
-					{
-						continue;
-					}
-					catch
-					{
-						OnlineCLients.Remove(Pos);
-						return;
-					}
-					if (command != null)
-						OnlineCommands.Enqueue(KDCommand.FromJson(command));
-				}
-			};
-			return Task.Run(ThisAction, tokenSource.Token);
-		}
-
-		private static Task ProcessCommandChecker()
-		{
-			Action ThisAction = () =>
-			{
-				while (true)
-				{
-					while (OnlineCommands.Count > 0)
-					{
-						KDCommand command = OnlineCommands.Dequeue();
-						switch (command.PrefixCmd)
-						{
-							case CommandType.Forcusing:
-								MachineState[command.Machine][command.ID] = 1;
-								break;
-							case CommandType.LostForcus:
-								MachineState[command.Machine][command.ID] = -1;
-								break;
-							default:
-								break;
-						}
-					}
-				}
-			};
-			return Task.Run(ThisAction);
-		}
-
 		private async static Task AcceptClient()
 		{
 			Action ThisAction = () =>
@@ -185,88 +91,112 @@ namespace KDLib
 					if (ListenerCenter.Pending())
 					{
 						client = ListenerCenter.AcceptTcpClient();
-						TCPClients[client.Client.RemoteEndPoint] = client;
+						var remote = (client.Client.RemoteEndPoint as IPEndPoint).Address.ToString();
+						TCPClients[IPAddress.Parse(remote)] = client;
 						var Role = new List<string>();
-						foreach(var x in Data.CurrentMatch.Players)
+						foreach (var x in Data.CurrentMatch.Players)
 						{
 							Role.Add(x.Name);
 						};
 						Role.Add("MC");
 						Role.Add("Khán giả");
-						SendCommandToOne(client.Client.RemoteEndPoint, new KDCommand(CommandType.ClientList, Data.ToJson(Role)));
-						ListenFromClient(client.Client.RemoteEndPoint);
+						Messenger.Default.Send(new LogMess(KDLogger.Info($"{remote} đã kết nối")));
+						SendCommandToOne(IPAddress.Parse(remote), new KDCommand(CommandType.ClientList, Data.ToJson(Role)));
+						ListenFromClient(IPAddress.Parse(remote));
 					}
 				}
 			};
 			await Task.Run(ThisAction);
 		}
 
-		private async static void ListenFromClient(EndPoint Pos)
+		private static void ListenFromClient(IPAddress Pos)
 		{
-			Action ThisAction = () =>
+			Task.Run(() =>
 			{
-				StreamReader ReadFromStream = new StreamReader(TCPClients[Pos].GetStream());
 				string command;
+				StreamReader ReadFromStream = new StreamReader(TCPClients[Pos].GetStream());
 				while (true)
 				{
 					command = "";
 					try
 					{
-						command = ReadFromStream.ReadToEnd();
+						command = ReadFromStream.ReadLine();
+						Messenger.Default.Send(new LogMess(KDLogger.Info(command)));
 					}
-					catch
+					catch (IOException)
 					{
-						TCPClients.Remove(Pos);
-						return;
+						Messenger.Default.Send(new LogMess(KDLogger.Info($"{Pos} mất kết nối")));
+						break;
 					}
-					if (command != null) Data.Commands.Enqueue(KDCommand.FromJson(command));
+					if (KDCommand.FromJson(command) != null)
+						Data.Commands.Enqueue(KDCommand.FromJson(command));
 				}
-			};
-			await Task.WhenAny(Task.Run(ThisAction), ProcessCommandClient());
+			});
 		}
 
-		private static Task ProcessCommandClient()
+		private static void ProcessCommandClient()
 		{
-			Action ThisAction = () =>
+			Task.Run(() =>
 			{
 				while (true)
 				{
+					if (tokenSource.Token.IsCancellationRequested) break;
 					while (Data.Commands.Count > 0)
 					{
-						KDCommand command = Data.Commands.Peek();
-						switch (Data.Commands.Peek().PrefixCmd)
+						try
 						{
-							case CommandType.AskForConnect:
-								if (command.Content == Data.KeyMC || command.Content == Data.KeyViewer)
-								{
-									SendCommandToOne(command.ID, new KDCommand(CommandType.RefuseConnect, null));
-									goto EndCommand;
-								}
-								int ID = Data.MatchInfos[Data.CurrentMatchIndex].Players.FindFromName(command.Content).ID;
-								if (PlayerAvailable[ID] == null)
-								{
-									SendCommandToOne(command.ID, new KDCommand(CommandType.RefuseConnect, null));
-									TCPClients[command.ID].Close();
-								}
-								else
-								{
-									PlayerAvailable[ID] = command.ID;
-									SendCommandToOne(command.ID, new KDCommand(CommandType.AccpetConnect, null));
-								}
-								goto EndCommand;
-							EndCommand:
-								command = Data.Commands.Dequeue();
-								continue;
-							default:
-								continue;
+							KDCommand command = Data.Commands.Peek();
+							switch (Data.Commands.Peek().PrefixCmd)
+							{
+								case CommandType.AskForConnect:
+									var type = Data.GetMachineFromID(int.Parse(command.Content));
+									switch (type)
+									{
+										case Machine.MC:
+											Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào MC", LogType.MC, command.OwnIP.ToString())));
+											SendCommandToOne(command.OwnIP, new KDCommand(CommandType.AccpetConnect, null));
+											MCAvailable.Add(command.OwnIP);
+											goto EndCommand;
+										case Machine.Viewer:
+											Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào Viewer", LogType.Viewer, command.OwnIP.ToString())));
+											SendCommandToOne(command.OwnIP, new KDCommand(CommandType.AccpetConnect, null));
+											goto EndCommand;
+										case Machine.Player:
+											int ID = int.Parse(command.Content);
+											if (PlayerAvailable.ContainsKey(ID))
+											{
+												Messenger.Default.Send(new LogMess(KDLogger.Info($"Bị từ chối kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, command.OwnIP.ToString())));
+												SendCommandToOne(command.OwnIP, new KDCommand(CommandType.RefuseConnect, null));
+											}
+											else
+											{
+												PlayerAvailable[ID] = command.OwnIP;
+												Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, command.OwnIP.ToString())));
+												SendCommandToOne(command.OwnIP, new KDCommand(CommandType.AccpetConnect, null));
+											}
+											goto EndCommand;
+									}
+								EndCommand:
+									if (Data.Commands.Count > 0) Data.Commands.Dequeue();
+									continue;
+								default:
+									continue;
+							}
+						}
+						catch (NullReferenceException)
+						{
+							continue;
+						}
+						catch (InvalidOperationException)
+						{
+							continue;
 						}
 					}
 				}
-			};
-			return Task.Run(ThisAction, tokenSource.Token);
+			}, tokenSource.Token);
 		}
 
-		public static async void SendCommandToOne(EndPoint pos, KDCommand Command)
+		public static async void SendCommandToOne(IPAddress pos, KDCommand Command)
 		{
 			try
 			{
@@ -289,10 +219,9 @@ namespace KDLib
 				try
 				{
 					if (client.Client == null) return;
+					if (!client.Client.Connected) return;
 					StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true };
 					await WriteToStream.WriteLineAsync(message);
-					Console.WriteLine(client.Client.RemoteEndPoint.ToString() + " " + message.Length.ToString());
-					Console.WriteLine(message);
 				}
 				catch (AggregateException ae)
 				{

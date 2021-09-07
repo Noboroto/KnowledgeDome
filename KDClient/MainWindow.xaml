@@ -8,6 +8,6 @@
 	Title="Knowledge Dome Client"
 	WindowState="Maximized">
 	<Frame
-		Source="pack://application:,,,/KDCtrlLib;component/Views/ConnectPage.xaml"
+		Source="pack://application:,,,/KDCtrlLib;component/Views/MainClientFramePage.xaml"
 		NavigationUIVisibility="Hidden" />
 </Window>

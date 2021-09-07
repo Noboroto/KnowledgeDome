@@ -3,10 +3,10 @@ using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 
 using KDCtrlLib.Interface;
-using KDCtrlLib.MessageForUI;
 
 using KDLib;
 using KDLib.KDException;
+using KDLib.MessageForUI;
 
 using System;
 using System.Linq;
@@ -19,32 +19,66 @@ namespace KDCtrlLib.ViewModels
 {
     public class ConnectViewModel : ViewModelBase
     {
-        #region Command
-        private IPAddress ServerIP;
+        private IPAddress _ServerIP;
         private const string AcceptString = "Kết nối thành công";
-        public ICommand TryConnectCmd { get; set; }
+
+        public string IP
+        {
+            get => ConfigurationSettings.IP;
+            set
+			{
+                ConfigurationSettings.IP = value;
+                ConfigurationSettings.Save();
+                RaisePropertyChanged(nameof(IP));
+            }
+        }
+
+		#region Command
+		public ICommand TryConnectCmd { get; set; }
+        public ICommand TryConnectEnterCmd { get; set; }
         #endregion
 
         public ConnectViewModel()
         {
-            TryConnectCmd = new RelayCommand<string>
+            TryConnectCmd = new RelayCommand
             (
-                async (s) =>
+                () =>
                 {
-                    if (await NetClient.IsValidConnection(ServerIP))
-                    {
-                        Messenger.Default.Send(new NavigateToMessage(@"ServerView/MainServerPage.xaml"));
-                        ConfigurationSettings.IP = s;
-                        ConfigurationSettings.Save();
-                        await NetClient.Connect(ServerIP);
-                    }
-                    else MessageBox.Show("Không tìm thấy địa chỉ IP");
+                    Connect(IP);
                 },
-                (s) =>
+                () =>
                 {
-                    return IsValidIPString(s);
+                    return IsValidIPString(IP);
                 }
             );
+            TryConnectEnterCmd = new RelayCommand<KeyEventArgs>(e =>
+            {
+                if (e.Key == Key.Enter)
+                {
+                    if (IsValidIPString(IP))
+                    {
+                        Connect(IP);
+                    }
+                }
+            });
+        }
+
+        public async void Connect(string IP)
+		{
+            foreach (var localip in NetServer.GetLocalIPAddress())
+            {
+                if (NetClient.CheckSameNetwork(localip, IP))
+                {
+                    Data.ChooseIP = localip;
+                    break;
+                }
+            }
+            if (await NetClient.IsValidConnection(_ServerIP))
+            {
+                Messenger.Default.Send(new NavigateToMessage(@"RolePage.xaml"));
+                NetClient.Connect(_ServerIP);
+            }
+            else MessageBox.Show("Không tìm thấy địa chỉ IP");
         }
 
         private bool IsValidIPString(string s)
@@ -56,7 +90,7 @@ namespace KDCtrlLib.ViewModels
             {
                 if (part.Length < 1) return false;
             }
-            return IPAddress.TryParse(s, out ServerIP);
+            return IPAddress.TryParse(s, out _ServerIP);
         }
     }
 }

@@ -2,12 +2,13 @@
 using GalaSoft.MvvmLight.CommandWpf;
 
 using KDLib;
-using KDCtrlLib.MessageForUI;
+using KDLib.MessageForUI;
 
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Messaging;
+using System.Windows;
 
 namespace KDCtrlLib.ViewModels
 {
@@ -16,6 +17,7 @@ namespace KDCtrlLib.ViewModels
         #region Private Properties
         private Uri _FrameSource;
         private string _WaitingSend;
+        private Visibility _ChattingVisibility;
         #endregion
 
         #region Public Properties
@@ -31,6 +33,11 @@ namespace KDCtrlLib.ViewModels
             get => _FrameSource;
             set => Set(ref _FrameSource, value);
 		}
+        public Visibility ChattingVisibility
+		{
+            get => _ChattingVisibility;
+            set => Set(ref _ChattingVisibility, value);
+        }
         #endregion
 
         #region Commands
@@ -44,17 +51,23 @@ namespace KDCtrlLib.ViewModels
             Chatting = new ObservableCollection<LogViewerInfo>();
 
             Messenger.Default.Register<NavigateToMessage>(this, t => NavigateTo(t));
+            ChattingVisibility = Visibility.Collapsed;
 
             #region Server
             if (Data.ThisMacineType == Machine.Server)
 			{
                 Messenger.Default.Send(new NavigateToMessage(@"ServerView/MainServerPage.xaml"));
-                Messenger.Default.Register<LoggingMessage>(this, t => AddLog(t));
-                Messenger.Default.Send(new LoggingMessage(KDLogger.Info("Start")));
+                Messenger.Default.Register<LogMess>(this, t => AddLog(t));
+                Messenger.Default.Send(new LogMess(KDLogger.Info("Start")));
+                Messenger.Default.Send(new LogMess(KDLogger.Info("Start", LogType.Player)));
+                Messenger.Default.Send(new LogMess(KDLogger.Info("Start", LogType.MC)));
+                Messenger.Default.Send(new LogMess(KDLogger.Info("Start", LogType.Viewer)));
+                Messenger.Default.Send(new LogMess(KDLogger.Info("Start", LogType.Warn)));
+                Messenger.Default.Send(new LogMess(KDLogger.Info("Start", LogType.Error)));
             }
-			#endregion
+            #endregion
 
-			#region Client
+            #region Client
             if (Data.ThisMacineType != Machine.Server)
 			{
                 Messenger.Default.Send(new NavigateToMessage(@"ConnectPage.xaml"));
@@ -81,14 +94,24 @@ namespace KDCtrlLib.ViewModels
 			#endregion
 		}
 
-		private void AddLog (LoggingMessage m)
+		private void AddLog (LogMess m)
 		{
-            LogsView.Add(m.Message);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                LogsView.Add(m.Message);
+            });
 		}
 
         private void NavigateTo(NavigateToMessage m)
 		{
-            FrameSource = m.Target;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (Data.ThisMacineType == Machine.MC && ChattingVisibility == Visibility.Collapsed)
+				{
+                    ChattingVisibility = Visibility.Visible;
+				}
+                FrameSource = m.Target;
+            });
 		}
     }
 }

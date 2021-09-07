@@ -43,10 +43,10 @@ namespace KDLib
 			log.Info($"{LogType.Server} {message}");
 			return new LogViewerInfo(LogType.Server, message);
 		}
-		public static LogViewerInfo Info(string message, LogType type = LogType.Server)
+		public static LogViewerInfo Info(string message, LogType type = LogType.Server, string note = "")
 		{
 			log.Info(message);
-			return new LogViewerInfo(type, message);
+			return new LogViewerInfo(type, message, note);
 		}
 		public static LogViewerInfo Error(string message)
 		{

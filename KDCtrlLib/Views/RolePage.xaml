@@ -24,18 +24,18 @@
 				VerticalAlignment="Stretch"
 				HorizontalAlignment="Stretch">
 				<Button
-					Command="{Binding AskPermision}"
+					IsEnabled="{Binding AskRoleEnable}"
+					Command="{Binding AskRole}"
 					Margin="10"
 					MaxWidth="120"
 					FontSize="18"
 					Content="Xác nhận"
 					DockPanel.Dock="Bottom" />
 				<ComboBox
-					SelectedIndex="-1"
 					Name="ChoiceBox"
 					materialDesign:HintAssist.Hint="Đây là máy của"
 					ItemsSource="{Binding Roles, UpdateSourceTrigger=PropertyChanged}"
-					SelectedItem="{Binding Choice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+					SelectedIndex="{Binding Choice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 					Margin="10 15 10 10"
 					DockPanel.Dock="Right"
 					FontSize="20">

@@ -1,5 +1,5 @@
 ﻿using System;
-namespace KDCtrlLib.MessageForUI
+namespace KDLib.MessageForUI
 {
     public class NavigateToMessage
     {
