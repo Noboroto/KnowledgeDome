@@ -171,28 +171,45 @@ namespace KDLib
 
         public static bool ReadKeyFromConfig()
         {
-            string keyString = ConfigurationManager.AppSettings["aesKey"];
-            if (keyString == null || keyString.Length <= 0)
+            string keyString = "", ivString = "";
+            byte[] key = { }, iv = { };
+            try
             {
-                keyString = "";
-            }
-            byte[] key = StringToByteArray(keyString);
+                keyString = ConfigurationManager.AppSettings["aesKey"];
+                if (keyString == null || keyString.Length <= 0)
+                {
+                    keyString = "";
+                }
+                key = StringToByteArray(keyString);
 
-            string ivString = ConfigurationManager.AppSettings["aesIV"];
-            if (ivString == null || ivString.Length <= 0)
+                ivString = ConfigurationManager.AppSettings["aesIV"];
+                if (ivString == null || ivString.Length <= 0)
+                {
+                    ivString = "";
+                }
+                iv = StringToByteArray(ivString);
+            }
+            catch (ConfigurationErrorsException)
             {
-                ivString = "";
+                MessageBox.Show("Error reading app settings");
             }
-            byte[] iv = StringToByteArray(ivString);
-
+            
             if (aes.ValidKeySize(key.Length * 8) && (iv.Length *8 == aes.BlockSize))
             {
-                #if DEBUG
+#if DEBUG
                     MessageBox.Show("valid key and IV");
-                #endif
+#endif  
                 aes.Key = key;
                 aes.IV = iv;
                 return true;
+            }
+            else
+            {
+#if DEBUG
+
+#else
+                    throw ConfigurationErrorsException;
+#endif
             }
             return false;
         }
