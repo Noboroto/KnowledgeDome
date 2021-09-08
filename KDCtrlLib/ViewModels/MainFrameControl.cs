@@ -116,6 +116,17 @@ namespace KDCtrlLib.ViewModels
                             KDCommand command = Data.Commands.Peek();
                             switch (command.PrefixCmd)
                             {
+                                case CommandType.EditScore:
+                                    Player data = Data.FromJosn<Player>(command.Content);
+                                    foreach (var x in Data.CurrentMatch.Players)
+                                    {
+                                        if (x.ID == data.ID)
+                                        {
+                                            x.Score = data.Score;
+                                            goto EndCommand;
+                                        }
+                                    }
+                                    goto EndCommand;
                                 case CommandType.MCToServer:
                                     Application.Current.Dispatcher.Invoke(() => Chatting.Add(KDLogger.MCChat(command.Content, $"{command.OwnIP};{command.Pos}")));
                                     var NewCommand = new KDCommand(CommandType.MCToMC, command.OwnIP, command.Pos, command.Content);

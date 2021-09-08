@@ -57,8 +57,6 @@ namespace KDLib
 				return (ImageSource)new ImageSourceConverter().ConvertFrom(_Avatar);
 			}
 		}
-
-		[JsonIgnore]
 		public int Score
 		{
 			get

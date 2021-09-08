@@ -29,6 +29,7 @@ namespace KDCtrlLib.KDControls
                 if ((bool)eventArgs.Parameter)
                 {
                     PlayerData.Score = int.Parse(EditScore.Text);
+                    NetServer.SendCommandToAll(new KDCommand(CommandType.EditScore, PlayerData.ToJson()));
                 }
             }
             catch (ArgumentNullException)

@@ -63,7 +63,10 @@ namespace KDLib
 					information = "";
 					information = ReadFromStream.ReadLine();
 					if (KDCommand.FromJson(information) != null)
+					{
+						//MessageBox.Show(information);
 						Data.Commands.Enqueue(KDCommand.FromJson(information));
+					}
 				}
 			});
 		}
@@ -72,11 +75,12 @@ namespace KDLib
 		{
 			SendCommand(Command, ThisClient);
 		}
-		public static void SendCommand(KDCommand Command, TcpClient tcp)
+
+		public static async void SendCommand(KDCommand Command, TcpClient tcp)
 		{
 			try
 			{
-				SendMessage(Command.ToJson(), tcp);
+				await SendMessage(Command.ToJson(), tcp);
 			}
 			catch (AggregateException ae)
 			{

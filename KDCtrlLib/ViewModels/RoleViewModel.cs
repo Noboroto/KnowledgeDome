@@ -54,6 +54,7 @@ namespace KDCtrlLib.ViewModels
 					if (Choice < 0) return;
 					Data.ID = Choice;
 					NetClient.SendCommand(new KDCommand(CommandType.AskForConnect, Data.ID.ToString()));
+					KDLogger.Error("Starting");
 					AskRoleEnable = false;
 				});
 		}
@@ -72,18 +73,23 @@ namespace KDCtrlLib.ViewModels
 							switch (command.PrefixCmd)
 							{
 								case CommandType.ClientList:
-									foreach (var c in Data.FromJosn<ObservableCollection<string>>(command.Content))
-									{
-										Application.Current.Dispatcher.Invoke(() => Roles.Add(c));
-									}
+									Data.CurrentMatchIndex = int.Parse(command.Content);
+									Application.Current.Dispatcher.Invoke(() =>
+									{ 
+										foreach (var c in Data.CurrentMatch.Players)
+										{
+											 Roles.Add(c.Name);
+										}
+										Roles.Add("MC");
+										Roles.Add("Khán giả");
+									});
 									goto EndCommand;
 								case CommandType.ConfirmIP:
 									Data.ChooseIP = command.OwnIP.ToString();
 									Data.Pos = command.Pos;
 									goto EndCommand;
 								case CommandType.AccpetConnect:
-									Application.Current.Dispatcher.Invoke(() =>
-									Messenger.Default.Send(new NavigateToMessage("MainClientPage.xaml")));
+									Messenger.Default.Send(new NavigateToMessage("MainClientPage.xaml"));
 									goto EndCommand;
 								case CommandType.RefuseConnect:
 									MessageBox.Show("Bị từ chối kết nối do đã có người ở vị trí này");

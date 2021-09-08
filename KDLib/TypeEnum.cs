@@ -64,6 +64,7 @@ namespace KDLib
 		MCToServer,
 		ServerToMC,
 		MCToMC,
-		ChangeMatchToID
+		ChangeMatchToID,
+		EditScore
 	}
 }

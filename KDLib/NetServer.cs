@@ -89,21 +89,12 @@ namespace KDLib
 					if (ListenerCenter.Pending())
 					{
 						client = ListenerCenter.AcceptTcpClient();
-						var Roles = new List<string>();
-						foreach (var x in Data.CurrentMatch.Players)
-						{
-							Roles.Add(x.Name);
-						};
-						Roles.Add("MC");
-						Roles.Add("Khán giả");
 						var RemoteIP = (client.Client.RemoteEndPoint as IPEndPoint).Address;
 						var pos = TCPClients.Count;
 						TCPClients.Add(new ClientInfo(client, pos));
-						
 						SendCommandToOne(pos, new KDCommand(CommandType.ConfirmIP, RemoteIP, pos, pos.ToString()));
-
+						SendCommandToOne(pos, new KDCommand(CommandType.ClientList, Data.CurrentMatchIndex.ToString()));
 						Messenger.Default.Send(new LogMess(KDLogger.Info($"{RemoteIP};{pos} đã kết nối")));
-						SendCommandToOne(pos, new KDCommand(CommandType.ClientList, Data.ToJson(Roles)));
 						ListenFromClient(pos);
 					}
 				}
@@ -155,26 +146,26 @@ namespace KDLib
 									switch (type)
 									{
 										case Machine.MC:
-											Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào MC", LogType.MC, $"{command.OwnIP};{command.Pos}")));
 											SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
+											Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào MC", LogType.MC, $"{command.OwnIP};{command.Pos}")));
 											MCAvailable.Add(TCPClients[command.Pos]);
 											goto EndCommand;
 										case Machine.Viewer:
-											Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào Viewer", LogType.Viewer, $"{command.OwnIP};{command.Pos}")));
 											SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
+											Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào Viewer", LogType.Viewer, $"{command.OwnIP};{command.Pos}")));
 											goto EndCommand;
 										case Machine.Player:
 											int ID = int.Parse(command.Content);
 											if (PlayerAvailable.ContainsKey(ID) && PlayerAvailable[ID].Connected)
 											{
-												Messenger.Default.Send(new LogMess(KDLogger.Info($"Bị từ chối kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, $"{command.OwnIP};{command.Pos}")));
 												SendCommandToOne(command.Pos, new KDCommand(CommandType.RefuseConnect, null));
+												Messenger.Default.Send(new LogMess(KDLogger.Info($"Bị từ chối kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, $"{command.OwnIP};{command.Pos}")));
 											}
 											else
 											{
+												SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
 												PlayerAvailable[ID] = TCPClients[command.Pos];
 												Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, $"{command.OwnIP};{command.Pos}")));
-												SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
 											}
 											goto EndCommand;
 									}
@@ -251,39 +242,17 @@ namespace KDLib
 			});
 		}
 
-		public static void SendCommandToAll(KDCommand Command)
+		public static async void SendCommandToAll(KDCommand Command)
 		{
-			try
-			{
-				SendMessageToAll(Command.ToJson());
-			}
-			catch (AggregateException ae)
-			{
-				throw ae.Flatten();
-			}
-			catch
-			{
-				throw;
-			}
-		}
 
-		private static async void SendMessageToAll(string command)
-		{
 			try
 			{
 				List<Task> tasks = new List<Task>();
-				if (TCPClients == null) return;
 				foreach (var client in TCPClients)
 				{
-					if (!client.Connected) continue;
-						StreamWriter WriteToStream = new StreamWriter(client.GetStream()) { AutoFlush = true };
-						tasks.Add(WriteToStream.WriteAsync(command));
+					tasks.Add(SendMessageToOne(Command.ToJson(), client.Client));
 				}
 				await Task.WhenAll(tasks);
-			}
-			catch (NullReferenceException)
-			{
-				return;
 			}
 			catch (AggregateException ae)
 			{
