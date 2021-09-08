@@ -18,6 +18,8 @@ namespace KDLib
 
 		public string IP { get; set; }
 
+		public int Pos { get; set; }
+
 		[JsonIgnore]
 		public IPAddress OwnIP
 		{
@@ -29,22 +31,28 @@ namespace KDLib
 
 		#endregion
 		public KDCommand(CommandType prefix, string cmd = "")
-		: this(Data.ThisMacineType, prefix, Data.ChooseIP, cmd)
+		: this(Data.ThisMacineType, prefix, Data.ChooseIP, Data.Pos, cmd)
 		{
 
 		}
-		public KDCommand(CommandType prefix, IPEndPoint local, string cmd = "")
-		: this(Data.ThisMacineType, prefix, local.Address.ToString(),  cmd)
+		public KDCommand(CommandType prefix, IPAddress local, string cmd = "")
+		: this(Data.ThisMacineType, prefix, local.ToString(),  Data.Pos, cmd)
+		{
+		}
+
+		public KDCommand(CommandType prefix, IPAddress local, int pos, string cmd = "")
+		: this(Data.ThisMacineType, prefix, local.ToString(), pos, cmd)
 		{
 		}
 
 		[JsonConstructor]
-		public KDCommand(Machine type, CommandType prefix, string localIP, string cmd = "")
+		public KDCommand(Machine type, CommandType prefix, string localIP, int pos, string cmd = "")
 		{
 			Machine = type;
 			PrefixCmd = prefix;
 			Content = cmd;
 			IP = localIP;
+			Pos = pos;
 		}
 
 		public string ToJson()

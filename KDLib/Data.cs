@@ -21,6 +21,7 @@ namespace KDLib
 		#region PublicProperties
 		public static int ID { get; set; }
 		public static string ChooseIP { get; set; }
+		public static int Pos { get; set; }
 		public static Machine ThisMacineType
 		{
 			get
@@ -86,7 +87,7 @@ namespace KDLib
 		{
 			CurrentMatchIndex = 0;
 			CurrentPlayerIndex = 0;
-			if (ThisMacineType == Machine.Server) KDLogger.Initialize();
+			KDLogger.Initialize();
 			Commands = new KDCommandList();
 			if (!Directory.Exists(@"Tests\")) Directory.CreateDirectory("Tests");
 			StartQuestions = StartQuestionList.ReadFromFile();

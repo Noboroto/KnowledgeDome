@@ -9,9 +9,7 @@ using KDLib;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows;
-using System.Threading;
 
 namespace KDCtrlLib.ViewModels
 {
@@ -19,7 +17,6 @@ namespace KDCtrlLib.ViewModels
 	{
 		#region Privat
 		private int _Choice = -1;
-		private CancellationTokenSource cancellation;
 		private bool _AskRoleEnable;
 		#endregion
 
@@ -49,25 +46,24 @@ namespace KDCtrlLib.ViewModels
 		public RoleViewModel()
 		{
 			Roles = new ObservableCollection<string>();
-			cancellation = new CancellationTokenSource();
-			ProcessCommand(cancellation.Token);
-			AskRoleEnable = false;
+			ProcessCommand();
+			AskRoleEnable = true;
 			AskRole = new RelayCommand(
 				() =>
 				{
+					if (Choice < 0) return;
 					Data.ID = Choice;
 					NetClient.SendCommand(new KDCommand(CommandType.AskForConnect, Data.ID.ToString()));
 					AskRoleEnable = false;
 				});
 		}
 
-		private void ProcessCommand(CancellationToken token)
+		private void ProcessCommand()
 		{
 			Task.Run(() =>
 			{
 				while (true)
 				{
-					if (token.IsCancellationRequested) return;
 					if (Data.Commands.Count > 0)
 					{
 						try
@@ -81,12 +77,17 @@ namespace KDCtrlLib.ViewModels
 										Application.Current.Dispatcher.Invoke(() => Roles.Add(c));
 									}
 									goto EndCommand;
+								case CommandType.ConfirmIP:
+									Data.ChooseIP = command.OwnIP.ToString();
+									Data.Pos = command.Pos;
+									goto EndCommand;
 								case CommandType.AccpetConnect:
-									cancellation.Cancel();
-									Messenger.Default.Send(new NavigateToMessage("MainClientPage.xaml"));
+									Application.Current.Dispatcher.Invoke(() =>
+									Messenger.Default.Send(new NavigateToMessage("MainClientPage.xaml")));
 									goto EndCommand;
 								case CommandType.RefuseConnect:
 									MessageBox.Show("Bị từ chối kết nối do đã có người ở vị trí này");
+									AskRoleEnable = true;
 									goto EndCommand;
 								EndCommand:
 									if (Data.Commands.Count > 0) Data.Commands.Dequeue();
@@ -105,7 +106,7 @@ namespace KDCtrlLib.ViewModels
 						}
 					}
 				}
-			}, token);
+			});
 		}
 	}
 }

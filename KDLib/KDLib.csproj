@@ -88,6 +88,7 @@
   <ItemGroup>
     <Compile Include="AccelerationQuestion.cs" />
     <Compile Include="AccelerationQuestionList.cs" />
+    <Compile Include="ClientInfo.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="ExtraQuestion.cs" />
     <Compile Include="ExtraQuestionList.cs" />

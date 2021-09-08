@@ -34,6 +34,8 @@
 				<ComboBox
 					Name="ChoiceBox"
 					materialDesign:HintAssist.Hint="Đây là máy của"
+					IsEditable="False"
+					IsEnabled="{Binding AskRoleEnable, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
 					ItemsSource="{Binding Roles, UpdateSourceTrigger=PropertyChanged}"
 					SelectedIndex="{Binding Choice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 					Margin="10 15 10 10"

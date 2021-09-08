@@ -23,13 +23,15 @@
 			<ColumnDefinition
 				Width="5" />
 			<ColumnDefinition
-				Width="auto" />
+				Width="*">
+			</ColumnDefinition>
 		</Grid.ColumnDefinitions>
 		<Frame
 			Source="{Binding FrameSource}"
 			NavigationUIVisibility="Hidden"
 			Grid.Column="0"
 			Grid.Row="0"
+			Grid.ColumnSpan="{Binding FrameColumnSpan}"
 			Grid.RowSpan="3" />
 		<GridSplitter
 			Visibility="{Binding ChattingVisibility}"
@@ -38,7 +40,8 @@
 			Width="5"
 			HorizontalAlignment="Stretch" />
 		<Grid
-			MinWidth="250"
+			Name="ChatGrid"
+			Width="auto"
 			Visibility="{Binding ChattingVisibility}"
 			Margin="10"
 			Grid.Column="2"

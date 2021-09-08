@@ -57,33 +57,15 @@ namespace KDLib
 			return Task.Run(() =>
 			{
 				StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream());
+				string information = "";
 				while (true)
 				{
-					string information = "";
-					try
-					{
-						information = ReadFromStream.ReadLine();
-					}
-					catch (IOException)
-					{
-						continue;
-					}
-					catch (InvalidOperationException)
-					{
-						continue;
-					}
-					catch (SocketException)
-					{
-						break;
-					}
-					catch (AggregateException ae)
-					{
-						throw ae.Flatten();
-					}
+					information = "";
+					information = ReadFromStream.ReadLine();
 					if (KDCommand.FromJson(information) != null)
 						Data.Commands.Enqueue(KDCommand.FromJson(information));
 				}
-			}, MustCancel.Token);
+			});
 		}
 
 		public static void SendCommand(KDCommand Command)

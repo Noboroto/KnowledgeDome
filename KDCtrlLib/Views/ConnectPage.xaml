@@ -47,7 +47,7 @@
 						EventName="KeyDown">
 						<cmd:EventToCommand
 							PassEventArgsToCommand="True"
-							Command="{Binding SendCmd}" />
+							Command="{Binding TryConnectEnterCmd}" />
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
 			</TextBox>

@@ -71,7 +71,7 @@
 				Margin="10 10 50 10"
 				VerticalAlignment="Center"
 				FontSize="30"
-				SelectedIndex="0"
+				SelectedIndex="{Binding SelectedMatchIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 				MinWidth="200" />
 		</StackPanel>
 		<ScrollViewer

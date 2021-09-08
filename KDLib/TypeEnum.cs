@@ -48,6 +48,7 @@ namespace KDLib
 
 	public enum CommandType
 	{
+		ConfirmIP,
 		Forcusing,
 		LostForcus,
 		Discconect,
@@ -59,6 +60,10 @@ namespace KDLib
 		Right,
 		Wrong,
 		NextQuestAt,
-		NavigateToNextPage
+		NavigateToNextPage,
+		MCToServer,
+		ServerToMC,
+		MCToMC,
+		ChangeMatchToID
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 
 using KDLib;
@@ -40,6 +39,7 @@ namespace KDCtrlLib.ViewModels
             set
             {                
                 Data.CurrentMatchIndex = value;
+                if (Data.ThisMacineType == Machine.Server) NetServer.SendCommandToAll(new KDCommand(CommandType.ChangeMatchToID, value.ToString()));
                 RaisePropertyChanged(nameof(SelectedMatchIndex));
             }
         }
