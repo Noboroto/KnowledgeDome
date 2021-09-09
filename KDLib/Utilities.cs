@@ -123,6 +123,7 @@ namespace KDLib
 
         public static void DemoEncryption()
         {
+            /**
             string text = "Hello world 123";
             var encrypted = EncryptStringToBytes(text);
             string string_encrypted = ByteArrayToHexString(encrypted);
@@ -131,6 +132,17 @@ namespace KDLib
             string roundTrip = DecryptBytesToString(encrypted);
 
             MessageBox.Show(string.Format("Encrypted = \"{0}\"\nRound Trip = \"{1}\"", string_encrypted, roundTrip));
+            */
+            Image inputImage = Image.FromFile("test_input.png");
+            var inputByte = CopyImageToByteArray(inputImage);
+            string inputString = ByteArrayToHexString(inputByte);
+            File.WriteAllText("test_input.txt", inputString);
+            
+            var outputByte = EncryptImageToByte("test_input.png");
+            string outputString = ByteArrayToHexString(outputByte);
+            File.WriteAllText("test_output.txt", outputString);
+
+            DecrpytByteToImage(outputByte, true, null, null, "test_roundtrip.png");
         }
 
         /// <summary>
@@ -159,31 +171,6 @@ namespace KDLib
             foreach (byte b in ba)
                 hex.AppendFormat("{0:x2}", b);
             return hex.ToString();
-        }
-
-        static void ReadAllSettings()
-        {
-            /*
-            try
-            {
-                var appSettings = ConfigurationManager.AppSettings;
-
-                if (appSettings.Count == 0)
-                {
-                    MessageBox.Show("AppSettings is empty.");
-                }
-                else
-                {
-                    foreach (var key in appSettings.AllKeys)
-                    {
-                        MessageBox.Show(String.Format("Key: {0} Value: {1}", key, appSettings[key]));
-                    }
-                }
-            }
-            catch (ConfigurationErrorsException)
-            {
-                MessageBox.Show("Error reading app settings");
-            }*/
         }
 
         /// <summary>
@@ -271,6 +258,7 @@ namespace KDLib
                             //swEncrypt.Write(plainData);
                         }*/
                         csEncrypt.Write(plainData, 0, plainData.Length);
+                        csEncrypt.FlushFinalBlock();
                         encrypted = msEncrypt.ToArray();
                     }
                 }
@@ -282,8 +270,6 @@ namespace KDLib
 
         static byte[] _DecryptBytesFromBytes_Aes(byte[] cipherData, byte[] Key, byte[] IV)
         {
-            throw new NotImplementedException();
-
             // Check arguments.
             if (cipherData == null || cipherData.Length <= 0)
                 throw new ArgumentNullException("cipherText");
@@ -309,10 +295,12 @@ namespace KDLib
                 // Create the streams used for decryption.
                 using (MemoryStream msDecrypt = new MemoryStream(cipherData))
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Write))
                     {
-                        csDecrypt.Read(plainData, 0, (int)csDecrypt.Length);
+                        csDecrypt.Write(cipherData, 0, cipherData.Length);
+                        csDecrypt.Close();
                     }
+                    plainData = msDecrypt.ToArray();
                 }
             }
 
@@ -357,6 +345,40 @@ namespace KDLib
             }
 
             return bm;
+        }
+
+        public static byte[] EncryptImageToByte(string InputImagePath, bool doesReadKeyFromConfig = true, byte[] key = null, byte[] iv = null) 
+        {
+            Image image = Image.FromFile(InputImagePath);
+            var imageByte = CopyImageToByteArray(image);
+            byte[] encryptedByte;
+            if (doesReadKeyFromConfig)
+            {
+                ReadKeyFromConfig();
+            }
+            else
+            {
+                aes.Key = key;
+                aes.IV = iv;
+            }
+            encryptedByte = _EncryptBytesToBytes_Aes(imageByte, aes.Key, aes.IV);
+            return encryptedByte;
+        }
+
+        public static Image DecrpytByteToImage(byte[] cipherImage, bool doesReadKeyFromConfig = true, byte[] key = null, byte[] iv = null, string outputImagePath = "")
+        {
+            if (doesReadKeyFromConfig)
+            {
+                ReadKeyFromConfig();
+            }
+            else
+            {
+                aes.Key = key;
+                aes.IV = iv;
+            }
+            byte[] decryptedByte = _DecryptBytesFromBytes_Aes(cipherImage, aes.Key, aes.IV);
+            var ret = GetImageFromByteArray(decryptedByte);
+            return ret;
         }
     }
 }
