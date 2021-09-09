@@ -45,21 +45,61 @@ namespace KDCtrlLib.ViewModels
             get => _ChattingVisibility;
             set => Set(ref _ChattingVisibility, value);
         }
-        #endregion
-
-        #region Commands
-        public ICommand SendCmd { get; set; }
+        public ProgramState Status
+		{
+            get => Data.Status;
+            set
+			{
+                Data.Status = value;
+                RaisePropertyChanged(nameof(Status));
+                RaisePropertyChanged(nameof(IsIdling));
+                RaisePropertyChanged(nameof(IsPlaying));
+                RaisePropertyChanged(nameof(IsPending));
+                RaisePropertyChanged(nameof(IsEnded));
+            }
+		}
+        public int CurrentRound
+		{
+            get => Data.CurrentRound;
+            set
+			{
+                Data.CurrentRound = value;
+                RaisePropertyChanged(nameof(CurrentRound));
+                RaisePropertyChanged(nameof(IsExtra));
+			}
+		}
+        public bool IsIdling => Data.Status == ProgramState.Idling;
+        public bool IsPlaying => Data.Status == ProgramState.Playing;
+        public bool IsPending => Data.Status == ProgramState.Pending;
+        public bool IsEnded => Data.Status == ProgramState.Ended;
+        public bool IsExtra => Data.CurrentRound == 5;
 		#endregion
 
-		public MainFrameControl()
+		#region Commands
+		public ICommand SendCmd { get; set; }
+        public ICommand StartRoundCmd { get; set; }
+        public ICommand ObstacleRoundCmd { get; set; }
+        public ICommand AcceblerationRoundCmd { get; set; }
+        public ICommand FinishRoundCmd { get; set; }
+        public ICommand ExtraRoundCmd { get; set; }
+        public ICommand SettingCmd { get; set; }
+        public ICommand GoBackCnd { get; set; }
+        public ICommand ResultCmd { get; set; }
+        public ICommand StartExtraCmd { get; set; }
+        #endregion
+
+        public MainFrameControl()
         {
             
             LogsView = new ObservableCollection<LogViewerInfo>();
             Chatting = new ObservableCollection<LogViewerInfo>();
 
             Messenger.Default.Register<NavigateToMessage>(this, t => NavigateTo(t));
+            Messenger.Default.Register<ChangeState>(this, t => UpdateState(t));
             ChattingVisibility = Visibility.Collapsed;
             FrameColumnSpan = 3;
+            CurrentRound = 0;
+
             ProcessCommand();
 
             #region Server
@@ -70,7 +110,7 @@ namespace KDCtrlLib.ViewModels
                 Messenger.Default.Send(new LogMess(KDLogger.Info("Start")));
             }
             #endregion
-
+            
             #region Client
             if (Data.ThisMacineType != Machine.Server)
 			{
@@ -100,8 +140,43 @@ namespace KDCtrlLib.ViewModels
                     WaitingSend = "";
                 }
             });
-			#endregion
-		}
+            StartRoundCmd = new RelayCommand(() =>
+            {
+                Status = ProgramState.Pending;
+                CurrentRound = 1;
+            });
+            ObstacleRoundCmd = new RelayCommand(() =>
+            {
+                Status = ProgramState.Pending;
+                CurrentRound = 2;
+            });
+            AcceblerationRoundCmd = new RelayCommand(() =>
+            {
+                Status = ProgramState.Pending;
+                CurrentRound = 3;
+            });
+            FinishRoundCmd = new RelayCommand(() =>
+            {
+                Status = ProgramState.Pending;
+                CurrentRound = 4;
+            });
+            ExtraRoundCmd = new RelayCommand(() =>
+            {
+                Status = ProgramState.Pending;
+                CurrentRound = 5;
+            });
+            StartExtraCmd = new RelayCommand(() =>
+            {
+
+            });
+            GoBackCnd = new RelayCommand(() =>
+            {
+                Status = ProgramState.Pending;
+                NetServer.SendCommandToAll(new KDCommand(CommandType.NavigateToRound, "0"));
+                Messenger.Default.Send(new NavigateToMessage(@"ServerView\MainServerPage.xaml"));
+            });
+            #endregion
+        }
 
         private void ProcessCommand()
         {
@@ -116,6 +191,38 @@ namespace KDCtrlLib.ViewModels
                             KDCommand command = Data.Commands.Peek();
                             switch (command.PrefixCmd)
                             {
+                                case CommandType.ChoosePlayer:
+                                    Data.CurrentPlayerIndex = int.Parse(command.Content);
+                                    goto EndCommand;
+                                case CommandType.NavigateToRound:
+                                    Status = ProgramState.Playing;
+                                    switch (int.Parse(command.Content))
+									{
+                                        case 0:
+                                            Status = ProgramState.Idling;
+                                            Messenger.Default.Send(new NavigateToMessage("MainClientFramePage.xaml"));
+                                            goto EndCommand;
+                                        case 1:
+                                            switch (Data.ThisMacineType)
+											{
+                                                case Machine.MC:
+                                                    Messenger.Default.Send(new NavigateToMessage(@"MCView\StartRoundMCView.xaml"));
+                                                    goto EndCommand;
+                                                case Machine.Player:
+                                                case Machine.Viewer:
+                                                    Messenger.Default.Send(new NavigateToMessage(@"StartRoundViewerPlayerPage.xaml"));
+                                                    goto EndCommand;
+											}
+                                            goto EndCommand;
+                                        case 2:
+
+                                            goto EndCommand;
+                                        case 3:
+
+                                            goto EndCommand;
+                                        
+                                    }
+                                    goto EndCommand;
                                 case CommandType.EditScore:
                                     Player data = Data.FromJosn<Player>(command.Content);
                                     foreach (var x in Data.CurrentMatch.Players)
@@ -168,6 +275,14 @@ namespace KDCtrlLib.ViewModels
                 LogsView.Add(m.Message);
             });
 		}
+
+        private void UpdateState (ChangeState m)
+		{
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Status = m.State;
+            });
+        }
 
         private void NavigateTo(NavigateToMessage m)
 		{

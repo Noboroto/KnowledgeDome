@@ -46,6 +46,14 @@ namespace KDLib
 		Error
 	}
 
+	public enum ProgramState
+	{
+		Idling,
+		Pending,
+		Playing,
+		Ended
+	}
+
 	public enum CommandType
 	{
 		ConfirmIP,
@@ -60,11 +68,14 @@ namespace KDLib
 		Right,
 		Wrong,
 		NextQuestAt,
-		NavigateToNextPage,
+		NavigateToRound,
 		MCToServer,
 		ServerToMC,
 		MCToMC,
 		ChangeMatchToID,
-		EditScore
+		EditScore,
+		ChoosePlayer,
+		StopEmergency,
+		StartTimmer
 	}
 }

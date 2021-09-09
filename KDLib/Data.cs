@@ -5,7 +5,7 @@ using System.IO;
 
 namespace KDLib
 {
-	public static class Data
+	public static class Data 
 	{
 		#region PublicConstants
 		public const int PortForTCP = 2644;
@@ -19,6 +19,7 @@ namespace KDLib
 		#endregion
 
 		#region PublicProperties
+		public static ProgramState Status { get; set; }
 		public static int ID { get; set; }
 		public static string ChooseIP { get; set; }
 		public static int Pos { get; set; }
@@ -33,12 +34,17 @@ namespace KDLib
 				return Machine.Viewer;
 			}
 		}
+		public static int CurrentRound { get; set; }
 		public static bool OnFocus { get; set; }
 		public static KDCommandList Commands { get; set; }
 		public static int CurrentMatchIndex { get; set; }
 		public static int CurrentPlayerIndex { get; set; }
 		public static MatchInfo CurrentMatch => MatchInfos[CurrentMatchIndex];
-		public static Player CurrentPlayer => MatchInfos[CurrentMatchIndex].Players[CurrentPlayerIndex];
+		public static Player CurrentPlayer
+		{
+			get => MatchInfos[CurrentMatchIndex].Players[CurrentPlayerIndex];
+			set => MatchInfos[CurrentMatchIndex].Players[CurrentPlayerIndex] = value;
+		}
 		public static MatchInfoList MatchInfos { get; set; }
 		public static StartQuestionList StartQuestions { get; set; }
 		public static ObstacleList Obstacles { get; set; }

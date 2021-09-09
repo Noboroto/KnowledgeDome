@@ -12,7 +12,7 @@ namespace DemoFeature
         {
             MatchInfo first = new MatchInfo("Test Match");
             first.Players.Add(new Player(0, "Gia Linh"));
-            first.Players.Add(new Player(1, "Quang Phú"));
+            first.Players.Add(new Player(1, "Gia Bảo"));
             first.Players.Add(new Player(2, "Gia Lạc"));
             first.Players.Add(new Player(3, "Gia Kiệt"));
 

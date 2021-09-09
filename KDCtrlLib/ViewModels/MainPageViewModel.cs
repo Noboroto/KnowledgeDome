@@ -9,13 +9,15 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Threading;
+using GalaSoft.MvvmLight.CommandWpf;
+using System.Windows.Controls;
+using System.Windows;
 
 namespace KDCtrlLib.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
 		#region Private
-		private MatchInfo _CurrentMatch;
         private CancellationTokenSource cancellation;
 		#endregion
 
@@ -41,6 +43,7 @@ namespace KDCtrlLib.ViewModels
                 Messenger.Default.Send(new LogMess(KDLogger.Info($"SelectedMatch: {CurrentMatch.Name}")));
             }
         }
+
         public int SelectedMatchIndex
         {
             get => Data.CurrentMatchIndex;
@@ -55,12 +58,7 @@ namespace KDCtrlLib.ViewModels
 		#endregion
 
 		#region Command
-		public ICommand StartRoundCmd { get; set; }
-        public ICommand ObstacleRoundCmd { get; set; }
-        public ICommand SettingCmd { get; set; }
-        public ICommand AccelerateCmd { get; set; }
-        public ICommand FinishCmd { get; set; }
-        public ICommand ExtraCmd { get; set; }
+        public ICommand SelectPlayerCmd { get; set; }
 		#endregion
 
 		public MainPageViewModel()
@@ -70,6 +68,20 @@ namespace KDCtrlLib.ViewModels
             SelectedMatchIndex = 0;
             ProcessCommand(cancellation.Token);
             CurrentMatch = Data.MatchInfos[0];
+            SelectPlayerCmd = new RelayCommand<RoutedEventArgs>((e) =>
+            {
+                Data.CurrentPlayerIndex = (e.Source as ListBox).SelectedIndex;
+                switch (Data.CurrentRound)
+				{
+                    case 1:
+                        NetServer.SendCommandToAll(new KDCommand(CommandType.ChoosePlayer, Data.CurrentPlayerIndex.ToString()));
+                        NetServer.SendCommandToAll(new KDCommand(CommandType.NavigateToRound, "1"));
+                        Messenger.Default.Send(new NavigateToMessage(@"ServerView\StartRoundServerView.xaml"));
+                        break;
+                    case 4:
+                        break;
+				}
+            });
         }
 
         private void ProcessCommand(CancellationToken token)

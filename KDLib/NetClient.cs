@@ -64,8 +64,8 @@ namespace KDLib
 					information = ReadFromStream.ReadLine();
 					if (KDCommand.FromJson(information) != null)
 					{
-						//MessageBox.Show(information);
 						Data.Commands.Enqueue(KDCommand.FromJson(information));
+						KDLogger.Error($"{Data.Commands.Peek().PrefixCmd} {Data.Commands.Peek().Content}");
 					}
 				}
 			});

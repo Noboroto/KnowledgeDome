@@ -75,6 +75,29 @@
 						DataContext="{Binding CurrentQuestion}"
 						Text="{Binding Content}"
 						TextAlignment="Left">
+						<TextBlock.Style>
+							<Style
+								TargetType="TextBlock"
+								BasedOn="{StaticResource MaterialDesignTextBlock}">
+								<Style.Triggers>
+									<DataTrigger
+										Binding="{Binding Path=MainFrame.IsPlaying, Source={StaticResource Locator}}"
+										Value="True"
+										>
+										<Setter
+											Property="Visibility"
+											Value="Visible"/>
+									</DataTrigger>
+									<DataTrigger
+										Binding="{Binding Path=MainFrame.IsPlaying, Source={StaticResource Locator}}"
+										Value="False">
+										<Setter
+											Property="Visibility"
+											Value="Hidden" />
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
 					</TextBlock>
 				</ScrollViewer>
 			</Border>

@@ -18,6 +18,7 @@
 	<materialDesign:Card
 		VerticalAlignment="Center"
 		HorizontalAlignment="Center"
+		materialDesign:ShadowAssist.ShadowDepth="Depth5"
 		Width="400">
 		<DockPanel
 			Margin="20"

@@ -259,31 +259,31 @@
 					Width="*" />
 			</Grid.ColumnDefinitions>
 			<Button
-				Margin="5"
+				Margin="5 0 5 20"
 				Grid.Column="0"
 				IsEnabled="{Binding TimerEnable}"
 				HorizontalAlignment="Stretch"
 				Content="Bắt đầu tính giờ"
 				Command="{Binding StartTimmerCmd}" />
 			<Button
-				Margin="5"
+				Margin="5 0 5 20"
 				Grid.Column="1"
 				Foreground="Black"
 				Background="#FF20CA71"
-				IsEnabled="{Binding Running}"
+				IsEnabled="{Binding Path=MainFrame.IsPlaying, Source={StaticResource Locator}}"
 				HorizontalAlignment="Stretch"
 				Content="Đúng"
 				Command="{Binding RightCmd}" />
 			<Button
-				Margin="5"
+				Margin="5 0 5 20"
 				Grid.Column="2"
 				Background="#FFB01F1F"
-				IsEnabled="{Binding Running}"
+				IsEnabled="{Binding Path=MainFrame.IsPlaying, Source={StaticResource Locator}}"
 				HorizontalAlignment="Stretch"
 				Content="Sai"
 				Command="{Binding WrongCmd}" />
 			<Button
-				Margin="5"
+				Margin="5 0 5 20"
 				Grid.Column="3"
 				Background="#FF9E269C"
 				IsEnabled="{Binding SoundEnable}"
@@ -300,14 +300,14 @@
 			Grid.RowSpan="2"
 			Grid.Row="0">
 			<Button
-				Margin="5 0 5 0"
+				Margin="5 0 5 10"
 				Background="#FFB01F1F"
-				IsEnabled="{Binding Running}"
+				IsEnabled="{Binding Path=MainFrame.IsPlaying, Source={StaticResource Locator}}"
 				HorizontalAlignment="Stretch"
 				Command="{Binding StopCmd}"
 				Content="Dừng khẩn cấp" />
 			<Button
-				Margin="5"
+				Margin="5 5 5 20"
 				IsEnabled="{Binding DoneEnable}"
 				HorizontalAlignment="Stretch"
 				Command="{Binding DoneCmd}"

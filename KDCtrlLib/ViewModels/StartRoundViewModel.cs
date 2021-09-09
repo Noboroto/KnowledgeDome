@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using System.Windows;
 using System.Threading;
+using GalaSoft.MvvmLight.Messaging;
+using KDLib.MessageForUI;
 
 namespace KDCtrlLib.ViewModels
 {
@@ -20,11 +22,9 @@ namespace KDCtrlLib.ViewModels
 		private const double TIME_AMOUNT = 0.01;
 
 		private CancellationTokenSource cancellation = new CancellationTokenSource();
-		private Player _CurrentPlayer;
 		private StartQuestion _CurrentQuestion;
 		private int _QuestCount;
 		private double _Timer;
-		private bool _Running;
 		private bool _TimerEnable;
 		private bool _DoneEnable;
 		private bool _SoundEnable;
@@ -45,11 +45,6 @@ namespace KDCtrlLib.ViewModels
 			get => _DoneEnable;
 			set => Set(ref _DoneEnable, value);
 		}
-		public bool Running
-		{
-			get => _Running;
-			set => Set(ref _Running, value);
-		}
 		public bool SoundEnable
 		{
 			get => _SoundEnable;
@@ -57,8 +52,12 @@ namespace KDCtrlLib.ViewModels
 		}
 		public Player CurrentPlayer
 		{
-			get => _CurrentPlayer;
-			set => Set(ref _CurrentPlayer, value);
+			get => Data.CurrentPlayer;
+			set
+			{
+				Data.CurrentPlayer = value;
+				RaisePropertyChanged(nameof(CurrentPlayer));
+			}
 		}
 		public StartQuestion CurrentQuestion
 		{
@@ -85,84 +84,71 @@ namespace KDCtrlLib.ViewModels
 
 		public StartRoundViewModel()
 		{
-			#region DEBUG_DATA
-			#endregion
-			
 			#region INIT
 			DoneEnable = false;
 			SoundEnable = false;
 			TimerEnable = true;
-			Running = false;
 			Timer = TIME_LIMIT;
-			CurrentPlayer = Data.CurrentMatch.Players[Data.CurrentPlayerIndex];
 			#endregion
 
 			#region CLIENT INIT
 			if (Data.ThisMacineType != Machine.Server)
 			{
-				StartCommandChecker();
+				StartCommandChecker(cancellation.Token);
 			}
 			#endregion
 
 			#region Cmd
 			StartTimmerCmd = new RelayCommand(async () =>
 			{
+				CurrentQuestion = GetNewQuestion(Data.StartQuestions);
+				NetServer.SendCommandToAll(new KDCommand(CommandType.StartTimmer));
 				try
 				{
 					TimerEnable = false;
-					Running = true;
-					await TimerStart();
+					await TimerStart(cancellation.Token);
 				}
 				catch (OperationCanceledException)
 				{
 					Timer = 0;
 				}
-				finally
+				catch (AggregateException)
 				{
-					cancellation.Dispose();
+					cancellation.Cancel();
 				}
 			});
 			RightCmd = new RelayCommand(() => RightAns());
 			WrongCmd = new RelayCommand(() => WrongAns());
 			SoundCmd = new RelayCommand(() => { return; });
-			StopCmd = new RelayCommand(() => 
+			StopCmd = new RelayCommand(() =>
 			{
 				var res = MessageBox.Show("Bạn có muốn dừng khẩn cấp không?", "Dừng khẩn cấp", MessageBoxButton.YesNo, MessageBoxImage.Stop);
 				if (res == MessageBoxResult.No)
 					return;
 				if (!cancellation.IsCancellationRequested) cancellation.Cancel();
-				Running = false;
 				DoneEnable = true;
+				Messenger.Default.Send(new ChangeState(ProgramState.Pending));
 			});
-			DoneCmd = new RelayCommand(()=> { return; });
+			DoneCmd = new RelayCommand(() => { return; });
 			#endregion
 		}
-		private Task TimerStart()
+		private Task TimerStart(CancellationToken token)
 		{
 			return Task.Run(async () =>
 			{
-				try
-				{
-					CurrentQuestion = GetNewQuestion(Data.StartQuestions);
-					SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
-				}
-				catch (ArgumentOutOfRangeException)
-				{
-					cancellation.Cancel();
-					return;
-				}
+				Messenger.Default.Send(new ChangeState(ProgramState.Playing));
+				SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
 				while (Timer > 0)
 				{
 					Timer -= TIME_AMOUNT;
-					cancellation.Token.ThrowIfCancellationRequested();
+					if (token.IsCancellationRequested) break;
 					await Task.Delay(System.TimeSpan.FromSeconds(TIME_AMOUNT));
 				}
-				Running = false;
+				Messenger.Default.Send(new ChangeState(ProgramState.Pending));
 				DoneEnable = true;
-			}, cancellation.Token
+			}, token
 			);
 		}
-
 
 		/// <summary>
 		/// Get new StartQuestion from source
@@ -185,7 +171,7 @@ namespace KDCtrlLib.ViewModels
 		private void OutOfQuestion()
 		{
 			MessageBox.Show("Đã hết câu hỏi");
-			Running = false;
+			Messenger.Default.Send(new ChangeState(ProgramState.Pending));
 			DoneEnable = true;
 			cancellation.Cancel();
 		}
@@ -209,7 +195,6 @@ namespace KDCtrlLib.ViewModels
 			if (Data.StartQuestions.Count <= 0)
 			{
 				OutOfQuestion();
-				OutOfQuestion();
 				return;
 			}
 			QuestCount++;
@@ -218,12 +203,13 @@ namespace KDCtrlLib.ViewModels
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Wrong));
 		}
 
-		private Task StartCommandChecker()
+		private void StartCommandChecker(CancellationToken token)
 		{
-			Action ThisAction = () =>
+			Task.Run(() =>
 			{
 				while (true)
 				{
+					if (token.IsCancellationRequested) return;
 					while (Data.Commands.Count > 0)
 					{
 						try
@@ -231,15 +217,37 @@ namespace KDCtrlLib.ViewModels
 							KDCommand command = Data.Commands.Peek();
 							switch (command.PrefixCmd)
 							{
+								case CommandType.StartTimmer:
+									Task.Run(async() =>
+										{
+											try
+											{
+												TimerEnable = false;
+												await TimerStart(cancellation.Token);
+											}
+											catch (OperationCanceledException)
+											{
+												Timer = 0;
+											}
+											catch (AggregateException)
+											{
+												cancellation.Cancel();
+											}
+										});
+									goto EndCommand;
 								case CommandType.NextQuestAt:
 									CurrentQuestion = Data.StartQuestions[int.Parse(command.Content)];
 									goto EndCommand;
 								case CommandType.Right:
-									CurrentPlayer.Score++;
+									CurrentPlayer.Score+=10;
 									QuestCount++;
 									goto EndCommand;
 								case CommandType.Wrong:
-									QuestCount++; 
+									QuestCount++;
+									goto EndCommand;
+								case CommandType.StopEmergency:
+									if (!cancellation.IsCancellationRequested) cancellation.Cancel();
+									DoneEnable = true;
 									goto EndCommand;
 								EndCommand:
 									if (Data.Commands.Count > 0) Data.Commands.Dequeue();
@@ -258,8 +266,7 @@ namespace KDCtrlLib.ViewModels
 						}
 					}
 				}
-			};
-			return Task.Run(ThisAction);
+			}, cancellation.Token);
 		}
 	}
 }
