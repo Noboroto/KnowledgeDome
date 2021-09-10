@@ -133,20 +133,20 @@ namespace KDLib
 
             MessageBox.Show(string.Format("Encrypted = \"{0}\"\nRound Trip = \"{1}\"", string_encrypted, roundTrip));
             */
-            Image inputImage = Image.FromFile("test_input.png");
+            Image inputImage = Image.FromFile("test_input.jpg");
             var inputByte = CopyImageToByteArray(inputImage);
             string inputString = ByteArrayToHexString(inputByte);
             File.WriteAllText("test_input.txt", inputString);
             
-            var outputByte = EncryptImageToByte("test_input.png");
+            var outputByte = EncryptImageToByte("test_input.jpg");
             string outputString = ByteArrayToHexString(outputByte);
             File.WriteAllText("test_output.txt", outputString);
 
-            DecrpytByteToImage(outputByte, true, null, null, "test_roundtrip.png");
+            DecrpytByteToImage(outputByte, true, null, null, "test_roundtrip.jpg");
         }
 
         /// <summary>
-        /// 
+        ///   
         /// </summary>
         /// <param name="hex"></param>
         /// <returns></returns>
@@ -364,6 +364,22 @@ namespace KDLib
             encryptedByte = _EncryptBytesToBytes_Aes(imageByte, aes.Key, aes.IV);
             return encryptedByte;
         }
+        public static byte[] EncryptImageToByte(Image image, bool doesReadKeyFromConfig = true, byte[] key = null, byte[] iv = null)
+        {
+            var imageByte = CopyImageToByteArray(image);
+            byte[] encryptedByte;
+            if (doesReadKeyFromConfig)
+            {
+                ReadKeyFromConfig();
+            }
+            else
+            {
+                aes.Key = key;
+                aes.IV = iv;
+            }
+            encryptedByte = _EncryptBytesToBytes_Aes(imageByte, aes.Key, aes.IV);
+            return encryptedByte;
+        }
 
         public static Image DecrpytByteToImage(byte[] cipherImage, bool doesReadKeyFromConfig = true, byte[] key = null, byte[] iv = null, string outputImagePath = "")
         {
@@ -378,6 +394,10 @@ namespace KDLib
             }
             byte[] decryptedByte = _DecryptBytesFromBytes_Aes(cipherImage, aes.Key, aes.IV);
             var ret = GetImageFromByteArray(decryptedByte);
+            if (outputImagePath.Length > 0)
+            {
+                ret.Save(outputImagePath, ImageFormat.Png);
+            }
             return ret;
         }
     }
