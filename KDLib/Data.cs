@@ -35,7 +35,8 @@ namespace KDLib
 		public static KDCommandList Commands { get; set; }
 		public static int CurrentMatchIndex { get; set; }
 		public static int CurrentPlayerIndex { get; set; }
-		public static MatchInfo CurrentMatch { get; set; }
+		public static MatchInfo CurrentMatch => MatchInfos[CurrentMatchIndex];
+		public static Player CurrentPlayer => MatchInfos[CurrentMatchIndex].Players[CurrentPlayerIndex];
 		public static MatchInfoList MatchInfos { get; set; }
 		public static StartQuestionList StartQuestions { get; set; }
 		public static ObstacleList Obstacles { get; set; }
@@ -61,15 +62,20 @@ namespace KDLib
 
 		public static void Initialize()
 		{
+			#region DEVELOP_MODE
+			CurrentMatchIndex = 0;
+			CurrentPlayerIndex = 0;
+			#endregion
+
 			Commands = new KDCommandList();
 			ListIP = NetServer.GetLocalIPAddress();
 			if (!Directory.Exists(@"Tests\")) Directory.CreateDirectory("Tests");
-			StartQuestions = new StartQuestionList();
-			Obstacles = new ObstacleList();
-			AccelerationQuestions = new AccelerationQuestionList();
-			FinishQuestions = new FinishQuestionList();
-			ExtraQuestions = new ExtraQuestionList();
-			MatchInfos = new MatchInfoList();
+			StartQuestions = StartQuestionList.ReadFromFile();
+			Obstacles = ObstacleList.ReadFromFile();
+			AccelerationQuestions = AccelerationQuestionList.ReadFromFile();
+			FinishQuestions = FinishQuestionList.ReadFromFile();
+			ExtraQuestions = ExtraQuestionList.ReadFromFile();
+			MatchInfos = MatchInfoList.ReadFromFile();
 		}
 	}
 }

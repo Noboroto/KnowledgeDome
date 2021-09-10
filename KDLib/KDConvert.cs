@@ -10,6 +10,25 @@ namespace KDLib
 
 		#region PublicMembers
 		public static UTF8Encoding UTF8Encoder = new UTF8Encoding();
+
+		public static readonly string[] BackgroundPlayer = new string[]
+		{
+			"#d71b3b",
+			"#e8d71e",
+			"#16acea",
+			"#3a6b35",
+			"#4203c9"
+		};
+
+		public static readonly string[] ForegroundPlayer = new string[]
+		{
+			"FFFFFF",
+			"000000",
+			"000000",
+			"FFFFFF",
+			"FFFFFF"
+		};
+
 		public static readonly Dictionary<string, AttachmentType> StringToAttachmentType = new Dictionary<string, AttachmentType>
 		{
 			["None"] = AttachmentType.None,

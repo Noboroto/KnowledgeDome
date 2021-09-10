@@ -59,10 +59,10 @@ namespace KDLib
 		#endregion
 
 		[JsonConstructor]
-		public ObstacleQuestion(int id, int charcount, string type, string content)
+		public ObstacleQuestion(int id, int charcount, string imagetype, string content)
 			: base(id, content, "")
 		{
-			ImageType = type;
+			ImageType = imagetype;
 			CharCount = charcount;
 		}
 

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 
+using System.Collections.Generic;
 using System.IO;
 
 namespace KDLib
@@ -17,7 +18,12 @@ namespace KDLib
 
 		}
 
-		public override bool Contains(object id)
+		public AccelerationQuestionList(IList<AccelerationQuestion> list) :base (list)
+		{
+
+		}
+
+		public bool Contains(object id)
 		{
 			using (var enumerator = GetEnumerator())
 			{
@@ -32,7 +38,7 @@ namespace KDLib
 			return false;
 		}
 
-		public override string ToJson()
+		public string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
 		}
@@ -44,7 +50,7 @@ namespace KDLib
 
 		public static AccelerationQuestionList ReadFromFile(string path = @"Tests\AccelerationQuestionList.json")
 		{
-			if (!File.Exists(path)) return null;
+			if (!File.Exists(path)) return new AccelerationQuestionList();
 			return FromJson(File.ReadAllText(path));
 		}
 

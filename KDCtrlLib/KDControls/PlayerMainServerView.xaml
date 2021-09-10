@@ -13,7 +13,7 @@
 			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
 	</UserControl.Resources>
 	<materialDesign:Card
-		Background="{Binding ElementName=UC, Path=Background}"
+		Background="{Binding Path=BackgroundColor}"
 		materialDesign:ShadowAssist.ShadowDepth="Depth5">
 		<materialDesign:DialogHost
 			DialogClosing="DialogHost_DialogClosing"
@@ -65,25 +65,25 @@
 			</materialDesign:DialogHost.DialogContent>
 			<StackPanel>
 				<DockPanel>
+					<DockPanel.Resources>
+						<Style
+							TargetType="TextBlock">
+							<Setter
+								Property="TextAlignment"
+								Value="Center" />
+							<Setter
+								Property="Foreground"
+								Value="{Binding Path=ForegroundColor}" />
+							<Setter
+								Property="FontWeight"
+								Value="Black" />
+						</Style>
+					</DockPanel.Resources>
 					<StackPanel
 						DockPanel.Dock="Top"
 						VerticalAlignment="Stretch"
 						HorizontalAlignment="Stretch"
 						MinWidth="200">
-						<StackPanel.Resources>
-							<Style
-								TargetType="TextBlock">
-								<Setter
-									Property="TextAlignment"
-									Value="Center" />
-								<Setter
-									Property="Foreground"
-									Value="{Binding ElementName=UC, Path=Foreground}" />
-								<Setter
-									Property="FontWeight"
-									Value="Black" />
-							</Style>
-						</StackPanel.Resources>
 						<Ellipse
 							Grid.Column="0"
 							Height="180"

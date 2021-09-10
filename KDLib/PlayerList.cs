@@ -2,6 +2,7 @@
 
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace KDLib
 {
@@ -11,8 +12,19 @@ namespace KDLib
 		public PlayerList()
 		{
 		}
+		public PlayerList (IList<Player> list):base(list)
+		{
+		}
 
-		public override bool Contains(object id)
+		public new void Add (Player player)
+		{
+			int index = Count % 5;
+			player.SetBackground(KDConvert.BackgroundPlayer[index]);
+			player.SetForeground(KDConvert.ForegroundPlayer[index]);
+			base.Add(player);
+		}
+
+		public bool Contains(object id)
 		{
 			using (var enumerator = GetEnumerator())
 			{
@@ -36,7 +48,7 @@ namespace KDLib
 		{
 			return JsonConvert.DeserializeObject<PlayerList>(source);
 		}
-		public override string ToJson()
+		public string ToJson()
 		{
 			return JsonConvert.SerializeObject(this);
 		}

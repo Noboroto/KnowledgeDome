@@ -99,20 +99,45 @@
 					VerticalAlignment="Stretch"
 					BorderThickness="5 5 0 5"
 					BorderBrush="#a48a61">
-					<ScrollViewer
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Stretch"
-						HorizontalScrollBarVisibility="Disabled"
-						VerticalScrollBarVisibility="Auto">
-						<TextBlock
-							Margin="20"
-							TextWrapping="Wrap"
-							FontSize="50"
-							DataContext="{Binding CurrentQuestion}"
-							Text="{Binding Content}"
-							TextAlignment="Left">
-						</TextBlock>
-					</ScrollViewer>
+
+						<StackPanel>
+							<TextBlock
+								Foreground="Yellow"
+								Margin="20 20 20 0"
+								TextWrapping="Wrap"
+								FontSize="30"
+								TextAlignment="Left">
+								<TextBlock.Text>
+									<MultiBinding
+										StringFormat="{}ID: {0, -20}  Môn: {1, -40}  Còn lại: {2, -30}"
+										>
+										<Binding
+											Path="CurrentQuestion.ID"
+											/>
+										<Binding
+											Path="CurrentQuestion.SubjectName"
+											/>
+										<Binding
+											Path="StoreItemCounter"
+											/>
+									</MultiBinding>
+								</TextBlock.Text>
+							</TextBlock>
+						<ScrollViewer
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							HorizontalScrollBarVisibility="Disabled"
+							VerticalScrollBarVisibility="Auto">
+							<TextBlock
+								Margin="20 5 20 20"
+								TextWrapping="Wrap"
+								FontSize="30"
+								DataContext="{Binding CurrentQuestion}"
+								Text="{Binding Content}"
+								TextAlignment="Left">
+							</TextBlock>
+						</ScrollViewer>
+					</StackPanel>
 				</Border>
 				<GridSplitter
 					Grid.Column="1"
@@ -135,7 +160,7 @@
 						<TextBlock
 							Margin="20"
 							TextWrapping="Wrap"
-							FontSize="50"
+							FontSize="30"
 							DataContext="{Binding CurrentQuestion}"
 							Text="{Binding Answer}"
 							TextAlignment="Left">
