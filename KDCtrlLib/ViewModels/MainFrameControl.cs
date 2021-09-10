@@ -22,6 +22,7 @@ namespace KDCtrlLib.ViewModels
 		private Visibility _ChattingVisibility;
 		private int _FrameColumnSpan;
 		private Stack<Tuple<Uri, ProgramState>> NavigationStack;
+		private string _SystemName;
 		#endregion
 
 		#region Public Properties
@@ -75,6 +76,11 @@ namespace KDCtrlLib.ViewModels
 		public bool IsPending => Data.Status == ProgramState.Pending;
 		public bool IsEnded => Data.Status == ProgramState.Ended;
 		public bool IsExtra => Data.CurrentRound == 5;
+		public string SystemName
+		{
+			get => _SystemName;
+			set => Set(ref _SystemName, value);
+		}
 		#endregion
 
 		#region Commands
@@ -103,6 +109,7 @@ namespace KDCtrlLib.ViewModels
 			FrameColumnSpan = 3;
 			CurrentRound = 0;
 			Status = ProgramState.Idling;
+			SystemName = (Data.ThisMacineType == Machine.Server) ? "Knowledge Dome Server" : "Knowledge Dome Client";
 
 			CommandChecker();
 

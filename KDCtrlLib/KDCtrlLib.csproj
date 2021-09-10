@@ -92,11 +92,11 @@
     <Compile Include="ViewModels\RoleViewModel.cs" />
     <Compile Include="ViewModels\StartRoundViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
+    <Compile Include="Views\ClientWindow.xaml.cs">
+      <DependentUpon>ClientWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ConnectPage.xaml.cs">
       <DependentUpon>ConnectPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MainClientFramePage.xaml.cs">
-      <DependentUpon>MainClientFramePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainClientPage.xaml.cs">
       <DependentUpon>MainClientPage.xaml</DependentUpon>
@@ -104,8 +104,8 @@
     <Compile Include="Views\MCView\StartRoundMCView.xaml.cs">
       <DependentUpon>StartRoundMCView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ServerView\MainServerFramePage.xaml.cs">
-      <DependentUpon>MainServerFramePage.xaml</DependentUpon>
+    <Compile Include="Views\ServerView\ServerWindow.xaml.cs">
+      <DependentUpon>ServerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ServerView\MainServerPage.xaml.cs">
       <DependentUpon>MainServerPage.xaml</DependentUpon>
@@ -146,6 +146,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ClientWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ConnectPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -153,10 +157,6 @@
     <Page Include="Views\GlobalResource.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\MainClientFramePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainClientPage.xaml">
       <SubType>Designer</SubType>
@@ -166,9 +166,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ServerView\MainServerFramePage.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Views\ServerView\ServerWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ServerView\MainServerPage.xaml">
       <SubType>Designer</SubType>
