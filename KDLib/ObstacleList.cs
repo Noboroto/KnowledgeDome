@@ -12,7 +12,7 @@ namespace KDLib
 
 		}
 
-		public ObstacleList(IList<Obstacle> list) : base (list)
+		public ObstacleList(IList<Obstacle> list) : base(list)
 		{
 
 		}

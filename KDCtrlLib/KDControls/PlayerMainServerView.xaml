@@ -22,9 +22,8 @@
 				<StackPanel
 					Margin="16"
 					>
-					<Label 
-						ContentStringFormat="Sửa điểm của {0}"
-						Content="{Binding Name}" 
+					<TextBlock 
+						Text="{Binding Name, StringFormat=Sửa điểm của {0}}" 
 						/>
 					<TextBox
 						Margin="0 8 0 0"
@@ -119,10 +118,15 @@
 						Text="{Binding Score}" />
 				</DockPanel>
 				<Button
+					materialDesign:ButtonAssist.CornerRadius="25"
+					materialDesign:ShadowAssist.ShadowDepth="Depth4"
 					Style="{StaticResource MaterialDesignRaisedLightButton}"
 					Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
-					Width="auto"
+					Width="150"
 					Height="70"
+					BorderThickness="0"
+					Background="#FF546E7A"
+					Foreground="White"
 					Content="Sửa điểm"
 					FontSize="25"
 					Margin="15"

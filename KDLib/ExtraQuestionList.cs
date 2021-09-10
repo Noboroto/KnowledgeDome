@@ -16,7 +16,7 @@ namespace KDLib
 		public ExtraQuestionList()
 		{
 		}
-		public ExtraQuestionList(IList<ExtraQuestion> list) :base (list)
+		public ExtraQuestionList(IList<ExtraQuestion> list) : base(list)
 		{
 
 		}

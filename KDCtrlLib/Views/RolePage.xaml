@@ -9,9 +9,7 @@
 	TextElement.FontWeight="Medium"
 	TextElement.FontSize="14"
 	FontFamily="{materialDesign:MaterialDesignFont}"
-	DataContext="{Binding Role, Source={StaticResource Locator}}"
-	Loaded="OnNavigatedTo"
-	Unloaded="OnNavigatingFrom">
+	DataContext="{Binding Role, Source={StaticResource Locator}}">
 	<Page.Resources>
 		<ResourceDictionary
 			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
@@ -20,14 +18,15 @@
 		<materialDesign:Card
 			VerticalAlignment="Center"
 			HorizontalAlignment="Center"
+			materialDesign:ShadowAssist.ShadowDepth="Depth5"
 			Width="350">
 			<DockPanel
 				Margin="20"
 				VerticalAlignment="Stretch"
 				HorizontalAlignment="Stretch">
 				<Button
-					Command="{Binding AskPermision}"
-					CommandParameter="{Binding Choice, UpdateSourceTrigger=PropertyChanged}"
+					IsEnabled="{Binding AskRoleEnable}"
+					Command="{Binding AskRole}"
 					Margin="10"
 					MaxWidth="120"
 					FontSize="18"
@@ -36,8 +35,10 @@
 				<ComboBox
 					Name="ChoiceBox"
 					materialDesign:HintAssist.Hint="Đây là máy của"
-					ItemsSource="{Binding Path=(lib:NetClient.ClientComboBoxChoose), UpdateSourceTrigger=PropertyChanged}"
-					SelectedItem="{Binding Choice,Mode=OneWayToSource,NotifyOnSourceUpdated=True}"
+					IsEditable="False"
+					IsEnabled="{Binding AskRoleEnable, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+					ItemsSource="{Binding Roles, UpdateSourceTrigger=PropertyChanged}"
+					SelectedIndex="{Binding Choice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 					Margin="10 15 10 10"
 					DockPanel.Dock="Right"
 					FontSize="20">

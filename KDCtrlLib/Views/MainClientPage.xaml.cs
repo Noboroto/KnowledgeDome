@@ -1,20 +1,15 @@
-﻿using KDCtrlLib.KDControls;
-
-using KDLib;
-
-using System.Collections.Generic;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace KDCtrlLib.Views
 {
-    /// <summary>
-    /// Interaction logic for MainClientPage.xaml
-    /// </summary>
-    public partial class MainClientPage : Page
-    {
-        public MainClientPage()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Interaction logic for MainClientPage.xaml
+	/// </summary>
+	public partial class MainClientPage : Page
+	{
+		public MainClientPage()
+		{
+			InitializeComponent();
+		}
+	}
 }

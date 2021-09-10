@@ -19,7 +19,7 @@ namespace KDCtrlLib.KDControls
 		public ImageSource Source => ((Player)DataContext).Avatar;
 		public AvatarPlayerSingleView()
 		{
-			InitializeComponent();			
+			InitializeComponent();
 		}
 	}
 }

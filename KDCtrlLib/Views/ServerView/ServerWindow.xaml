@@ -1,0 +1,256 @@
+﻿<Window
+	x:Class="KDClient.MainServerControlWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:KDClient"
+	mc:Ignorable="d"
+	Title="{Binding SystemName}"
+	WindowState="Maximized"
+	xmlns:cmd="http://www.galasoft.ch/mvvmlight"
+	xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+	TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+	Background="{DynamicResource MaterialDesignPaper}"
+	TextElement.FontWeight="Medium"
+	TextElement.FontSize="14"
+	FontFamily="{materialDesign:MaterialDesignFont}"
+	DataContext="{Binding MainWindow, Source={StaticResource Locator}}">
+	<Window.Resources>
+		<ResourceDictionary
+			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
+	</Window.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition
+				Width="5*" />
+			<ColumnDefinition
+				Width="5" />
+			<ColumnDefinition
+				Width="*" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition
+				Height="*" />
+			<RowDefinition
+				Height="5" />
+			<RowDefinition
+				Height="*" />
+		</Grid.RowDefinitions>
+		<Frame
+			Source="{Binding FrameSource}"
+			NavigationUIVisibility="Hidden"
+			Grid.Column="0"
+			Grid.Row="0"
+			Grid.RowSpan="3" />
+		<GridSplitter
+			Grid.Column="1"
+			Grid.RowSpan="3"
+			Width="5"
+			HorizontalAlignment="Stretch" />
+		<GridSplitter
+			Height="5"
+			Grid.Column="2"
+			Grid.Row="1"
+			HorizontalAlignment="Stretch" />
+		<Grid
+			Margin="10"
+			Grid.Column="2"
+			Grid.Row="0"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch">
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition
+					Height="auto" />
+			</Grid.RowDefinitions>
+			<ListBox
+				ItemsSource="{Binding Chatting}"
+				IsTextSearchEnabled="False"
+				FontSize="18"
+				DockPanel.Dock="Top"
+				FontFamily="Segoe UI"
+				Name="Chatting"
+				VirtualizingStackPanel.IsVirtualizing="True"
+				Foreground="White"
+				Grid.Column="2"
+				Grid.Row="0"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				SelectionMode="Single">
+				<ListBox.ItemContainerStyle>
+					<Style
+						TargetType="ListBoxItem">
+						<Setter
+							Property="Template">
+							<Setter.Value>
+								<ControlTemplate
+									TargetType="ListBoxItem">
+									<WrapPanel
+										Orientation="Horizontal">
+										<TextBlock
+											Foreground="{Binding ForegroundColor}"
+											Text="{Binding Info}" />
+										<TextBlock
+											TextWrapping="Wrap"
+											Text="{Binding Message}">
+										</TextBlock>
+									</WrapPanel>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</ListBox.ItemContainerStyle>
+			</ListBox>
+			<TextBox
+				x:Name="SendMessage"
+				Margin="0 10 0 10"
+				Grid.Row="1"
+				TextWrapping="Wrap"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Left"
+				AcceptsReturn="False"
+				VerticalScrollBarVisibility="Auto"
+				SpellCheck.IsEnabled="False"
+				Text="{Binding WaitingSend, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+				materialDesign:HintAssist.Hint="Gửi đến MC"
+				Height="auto">
+				<i:Interaction.Triggers>
+					<i:EventTrigger
+						EventName="KeyDown">
+						<cmd:EventToCommand
+							PassEventArgsToCommand="True"
+							Command="{Binding SendCmd}" />
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</TextBox>
+		</Grid>
+		<ListBox
+			Grid.Column="2"
+			Grid.Row="2"
+			FontFamily="Segoe UI"
+			IsTextSearchEnabled="False"
+			FontSize="18"
+			x:Name="Logging"
+			ItemsSource="{Binding LogsView}"
+			VirtualizingStackPanel.IsVirtualizing="True"
+			Foreground="White"
+			HorizontalAlignment="Stretch"
+			VerticalAlignment="Stretch"
+			SelectionMode="Single">
+			<ListBox.ItemContainerStyle>
+				<Style
+					TargetType="ListBoxItem">
+					<Setter
+						Property="Template">
+						<Setter.Value>
+							<ControlTemplate
+								TargetType="ListBoxItem">
+								<WrapPanel
+									Orientation="Horizontal">
+									<TextBlock
+										Foreground="{Binding ForegroundColor}"
+										Text="{Binding Info}" />
+									<TextBlock
+										TextWrapping="Wrap"
+										Text="{Binding Message}">
+									</TextBlock>
+								</WrapPanel>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</ListBox.ItemContainerStyle>
+		</ListBox>
+		<Expander
+			IsExpanded="True"
+			Grid.RowSpan="5"
+			VerticalAlignment="Top"
+			Grid.Row="0"
+			HorizontalAlignment="Left"
+			Grid.Column="0"
+			materialDesign:ShadowAssist.ShadowDepth="Depth5"
+			ExpandDirection="Right">
+			<StackPanel
+				Orientation="Vertical">
+				<StackPanel.Resources>
+					<Style
+						TargetType="Button"
+						BasedOn="{StaticResource MaterialDesignRaisedButton}">
+						<Setter
+							Property="materialDesign:ShadowAssist.ShadowDepth"
+							Value="Depth4" />
+						<Setter
+							Property="BorderThickness"
+							Value="0" />
+						<Setter
+							Property="Background"
+							Value="#4caf50" />
+						<Setter
+							Property="Foreground"
+							Value="#000000" />
+						<Setter
+							Property="Margin"
+							Value="0 5 0 5" />
+						<Setter
+							Property="FontSize"
+							Value="18" />
+					</Style>
+				</StackPanel.Resources>
+				<Button
+					Command="{Binding SettingCmd}"
+					Background="#fff176"
+					Name="SettingsButton">
+					<StackPanel
+						Height="{Binding ElementName=SettingsButton, Path=ActualHeight}"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Orientation="Horizontal">
+						<materialDesign:PackIcon
+							Width="20"
+							Height="20"
+							VerticalAlignment="Center"
+							Kind="Cog" />
+						<TextBlock
+							TextAlignment="Left"
+							FontFamily="{Binding ElementName=SettingsButton, Path=FontFamily}"
+							FontSize="{Binding ElementName=SettingsButton, Path=FontSize}"
+							Height="auto"
+							Margin="5 4 0 0"
+							VerticalAlignment="Center"
+							Text="Cài đặt" />
+					</StackPanel>
+				</Button>
+				<Button
+					Command="{Binding GoBackCnd}"
+					IsEnabled="{Binding IsPending}"
+					Content="{Binding Status}" />
+				<Button
+					Command="{Binding ResultCmd}"
+					IsEnabled="{Binding IsPending}"
+					Content="Kết quả" />
+				<Button
+					IsEnabled="{Binding IsIdling}"
+					Command="{Binding StartRoundCmd}"
+					Content="Khởi động" />
+				<Button
+					IsEnabled="{Binding IsIdling}"
+					Command="{Binding ObstacleRoundCmd}"
+					Content="VCNV" />
+				<Button
+					IsEnabled="{Binding IsIdling}"
+					Command="{Binding AcceblerationRoundCmd}"
+					Content="Tăng tốc" />
+				<Button
+					IsEnabled="{Binding IsIdling}"
+					Command="{Binding FinishRoundCmd}"
+					Content="Về đích" />
+				<Button
+					IsEnabled="{Binding IsIdling}"
+					Command="{Binding ExtraRoundCmd}"
+					Content="Câu hỏi phụ" />
+			</StackPanel>
+		</Expander>
+	</Grid>
+</Window>

@@ -11,7 +11,7 @@ namespace KDLib
 		{
 		}
 
-		public MatchInfoList(IList<MatchInfo> list):base(list)
+		public MatchInfoList(IList<MatchInfo> list) : base(list)
 		{
 
 		}

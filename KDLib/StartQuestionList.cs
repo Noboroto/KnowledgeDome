@@ -49,7 +49,7 @@ namespace KDLib
 
 		}
 
-		public StartQuestionList(IList <StartQuestion> list) : base (list)
+		public StartQuestionList(IList<StartQuestion> list) : base(list)
 		{
 
 		}

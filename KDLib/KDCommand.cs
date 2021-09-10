@@ -10,7 +10,7 @@ namespace KDLib
 		#endregion
 
 		#region PublicProperties
-		public MachineType Machine { get; set; }
+		public Machine Machine { get; set; }
 
 		public CommandType PrefixCmd { get; set; }
 
@@ -18,36 +18,41 @@ namespace KDLib
 
 		public string IP { get; set; }
 
-		public int Port { get; set; }
+		public int Pos { get; set; }
 
 		[JsonIgnore]
-		public IPEndPoint ID
+		public IPAddress OwnIP
 		{
 			get
 			{
-				return new IPEndPoint(IPAddress.Parse(IP), Port);
+				return IPAddress.Parse(IP);
 			}
 		}
 
 		#endregion
 		public KDCommand(CommandType prefix, string cmd = "")
-		: this(Data.ThisMacineType, prefix, Data.ChooseIP, Data.PortForTCP, cmd)
+		: this(Data.ThisMacineType, prefix, Data.ChooseIP, Data.Pos, cmd)
 		{
 
 		}
-		public KDCommand(CommandType prefix, IPEndPoint local, string cmd = "")
-		: this(Data.ThisMacineType, prefix, local.Address.ToString(), local.Port, cmd)
+		public KDCommand(CommandType prefix, IPAddress local, string cmd = "")
+		: this(Data.ThisMacineType, prefix, local.ToString(), Data.Pos, cmd)
+		{
+		}
+
+		public KDCommand(CommandType prefix, IPAddress local, int pos, string cmd = "")
+		: this(Data.ThisMacineType, prefix, local.ToString(), pos, cmd)
 		{
 		}
 
 		[JsonConstructor]
-		public KDCommand(MachineType type, CommandType prefix, string localIP, int localPort, string cmd = "")
+		public KDCommand(Machine type, CommandType prefix, string localIP, int pos, string cmd = "")
 		{
 			Machine = type;
 			PrefixCmd = prefix;
 			Content = cmd;
 			IP = localIP;
-			Port = localPort;
+			Pos = pos;
 		}
 
 		public string ToJson()
@@ -57,6 +62,7 @@ namespace KDLib
 
 		public static KDCommand FromJson(string source)
 		{
+			if (string.IsNullOrEmpty(source)) return null;
 			return JsonConvert.DeserializeObject<KDCommand>(source);
 		}
 	}

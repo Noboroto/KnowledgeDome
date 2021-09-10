@@ -9,7 +9,7 @@ namespace KDLib
 		{
 
 		}
-		public KDCollectionBase(IList<T> list) : base (list)
+		public KDCollectionBase(IList<T> list) : base(list)
 		{
 
 		}

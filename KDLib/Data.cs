@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+
 using System.IO;
 
 namespace KDLib
@@ -6,37 +7,41 @@ namespace KDLib
 	public static class Data
 	{
 		#region PublicConstants
-		public const string KeyMC = "MC";
-
-		public const string KeyViewer = "Viewer";
-
-		public const int PortForTCP = 2644;
-
-		public const int PortForChecker = 2645;
-
-		public const int PortForValidCheck = 2647;
-
-		public static readonly List<string> NameMachine = new List<string>
-		{
-			"Thí sinh",
-			"MC",
-			"Khán giả",
-		};
+		public const int PortForTCP = 2643;
 		#endregion
 
 		#region PrivateMembers
 		#endregion
 
 		#region PublicProperties
+		public static ProgramState Status { get; set; }
+		public static int ID { get; set; }
 		public static string ChooseIP { get; set; }
-		public static MachineType ThisMacineType { get; set; }
+		public static int Pos { get; set; }
+		public static Machine ThisMacineType
+		{
+			get
+			{
+				if (ID >= 0 && ID < CurrentMatch.Players.Count) return Machine.Player;
+				else if (ID == -2) return Machine.None;
+				else if (ID == -1) return Machine.Server;
+				else if (ID == CurrentMatch.Players.Count) return Machine.MC;
+				return Machine.Viewer;
+			}
+		}
+		public static int CurrentRound { get; set; }
 		public static bool OnFocus { get; set; }
-		public static List<string> ListIP { get; private set; }
-		public static KDCommandList Commands { get; set; }
+		public static KDCommandList NetCommands { get; set; }
+		public static KDCommandList FrameCommands { get; set; }
+		public static KDCommandList RoundCommnads { get; set; }
 		public static int CurrentMatchIndex { get; set; }
 		public static int CurrentPlayerIndex { get; set; }
 		public static MatchInfo CurrentMatch => MatchInfos[CurrentMatchIndex];
-		public static Player CurrentPlayer => MatchInfos[CurrentMatchIndex].Players[CurrentPlayerIndex];
+		public static Player CurrentPlayer
+		{
+			get => MatchInfos[CurrentMatchIndex].Players[CurrentPlayerIndex];
+			set => MatchInfos[CurrentMatchIndex].Players[CurrentPlayerIndex] = value;
+		}
 		public static MatchInfoList MatchInfos { get; set; }
 		public static StartQuestionList StartQuestions { get; set; }
 		public static ObstacleList Obstacles { get; set; }
@@ -49,26 +54,42 @@ namespace KDLib
 		/// </summary>
 		public static void ServerInitialize()
 		{
-			ThisMacineType = MachineType.Server;
+			ID = -1;
 			Initialize();
 			NetServer.Initialize();
 		}
 
 		public static void ClientInitialize()
 		{
-			Commands = new KDCommandList();
+			ID = -2;
+			Initialize();
 			NetClient.Initialize();
 		}
 
-		public static void Initialize()
+		public static string ToJson<T>(T o)
 		{
-			#region DEVELOP_MODE
+			return JsonConvert.SerializeObject(o);
+		}
+
+		public static T FromJosn<T>(string source)
+		{
+			return JsonConvert.DeserializeObject<T>(source);
+		}
+
+		public static Machine GetMachineFromID(int id)
+		{
+			if (id >= 0 && id < CurrentMatch.Players.Count) return Machine.Player;
+			else if (id == -2) return Machine.None;
+			else if (id == -1) return Machine.Server;
+			else if (id == CurrentMatch.Players.Count) return Machine.MC;
+			return Machine.Viewer;
+		}
+
+		private static void Initialize()
+		{
 			CurrentMatchIndex = 0;
 			CurrentPlayerIndex = 0;
-			#endregion
-
-			Commands = new KDCommandList();
-			ListIP = NetServer.GetLocalIPAddress();
+			KDLogger.Initialize();
 			if (!Directory.Exists(@"Tests\")) Directory.CreateDirectory("Tests");
 			StartQuestions = StartQuestionList.ReadFromFile();
 			Obstacles = ObstacleList.ReadFromFile();

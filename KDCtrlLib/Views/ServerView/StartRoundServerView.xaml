@@ -23,19 +23,16 @@
 						BasedOn="{StaticResource MaterialDesignRaisedButton}">
 						<Setter
 							Property="BorderThickness"
-							Value='0'
-							/>
+							Value='0' />
 						<Setter
 							Property="materialDesign:ShadowAssist.ShadowDepth"
 							Value="Depth3" />
 						<Setter
-							Property="FontSize" 
-							Value="25"
-							/>
+							Property="FontSize"
+							Value="25" />
 						<Setter
 							Property="Height"
-							Value="auto"
-							/>
+							Value="auto" />
 					</Style>
 				</ResourceDictionary>
 			</ResourceDictionary.MergedDictionaries>
@@ -99,7 +96,11 @@
 					VerticalAlignment="Stretch"
 					BorderThickness="5 5 0 5"
 					BorderBrush="#a48a61">
-
+					<ScrollViewer
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						HorizontalScrollBarVisibility="Disabled"
+						VerticalScrollBarVisibility="Auto">
 						<StackPanel>
 							<TextBlock
 								Foreground="Yellow"
@@ -109,25 +110,16 @@
 								TextAlignment="Left">
 								<TextBlock.Text>
 									<MultiBinding
-										StringFormat="{}ID: {0, -20}  Môn: {1, -40}  Còn lại: {2, -30}"
-										>
+										StringFormat="{}ID: {0, -20}  Môn: {1, -40}  Còn lại: {2, -30}">
 										<Binding
-											Path="CurrentQuestion.ID"
-											/>
+											Path="CurrentQuestion.ID" />
 										<Binding
-											Path="CurrentQuestion.SubjectName"
-											/>
+											Path="CurrentQuestion.SubjectName" />
 										<Binding
-											Path="StoreItemCounter"
-											/>
+											Path="StoreItemCounter" />
 									</MultiBinding>
 								</TextBlock.Text>
 							</TextBlock>
-						<ScrollViewer
-							HorizontalAlignment="Stretch"
-							VerticalAlignment="Stretch"
-							HorizontalScrollBarVisibility="Disabled"
-							VerticalScrollBarVisibility="Auto">
 							<TextBlock
 								Margin="20 5 20 20"
 								TextWrapping="Wrap"
@@ -136,8 +128,8 @@
 								Text="{Binding Content}"
 								TextAlignment="Left">
 							</TextBlock>
-						</ScrollViewer>
-					</StackPanel>
+						</StackPanel>
+					</ScrollViewer>
 				</Border>
 				<GridSplitter
 					Grid.Column="1"
@@ -205,7 +197,7 @@
 			Foreground="#da371c"
 			Background="#a48a61"
 			materialDesign:TransitionAssist.DisableTransitions="True"
-			Value="{Binding Timer}"
+			Value="{Binding TimerLabel}"
 			Minimum="0"
 			Maximum="60"
 			Width="auto"
@@ -214,7 +206,7 @@
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Bottom" />
 		<TextBlock
-			Text="{Binding Timer, StringFormat=N0}"
+			Text="{Binding TimerLabel, StringFormat=N0}"
 			VerticalAlignment="Center"
 			HorizontalAlignment="Center"
 			FontSize="20"
@@ -247,10 +239,10 @@
 		<Grid
 			Margin="20 0 0 0"
 			Grid.Column="0"
-			Grid.Row="1"
-			>
+			Grid.Row="1">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
+				<ColumnDefinition
+					Width="*" />
 				<ColumnDefinition
 					Width="*" />
 				<ColumnDefinition
@@ -259,31 +251,31 @@
 					Width="*" />
 			</Grid.ColumnDefinitions>
 			<Button
-				Margin="5"
+				Margin="5 0 5 20"
 				Grid.Column="0"
 				IsEnabled="{Binding TimerEnable}"
 				HorizontalAlignment="Stretch"
 				Content="Bắt đầu tính giờ"
-				Command="{Binding StartTimmerCmd}" />
+				Command="{Binding StartTimerCmd}" />
 			<Button
-				Margin="5"
+				Margin="5 0 5 20"
 				Grid.Column="1"
 				Foreground="Black"
 				Background="#FF20CA71"
-				IsEnabled="{Binding Running}"
+				IsEnabled="{Binding Path=MainWindow.IsPlaying, Source={StaticResource Locator}}"
 				HorizontalAlignment="Stretch"
 				Content="Đúng"
 				Command="{Binding RightCmd}" />
 			<Button
-				Margin="5"
+				Margin="5 0 5 20"
 				Grid.Column="2"
 				Background="#FFB01F1F"
-				IsEnabled="{Binding Running}"
+				IsEnabled="{Binding Path=MainWindow.IsPlaying, Source={StaticResource Locator}}"
 				HorizontalAlignment="Stretch"
 				Content="Sai"
 				Command="{Binding WrongCmd}" />
 			<Button
-				Margin="5"
+				Margin="5 0 5 20"
 				Grid.Column="3"
 				Background="#FF9E269C"
 				IsEnabled="{Binding SoundEnable}"
@@ -300,18 +292,12 @@
 			Grid.RowSpan="2"
 			Grid.Row="0">
 			<Button
-				Margin="5 0 5 0"
+				Margin="5 5 5 20"
 				Background="#FFB01F1F"
-				IsEnabled="{Binding Running}"
+				IsEnabled="{Binding Path=MainWindow.IsPlaying, Source={StaticResource Locator}}"
 				HorizontalAlignment="Stretch"
 				Command="{Binding StopCmd}"
 				Content="Dừng khẩn cấp" />
-			<Button
-				Margin="5"
-				IsEnabled="{Binding DoneEnable}"
-				HorizontalAlignment="Stretch"
-				Command="{Binding DoneCmd}"
-				Content="Kết thúc lượt" />
 		</StackPanel>
 	</Grid>
 </Page>
