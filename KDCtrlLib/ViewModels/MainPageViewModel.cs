@@ -65,7 +65,9 @@ namespace KDCtrlLib.ViewModels
 			cancellation = new CancellationTokenSource();
 			IPs = new ObservableCollection<string>(NetServer.GetLocalIPAddress());
 			SelectedMatchIndex = 0;
-			CommandChecker(cancellation.Token);
+
+			Data.RoundCommnads = new KDCommandList(CommandChecker);
+
 			CurrentMatch = Data.MatchInfos[0];
 			SelectPlayerCmd = new RelayCommand<RoutedEventArgs>((e) =>
 			{
@@ -83,30 +85,19 @@ namespace KDCtrlLib.ViewModels
 			});
 		}
 
-		private void CommandChecker(CancellationToken token)
+		private void CommandChecker(KDCommand command)
 		{
 			Task.Run(() =>
 			{
-				while (true)
+				switch (command.PrefixCmd)
 				{
-					if (Data.RoundCommnads.Count > 0)
-					{
-						KDCommand command = Data.RoundCommnads.Peek();
-						switch (command.PrefixCmd)
-						{
-							case CommandType.ChangeMatchToID:
-								SelectedMatchIndex = int.Parse(command.Content);
-								goto EndCommand;
-							EndCommand:
-								if (Data.RoundCommnads.Count > 0) Data.RoundCommnads.Dequeue();
-								continue;
-							default:
-								continue;
-						}
-					}
+					case CommandType.ChangeMatchToID:
+						SelectedMatchIndex = int.Parse(command.Content);
+						break;
+					default:
+						break;
 				}
-			}, token);
+			});
 		}
-
 	}
 }

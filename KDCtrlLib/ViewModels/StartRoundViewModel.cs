@@ -87,7 +87,7 @@ namespace KDCtrlLib.ViewModels
 			#region CLIENT INIT
 			if (Data.ThisMacineType != Machine.Server)
 			{
-				CommandChecker(cancellation.Token);
+				Data.RoundCommnads = new KDCommandList(CommandChecker);
 			}
 			#endregion
 
@@ -185,43 +185,32 @@ namespace KDCtrlLib.ViewModels
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Wrong));
 		}
 
-		private void CommandChecker(CancellationToken token)
+		private void CommandChecker(KDCommand command)
 		{
 			Task.Run(() =>
 			{
-				while (true)
+				switch (command.PrefixCmd)
 				{
-					if (token.IsCancellationRequested) return;
-					while (Data.RoundCommnads.Count > 0)
-					{
-						KDCommand command = Data.RoundCommnads.Peek();
-						switch (command.PrefixCmd)
-						{
-							case CommandType.StartTimmer:
-								TimerStart();
-								goto EndCommand;
-							case CommandType.NextQuestAt:
-								CurrentQuestion = Data.StartQuestions[int.Parse(command.Content)];
-								goto EndCommand;
-							case CommandType.Right:
-								CurrentPlayer.Score += 10;
-								QuestCount++;
-								goto EndCommand;
-							case CommandType.Wrong:
-								QuestCount++;
-								goto EndCommand;
-							case CommandType.StopEmergency:
-								TimerStop();
-								goto EndCommand;
-							EndCommand:
-								if (Data.RoundCommnads.Count > 0) Data.RoundCommnads.Dequeue();
-								continue;
-							default:
-								break;
-						}
-					}
+					case CommandType.StartTimmer:
+						TimerStart();
+						break;
+					case CommandType.NextQuestAt:
+						CurrentQuestion = Data.StartQuestions[int.Parse(command.Content)];
+						break;
+					case CommandType.Right:
+						CurrentPlayer.Score += 10;
+						QuestCount++;
+						break;
+					case CommandType.Wrong:
+						QuestCount++;
+						break;
+					case CommandType.StopEmergency:
+						TimerStop();
+						break;
+					default:
+						break;
 				}
-			}, cancellation.Token);
+			});
 		}
 	}
 }

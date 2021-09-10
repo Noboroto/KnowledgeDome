@@ -32,28 +32,21 @@ namespace KDLib
 		/// <returns>True if the parameter can be used for a connection; otherwise, false</returns>
 		public async static Task<bool> IsValidConnection(IPAddress ip)
 		{
-			using (TcpClient tcp = new TcpClient())
+			var taskconnect = ThisClient.ConnectAsync(ip, Data.PortForTCP);
+			var timer = Task.Delay(500);
+			var result = await Task.WhenAny(new[] { taskconnect, timer });
+			if (result == taskconnect)
 			{
-				var taskconnect = tcp.ConnectAsync(ip, Data.PortForValidCheck);
-				var timer = Task.Delay(500);
-				var result = await Task.WhenAny(new[] { taskconnect, timer });
-				return result == taskconnect;
+				ServerIP = ip;
+				ListenFromServer();
+				return true;
 			}
+			return false;
 		}
 
-		public async static void Connect(IPAddress ServerAddress)
+		private static void ListenFromServer()
 		{
-			await Task.Run(() =>
-			{
-				ServerIP = ServerAddress;
-				ThisClient.ConnectAsync(ServerAddress, Data.PortForTCP);
-			}, MustCancel.Token);
-			await ListenFromServer();
-		}
-
-		private static Task ListenFromServer()
-		{
-			return Task.Run(() =>
+			Task.Run(() =>
 			{
 				StreamReader ReadFromStream = new StreamReader(ThisClient.GetStream());
 				string information = "";
@@ -86,7 +79,6 @@ namespace KDLib
 								break;
 						}
 					}
-
 				}
 			});
 		}

@@ -8,10 +8,6 @@ namespace KDLib
 	{
 		#region PublicConstants
 		public const int PortForTCP = 2643;
-
-		public const int PortForChecker = 2645;
-
-		public const int PortForValidCheck = 2647;
 		#endregion
 
 		#region PrivateMembers
@@ -91,9 +87,6 @@ namespace KDLib
 
 		private static void Initialize()
 		{
-			NetCommands = new KDCommandList();
-			RoundCommnads = new KDCommandList();
-			FrameCommands = new KDCommandList();
 			CurrentMatchIndex = 0;
 			CurrentPlayerIndex = 0;
 			KDLogger.Initialize();

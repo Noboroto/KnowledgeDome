@@ -111,7 +111,7 @@ namespace KDCtrlLib.ViewModels
 			Status = ProgramState.Idling;
 			SystemName = (Data.ThisMacineType == Machine.Server) ? "Knowledge Dome Server" : "Knowledge Dome Client";
 
-			CommandChecker();
+			Data.FrameCommands = new KDCommandList(CommandChecker);
 
 			#region Server
 			if (Data.ThisMacineType == Machine.Server)
@@ -188,80 +188,70 @@ namespace KDCtrlLib.ViewModels
 			#endregion
 		}
 
-		private void CommandChecker()
+		private void CommandChecker(KDCommand command)
 		{
 			Task.Run(() =>
 			{
-				while (true)
+				switch (command.PrefixCmd)
 				{
-					if (Data.FrameCommands.Count > 0)
-					{
-						KDCommand command = Data.FrameCommands.Peek();
-						switch (command.PrefixCmd)
+					case CommandType.ChoosePlayer:
+						Data.CurrentPlayerIndex = int.Parse(command.Content);
+						break;
+					case CommandType.NavigateToRound:
+						Status = ProgramState.Playing;
+						switch (int.Parse(command.Content))
 						{
-							case CommandType.ChoosePlayer:
-								Data.CurrentPlayerIndex = int.Parse(command.Content);
-								goto EndCommand;
-							case CommandType.NavigateToRound:
-								Status = ProgramState.Playing;
-								switch (int.Parse(command.Content))
+							case 0:
+								GoBack();
+								break;
+							case 1:
+								switch (Data.ThisMacineType)
 								{
-									case 0:
-										GoBack();
-										goto EndCommand;
-									case 1:
-										switch (Data.ThisMacineType)
-										{
-											case Machine.MC:
-												Messenger.Default.Send(new NavigateToMessage(@"MCView\StartRoundMCView.xaml"));
-												goto EndCommand;
-											case Machine.Player:
-											case Machine.Viewer:
-												Messenger.Default.Send(new NavigateToMessage(@"StartRoundViewerPlayerPage.xaml"));
-												goto EndCommand;
-										}
-										goto EndCommand;
-									case 2:
-
-										goto EndCommand;
-									case 3:
-
-										goto EndCommand;
-
+									case Machine.MC:
+										Messenger.Default.Send(new NavigateToMessage(@"MCView\StartRoundMCView.xaml"));
+										break;
+									case Machine.Player:
+									case Machine.Viewer:
+										Messenger.Default.Send(new NavigateToMessage(@"StartRoundViewerPlayerPage.xaml"));
+										break;
 								}
-								goto EndCommand;
-							case CommandType.EditScore:
-								Player data = Data.FromJosn<Player>(command.Content);
-								foreach (var x in Data.CurrentMatch.Players)
-								{
-									if (x.ID == data.ID)
-									{
-										x.Score = data.Score;
-										goto EndCommand;
-									}
-								}
-								goto EndCommand;
-							case CommandType.MCToServer:
-								Application.Current.Dispatcher.Invoke(() => Chatting.Add(KDLogger.MCChat(command.Content, $"{command.OwnIP};{command.Pos}")));
-								var NewCommand = new KDCommand(CommandType.MCToMC, command.OwnIP, command.Pos, command.Content);
-								foreach (var x in NetServer.MCAvailable)
-								{
-									NetServer.SendCommandToOne(x.Client, NewCommand);
-								}
-								goto EndCommand;
-							case CommandType.ServerToMC:
-								Application.Current.Dispatcher.Invoke(() => Chatting.Add(new LogViewerInfo(LogType.Server, command.Content)));
-								goto EndCommand;
-							case CommandType.MCToMC:
-								Application.Current.Dispatcher.Invoke(() => Chatting.Add(new LogViewerInfo(LogType.MC, command.Content, $"{command.OwnIP};{command.Pos}")));
-								goto EndCommand;
-							EndCommand:
-								if (Data.FrameCommands.Count > 0) Data.FrameCommands.Dequeue();
-								continue;
-							default:
-								continue;
+								break;
+							case 2:
+
+								break;
+							case 3:
+
+								break;
+
 						}
-					}
+						break;
+					case CommandType.EditScore:
+						Player data = Data.FromJosn<Player>(command.Content);
+						foreach (var x in Data.CurrentMatch.Players)
+						{
+							if (x.ID == data.ID)
+							{
+								x.Score = data.Score;
+								break;
+							}
+						}
+						break;
+					case CommandType.MCToServer:
+						Application.Current.Dispatcher.Invoke(() => Chatting.Add(KDLogger.MCChat(command.Content, $"{command.OwnIP};{command.Pos}")));
+						var NewCommand = new KDCommand(CommandType.MCToMC, command.OwnIP, command.Pos, command.Content);
+						foreach (var x in NetServer.MCAvailable)
+						{
+							NetServer.SendCommandToOne(x.Client, NewCommand);
+						}
+						break;
+					case CommandType.ServerToMC:
+						Application.Current.Dispatcher.Invoke(() => Chatting.Add(new LogViewerInfo(LogType.Server, command.Content)));
+						break;
+					case CommandType.MCToMC:
+						Application.Current.Dispatcher.Invoke(() => Chatting.Add(new LogViewerInfo(LogType.MC, command.Content, $"{command.OwnIP};{command.Pos}")));
+						break;
+					default:
+						break;
 				}
 			});
 		}

@@ -17,7 +17,6 @@ namespace KDCtrlLib.ViewModels
 		#region Private
 		private int _Choice = -1;
 		private bool _AskRoleEnable;
-		private CancellationTokenSource cancellation = new CancellationTokenSource();
 		#endregion
 
 		#region Public
@@ -46,7 +45,9 @@ namespace KDCtrlLib.ViewModels
 		public RoleViewModel()
 		{
 			Roles = new ObservableCollection<string>();
-			CommandChecker(cancellation.Token);
+
+			Data.RoundCommnads = new KDCommandList(CommandChecker);
+
 			AskRoleEnable = true;
 			AskRole = new RelayCommand(
 				() =>
@@ -59,53 +60,39 @@ namespace KDCtrlLib.ViewModels
 				});
 		}
 
-		private void CommandChecker(CancellationToken token)
+		private void CommandChecker(KDCommand command)
 		{
 			Task.Run(() =>
 			{
-				while (true)
+				switch (command.PrefixCmd)
 				{
-					if (token.IsCancellationRequested)
-						return;
-					if (Data.RoundCommnads.Count > 0)
-					{
-
-						KDCommand command = Data.RoundCommnads.Peek();
-						switch (command.PrefixCmd)
+					case CommandType.ClientList:
+						Data.CurrentMatchIndex = int.Parse(command.Content);
+						Application.Current.Dispatcher.Invoke(() =>
 						{
-							case CommandType.ClientList:
-								Data.CurrentMatchIndex = int.Parse(command.Content);
-								Application.Current.Dispatcher.Invoke(() =>
-								{
-									foreach (var c in Data.CurrentMatch.Players)
-									{
-										Roles.Add(c.Name);
-									}
-									Roles.Add("MC");
-									Roles.Add("Khán giả");
-								});
-								goto EndCommand;
-							case CommandType.ConfirmIP:
-								Data.ChooseIP = command.OwnIP.ToString();
-								Data.Pos = command.Pos;
-								goto EndCommand;
-							case CommandType.AccpetConnect:
-								cancellation.Cancel();
-								Messenger.Default.Send(new NavigateToMessage("MainClientPage.xaml"));
-								goto EndCommand;
-							case CommandType.RefuseConnect:
-								MessageBox.Show("Bị từ chối kết nối do đã có người ở vị trí này");
-								AskRoleEnable = true;
-								goto EndCommand;
-							EndCommand:
-								if (Data.RoundCommnads.Count > 0) Data.RoundCommnads.Dequeue();
-								continue;
-							default:
-								continue;
-						}
-					}
+							foreach (var c in Data.CurrentMatch.Players)
+							{
+								Roles.Add(c.Name);
+							}
+							Roles.Add("MC");
+							Roles.Add("Khán giả");
+						});
+						break;
+					case CommandType.ConfirmIP:
+						Data.ChooseIP = command.OwnIP.ToString();
+						Data.Pos = command.Pos;
+						break;
+					case CommandType.AccpetConnect:
+						Messenger.Default.Send(new NavigateToMessage("MainClientPage.xaml"));
+						break;
+					case CommandType.RefuseConnect:
+						MessageBox.Show("Bị từ chối kết nối do đã có người ở vị trí này");
+						AskRoleEnable = true;
+						break;
+					default:
+						break;
 				}
-			}, token);
+			});
 		}
 	}
 }

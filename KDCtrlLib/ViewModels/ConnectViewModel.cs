@@ -71,7 +71,6 @@ namespace KDCtrlLib.ViewModels
 			if (await NetClient.IsValidConnection(_ServerIP))
 			{
 				Messenger.Default.Send(new NavigateToMessage(@"RolePage.xaml"));
-				NetClient.Connect(_ServerIP);
 			}
 			else MessageBox.Show("Không tìm thấy địa chỉ IP");
 		}

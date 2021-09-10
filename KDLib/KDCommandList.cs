@@ -1,9 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace KDLib
 {
-	public class KDCommandList : Queue<KDCommand>
+	public class KDCommandList
 	{
+		private Action<KDCommand> Checker;
 
+		public KDCommandList (Action<KDCommand> checker) 
+		{
+			Checker = checker;
+		}
+
+		public void Enqueue(KDCommand command)
+		{
+			Checker(command);
+		}
 	}
 }
