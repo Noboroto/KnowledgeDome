@@ -25,7 +25,7 @@ namespace KDLib
 		Physics,
 		Unknown
 	}
-	public enum MachineType
+	public enum Machine
 	{
 		Server,
 		[Description("Thí sinh")]
@@ -35,12 +35,28 @@ namespace KDLib
 		Viewer,
 		None
 	}
+
+	public enum LogType
+	{
+		Server,
+		Player,
+		MC,
+		Viewer,
+		Warn,
+		Error
+	}
+
+	public enum ProgramState
+	{
+		Idling,
+		Pending,
+		Playing,
+		Ended
+	}
+
 	public enum CommandType
 	{
-		Forcusing,
-		LostForcus,
-		Discconect,
-		IsConnected,
+		ConfirmIP,
 		AskForConnect,
 		RefuseConnect,
 		ClientList,
@@ -48,6 +64,14 @@ namespace KDLib
 		Right,
 		Wrong,
 		NextQuestAt,
-		NavigateToNextPage
+		NavigateToRound,
+		MCToServer,
+		ServerToMC,
+		MCToMC,
+		ChangeMatchToID,
+		EditScore,
+		ChoosePlayer,
+		StopEmergency,
+		StartTimmer
 	}
 }

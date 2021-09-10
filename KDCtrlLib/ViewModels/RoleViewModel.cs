@@ -2,42 +2,97 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 
-using KDCtrlLib.MessageForUI;
+using KDLib;
+using KDLib.MessageForUI;
+
+using System.Collections.ObjectModel;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace KDCtrlLib.ViewModels
 {
-    public class RoleViewModel : ViewModelBase
-    {
-        #region ICommand
-        public RelayCommand<string> AskPermision { get; set; }
-        #endregion
+	public class RoleViewModel : ViewModelBase
+	{
+		#region Private
+		private int _Choice = -1;
+		private bool _AskRoleEnable;
+		#endregion
 
-        private string _Choice = "";
-        public string Choice
-        {
-            get
-            {
-                return _Choice;
-            }
-            set
-            {
-                Set(nameof(Choice), ref _Choice, value);
-                if (!string.IsNullOrEmpty(_Choice)) AskPermision.RaiseCanExecuteChanged();
-            }
-        }
+		#region Public
+		public int Choice
+		{
+			get => _Choice;
+			set
+			{
+				Set(ref _Choice, value);
+				AskRoleEnable = true;
+			}
+		}
+		public bool AskRoleEnable
+		{
+			get => _AskRoleEnable;
+			set => Set(ref _AskRoleEnable, value);
+		}
 
-        public RoleViewModel()
-        {
-            AskPermision = new RelayCommand<string>(
-                (s) =>
-                {
-                    Messenger.Default.Send(new NoticeMessage(s));
-                },
-                (s) =>
-                {
-                    return !string.IsNullOrEmpty(s);
-                }
-           );
-        }
-    }
+		public ObservableCollection<string> Roles { get; set; }
+		#endregion
+
+		#region ICommand
+		public RelayCommand AskRole { get; set; }
+		#endregion
+
+		public RoleViewModel()
+		{
+			Roles = new ObservableCollection<string>();
+
+			Data.RoundCommnads = new KDCommandList(CommandChecker);
+
+			AskRoleEnable = true;
+			AskRole = new RelayCommand(
+				() =>
+				{
+					if (Choice < 0) return;
+					Data.ID = Choice;
+					NetClient.SendCommand(new KDCommand(CommandType.AskForConnect, Data.ID.ToString()));
+					KDLogger.Error("Starting");
+					AskRoleEnable = false;
+				});
+		}
+
+		private void CommandChecker(KDCommand command)
+		{
+			Task.Run(() =>
+			{
+				switch (command.PrefixCmd)
+				{
+					case CommandType.ClientList:
+						Data.CurrentMatchIndex = int.Parse(command.Content);
+						Application.Current.Dispatcher.Invoke(() =>
+						{
+							foreach (var c in Data.CurrentMatch.Players)
+							{
+								Roles.Add(c.Name);
+							}
+							Roles.Add("MC");
+							Roles.Add("Khán giả");
+						});
+						break;
+					case CommandType.ConfirmIP:
+						Data.ChooseIP = command.OwnIP.ToString();
+						Data.Pos = command.Pos;
+						break;
+					case CommandType.AccpetConnect:
+						Messenger.Default.Send(new NavigateToMessage("MainClientPage.xaml"));
+						break;
+					case CommandType.RefuseConnect:
+						MessageBox.Show("Bị từ chối kết nối do đã có người ở vị trí này");
+						AskRoleEnable = true;
+						break;
+					default:
+						break;
+				}
+			});
+		}
+	}
 }

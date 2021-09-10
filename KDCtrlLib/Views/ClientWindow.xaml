@@ -1,53 +1,53 @@
-﻿<Page
-	x:Class="KDCtrlLib.Views.ServerView.MainServerFramePage"
+﻿<Window
+	x:Class="KDClient.ClientWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:KDClient"
+	mc:Ignorable="d"
+	Title="{Binding SystemName}"
+	WindowState="Maximized"
+	xmlns:cmd="http://www.galasoft.ch/mvvmlight"
+	xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
 	TextElement.Foreground="{DynamicResource MaterialDesignBody}"
 	Background="{DynamicResource MaterialDesignPaper}"
 	TextElement.FontWeight="Medium"
 	TextElement.FontSize="14"
 	FontFamily="{materialDesign:MaterialDesignFont}"
-	DataContext="{Binding MainServerFrame, Source={StaticResource Locator}}">
-	<Page.Resources>
+	DataContext="{Binding MainWindow, Source={StaticResource Locator}}">
+	<Window.Resources>
 		<ResourceDictionary
 			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
-	</Page.Resources>
+	</Window.Resources>
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition
-				Width="3*" />
+				Width="5*" />
 			<ColumnDefinition
 				Width="5" />
 			<ColumnDefinition
-				Width="*" />
+				Width="*">
+			</ColumnDefinition>
 		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition
-				Height="*" />
-			<RowDefinition
-				Height="5" />
-			<RowDefinition
-				Height="*" />
-		</Grid.RowDefinitions>
 		<Frame
-			x:Name="MainFrame"
+			Source="{Binding FrameSource}"
+			NavigationUIVisibility="Hidden"
 			Grid.Column="0"
 			Grid.Row="0"
+			Grid.ColumnSpan="{Binding FrameColumnSpan}"
 			Grid.RowSpan="3" />
 		<GridSplitter
+			Visibility="{Binding ChattingVisibility}"
 			Grid.Column="1"
 			Grid.RowSpan="3"
 			Width="5"
 			HorizontalAlignment="Stretch" />
-		<GridSplitter
-			Height="5"
-			Grid.Column="2"
-			Grid.Row="1"
-			HorizontalAlignment="Stretch" />
 		<Grid
+			Name="ChatGrid"
+			Width="auto"
+			Visibility="{Binding ChattingVisibility}"
 			Margin="10"
 			Grid.Column="2"
 			Grid.Row="0"
@@ -59,11 +59,12 @@
 					Height="auto" />
 			</Grid.RowDefinitions>
 			<ListBox
+				ItemsSource="{Binding Chatting}"
 				IsTextSearchEnabled="False"
 				FontSize="18"
 				DockPanel.Dock="Top"
 				FontFamily="Segoe UI"
-				x:Name="Chatting"
+				Name="Chatting"
 				VirtualizingStackPanel.IsVirtualizing="True"
 				Foreground="White"
 				Grid.Column="2"
@@ -71,24 +72,32 @@
 				HorizontalAlignment="Stretch"
 				VerticalAlignment="Stretch"
 				SelectionMode="Single">
-				<ListBox.ItemTemplate>
-					<DataTemplate>
-						<StackPanel
-							Orientation="Horizontal">
-							<TextBlock
-								Foreground="{Binding ForegroundColor}"
-								Text="{Binding Info}"
-								/>
-							<TextBlock 
-								Text="{Binding Message}"
-								/>
-						</StackPanel>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
+				<ListBox.ItemContainerStyle>
+					<Style
+						TargetType="ListBoxItem">
+						<Setter
+							Property="Template">
+							<Setter.Value>
+								<ControlTemplate
+									TargetType="ListBoxItem">
+									<WrapPanel
+										Orientation="Horizontal">
+										<TextBlock
+											Foreground="{Binding ForegroundColor}"
+											Text="{Binding Info}" />
+										<TextBlock
+											TextWrapping="Wrap"
+											Text="{Binding Message}">
+										</TextBlock>
+									</WrapPanel>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</ListBox.ItemContainerStyle>
 			</ListBox>
 			<TextBox
 				x:Name="SendMessage"
-				KeyDown="TextBox_KeyDown"
 				Margin="0 10 0 10"
 				Grid.Row="1"
 				TextWrapping="Wrap"
@@ -97,32 +106,18 @@
 				AcceptsReturn="False"
 				VerticalScrollBarVisibility="Auto"
 				SpellCheck.IsEnabled="False"
+				Text="{Binding WaitingSend, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
 				materialDesign:HintAssist.Hint="Gửi đến MC"
-				Height="auto" />
+				Height="auto">
+				<i:Interaction.Triggers>
+					<i:EventTrigger
+						EventName="KeyDown">
+						<cmd:EventToCommand
+							PassEventArgsToCommand="True"
+							Command="{Binding SendCmd}" />
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</TextBox>
 		</Grid>
-		<ListBox
-			Grid.Column="2"
-			Grid.Row="2"
-			FontFamily="Segoe UI"
-			IsTextSearchEnabled="False"
-			FontSize="18"
-			x:Name="Logging"
-			VirtualizingStackPanel.IsVirtualizing="True"
-			Foreground="White"
-			HorizontalAlignment="Stretch"
-			VerticalAlignment="Stretch"
-			SelectionMode="Single">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<StackPanel
-						Orientation="Horizontal">
-						<TextBlock
-							Text="{Binding Info}" />
-						<TextBlock
-							Text="{Binding Message}" />
-					</StackPanel>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
 	</Grid>
-</Page>
+</Window>

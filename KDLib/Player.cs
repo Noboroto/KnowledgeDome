@@ -57,8 +57,6 @@ namespace KDLib
 				return (ImageSource)new ImageSourceConverter().ConvertFrom(_Avatar);
 			}
 		}
-
-		[JsonIgnore]
 		public int Score
 		{
 			get
@@ -105,10 +103,10 @@ namespace KDLib
 		{
 			if (string.IsNullOrEmpty(code)) return;
 			if (code[0] != '#') code = "#" + code;
-			BackgroundColor = (Brush) new BrushConverter().ConvertFromString(code);
+			BackgroundColor = (Brush)new BrushConverter().ConvertFromString(code);
 		}
 
-		public void SetForeground (string code)
+		public void SetForeground(string code)
 		{
 			if (string.IsNullOrEmpty(code)) return;
 			if (code[0] != '#') code = "#" + code;

@@ -9,20 +9,43 @@
 	TextElement.FontSize="14"
 	FontFamily="{materialDesign:MaterialDesignFont}"
 	DataContext="{Binding Main, Source={StaticResource Locator}}"
-	xmlns:control="clr-namespace:KDCtrlLib.KDControls"
-	>
+	xmlns:control="clr-namespace:KDCtrlLib.KDControls">
 	<Page.Resources>
 		<ResourceDictionary
 			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />
 	</Page.Resources>
-	<ScrollViewer>
-		<WrapPanel
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition
+				Height="auto" />
+			<RowDefinition
+				Height="*" />
+		</Grid.RowDefinitions>
+		<StackPanel				
+			Grid.Row="0"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Orientation="Horizontal"
+			Margin="25">
+			<TextBlock
+				HorizontalAlignment="Center"
+				Text="{Binding SelectedIP, StringFormat=IP của bạn: {0}}"
+				FontSize="30" />
+			<TextBlock
+				Margin="50 0 0 0"
+				VerticalAlignment="Center"
+				Text="{Binding CurrentMatch.Name, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, StringFormat=Trận được chọn: {0}}"
+				FontSize="30" />
+		</StackPanel>
+		<ScrollViewer
+			VerticalScrollBarVisibility="Auto"
+			HorizontalScrollBarVisibility="Disabled"
 			VerticalAlignment="Center"
 			HorizontalAlignment="Center"
-			Orientation="Horizontal">
+			Grid.Row="1">
 			<ListBox
 				IsHitTestVisible="False"
-				ItemsSource="{Binding CurrentMatch.Players}">
+				ItemsSource="{Binding CurrentMatch.Players, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
 				<ListBox.ItemContainerStyle>
 					<Style
 						TargetType="ListBoxItem">
@@ -31,7 +54,7 @@
 							<Setter.Value>
 								<ControlTemplate
 									TargetType="ListBoxItem">
-									<control:PlayerMainServerView
+									<control:PlayerMainClientView
 										Margin="20" />
 								</ControlTemplate>
 							</Setter.Value>
@@ -40,11 +63,11 @@
 				</ListBox.ItemContainerStyle>
 				<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
-						<StackPanel
+						<WrapPanel
 							Orientation="Horizontal" />
 					</ItemsPanelTemplate>
 				</ListBox.ItemsPanel>
 			</ListBox>
-		</WrapPanel>
-	</ScrollViewer>
+		</ScrollViewer>
+	</Grid>
 </Page>

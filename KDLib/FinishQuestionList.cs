@@ -17,7 +17,7 @@ namespace KDLib
 		{
 		}
 
-		public FinishQuestionList(IList <FinishQuestion> list) : base(list)
+		public FinishQuestionList(IList<FinishQuestion> list) : base(list)
 		{
 
 		}
