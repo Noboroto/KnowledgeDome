@@ -45,6 +45,12 @@ namespace KDCtrlLib.ViewModels
             SimpleIoc.Default.Unregister<TClass>();
         }
 
+        public static void ReloadRound()
+		{
+            Reload<MainPageViewModel>();
+            Reload<StartRoundViewModel>();
+		}
+
         public static void Reload<TClass>() where TClass : class
         {
             SimpleIoc.Default.Unregister<TClass>();

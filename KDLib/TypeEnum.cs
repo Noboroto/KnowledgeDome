@@ -57,10 +57,6 @@ namespace KDLib
 	public enum CommandType
 	{
 		ConfirmIP,
-		Forcusing,
-		LostForcus,
-		Discconect,
-		IsConnected,
 		AskForConnect,
 		RefuseConnect,
 		ClientList,

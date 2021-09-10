@@ -15,110 +15,99 @@ using System.Windows;
 
 namespace KDCtrlLib.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
-    {
+	public class MainPageViewModel : ViewModelBase
+	{
 		#region Private
-        private CancellationTokenSource cancellation;
+		private CancellationTokenSource cancellation;
 		#endregion
 
 		#region Public
 		public ObservableCollection<string> IPs { get; set; }
-        public string SelectedIP
+		public string SelectedIP
 		{
-            get => Data.ChooseIP;
-            set
-            {               
-                Data.ChooseIP = value;
-                RaisePropertyChanged(nameof(SelectedIP));
-                Messenger.Default.Send(new LogMess(KDLogger.Info($"{nameof(SelectedIP)}: {SelectedIP}")));
-            }
+			get => Data.ChooseIP;
+			set
+			{
+				Data.ChooseIP = value;
+				RaisePropertyChanged(nameof(SelectedIP));
+				Messenger.Default.Send(new LogMess(KDLogger.Info($"{nameof(SelectedIP)}: {SelectedIP}")));
+			}
 		}
-        public MatchInfoList matches => Data.MatchInfos;
-        public MatchInfo CurrentMatch
-        {
-            get => Data.CurrentMatch;
-            set
-            {
-                RaisePropertyChanged(nameof(CurrentMatch));
-                Messenger.Default.Send(new LogMess(KDLogger.Info($"SelectedMatch: {CurrentMatch.Name}")));
-            }
-        }
+		public MatchInfoList matches => Data.MatchInfos;
+		public MatchInfo CurrentMatch
+		{
+			get => Data.CurrentMatch;
+			set
+			{
+				RaisePropertyChanged(nameof(CurrentMatch));
+				Messenger.Default.Send(new LogMess(KDLogger.Info($"SelectedMatch: {CurrentMatch.Name}")));
+			}
+		}
 
-        public int SelectedMatchIndex
-        {
-            get => Data.CurrentMatchIndex;
-            set
-            {                
-                Data.CurrentMatchIndex = value;
-                if (Data.ThisMacineType == Machine.Server) NetServer.SendCommandToAll(new KDCommand(CommandType.ChangeMatchToID, value.ToString()));
-                RaisePropertyChanged(nameof(SelectedMatchIndex));
-                RaisePropertyChanged(nameof(CurrentMatch));
-            }
-        }
+		public int SelectedMatchIndex
+		{
+			get => Data.CurrentMatchIndex;
+			set
+			{
+				Data.CurrentMatchIndex = value;
+				if (Data.ThisMacineType == Machine.Server) NetServer.SendCommandToAll(new KDCommand(CommandType.ChangeMatchToID, value.ToString()));
+				RaisePropertyChanged(nameof(SelectedMatchIndex));
+				RaisePropertyChanged(nameof(CurrentMatch));
+			}
+		}
 		#endregion
 
 		#region Command
-        public ICommand SelectPlayerCmd { get; set; }
+		public ICommand SelectPlayerCmd { get; set; }
 		#endregion
 
 		public MainPageViewModel()
-        {
-            cancellation = new CancellationTokenSource();
-            IPs = new ObservableCollection<string>(NetServer.GetLocalIPAddress());
-            SelectedMatchIndex = 0;
-            ProcessCommand(cancellation.Token);
-            CurrentMatch = Data.MatchInfos[0];
-            SelectPlayerCmd = new RelayCommand<RoutedEventArgs>((e) =>
-            {
-                Data.CurrentPlayerIndex = (e.Source as ListBox).SelectedIndex;
-                switch (Data.CurrentRound)
+		{
+			cancellation = new CancellationTokenSource();
+			IPs = new ObservableCollection<string>(NetServer.GetLocalIPAddress());
+			SelectedMatchIndex = 0;
+			CommandChecker(cancellation.Token);
+			CurrentMatch = Data.MatchInfos[0];
+			SelectPlayerCmd = new RelayCommand<RoutedEventArgs>((e) =>
+			{
+				Data.CurrentPlayerIndex = (e.Source as ListBox).SelectedIndex;
+				switch (Data.CurrentRound)
 				{
-                    case 1:
-                        NetServer.SendCommandToAll(new KDCommand(CommandType.ChoosePlayer, Data.CurrentPlayerIndex.ToString()));
-                        NetServer.SendCommandToAll(new KDCommand(CommandType.NavigateToRound, "1"));
-                        Messenger.Default.Send(new NavigateToMessage(@"ServerView\StartRoundServerView.xaml"));
-                        break;
-                    case 4:
-                        break;
+					case 1:
+						NetServer.SendCommandToAll(new KDCommand(CommandType.ChoosePlayer, Data.CurrentPlayerIndex.ToString()));
+						NetServer.SendCommandToAll(new KDCommand(CommandType.NavigateToRound, "1"));
+						Messenger.Default.Send(new NavigateToMessage(@"ServerView\StartRoundServerView.xaml"));
+						break;
+					case 4:
+						break;
 				}
-            });
-        }
+			});
+		}
 
-        private void ProcessCommand(CancellationToken token)
-        {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    if (Data.Commands.Count > 0)
-                    {
-                        try
-                        {
-                            KDCommand command = Data.Commands.Peek();
-                            switch (command.PrefixCmd)
-                            {
-                                case CommandType.ChangeMatchToID:
-                                    SelectedMatchIndex = int.Parse(command.Content);
-                                    goto EndCommand;
-                                EndCommand:
-                                    if (Data.Commands.Count > 0) Data.Commands.Dequeue();
-                                    continue;
-                                default:
-                                    continue;
-                            }
-                        }
-                        catch (NullReferenceException)
-                        {
-                            continue;
-                        }
-                        catch (InvalidOperationException)
-                        {
-                            continue;
-                        }
-                    }
-                }
-            }, token);
-        }
+		private void CommandChecker(CancellationToken token)
+		{
+			Task.Run(() =>
+			{
+				while (true)
+				{
+					if (Data.RoundCommnads.Count > 0)
+					{
+						KDCommand command = Data.RoundCommnads.Peek();
+						switch (command.PrefixCmd)
+						{
+							case CommandType.ChangeMatchToID:
+								SelectedMatchIndex = int.Parse(command.Content);
+								goto EndCommand;
+							EndCommand:
+								if (Data.RoundCommnads.Count > 0) Data.RoundCommnads.Dequeue();
+								continue;
+							default:
+								continue;
+						}
+					}
+				}
+			}, token);
+		}
 
-    }
+	}
 }

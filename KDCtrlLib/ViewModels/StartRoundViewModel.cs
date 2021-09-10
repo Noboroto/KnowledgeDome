@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System;
 using System.Windows.Input;
-using System.Collections.Generic;
+using System.Windows.Threading;
 using System.Windows;
 using System.Threading;
 using GalaSoft.MvvmLight.Messaging;
@@ -18,16 +18,15 @@ namespace KDCtrlLib.ViewModels
 {
 	public class StartRoundViewModel : ViewModelBase
 	{
-		private const int TIME_LIMIT = 60;
-		private const double TIME_AMOUNT = 0.01;
+		private const double TIME_LIMIT = 60;
 
+		private DateTime BeginingTime;
+		private DispatcherTimer Timer;
 		private CancellationTokenSource cancellation = new CancellationTokenSource();
 		private StartQuestion _CurrentQuestion;
 		private int _QuestCount;
 		private double _Timer;
 		private bool _TimerEnable;
-		private bool _DoneEnable;
-		private bool _SoundEnable;
 		private int _StoreItemCounter;
 
 		public int StoreItemCounter
@@ -40,16 +39,7 @@ namespace KDCtrlLib.ViewModels
 			get => _TimerEnable;
 			set => Set(ref _TimerEnable, value);
 		}
-		public bool DoneEnable
-		{
-			get => _DoneEnable;
-			set => Set(ref _DoneEnable, value);
-		}
-		public bool SoundEnable
-		{
-			get => _SoundEnable;
-			set => Set(ref _SoundEnable, value);
-		}
+		public bool SoundEnable => (CurrentQuestion != null) ? CurrentQuestion.AttachmentInfo == AttachmentType.Sound : false;
 		public Player CurrentPlayer
 		{
 			get => Data.CurrentPlayer;
@@ -62,20 +52,24 @@ namespace KDCtrlLib.ViewModels
 		public StartQuestion CurrentQuestion
 		{
 			get => _CurrentQuestion;
-			set => Set(ref _CurrentQuestion, value);
+			set
+			{
+				Set(ref _CurrentQuestion, value);
+				RaisePropertyChanged(nameof(SoundEnable));
+			}
 		}
 		public int QuestCount
 		{
 			get => _QuestCount;
 			set => Set(ref _QuestCount, value);
 		}
-		public double Timer
+		public double TimerLabel
 		{
 			get => _Timer;
 			set => Set(ref _Timer, value);
 		}
 
-		public ICommand StartTimmerCmd { get; set; }
+		public ICommand StartTimerCmd { get; set; }
 		public ICommand RightCmd { get; set; }
 		public ICommand WrongCmd { get; set; }
 		public ICommand SoundCmd { get; set; }
@@ -85,38 +79,22 @@ namespace KDCtrlLib.ViewModels
 		public StartRoundViewModel()
 		{
 			#region INIT
-			DoneEnable = false;
-			SoundEnable = false;
 			TimerEnable = true;
-			Timer = TIME_LIMIT;
+			TimerLabel = TIME_LIMIT;
+			Timer = new DispatcherTimer();
+			Timer.Tick += new EventHandler(TimerChange);
+			Timer.Interval = new TimeSpan(0, 0, 0, 0, 1);
 			#endregion
 
 			#region CLIENT INIT
 			if (Data.ThisMacineType != Machine.Server)
 			{
-				StartCommandChecker(cancellation.Token);
+				CommandChecker(cancellation.Token);
 			}
 			#endregion
 
 			#region Cmd
-			StartTimmerCmd = new RelayCommand(async () =>
-			{
-				CurrentQuestion = GetNewQuestion(Data.StartQuestions);
-				NetServer.SendCommandToAll(new KDCommand(CommandType.StartTimmer));
-				try
-				{
-					TimerEnable = false;
-					await TimerStart(cancellation.Token);
-				}
-				catch (OperationCanceledException)
-				{
-					Timer = 0;
-				}
-				catch (AggregateException)
-				{
-					cancellation.Cancel();
-				}
-			});
+			StartTimerCmd = new RelayCommand(() => TimerStart());
 			RightCmd = new RelayCommand(() => RightAns());
 			WrongCmd = new RelayCommand(() => WrongAns());
 			SoundCmd = new RelayCommand(() => { return; });
@@ -125,29 +103,38 @@ namespace KDCtrlLib.ViewModels
 				var res = MessageBox.Show("Bạn có muốn dừng khẩn cấp không?", "Dừng khẩn cấp", MessageBoxButton.YesNo, MessageBoxImage.Stop);
 				if (res == MessageBoxResult.No)
 					return;
-				if (!cancellation.IsCancellationRequested) cancellation.Cancel();
-				DoneEnable = true;
+				TimerStop();
+				NetServer.SendCommandToAll(new KDCommand(CommandType.StopEmergency));
 				Messenger.Default.Send(new ChangeState(ProgramState.Pending));
 			});
 			DoneCmd = new RelayCommand(() => { return; });
 			#endregion
 		}
-		private Task TimerStart(CancellationToken token)
+
+		private void TimerStop()
 		{
-			return Task.Run(async () =>
-			{
-				Messenger.Default.Send(new ChangeState(ProgramState.Playing));
-				SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
-				while (Timer > 0)
-				{
-					Timer -= TIME_AMOUNT;
-					if (token.IsCancellationRequested) break;
-					await Task.Delay(System.TimeSpan.FromSeconds(TIME_AMOUNT));
-				}
-				Messenger.Default.Send(new ChangeState(ProgramState.Pending));
-				DoneEnable = true;
-			}, token
-			);
+			Messenger.Default.Send(new ChangeState(ProgramState.Pending));
+			Timer.Stop();
+			TimerLabel = 0;
+			if (!cancellation.IsCancellationRequested) cancellation.Cancel();
+		}
+
+		private void TimerChange(object sender, EventArgs e)
+		{
+			TimerLabel = TIME_LIMIT - (DateTime.Now - BeginingTime).TotalSeconds;
+			if (TimerLabel <= 0)
+				TimerStop();
+		}
+
+		private void TimerStart()
+		{
+			CurrentQuestion = GetNewQuestion(Data.StartQuestions);
+			NetServer.SendCommandToAll(new KDCommand(CommandType.StartTimmer));
+			TimerEnable = false;
+			Messenger.Default.Send(new ChangeState(ProgramState.Playing));
+			Messenger.Default.Send(new LogMess(KDLogger.Info($"Bắt đầu Khởi động cho {CurrentPlayer.Name}")));
+			BeginingTime = DateTime.Now;
+			Timer.Start();
 		}
 
 		/// <summary>
@@ -172,7 +159,6 @@ namespace KDCtrlLib.ViewModels
 		{
 			MessageBox.Show("Đã hết câu hỏi");
 			Messenger.Default.Send(new ChangeState(ProgramState.Pending));
-			DoneEnable = true;
 			cancellation.Cancel();
 		}
 
@@ -186,7 +172,6 @@ namespace KDCtrlLib.ViewModels
 			CurrentPlayer.Score += 10;
 			QuestCount++;
 			CurrentQuestion = GetNewQuestion(Data.StartQuestions);
-			SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Right));
 		}
 
@@ -199,70 +184,42 @@ namespace KDCtrlLib.ViewModels
 			}
 			QuestCount++;
 			CurrentQuestion = GetNewQuestion(Data.StartQuestions);
-			SoundEnable = CurrentQuestion.AttachmentInfo == AttachmentType.Sound;
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Wrong));
 		}
 
-		private void StartCommandChecker(CancellationToken token)
+		private void CommandChecker(CancellationToken token)
 		{
 			Task.Run(() =>
 			{
 				while (true)
 				{
 					if (token.IsCancellationRequested) return;
-					while (Data.Commands.Count > 0)
+					while (Data.RoundCommnads.Count > 0)
 					{
-						try
+						KDCommand command = Data.RoundCommnads.Peek();
+						switch (command.PrefixCmd)
 						{
-							KDCommand command = Data.Commands.Peek();
-							switch (command.PrefixCmd)
-							{
-								case CommandType.StartTimmer:
-									Task.Run(async() =>
-										{
-											try
-											{
-												TimerEnable = false;
-												await TimerStart(cancellation.Token);
-											}
-											catch (OperationCanceledException)
-											{
-												Timer = 0;
-											}
-											catch (AggregateException)
-											{
-												cancellation.Cancel();
-											}
-										});
-									goto EndCommand;
-								case CommandType.NextQuestAt:
-									CurrentQuestion = Data.StartQuestions[int.Parse(command.Content)];
-									goto EndCommand;
-								case CommandType.Right:
-									CurrentPlayer.Score+=10;
-									QuestCount++;
-									goto EndCommand;
-								case CommandType.Wrong:
-									QuestCount++;
-									goto EndCommand;
-								case CommandType.StopEmergency:
-									if (!cancellation.IsCancellationRequested) cancellation.Cancel();
-									DoneEnable = true;
-									goto EndCommand;
-								EndCommand:
-									if (Data.Commands.Count > 0) Data.Commands.Dequeue();
-									continue;
-								default:
-									break;
-							}
-						}
-						catch (NullReferenceException)
-						{
-							continue;
-						}
-						catch (InvalidOperationException)
-						{
-							continue;
+							case CommandType.StartTimmer:
+								TimerStart();
+								goto EndCommand;
+							case CommandType.NextQuestAt:
+								CurrentQuestion = Data.StartQuestions[int.Parse(command.Content)];
+								goto EndCommand;
+							case CommandType.Right:
+								CurrentPlayer.Score += 10;
+								QuestCount++;
+								goto EndCommand;
+							case CommandType.Wrong:
+								QuestCount++;
+								goto EndCommand;
+							case CommandType.StopEmergency:
+								TimerStop();
+								goto EndCommand;
+							EndCommand:
+								if (Data.RoundCommnads.Count > 0) Data.RoundCommnads.Dequeue();
+								continue;
+							default:
+								break;
 						}
 					}
 				}

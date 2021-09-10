@@ -64,9 +64,30 @@ namespace KDLib
 					information = ReadFromStream.ReadLine();
 					if (KDCommand.FromJson(information) != null)
 					{
-						Data.Commands.Enqueue(KDCommand.FromJson(information));
-						KDLogger.Error($"{Data.Commands.Peek().PrefixCmd} {Data.Commands.Peek().Content}");
+						var command = KDCommand.FromJson(information);
+						switch (command.PrefixCmd)
+						{
+							case CommandType.MCToMC:
+							case CommandType.EditScore:
+							case CommandType.ChoosePlayer:
+							case CommandType.NavigateToRound:
+								Data.FrameCommands.Enqueue(command);
+								break;
+							case CommandType.ChangeMatchToID:
+							case CommandType.StopEmergency:
+							case CommandType.StartTimmer:
+							case CommandType.Right:
+							case CommandType.Wrong:
+							case CommandType.NextQuestAt:
+							case CommandType.ClientList:
+							case CommandType.ConfirmIP:
+							case CommandType.AccpetConnect:
+							case CommandType.RefuseConnect:
+								Data.RoundCommnads.Enqueue(command);
+								break;
+						}
 					}
+
 				}
 			});
 		}

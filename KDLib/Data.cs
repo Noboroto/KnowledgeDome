@@ -36,7 +36,9 @@ namespace KDLib
 		}
 		public static int CurrentRound { get; set; }
 		public static bool OnFocus { get; set; }
-		public static KDCommandList Commands { get; set; }
+		public static KDCommandList NetCommands { get; set; }
+		public static KDCommandList FrameCommands { get; set; }
+		public static KDCommandList RoundCommnads { get;set; }
 		public static int CurrentMatchIndex { get; set; }
 		public static int CurrentPlayerIndex { get; set; }
 		public static MatchInfo CurrentMatch => MatchInfos[CurrentMatchIndex];
@@ -58,7 +60,6 @@ namespace KDLib
 		public static void ServerInitialize()
 		{
 			ID = -1;
-			Commands = new KDCommandList();
 			Initialize();
 			NetServer.Initialize();
 		}
@@ -91,10 +92,12 @@ namespace KDLib
 
 		private static void Initialize()
 		{
+			NetCommands = new KDCommandList();
+			RoundCommnads = new KDCommandList();
+			FrameCommands = new KDCommandList(); 
 			CurrentMatchIndex = 0;
 			CurrentPlayerIndex = 0;
 			KDLogger.Initialize();
-			Commands = new KDCommandList();
 			if (!Directory.Exists(@"Tests\")) Directory.CreateDirectory("Tests");
 			StartQuestions = StartQuestionList.ReadFromFile();
 			Obstacles = ObstacleList.ReadFromFile();

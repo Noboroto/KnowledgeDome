@@ -43,7 +43,7 @@ namespace KDLib
 		{
 			ListenerCenter.Start();
 			ValidCenter.Start();
-			ProcessCommandClient();
+			CommandChecker();
 
 			List<Task> tasks = new List<Task> { AcceptClient(), AcceptVaid() };
 			try
@@ -106,14 +106,14 @@ namespace KDLib
 		{
 			Task.Run(() =>
 			{
-				string command;
+				string information;
 				StreamReader ReadFromStream = new StreamReader(TCPClients[pos].GetStream());
 				while (true)
 				{
-					command = "";
+					information = "";
 					try
 					{
-						command = ReadFromStream.ReadLine();
+						information = ReadFromStream.ReadLine();
 					}
 					catch (IOException)
 					{
@@ -121,68 +121,69 @@ namespace KDLib
 						TCPClients[pos].Close();
 						return;
 					}
-					if (KDCommand.FromJson(command) != null)
-						Data.Commands.Enqueue(KDCommand.FromJson(command));
+					if (KDCommand.FromJson(information) != null)
+					{
+						var command = KDCommand.FromJson(information);
+						switch (command.PrefixCmd)
+						{
+							case CommandType.AskForConnect:
+								Data.NetCommands.Enqueue(command);
+								break;
+							case CommandType.ServerToMC:
+							case CommandType.MCToMC:
+								Data.FrameCommands.Enqueue(command);
+								break;
+						}
+					}
 				}
 			});
 		}
 
-		private static void ProcessCommandClient()
+		private static void CommandChecker()
 		{
 			Task.Run(() =>
 			{
 				while (true)
 				{
 					if (tokenSource.Token.IsCancellationRequested) break;
-					while (Data.Commands.Count > 0)
+					while (Data.NetCommands.Count > 0)
 					{
-						try
+						KDCommand command = Data.NetCommands.Peek();
+						switch (Data.NetCommands.Peek().PrefixCmd)
 						{
-							KDCommand command = Data.Commands.Peek();
-							switch (Data.Commands.Peek().PrefixCmd)
-							{
-								case CommandType.AskForConnect:
-									var type = Data.GetMachineFromID(int.Parse(command.Content));
-									switch (type)
-									{
-										case Machine.MC:
+							case CommandType.AskForConnect:
+								var type = Data.GetMachineFromID(int.Parse(command.Content));
+								switch (type)
+								{
+									case Machine.MC:
+										SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
+										Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào MC", LogType.MC, $"{command.OwnIP};{command.Pos}")));
+										MCAvailable.Add(TCPClients[command.Pos]);
+										goto EndCommand;
+									case Machine.Viewer:
+										SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
+										Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào Viewer", LogType.Viewer, $"{command.OwnIP};{command.Pos}")));
+										goto EndCommand;
+									case Machine.Player:
+										int ID = int.Parse(command.Content);
+										if (PlayerAvailable.ContainsKey(ID) && PlayerAvailable[ID].Connected)
+										{
+											SendCommandToOne(command.Pos, new KDCommand(CommandType.RefuseConnect, null));
+											Messenger.Default.Send(new LogMess(KDLogger.Info($"Bị từ chối kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, $"{command.OwnIP};{command.Pos}")));
+										}
+										else
+										{
 											SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
-											Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào MC", LogType.MC, $"{command.OwnIP};{command.Pos}")));
-											MCAvailable.Add(TCPClients[command.Pos]);
-											goto EndCommand;
-										case Machine.Viewer:
-											SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
-											Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào Viewer", LogType.Viewer, $"{command.OwnIP};{command.Pos}")));
-											goto EndCommand;
-										case Machine.Player:
-											int ID = int.Parse(command.Content);
-											if (PlayerAvailable.ContainsKey(ID) && PlayerAvailable[ID].Connected)
-											{
-												SendCommandToOne(command.Pos, new KDCommand(CommandType.RefuseConnect, null));
-												Messenger.Default.Send(new LogMess(KDLogger.Info($"Bị từ chối kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, $"{command.OwnIP};{command.Pos}")));
-											}
-											else
-											{
-												SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
-												PlayerAvailable[ID] = TCPClients[command.Pos];
-												Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, $"{command.OwnIP};{command.Pos}")));
-											}
-											goto EndCommand;
-									}
-								EndCommand:
-									if (Data.Commands.Count > 0) Data.Commands.Dequeue();
-									continue;
-								default:
-									continue;
-							}
-						}
-						catch (NullReferenceException)
-						{
-							continue;
-						}
-						catch (InvalidOperationException)
-						{
-							continue;
+											PlayerAvailable[ID] = TCPClients[command.Pos];
+											Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, $"{command.OwnIP};{command.Pos}")));
+										}
+										goto EndCommand;
+								}
+							EndCommand:
+								if (Data.NetCommands.Count > 0) Data.NetCommands.Dequeue();
+								continue;
+							default:
+								continue;
 						}
 					}
 				}
@@ -191,6 +192,7 @@ namespace KDLib
 
 		public static async void SendCommandToOne(TcpClient client, KDCommand Command)
 		{
+			if (Data.ThisMacineType != Machine.Server) return;
 			try
 			{
 				await SendMessageToOne(Command.ToJson(), client);
@@ -207,6 +209,7 @@ namespace KDLib
 
 		public static async void SendCommandToOne(int pos, KDCommand Command)
 		{
+			if (Data.ThisMacineType != Machine.Server) return;
 			try
 			{
 				await SendMessageToOne(Command.ToJson(), TCPClients[pos].Client);
@@ -244,7 +247,7 @@ namespace KDLib
 
 		public static async void SendCommandToAll(KDCommand Command)
 		{
-
+			if (Data.ThisMacineType != Machine.Server) return;
 			try
 			{
 				List<Task> tasks = new List<Task>();
