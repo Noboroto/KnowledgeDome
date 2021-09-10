@@ -145,6 +145,22 @@ namespace KDLib
             DecrpytByteToImage(outputByte, true, null, null, "test_roundtrip.jpg");
         }
 
+        public static void DemoDumpVideoToBytes()
+        {
+            byte[] data = File.ReadAllBytes("197.mp4");
+            data = _EncryptBytesToBytes_Aes(data, aes.Key, aes.IV);
+            string hexdata = ByteArrayToHexString(data);
+            File.WriteAllText("197.txt", hexdata);
+        }
+
+        public static void DemoVideoDecryption()
+        {
+            string hex = File.ReadAllText("197.txt");
+            byte[] data = HexStringToByteArray(hex);
+            data = _DecryptBytesFromBytes_Aes(data, aes.Key, aes.IV);
+            File.WriteAllBytes("197_roundtrip.mp4", data);
+        }
+
         /// <summary>
         ///   
         /// </summary>
@@ -209,7 +225,7 @@ namespace KDLib
             if (aes.ValidKeySize(key.Length * 8) && (iv.Length *8 == aes.BlockSize))
             {
 #if DEBUG
-                    MessageBox.Show("valid key and IV");
+                    //MessageBox.Show("valid key and IV");
 #endif  
                 aes.Key = key;
                 aes.IV = iv;

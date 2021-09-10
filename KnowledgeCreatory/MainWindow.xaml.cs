@@ -26,6 +26,8 @@ namespace KnowledgeCreatory
             #if DEBUG
                 KDLib.Utilities.ReadKeyFromConfig();
                 KDLib.Utilities.DemoEncryption();
+                KDLib.Utilities.DemoDumpVideoToBytes();
+                KDLib.Utilities.DemoVideoDecryption();
             #endif
         }
     }
