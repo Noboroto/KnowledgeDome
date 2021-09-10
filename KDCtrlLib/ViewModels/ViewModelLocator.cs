@@ -31,12 +31,11 @@ namespace KDCtrlLib.ViewModels
 		public ViewModelLocator()
 		{
 			ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-			SimpleIoc.Default.Register<MainWindowViewModel>();
 			SimpleIoc.Default.Register<ConnectViewModel>();
 			SimpleIoc.Default.Register<RoleViewModel>();
 			SimpleIoc.Default.Register<MainPageViewModel>();
 			SimpleIoc.Default.Register<ConfigurationSettings>();
-			SimpleIoc.Default.Register<MainFrameControl>();
+			SimpleIoc.Default.Register<MainWindowControl>();
 			SimpleIoc.Default.Register<StartRoundViewModel>();
 		}
 
@@ -56,9 +55,6 @@ namespace KDCtrlLib.ViewModels
 			SimpleIoc.Default.Unregister<TClass>();
 			SimpleIoc.Default.Register<TClass>();
 		}
-
-		public static MainWindowViewModel MainWindow => ServiceLocator.Current.GetInstance<MainWindowViewModel>();
-
 		public static RoleViewModel Role => ServiceLocator.Current.GetInstance<RoleViewModel>();
 
 		public static ConnectViewModel Connect => ServiceLocator.Current.GetInstance<ConnectViewModel>();
@@ -68,7 +64,7 @@ namespace KDCtrlLib.ViewModels
 
 		public static MainPageViewModel Main => ServiceLocator.Current.GetInstance<MainPageViewModel>();
 
-		public static MainFrameControl MainFrame => ServiceLocator.Current.GetInstance<MainFrameControl>();
+		public static MainWindowControl MainWindow => ServiceLocator.Current.GetInstance<MainWindowControl>();
 
 		public static StartRoundViewModel StartRound => ServiceLocator.Current.GetInstance<StartRoundViewModel>();
 		public static void Cleanup()

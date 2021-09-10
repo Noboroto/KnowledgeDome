@@ -91,14 +91,14 @@
 					>
 					<Style.Triggers>
 						<DataTrigger
-							Binding="{Binding Path=MainFrame.IsPending, Source={StaticResource Locator}}"
+							Binding="{Binding Path=MainWindow.IsPending, Source={StaticResource Locator}}"
 							Value="True">
 							<Setter
 								Property="Visibility"
 								Value="Visible" />
 						</DataTrigger>
 						<DataTrigger
-							Binding="{Binding Path=MainFrame.IsPending, Source={StaticResource Locator}}"
+							Binding="{Binding Path=MainWindow.IsPending, Source={StaticResource Locator}}"
 							Value="False">
 							<Setter
 								Property="Visibility"
@@ -138,7 +138,7 @@
 							TargetType="ListBox">
 							<Style.Triggers>
 								<DataTrigger
-									Binding="{Binding Path=MainFrame.IsExtra, Source={StaticResource Locator}}"
+									Binding="{Binding Path=MainWindow.IsExtra, Source={StaticResource Locator}}"
 									Value="False"
 									>
 									<Setter
@@ -154,7 +154,7 @@
 							TargetType="ListBoxItem">
 							<Setter
 								Property="materialDesign:ListBoxItemAssist.ShowSelection"
-								Value="{Binding Path=MainFrame.IsPending, Source={StaticResource Locator}}" />
+								Value="{Binding Path=MainWindow.IsPending, Source={StaticResource Locator}}" />
 						</Style>
 					</ListBox.ItemContainerStyle>
 					<ListBox.ItemTemplate>
@@ -175,21 +175,21 @@
 				<Button
 					Content="Vào câu hỏi phụ"
 					Margin="10"
-					Command="{Binding Path=MainFrame.StartExtraCmd, Source={StaticResource Locator}}">
+					Command="{Binding Path=MainWindow.StartExtraCmd, Source={StaticResource Locator}}">
 					<Button.Style>
 						<Style
 							TargetType="Button"
 							BasedOn="{StaticResource MaterialDesignRaisedButton}">
 							<Style.Triggers>
 								<DataTrigger
-									Binding="{Binding Path=MainFrame.IsExtra, Source={StaticResource Locator}}"
+									Binding="{Binding Path=MainWindow.IsExtra, Source={StaticResource Locator}}"
 									Value="False">
 									<Setter
 										Property="Visibility"
 										Value="Hidden" />
 								</DataTrigger>
 								<DataTrigger
-									Binding="{Binding Path=MainFrame.IsExtra, Source={StaticResource Locator}}"
+									Binding="{Binding Path=MainWindow.IsExtra, Source={StaticResource Locator}}"
 									Value="True">
 									<Setter
 										Property="Visibility"

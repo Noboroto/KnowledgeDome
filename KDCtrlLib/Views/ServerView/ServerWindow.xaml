@@ -16,7 +16,7 @@
 	TextElement.FontWeight="Medium"
 	TextElement.FontSize="14"
 	FontFamily="{materialDesign:MaterialDesignFont}"
-	DataContext="{Binding MainFrame, Source={StaticResource Locator}}">
+	DataContext="{Binding MainWindow, Source={StaticResource Locator}}">
 	<Window.Resources>
 		<ResourceDictionary
 			Source="pack://application:,,,/KDCtrlLib;component/Views/GlobalResource.xaml" />

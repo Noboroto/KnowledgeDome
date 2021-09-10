@@ -86,9 +86,8 @@
     <Compile Include="KDConverters\RectConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\ConnectViewModel.cs" />
-    <Compile Include="ViewModels\MainFrameControl.cs" />
+    <Compile Include="ViewModels\MainWindowControl.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RoleViewModel.cs" />
     <Compile Include="ViewModels\StartRoundViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />

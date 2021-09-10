@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace KDCtrlLib.ViewModels
 {
-	public class MainFrameControl : ViewModelBase
+	public class MainWindowControl : ViewModelBase
 	{
 		#region Private Properties
 		private Uri _FrameSource;
@@ -96,7 +96,7 @@ namespace KDCtrlLib.ViewModels
 		public ICommand StartExtraCmd { get; set; }
 		#endregion
 
-		public MainFrameControl()
+		public MainWindowControl()
 		{
 
 			LogsView = new ObservableCollection<LogViewerInfo>();

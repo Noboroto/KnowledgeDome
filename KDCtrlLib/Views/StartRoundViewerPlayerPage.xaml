@@ -81,7 +81,7 @@
 								BasedOn="{StaticResource MaterialDesignTextBlock}">
 								<Style.Triggers>
 									<DataTrigger
-										Binding="{Binding Path=MainFrame.IsPlaying, Source={StaticResource Locator}}"
+										Binding="{Binding Path=MainWindow.IsPlaying, Source={StaticResource Locator}}"
 										Value="True"
 										>
 										<Setter
@@ -89,7 +89,7 @@
 											Value="Visible"/>
 									</DataTrigger>
 									<DataTrigger
-										Binding="{Binding Path=MainFrame.IsPlaying, Source={StaticResource Locator}}"
+										Binding="{Binding Path=MainWindow.IsPlaying, Source={StaticResource Locator}}"
 										Value="False">
 										<Setter
 											Property="Visibility"
