@@ -41,7 +41,7 @@ namespace KDLib
 			Set(ref _dateTime, DateTime.Now);
 			Set(ref _logtype, logtype);
 			Set(ref _Message, mess);
-			Set(ref _Note,((note != "") ? "-" : "")+ note);
+			Set(ref _Note, ((note != "") ? "-" : "") + note);
 		}
 	}
 }

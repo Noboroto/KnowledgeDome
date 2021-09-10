@@ -2,15 +2,13 @@
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 
+using KDLib;
 using KDLib.MessageForUI;
 
-using KDLib;
-
-using System;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Threading;
 
 namespace KDCtrlLib.ViewModels
 {

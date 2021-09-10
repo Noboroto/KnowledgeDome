@@ -18,7 +18,7 @@ namespace KDLib
 
 		}
 
-		public AccelerationQuestionList(IList<AccelerationQuestion> list) :base (list)
+		public AccelerationQuestionList(IList<AccelerationQuestion> list) : base(list)
 		{
 
 		}

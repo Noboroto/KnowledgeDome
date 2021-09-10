@@ -1,15 +1,13 @@
-﻿using System;
-using System.IO;
-using System.Text;
-
-using log4net;
+﻿using log4net;
 using log4net.Appender;
-using log4net.Layout;
 using log4net.Config;
-using log4net.Repository.Hierarchy;
 using log4net.Filter;
+using log4net.Layout;
 
+using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -78,7 +76,7 @@ namespace KDLib
 		{
 			Task.Run(() =>
 			{
-			   log.Error(message);
+				log.Error(message);
 			});
 			return new LogViewerInfo(LogType.Error, message);
 		}

@@ -36,7 +36,7 @@ namespace KDLib
 
 		}
 		public KDCommand(CommandType prefix, IPAddress local, string cmd = "")
-		: this(Data.ThisMacineType, prefix, local.ToString(),  Data.Pos, cmd)
+		: this(Data.ThisMacineType, prefix, local.ToString(), Data.Pos, cmd)
 		{
 		}
 

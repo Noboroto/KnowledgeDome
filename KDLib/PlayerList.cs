@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace KDLib
 {
@@ -12,11 +12,11 @@ namespace KDLib
 		public PlayerList()
 		{
 		}
-		public PlayerList (IList<Player> list):base(list)
+		public PlayerList(IList<Player> list) : base(list)
 		{
 		}
 
-		public new void Add (Player player)
+		public new void Add(Player player)
 		{
 			int index = Count % 5;
 			player.SetBackground(KDConvert.BackgroundPlayer[index]);

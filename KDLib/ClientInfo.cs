@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 
 namespace KDLib
@@ -12,7 +9,7 @@ namespace KDLib
 		public int Pos { get; set; }
 		public string IP => (Client.Client.RemoteEndPoint as IPEndPoint).Address.ToString();
 		public bool Connected => Client.Connected;
-		public void Close ()
+		public void Close()
 		{
 			Client.Close();
 		}
@@ -20,7 +17,7 @@ namespace KDLib
 		{
 			return Client.GetStream();
 		}
-		public ClientInfo (TcpClient client, int pos)
+		public ClientInfo(TcpClient client, int pos)
 		{
 			Client = client;
 			Pos = pos;

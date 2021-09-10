@@ -13,7 +13,7 @@ namespace KDClient
 	public partial class MainServerControlWindow : Window
 	{
 		public MainServerControlWindow()
-		{			
+		{
 			Data.ServerInitialize();
 			InitializeComponent();
 			Dispatcher.Invoke(DispatcherPriority.Input,

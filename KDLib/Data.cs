@@ -1,11 +1,10 @@
 ﻿using Newtonsoft.Json;
 
-using System.Collections.Generic;
 using System.IO;
 
 namespace KDLib
 {
-	public static class Data 
+	public static class Data
 	{
 		#region PublicConstants
 		public const int PortForTCP = 2644;
@@ -38,7 +37,7 @@ namespace KDLib
 		public static bool OnFocus { get; set; }
 		public static KDCommandList NetCommands { get; set; }
 		public static KDCommandList FrameCommands { get; set; }
-		public static KDCommandList RoundCommnads { get;set; }
+		public static KDCommandList RoundCommnads { get; set; }
 		public static int CurrentMatchIndex { get; set; }
 		public static int CurrentPlayerIndex { get; set; }
 		public static MatchInfo CurrentMatch => MatchInfos[CurrentMatchIndex];
@@ -76,12 +75,12 @@ namespace KDLib
 			return JsonConvert.SerializeObject(o);
 		}
 
-		public static T FromJosn<T> (string source)
+		public static T FromJosn<T>(string source)
 		{
 			return JsonConvert.DeserializeObject<T>(source);
 		}
 
-		public static Machine GetMachineFromID (int id)
+		public static Machine GetMachineFromID(int id)
 		{
 			if (id >= 0 && id < CurrentMatch.Players.Count) return Machine.Player;
 			else if (id == -2) return Machine.None;
@@ -94,7 +93,7 @@ namespace KDLib
 		{
 			NetCommands = new KDCommandList();
 			RoundCommnads = new KDCommandList();
-			FrameCommands = new KDCommandList(); 
+			FrameCommands = new KDCommandList();
 			CurrentMatchIndex = 0;
 			CurrentPlayerIndex = 0;
 			KDLogger.Initialize();

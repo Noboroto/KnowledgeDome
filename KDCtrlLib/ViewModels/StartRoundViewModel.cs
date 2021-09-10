@@ -1,18 +1,16 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
 
 using KDLib;
-using KDCtrlLib.Interface;
+using KDLib.MessageForUI;
 
-using System.Threading.Tasks;
-using System.Windows.Media;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Windows;
-using System.Threading;
-using GalaSoft.MvvmLight.Messaging;
-using KDLib.MessageForUI;
 
 namespace KDCtrlLib.ViewModels
 {
