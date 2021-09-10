@@ -22,9 +22,8 @@
 				<StackPanel
 					Margin="16"
 					>
-					<Label 
-						ContentStringFormat="Sửa điểm của {0}"
-						Content="{Binding Name}" 
+					<TextBlock 
+						Text="{Binding Name, StringFormat=Sửa điểm của {0}}" 
 						/>
 					<TextBox
 						Margin="0 8 0 0"

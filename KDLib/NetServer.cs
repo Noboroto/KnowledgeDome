@@ -144,7 +144,6 @@ namespace KDLib
 			{
 				while (true)
 				{
-					if (tokenSource.Token.IsCancellationRequested) break;
 					while (Data.NetCommands.Count > 0)
 					{
 						KDCommand command = Data.NetCommands.Peek();

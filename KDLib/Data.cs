@@ -7,7 +7,7 @@ namespace KDLib
 	public static class Data
 	{
 		#region PublicConstants
-		public const int PortForTCP = 2644;
+		public const int PortForTCP = 2643;
 
 		public const int PortForChecker = 2645;
 
