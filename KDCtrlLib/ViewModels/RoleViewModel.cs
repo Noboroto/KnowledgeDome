@@ -6,7 +6,6 @@ using KDLib;
 using KDLib.MessageForUI;
 
 using System.Collections.ObjectModel;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -83,10 +82,11 @@ namespace KDCtrlLib.ViewModels
 						Data.Pos = command.Pos;
 						break;
 					case CommandType.AccpetConnect:
-						Messenger.Default.Send(new NavigateToMessage("MainClientPage.xaml"));
+						Data.UpdateFromPackage(command.Content);
+						Messenger.Default.Send(new NavigateToMessage());
 						break;
 					case CommandType.RefuseConnect:
-						MessageBox.Show("Bị từ chối kết nối do đã có người ở vị trí này");
+						MessageBox.Show(command.Content);
 						AskRoleEnable = true;
 						break;
 					default:

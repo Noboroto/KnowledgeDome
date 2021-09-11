@@ -15,7 +15,7 @@ namespace KDCtrlLib.ViewModels
 	public class ConnectViewModel : ViewModelBase
 	{
 		private IPAddress _ServerIP;
-		private const string AcceptString = "Kết nối thành công";
+		private bool _CanConnect;
 
 		public string IP
 		{
@@ -28,6 +28,12 @@ namespace KDCtrlLib.ViewModels
 			}
 		}
 
+		public bool CanConnect
+		{
+			get => _CanConnect;
+			set => Set(ref _CanConnect, value);
+		}
+
 		#region Command
 		public ICommand TryConnectCmd { get; set; }
 		public ICommand TryConnectEnterCmd { get; set; }
@@ -35,10 +41,12 @@ namespace KDCtrlLib.ViewModels
 
 		public ConnectViewModel()
 		{
+			CanConnect = true;
 			TryConnectCmd = new RelayCommand
 			(
 				() =>
 				{
+					CanConnect = false;
 					Connect(IP);
 				},
 				() =>
@@ -52,6 +60,7 @@ namespace KDCtrlLib.ViewModels
 				{
 					if (IsValidIPString(IP))
 					{
+						CanConnect = false;
 						Connect(IP);
 					}
 				}
@@ -70,9 +79,13 @@ namespace KDCtrlLib.ViewModels
 			}
 			if (await NetClient.IsValidConnection(_ServerIP))
 			{
-				Messenger.Default.Send(new NavigateToMessage(@"RolePage.xaml"));
+				Messenger.Default.Send(new NavigateToMessage(-1, Data.Status));
 			}
-			else MessageBox.Show("Không tìm thấy địa chỉ IP");
+			else
+			{
+				MessageBox.Show("Không tìm thấy địa chỉ IP");
+				CanConnect = true;
+			}
 		}
 
 		private bool IsValidIPString(string s)

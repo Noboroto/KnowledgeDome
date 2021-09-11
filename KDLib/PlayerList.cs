@@ -19,8 +19,8 @@ namespace KDLib
 		public new void Add(Player player)
 		{
 			int index = Count % 5;
-			player.SetBackground(KDConvert.BackgroundPlayer[index]);
-			player.SetForeground(KDConvert.ForegroundPlayer[index]);
+			player.SetBackground(KDConvert.BackgroundPlayer(index));
+			player.SetForeground(KDConvert.ForegroundPlayer(index));
 			base.Add(player);
 		}
 

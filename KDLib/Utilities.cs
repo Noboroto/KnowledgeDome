@@ -4,7 +4,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows;
-using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -237,7 +236,6 @@ namespace KDLib
                 MessageBox.Show("Error reading app settings");
 #endif
                 throw new ConfigurationErrorsException();
-                return false;
             }
             return true;
         }

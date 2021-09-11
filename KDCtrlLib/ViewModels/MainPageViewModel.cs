@@ -75,16 +75,17 @@ namespace KDCtrlLib.ViewModels
 				switch (Data.CurrentRound)
 				{
 					case 1:
-						NetServer.SendCommandToAll(new KDCommand(CommandType.ChoosePlayer, Data.CurrentPlayerIndex.ToString()));
-						NetServer.SendCommandToAll(new KDCommand(CommandType.NavigateToRound, "1"));
-						Messenger.Default.Send(new NavigateToMessage(@"ServerView\StartRoundServerView.xaml"));
-						break;
 					case 4:
+						var x = new NavigateToMessage();
+						NetServer.SendCommandToAll(new KDCommand(CommandType.ChoosePlayer, Data.CurrentPlayerIndex.ToString()));
+						NetServer.SendCommandToAll(new KDCommand(CommandType.NavigateToRound, Data.ToJson(x)));
+						Messenger.Default.Send(x);
+						break;
+					default:
 						break;
 				}
 			});
 		}
-
 		private void CommandChecker(KDCommand command)
 		{
 			Task.Run(() =>

@@ -91,6 +91,7 @@
     <Compile Include="AccelerationQuestionList.cs" />
     <Compile Include="ClientInfo.cs" />
     <Compile Include="Data.cs" />
+    <Compile Include="DataPackage.cs" />
     <Compile Include="ExtraQuestion.cs" />
     <Compile Include="ExtraQuestionList.cs" />
     <Compile Include="FinishQuestion.cs" />

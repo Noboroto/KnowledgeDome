@@ -25,6 +25,7 @@
 			VerticalAlignment="Stretch"
 			HorizontalAlignment="Stretch">
 			<Button
+				IsEnabled="{Binding CanConnect}"
 				Margin="10"
 				Command="{Binding TryConnectCmd}"
 				MaxWidth="100"

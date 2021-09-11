@@ -1,6 +1,10 @@
 ﻿using Newtonsoft.Json;
 
+using KDLib.MessageForUI;
+
+using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace KDLib
 {
@@ -14,6 +18,26 @@ namespace KDLib
 		#endregion
 
 		#region PublicProperties
+		public static string Title
+		{
+			get
+			{
+				switch (ThisMacineType)
+				{
+					case Machine.Server:
+						return "Knowledge Dome Server";
+					case Machine.MC:
+						return "Knowledge Dome MC";
+					case Machine.Viewer:
+						return "Knowledge Dome Viewer";
+					case Machine.Player:
+						return "Knowledge Dome Player - " + CurrentMatch.Players[ID].Name;
+					default:
+						return "Knowledge Dome Client";
+				}
+			}
+		}
+		public static Uri CurrentPage { get; set; }
 		public static ProgramState Status { get; set; }
 		public static int ID { get; set; }
 		public static string ChooseIP { get; set; }
@@ -30,7 +54,6 @@ namespace KDLib
 			}
 		}
 		public static int CurrentRound { get; set; }
-		public static bool OnFocus { get; set; }
 		public static KDCommandList NetCommands { get; set; }
 		public static KDCommandList FrameCommands { get; set; }
 		public static KDCommandList RoundCommnads { get; set; }
@@ -97,6 +120,19 @@ namespace KDLib
 			FinishQuestions = FinishQuestionList.ReadFromFile();
 			ExtraQuestions = ExtraQuestionList.ReadFromFile();
 			MatchInfos = MatchInfoList.ReadFromFile();
+		}
+
+		public static void UpdateFromPackage (string package)
+		{
+			UpdateFromPackage(FromJosn<DataPackage>(package));
+		}
+
+		public static void UpdateFromPackage (DataPackage package)
+		{
+			CurrentMatchIndex = package.CurrentMatchIndex;
+			CurrentPlayerIndex = package.CurrentPlayerIndex;
+			CurrentRound = package.CurrentRound;
+			Status = package.Status;
 		}
 	}
 }

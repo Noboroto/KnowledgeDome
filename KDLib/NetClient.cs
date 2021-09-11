@@ -11,7 +11,8 @@ namespace KDLib
 	public static class NetClient
 	{
 		#region PrivateMembers
-		private static TcpClient ThisClient = new TcpClient();
+		private static TcpClient ThisClient;
+		private const int DELAY = 500;
 		#endregion
 
 		#region PublicProperties
@@ -32,8 +33,9 @@ namespace KDLib
 		/// <returns>True if the parameter can be used for a connection; otherwise, false</returns>
 		public async static Task<bool> IsValidConnection(IPAddress ip)
 		{
+			ThisClient = new TcpClient();
 			var taskconnect = ThisClient.ConnectAsync(ip, Data.PortForTCP);
-			var timer = Task.Delay(500);
+			var timer = Task.Delay(DELAY);
 			var result = await Task.WhenAny(new[] { taskconnect, timer });
 			if (result == taskconnect)
 			{
@@ -41,6 +43,7 @@ namespace KDLib
 				ListenFromServer();
 				return true;
 			}
+			ThisClient.Close();
 			return false;
 		}
 
@@ -73,9 +76,12 @@ namespace KDLib
 							case CommandType.NextQuestAt:
 							case CommandType.ClientList:
 							case CommandType.ConfirmIP:
-							case CommandType.AccpetConnect:
 							case CommandType.RefuseConnect:
 								Data.RoundCommnads.Enqueue(command);
+								break;
+							case CommandType.AccpetConnect:
+								Data.RoundCommnads.Enqueue(command);
+								Data.FrameCommands.Enqueue(command);
 								break;
 						}
 					}

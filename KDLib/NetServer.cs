@@ -124,27 +124,34 @@ namespace KDLib
 				{
 					case CommandType.AskForConnect:
 						var type = Data.GetMachineFromID(int.Parse(command.Content));
+						var accept = new KDCommand(CommandType.AccpetConnect, Data.ToJson(DataPackage.GetPackage()));
+						if (Data.Status == ProgramState.Ended || Data.Status == ProgramState.Playing)
+						{
+							SendCommandToOne(command.Pos, new KDCommand(CommandType.RefuseConnect, "Phần mềm không cho phép kết nối lúc này, vui lòng thử lại sau"));
+							Messenger.Default.Send(new LogMess(KDLogger.Info($"Bị từ chối kết nối", LogType.Server, $"{command.OwnIP};{command.Pos}")));
+							break;
+						}
 						switch (type)
 						{
 							case Machine.MC:
-								SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
+								SendCommandToOne(command.Pos, accept);
 								Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào MC", LogType.MC, $"{command.OwnIP};{command.Pos}")));
 								MCAvailable.Add(TCPClients[command.Pos]);
 								break;
 							case Machine.Viewer:
-								SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
+								SendCommandToOne(command.Pos, accept);
 								Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào Viewer", LogType.Viewer, $"{command.OwnIP};{command.Pos}")));
 								break;
 							case Machine.Player:
 								int ID = int.Parse(command.Content);
 								if (PlayerAvailable.ContainsKey(ID) && PlayerAvailable[ID].Connected)
 								{
-									SendCommandToOne(command.Pos, new KDCommand(CommandType.RefuseConnect, null));
+									SendCommandToOne(command.Pos, new KDCommand(CommandType.RefuseConnect, "Bị từ chối kết nối do đã có người ở vị trí này"));
 									Messenger.Default.Send(new LogMess(KDLogger.Info($"Bị từ chối kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, $"{command.OwnIP};{command.Pos}")));
 								}
 								else
 								{
-									SendCommandToOne(command.Pos, new KDCommand(CommandType.AccpetConnect, null));
+									SendCommandToOne(command.Pos, accept);
 									PlayerAvailable[ID] = TCPClients[command.Pos];
 									Messenger.Default.Send(new LogMess(KDLogger.Info($"Đã kết nối vào {Data.CurrentMatch.Players[ID].Name}", LogType.Player, $"{command.OwnIP};{command.Pos}")));
 								}

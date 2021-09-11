@@ -23,19 +23,17 @@ namespace KDLib
 			set => Set(ref _AttachmentInfo, (AttachmentType)value);
 		}
 
-		public string SubjectName => KDConvert.SubjectToString[Subject];
+		public string SubjectName => KDConvert.SubjectToString(Subject);
 		#endregion
 
 		private SubjectInfo SubjectValue(string value)
 		{
-			if (!KDConvert.StringToSubject.ContainsKey(value)) return SubjectInfo.Unknown;
-			else return KDConvert.StringToSubject[value];
+			return KDConvert.StringToSubject(value);
 		}
 
 		private AttachmentType AttachmentTypeValue(string value)
 		{
-			if (!KDConvert.StringToAttachmentType.ContainsKey(value)) return AttachmentType.None;
-			else return KDConvert.StringToAttachmentType[value];
+			return KDConvert.StringToAttachmentType(value);
 		}
 
 		public StartQuestion(string subject_name, string content, string answer, int id, string attachmenttype = "none")

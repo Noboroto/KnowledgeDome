@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace KDCtrlLib.ViewModels
@@ -17,12 +19,10 @@ namespace KDCtrlLib.ViewModels
 	public class MainWindowControl : ViewModelBase
 	{
 		#region Private Properties
-		private Uri _FrameSource;
 		private string _WaitingSend;
 		private Visibility _ChattingVisibility;
 		private int _FrameColumnSpan;
-		private Stack<Tuple<Uri, ProgramState>> NavigationStack;
-		private string _SystemName;
+		private Stack<NavigateToMessage> NavigationStack = new Stack<NavigateToMessage>();
 		#endregion
 
 		#region Public Properties
@@ -40,8 +40,12 @@ namespace KDCtrlLib.ViewModels
 		}
 		public Uri FrameSource
 		{
-			get => _FrameSource;
-			set => Set(ref _FrameSource, value);
+			get => Data.CurrentPage;
+			set
+			{
+				Data.CurrentPage = value;
+				RaisePropertyChanged(nameof(FrameSource));
+			}
 		}
 		public Visibility ChattingVisibility
 		{
@@ -76,11 +80,7 @@ namespace KDCtrlLib.ViewModels
 		public bool IsPending => Data.Status == ProgramState.Pending;
 		public bool IsEnded => Data.Status == ProgramState.Ended;
 		public bool IsExtra => Data.CurrentRound == 5;
-		public string SystemName
-		{
-			get => _SystemName;
-			set => Set(ref _SystemName, value);
-		}
+		public string SystemName => Data.Title;
 		#endregion
 
 		#region Commands
@@ -101,7 +101,6 @@ namespace KDCtrlLib.ViewModels
 
 			LogsView = new ObservableCollection<LogViewerInfo>();
 			Chatting = new ObservableCollection<LogViewerInfo>();
-			NavigationStack = new Stack<Tuple<Uri, ProgramState>>();
 
 			Messenger.Default.Register<NavigateToMessage>(this, t => NavigateTo(t));
 			Messenger.Default.Register<ChangeState>(this, t => UpdateState(t));
@@ -109,14 +108,13 @@ namespace KDCtrlLib.ViewModels
 			FrameColumnSpan = 3;
 			CurrentRound = 0;
 			Status = ProgramState.Idling;
-			SystemName = (Data.ThisMacineType == Machine.Server) ? "Knowledge Dome Server" : "Knowledge Dome Client";
 
 			Data.FrameCommands = new KDCommandList(CommandChecker);
 
 			#region Server
 			if (Data.ThisMacineType == Machine.Server)
 			{
-				Messenger.Default.Send(new NavigateToMessage(@"ServerView/MainServerPage.xaml"));
+				Messenger.Default.Send(new NavigateToMessage(0));
 				Messenger.Default.Register<LogMess>(this, t => AddLog(t));
 				Messenger.Default.Send(new LogMess(KDLogger.Info("Start")));
 			}
@@ -125,7 +123,7 @@ namespace KDCtrlLib.ViewModels
 			#region Client
 			if (Data.ThisMacineType != Machine.Server)
 			{
-				Messenger.Default.Send(new NavigateToMessage(@"ConnectPage.xaml"));
+				Messenger.Default.Send(new NavigateToMessage(-2));
 			}
 			#endregion
 
@@ -153,27 +151,27 @@ namespace KDCtrlLib.ViewModels
 			});
 			StartRoundCmd = new RelayCommand(() =>
 			{
-				Status = ProgramState.Pending;
+				Messenger.Default.Send(new NavigateToMessage(ProgramState.Pending));
 				CurrentRound = 1;
 			});
 			ObstacleRoundCmd = new RelayCommand(() =>
 			{
-				Status = ProgramState.Pending;
+				Messenger.Default.Send(new NavigateToMessage(ProgramState.Pending));
 				CurrentRound = 2;
 			});
 			AcceblerationRoundCmd = new RelayCommand(() =>
 			{
-				Status = ProgramState.Pending;
+				Messenger.Default.Send(new NavigateToMessage(ProgramState.Pending));
 				CurrentRound = 3;
 			});
 			FinishRoundCmd = new RelayCommand(() =>
 			{
-				Status = ProgramState.Pending;
+				Messenger.Default.Send(new NavigateToMessage(ProgramState.Pending));
 				CurrentRound = 4;
 			});
 			ExtraRoundCmd = new RelayCommand(() =>
 			{
-				Status = ProgramState.Pending;
+				Messenger.Default.Send(new NavigateToMessage(ProgramState.Pending));
 				CurrentRound = 5;
 			});
 			StartExtraCmd = new RelayCommand(() =>
@@ -182,7 +180,6 @@ namespace KDCtrlLib.ViewModels
 			});
 			GoBackCnd = new RelayCommand(() =>
 			{
-				NetServer.SendCommandToAll(new KDCommand(CommandType.NavigateToRound, "0"));
 				GoBack();
 			});
 			#endregion
@@ -194,36 +191,14 @@ namespace KDCtrlLib.ViewModels
 			{
 				switch (command.PrefixCmd)
 				{
+					case CommandType.AccpetConnect:
+						RaisePropertyChanged(nameof(SystemName));
+						break;
 					case CommandType.ChoosePlayer:
 						Data.CurrentPlayerIndex = int.Parse(command.Content);
 						break;
 					case CommandType.NavigateToRound:
-						Status = ProgramState.Playing;
-						switch (int.Parse(command.Content))
-						{
-							case 0:
-								GoBack();
-								break;
-							case 1:
-								switch (Data.ThisMacineType)
-								{
-									case Machine.MC:
-										Messenger.Default.Send(new NavigateToMessage(@"MCView\StartRoundMCView.xaml"));
-										break;
-									case Machine.Player:
-									case Machine.Viewer:
-										Messenger.Default.Send(new NavigateToMessage(@"StartRoundViewerPlayerPage.xaml"));
-										break;
-								}
-								break;
-							case 2:
-
-								break;
-							case 3:
-
-								break;
-
-						}
+						Messenger.Default.Send(Data.FromJosn<NavigateToMessage>(command.Content));
 						break;
 					case CommandType.EditScore:
 						Player data = Data.FromJosn<Player>(command.Content);
@@ -266,22 +241,21 @@ namespace KDCtrlLib.ViewModels
 
 		private void UpdateState(ChangeState m)
 		{
-			Application.Current.Dispatcher.Invoke(() =>
-			{
-				Status = m.State;
-			});
+			Status = m.State;
 		}
 
 		private void GoBack()
 		{
 			Application.Current.Dispatcher.Invoke(() =>
 			{
-				var x = NavigationStack.Pop();
-				Messenger.Default.Send(new ChangeState(x.Item2));
-				FrameSource = x.Item1;
+				var x = (NavigationStack.Count > 1) ? NavigationStack.Pop() : NavigationStack.Peek();
+				NetServer.SendCommandToAll(new KDCommand(CommandType.NavigateToRound, Data.ToJson(x)));
+				Status = x.State;
+				Data.CurrentRound = x.ID;
+				FrameSource = KDConvert.FindUri(x.ID);
 			});
-
 		}
+
 
 		private void NavigateTo(NavigateToMessage m)
 		{
@@ -293,8 +267,10 @@ namespace KDCtrlLib.ViewModels
 					FrameColumnSpan = 1;
 				}
 				ViewModelLocator.ReloadRound();
-				NavigationStack.Push(new Tuple<Uri, ProgramState>(FrameSource, Status));
-				FrameSource = m.Target;
+				if (FrameSource != null && Data.ThisMacineType == Machine.Server) 
+					NavigationStack.Push(new NavigateToMessage(KDConvert.UrlStringToID(FrameSource.ToString()), Status));
+				Status = m.State;
+				FrameSource = KDConvert.FindUri(m.ID);
 			});
 		}
 	}

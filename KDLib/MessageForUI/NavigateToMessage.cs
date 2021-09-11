@@ -1,12 +1,30 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+
 namespace KDLib.MessageForUI
 {
 	public class NavigateToMessage
 	{
-		public Uri Target { get; set; }
-		public NavigateToMessage(string target)
+		public int ID { get; private set; }
+		public ProgramState State { get; private set; }
+		public NavigateToMessage() : this (Data.CurrentRound, Data.Status)
 		{
-			Target = new Uri(@"pack://application:,,,/KDCtrlLib;component/Views/" + target);
+		}
+		public NavigateToMessage(int RoundID) : this (RoundID, Data.Status)
+		{
+		}
+		public NavigateToMessage(ProgramState state) : this(Data.CurrentRound, state)
+		{
+		}
+		[JsonConstructor]
+		public NavigateToMessage(int id, int state)
+		{
+			ID = id;
+			State = (ProgramState)state;
+		}
+		public NavigateToMessage(int RoundID, ProgramState state)
+		{
+			ID = RoundID;
+			State = state;
 		}
 	}
 }

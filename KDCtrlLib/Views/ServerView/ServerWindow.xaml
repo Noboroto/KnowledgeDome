@@ -225,7 +225,7 @@
 				<Button
 					Command="{Binding GoBackCnd}"
 					IsEnabled="{Binding IsPending}"
-					Content="{Binding Status}" />
+					Content="Trở về" />
 				<Button
 					Command="{Binding ResultCmd}"
 					IsEnabled="{Binding IsPending}"

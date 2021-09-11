@@ -13,6 +13,7 @@ namespace KDLib
 		private int _Score;
 		private Brush _BackgroundColor;
 		private Brush _ForegroundColor;
+		private bool _IsConnected;
 
 		[JsonIgnore]
 		public Brush BackgroundColor
@@ -69,6 +70,12 @@ namespace KDLib
 			}
 		}
 
+		public bool IsConnected
+		{
+			get => _IsConnected;
+			set => Set(ref _IsConnected, value);
+		}
+
 		private Player()
 		{
 			_Avatar = new byte[0];
@@ -86,8 +93,14 @@ namespace KDLib
 			Name = name;
 			SetBackground(backcode);
 			SetForeground(forecode);
-			if (File.Exists("Images\\Players\\" + ID.ToString() + ".png")) RawAvatar = File.ReadAllBytes("Images\\Players\\" + ID.ToString() + ".png");
-			else RawAvatar = File.ReadAllBytes("Images\\Players\\default.png");
+			if (File.Exists("Images\\Players\\" + ID.ToString() + ".png"))
+			{
+				RawAvatar = File.ReadAllBytes("Images\\Players\\" + ID.ToString() + ".png");
+			}
+			else
+			{
+				RawAvatar = File.ReadAllBytes("Images\\Players\\default.png");
+			}
 		}
 
 		public void SetBackground(Brush color)
@@ -101,15 +114,31 @@ namespace KDLib
 		}
 		public void SetBackground(string code)
 		{
-			if (string.IsNullOrEmpty(code)) return;
-			if (code[0] != '#') code = "#" + code;
+			if (string.IsNullOrEmpty(code))
+			{
+				return;
+			}
+
+			if (code[0] != '#')
+			{
+				code = "#" + code;
+			}
+
 			BackgroundColor = (Brush)new BrushConverter().ConvertFromString(code);
 		}
 
 		public void SetForeground(string code)
 		{
-			if (string.IsNullOrEmpty(code)) return;
-			if (code[0] != '#') code = "#" + code;
+			if (string.IsNullOrEmpty(code))
+			{
+				return;
+			}
+
+			if (code[0] != '#')
+			{
+				code = "#" + code;
+			}
+
 			ForegroundColor = (Brush)new BrushConverter().ConvertFromString(code);
 		}
 
@@ -124,7 +153,11 @@ namespace KDLib
 		}
 		public static Player ReadFromFile(string path = @"Tests\Player.json")
 		{
-			if (!File.Exists(path)) return null;
+			if (!File.Exists(path))
+			{
+				return null;
+			}
+
 			return FromJson(File.ReadAllText(path));
 		}
 
