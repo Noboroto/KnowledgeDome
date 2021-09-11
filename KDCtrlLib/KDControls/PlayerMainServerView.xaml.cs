@@ -1,4 +1,7 @@
-﻿using KDLib;
+﻿using GalaSoft.MvvmLight.Messaging;
+
+using KDLib;
+using KDLib.MessageForUI;
 
 using System;
 using System.Windows.Controls;
@@ -30,6 +33,7 @@ namespace KDCtrlLib.KDControls
 				{
 					PlayerData.Score = int.Parse(EditScore.Text);
 					NetServer.SendCommandToAll(new KDCommand(CommandType.EditScore, PlayerData.ToJson()));
+					Messenger.Default.Send(new LogMess(KDLogger.Info($"Cập nhật điểm {PlayerData.Name} thành {PlayerData.Score}", LogType.Player)));
 				}
 			}
 			catch (ArgumentNullException)

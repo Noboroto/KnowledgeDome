@@ -95,7 +95,12 @@ namespace KDCtrlLib.ViewModels
 			StartTimerCmd = new RelayCommand(() => TimerStart());
 			RightCmd = new RelayCommand(() => RightAns());
 			WrongCmd = new RelayCommand(() => WrongAns());
-			SoundCmd = new RelayCommand(() => { return; });
+			SoundCmd = new RelayCommand(() =>
+			{
+
+				Messenger.Default.Send(new LogMess(KDLogger.Info($"Chạy âm thanh cho câu {CurrentQuestion.ID}")));
+			});
+			
 			StopCmd = new RelayCommand(() =>
 			{
 				var res = MessageBox.Show("Bạn có muốn dừng khẩn cấp không?", "Dừng khẩn cấp", MessageBoxButton.YesNo, MessageBoxImage.Stop);
@@ -149,15 +154,16 @@ namespace KDCtrlLib.ViewModels
 			var tmp = source[index];
 			source.RemoveAt(index);
 			NetServer.SendCommandToAll(new KDCommand(CommandType.NextQuestAt, index.ToString()));
+			Messenger.Default.Send(new LogMess(KDLogger.Info($"ID: {tmp.ID}\nLĩnh vực: {tmp.SubjectName}\nCâu hỏi: {tmp.Content}\nĐáp án: {tmp.Answer}")));
 			StoreItemCounter = source.Count;
 			return tmp;
 		}
 
 		private void OutOfQuestion()
 		{
-			MessageBox.Show("Đã hết câu hỏi");
 			Messenger.Default.Send(new ChangeState(ProgramState.Pending));
-			cancellation.Cancel();
+			Messenger.Default.Send(new LogMess(KDLogger.Warn("Đã hểt câu hỏi!")));
+			TimerStop();
 		}
 
 		private void RightAns()
@@ -170,6 +176,7 @@ namespace KDCtrlLib.ViewModels
 			CurrentPlayer.Score += 10;
 			QuestCount++;
 			CurrentQuestion = GetNewQuestion(Data.StartQuestions);
+			Messenger.Default.Send(new LogMess(KDLogger.Info($"Đúng, điểm của {CurrentPlayer.Name} là {CurrentPlayer.Score}", LogType.Player)));
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Right));
 		}
 
@@ -182,6 +189,7 @@ namespace KDCtrlLib.ViewModels
 			}
 			QuestCount++;
 			CurrentQuestion = GetNewQuestion(Data.StartQuestions);
+			Messenger.Default.Send(new LogMess(KDLogger.Info($"Sai, điểm của {CurrentPlayer.Name} là {CurrentPlayer.Score}", LogType.Player)));
 			NetServer.SendCommandToAll(new KDCommand(CommandType.Wrong));
 		}
 
