@@ -63,6 +63,7 @@ namespace KDLib
 						switch (command.PrefixCmd)
 						{
 							case CommandType.MCToMC:
+							case CommandType.ServerToMC:
 							case CommandType.EditScore:
 							case CommandType.ChoosePlayer:
 							case CommandType.NavigateToRound:

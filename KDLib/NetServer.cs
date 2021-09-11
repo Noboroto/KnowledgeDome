@@ -106,7 +106,7 @@ namespace KDLib
 							case CommandType.AskForConnect:
 								Data.NetCommands.Enqueue(command);
 								break;
-							case CommandType.ServerToMC:
+							case CommandType.MCToServer:
 							case CommandType.MCToMC:
 								Data.FrameCommands.Enqueue(command);
 								break;
