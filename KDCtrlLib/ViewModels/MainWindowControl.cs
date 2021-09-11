@@ -94,6 +94,8 @@ namespace KDCtrlLib.ViewModels
 		public ICommand GoBackCnd { get; set; }
 		public ICommand ResultCmd { get; set; }
 		public ICommand StartExtraCmd { get; set; }
+		public ICommand LogAutoScrollToBottomCmd { get; set; }
+		public ICommand ChatAutoScrollToBottomCmd { get; set; }
 		#endregion
 
 		public MainWindowControl()
@@ -181,6 +183,23 @@ namespace KDCtrlLib.ViewModels
 			GoBackCnd = new RelayCommand(() =>
 			{
 				GoBack();
+			});
+			LogAutoScrollToBottomCmd = new RelayCommand<ScrollChangedEventArgs>((e) =>
+			{
+				var sender = e.Source as ScrollViewer;
+				if (e.ExtentHeightChange != 0)
+				{
+					sender.ScrollToEnd();
+				}
+			});
+
+			ChatAutoScrollToBottomCmd = new RelayCommand<ScrollChangedEventArgs>((e) =>
+			{
+				var sender = e.Source as ScrollViewer;
+				if (e.ExtentHeightChange != 0)
+				{
+					sender.ScrollToEnd();
+				}
 			});
 			#endregion
 		}
