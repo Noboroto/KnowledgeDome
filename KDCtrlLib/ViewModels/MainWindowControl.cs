@@ -116,7 +116,7 @@ namespace KDCtrlLib.ViewModels
 			#region Server
 			if (Data.ThisMacineType == Machine.Server)
 			{
-				Messenger.Default.Send(new NavigateToMessage(0));
+				Messenger.Default.Send(new NavigateToMessage(1));
 				Messenger.Default.Register<LogMess>(this, t => AddLog(t));
 				Messenger.Default.Send(new LogMess(KDLogger.Info("Start")));
 			}

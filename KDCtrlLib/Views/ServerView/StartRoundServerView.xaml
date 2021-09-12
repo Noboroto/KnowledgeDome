@@ -73,6 +73,19 @@
 					ScaleY="1.2" />
 			</control:AvatarPlayerSingleView.RenderTransform>
 		</control:AvatarPlayerSingleView>
+		<Image
+			Name="QuestImage"
+			Grid.ColumnSpan="2"
+			VerticalAlignment="Center"
+			HorizontalAlignment="Center"
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="600"
+			MinWidth="600"
+			MaxWidth="1067"
+			Source="E:\Github\KnowledgeDome\Data\Images\demo.jpg"
+			RenderOptions.BitmapScalingMode="Fant"
+			Stretch="Uniform" />
 		<materialDesign:Card
 			Grid.Row="3"
 			x:Name="QuestionCard"
