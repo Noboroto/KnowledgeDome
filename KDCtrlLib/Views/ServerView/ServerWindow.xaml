@@ -24,7 +24,10 @@
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition
-				Width="5*" />
+				Width="auto"
+				/>
+			<ColumnDefinition
+				Width="6*" />
 			<ColumnDefinition
 				Width="5" />
 			<ColumnDefinition
@@ -41,23 +44,23 @@
 		<Frame
 			Source="{Binding FrameSource}"
 			NavigationUIVisibility="Hidden"
-			Grid.Column="0"
+			Grid.Column="1"
 			Grid.Row="0"
 			Grid.RowSpan="3" />
 		<GridSplitter
-			Grid.Column="1"
+			Grid.Column="2"
 			Grid.RowSpan="3"
 			Width="5"
 			HorizontalAlignment="Stretch" />
 		<GridSplitter
 			Height="5"
-			Grid.Column="2"
+			Grid.Column="3"
 			Grid.Row="1"
 			HorizontalAlignment="Stretch" />
 		<Grid
 			Margin="10"
-			Grid.Column="2"
-			Grid.Row="0"
+			Grid.Column="3"
+			Grid.Row="2"
 			HorizontalAlignment="Stretch"
 			VerticalAlignment="Stretch">
 			<Grid.RowDefinitions>
@@ -158,8 +161,8 @@
 			</TextBox>
 		</Grid>
 		<ListBox
-			Grid.Column="2"
-			Grid.Row="2"
+			Grid.Column="3"
+			Grid.Row="0"
 			FontFamily="Segoe UI"
 			IsTextSearchEnabled="False"
 			FontSize="18"
@@ -226,7 +229,7 @@
 		<Expander
 			IsExpanded="True"
 			Grid.RowSpan="5"
-			VerticalAlignment="Top"
+			VerticalAlignment="Center"
 			Grid.Row="0"
 			HorizontalAlignment="Left"
 			Grid.Column="0"
