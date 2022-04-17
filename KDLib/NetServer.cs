@@ -71,7 +71,7 @@ namespace KDLib
 						TCPClients.Add(new ClientInfo(client, pos));
 						SendCommandToOne(pos, new KDCommand(CommandType.ConfirmIP, RemoteIP, pos, pos.ToString()));
 						SendCommandToOne(pos, new KDCommand(CommandType.ClientList, Data.CurrentMatchIndex.ToString()));
-						Messenger.Default.Send(new LogMess(KDLogger.Info($"{RemoteIP};{pos} đã kết nối")));
+						Messenger.Default.Send(new LogMess(KDLogger.Info($"{RemoteIP}; {pos} đã kết nối")));
 						ListenFromClient(pos);
 					}
 				}
