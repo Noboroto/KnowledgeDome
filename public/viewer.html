@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Viewer / Sân khấu — Olympia Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23f5b301'/><text x='50' y='68' font-size='55' font-weight='bold' text-anchor='middle' fill='%230a1128'>O</text></svg>">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  body { overflow-x: hidden; }
+  .stage-wrap {
+    max-width: 1400px; margin: 0 auto; padding: var(--sp-4);
+    display: grid; grid-template-columns: 1fr 320px; gap: var(--sp-4);
+    min-height: 100vh; align-content: start;
+  }
+  @media (max-width: 900px) { .stage-wrap { grid-template-columns: 1fr; } }
+
+  /* ---------- Banner vòng thi ---------- */
+  .round-banner {
+    grid-column: 1 / -1; text-align: center; padding: var(--sp-3);
+    border-radius: var(--r-lg); border: var(--border-1);
+    background: var(--grad-panel); overflow: hidden; position: relative;
+  }
+  .round-banner h1 {
+    font-size: clamp(1.3rem, 3.5vw, 2.2rem); font-weight: 900; letter-spacing: .08em;
+    background: var(--grad-gold); -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: slide-up var(--dur-med) var(--ease-out);
+  }
+  .round-banner .sub { color: var(--text-2); font-size: var(--fs-sm); }
+
+  /* ---------- Sân khấu chính ---------- */
+  .stage {
+    position: relative; border-radius: var(--r-xl); border: var(--border-1);
+    background: radial-gradient(1200px 500px at 50% -10%, rgba(77,141,255,.18), transparent 60%), var(--navy-950);
+    min-height: 560px; padding: var(--sp-5); overflow: hidden;
+  }
+  .view { display: none; animation: slide-up var(--dur-slow) var(--ease-out); }
+  .view.is-active { display: block; }
+
+  /* ---------- Câu hỏi + timer tròn (Khởi động / chung) ---------- */
+  .q-card {
+    background: rgba(255,255,255,.05); border: var(--border-2); border-radius: var(--r-lg);
+    padding: var(--sp-5); font-size: clamp(1.1rem, 2.4vw, 1.6rem); font-weight: 600;
+    animation: q-slide var(--dur-slow) var(--ease-spring);
+  }
+  @keyframes q-slide { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: none; } }
+  .ring-wrap { display: flex; justify-content: center; margin: var(--sp-5) 0; }
+  .ring { width: 150px; height: 150px; position: relative; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 10; }
+  .ring .bg { stroke: rgba(255,255,255,.1); }
+  .ring .fg { stroke: var(--gold); stroke-linecap: round; transition: stroke-dashoffset .1s linear, stroke var(--dur-fast); }
+  .ring.is-urgent .fg { stroke: var(--red); }
+  .ring__num {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: var(--fs-2xl); font-weight: 900; font-variant-numeric: tabular-nums;
+  }
+  .buzz-banner {
+    text-align: center; padding: var(--sp-4); border-radius: var(--r-lg);
+    font-size: var(--fs-xl); font-weight: 900; opacity: 0; transform: scale(.8);
+    transition: all var(--dur-med) var(--ease-spring);
+  }
+  .buzz-banner.is-on {
+    opacity: 1; transform: scale(1);
+    background: rgba(255,201,60,.14); color: var(--gold);
+    box-shadow: var(--shadow-gold); border: 1px solid var(--gold-dim);
+    animation: flash-green var(--dur-slow) var(--ease-out);
+  }
+
+  /* ---------- VCNV ---------- */
+  .vcnv-grid { display: grid; grid-template-columns: 1fr 260px; gap: var(--sp-5); }
+  @media (max-width: 720px) { .vcnv-grid { grid-template-columns: 1fr; } }
+  .vcnv-rows { display: grid; gap: var(--sp-3); align-content: start; }
+  .vcnv-row { display: flex; gap: 4px; align-items: center; }
+  .vcnv-row__num {
+    width: 34px; height: 44px; display: flex; align-items: center; justify-content: center;
+    background: var(--purple); border-radius: var(--r-sm); font-weight: 800; flex-shrink: 0;
+  }
+  .cell {
+    width: 38px; height: 44px; perspective: 400px; flex-shrink: 0;
+  }
+  .cell__inner {
+    width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+    transition: transform var(--dur-slow) var(--ease-in-out);
+  }
+  .cell.is-flipped .cell__inner { transform: rotateX(180deg); }
+  .cell__face {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    backface-visibility: hidden; border-radius: var(--r-sm); font-weight: 900; font-size: var(--fs-lg);
+  }
+  .cell__face--front { background: var(--navy-600); }
+  .cell__face--back { background: var(--grad-gold); color: var(--text-on-gold); transform: rotateX(180deg); }
+  /* Ảnh CNV: 5 miếng ghép (4 góc + trung tâm) */
+  .obstacle { position: relative; aspect-ratio: 1; border-radius: var(--r-lg); overflow: hidden; border: var(--border-2); }
+  .obstacle__img {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 30% 30%, #2a6b9e, transparent 50%),
+      radial-gradient(circle at 70% 60%, #1f8a70, transparent 55%),
+      linear-gradient(140deg, #123456, #0b6e4f 70%);
+  }
+  .obstacle__label {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-weight: 900; color: rgba(255,255,255,.85); letter-spacing: .1em; font-size: var(--fs-sm); text-align: center;
+  }
+  .piece {
+    position: absolute; background: var(--navy-700); border: 1px solid rgba(255,255,255,.12);
+    display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: var(--fs-xl); color: var(--text-3);
+    transition: opacity var(--dur-epic) var(--ease-out), transform var(--dur-epic) var(--ease-out);
+  }
+  .piece--1 { top: 0; left: 0; width: 50%; height: 50%; }
+  .piece--2 { top: 0; right: 0; width: 50%; height: 50%; }
+  .piece--3 { bottom: 0; left: 0; width: 50%; height: 50%; }
+  .piece--4 { bottom: 0; right: 0; width: 50%; height: 50%; }
+  .piece--5 { top: 25%; left: 25%; width: 50%; height: 50%; z-index: 2; border-radius: var(--r-md); }
+  .piece.is-open { opacity: 0; transform: scale(1.15); pointer-events: none; }
+  /* Hiệu ứng CNV được giải — toàn màn */
+  .solve-overlay {
+    position: fixed; inset: 0; z-index: 80; display: none;
+    align-items: center; justify-content: center; flex-direction: column; gap: var(--sp-3);
+    background: radial-gradient(circle at center, rgba(255,201,60,.25), rgba(6,11,29,.94) 70%);
+  }
+  .solve-overlay.is-on { display: flex; }
+  .solve-overlay .word {
+    font-size: clamp(2.4rem, 8vw, 5.5rem); font-weight: 900; letter-spacing: .12em;
+    background: var(--grad-gold); -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: pop-in var(--dur-epic) var(--ease-spring);
+    text-shadow: 0 0 60px var(--gold-glow);
+  }
+  .solve-overlay .who { color: var(--text-1); font-size: var(--fs-xl); animation: slide-up var(--dur-slow) var(--ease-out) .3s backwards; }
+
+  /* ---------- Tăng tốc ---------- */
+  .tt-count {
+    text-align: center; font-size: var(--fs-huge); font-weight: 900;
+    font-variant-numeric: tabular-nums; color: var(--orange); line-height: 1;
+    margin-bottom: var(--sp-4);
+  }
+  .tt-count.is-urgent { color: var(--red); animation: pulse-danger .5s infinite; }
+  .tt-lanes { display: grid; gap: var(--sp-3); }
+  .tt-lane {
+    display: flex; align-items: center; gap: var(--sp-3);
+    background: rgba(255,255,255,.05); border: var(--border-1); border-radius: var(--r-md);
+    padding: var(--sp-2) var(--sp-4); min-height: 60px;
+    transition: border-color var(--dur-med), background var(--dur-med);
+  }
+  .tt-lane.is-answered { border-color: var(--blue); background: rgba(77,141,255,.1); }
+  .tt-lane__order { font-weight: 800; color: var(--text-2); min-width: 90px; }
+  .tt-points {
+    margin-left: auto; font-size: var(--fs-xl); font-weight: 900; color: var(--gold);
+    opacity: 0; transform: translateX(60px) scale(.6);
+  }
+  .tt-points.fly-in {
+    animation: pts-fly var(--dur-slow) var(--ease-spring) forwards;
+  }
+  @keyframes pts-fly { to { opacity: 1; transform: none; } }
+
+  /* ---------- Về đích ---------- */
+  .vd-packs { display: flex; gap: var(--sp-4); justify-content: center; margin-bottom: var(--sp-5); }
+  .vd-pack {
+    width: 160px; padding: var(--sp-5); text-align: center;
+    border: var(--border-2); border-radius: var(--r-lg); background: rgba(255,255,255,.04);
+    font-weight: 900; font-size: var(--fs-2xl);
+    transition: all var(--dur-med) var(--ease-spring);
+  }
+  .vd-pack .sub { display: block; font-size: var(--fs-sm); font-weight: 600; color: var(--text-2); }
+  .vd-pack.is-picked {
+    background: var(--grad-gold); color: var(--text-on-gold);
+    transform: scale(1.08) translateY(-4px); box-shadow: var(--shadow-gold); border-color: transparent;
+  }
+  .vd-pack.is-picked .sub { color: var(--text-on-gold); }
+  .star-anim {
+    display: none; text-align: center; margin: var(--sp-4) 0;
+  }
+  .star-anim.is-on { display: block; }
+  .star-anim .star {
+    display: inline-block; font-size: var(--fs-4xl);
+    animation: star-spin var(--dur-epic) var(--ease-spring), pop-in var(--dur-epic) var(--ease-spring);
+    filter: drop-shadow(0 0 24px var(--gold-glow));
+  }
+  @keyframes star-spin { from { transform: rotate(-360deg) scale(0); } to { transform: none; } }
+  .star-anim .label { color: var(--gold); font-weight: 900; letter-spacing: .15em; font-size: var(--fs-lg); }
+  .steal-flash {
+    display: none; text-align: center; padding: var(--sp-4); border-radius: var(--r-lg);
+    font-weight: 900; font-size: var(--fs-xl); color: #fff;
+    background: linear-gradient(90deg, var(--red-dim), var(--red), var(--red-dim));
+  }
+  .steal-flash.is-on { display: block; animation: steal-strobe .8s var(--ease-out) 2; }
+  @keyframes steal-strobe { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.8); } }
+
+  /* ---------- Podium + confetti ---------- */
+  .podium { display: flex; align-items: flex-end; justify-content: center; gap: var(--sp-3); min-height: 340px; padding-top: var(--sp-6); }
+  .podium__col { text-align: center; width: min(140px, 22%); }
+  .podium__bar {
+    border-radius: var(--r-md) var(--r-md) 0 0;
+    background: var(--grad-blue); display: flex; align-items: flex-start; justify-content: center;
+    padding-top: var(--sp-2); font-weight: 900; font-size: var(--fs-xl);
+    transform-origin: bottom; animation: podium-rise var(--dur-epic) var(--ease-spring) backwards;
+  }
+  .podium__col.is-champ .podium__bar { background: var(--grad-gold); color: var(--text-on-gold); box-shadow: var(--shadow-gold); }
+  @keyframes podium-rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  .podium__name { margin-top: var(--sp-2); font-weight: 700; font-size: var(--fs-sm); }
+  .podium__score { color: var(--gold); font-weight: 900; }
+  .confetti-piece {
+    position: fixed; top: -20px; z-index: 85; pointer-events: none;
+    width: 10px; height: 16px; border-radius: 2px;
+    animation: confetti-fall linear forwards;
+  }
+  @keyframes confetti-fall {
+    to { transform: translateY(110vh) rotate(720deg); opacity: .6; }
+  }
+
+  /* ---------- Bảng điểm ---------- */
+  .scoreboard { display: grid; gap: var(--sp-3); align-content: start; }
+  .sb-item {
+    position: relative; padding: var(--sp-3); border-radius: var(--r-lg);
+    background: var(--grad-panel); border: var(--border-1); overflow: hidden;
+    transition: border-color var(--dur-med), box-shadow var(--dur-med);
+  }
+  .sb-item.is-leader { border-color: var(--gold-dim); box-shadow: var(--shadow-gold); }
+  .sb-item.is-leader::after {
+    content: "👑"; position: absolute; top: 6px; right: 10px; font-size: var(--fs-md);
+  }
+  .sb-item__row { display: flex; align-items: center; gap: var(--sp-2); }
+  .sb-item__name { font-weight: 700; font-size: var(--fs-sm); line-height: 1.2; }
+  .sb-item__school { color: var(--text-3); font-size: var(--fs-xs); }
+  .sb-item__score {
+    margin-left: auto; font-size: var(--fs-xl); font-weight: 900; color: var(--gold);
+    font-variant-numeric: tabular-nums;
+  }
+  .sb-item__score.bump-up { animation: pop-in var(--dur-med) var(--ease-spring); }
+  .sb-item__score.bump-down { color: var(--red); animation: shake-red 400ms; }
+  .sb-bar { height: 8px; border-radius: var(--r-full); background: rgba(255,255,255,.08); margin-top: var(--sp-2); overflow: hidden; }
+  .sb-bar__fill {
+    height: 100%; border-radius: var(--r-full); width: 0%;
+    transition: width var(--dur-slow) var(--ease-out);
+  }
+  .delta-float {
+    position: absolute; right: 12px; top: 6px; font-weight: 900; pointer-events: none;
+    animation: delta-up var(--dur-epic) var(--ease-out) forwards;
+  }
+  @keyframes delta-up { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-26px); } }
+</style>
+</head>
+<body>
+<div class="stage-wrap">
+  <!-- Banner vòng thi -->
+  <header class="round-banner">
+    <h1 id="roundTitle">OLYMPIA CONTEST SYSTEM</h1>
+    <div class="sub" id="roundSub">Màn hình viewer / khán giả — phòng <span class="mono text-gold" id="roomCode"></span></div>
+  </header>
+
+  <!-- Sân khấu -->
+  <main class="stage" id="stage">
+    <!-- View: câu hỏi chung (khởi động) -->
+    <section class="view" id="viewQuestion">
+      <div class="q-card" id="qCard">Câu hỏi sẽ hiện ở đây…</div>
+      <div class="ring-wrap">
+        <div class="ring" id="ring">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle class="bg" cx="75" cy="75" r="66"></circle>
+            <circle class="fg" id="ringFg" cx="75" cy="75" r="66"
+                    stroke-dasharray="414.7" stroke-dashoffset="0"></circle>
+          </svg>
+          <div class="ring__num" id="ringNum">--</div>
+        </div>
+      </div>
+      <div class="buzz-banner" id="buzzBanner">🔔 —</div>
+    </section>
+
+    <!-- View: VCNV -->
+    <section class="view" id="viewVcnv">
+      <div class="vcnv-grid">
+        <div class="vcnv-rows" id="vcnvRows"></div>
+        <div>
+          <div class="obstacle" aria-label="Ảnh chướng ngại vật (5 miếng ghép)">
+            <div class="obstacle__img"></div>
+            <div class="obstacle__label">ẢNH GỢI Ý<br>CHƯỚNG NGẠI VẬT</div>
+            <div class="piece piece--1" data-piece="1">1</div>
+            <div class="piece piece--2" data-piece="2">2</div>
+            <div class="piece piece--3" data-piece="3">3</div>
+            <div class="piece piece--4" data-piece="4">4</div>
+            <div class="piece piece--5" data-piece="5">★</div>
+          </div>
+          <p class="text-dim" style="font-size:var(--fs-xs); margin-top:var(--sp-2)">
+            Mỗi hàng ngang đúng → mở 1 miếng ghép. Sai CNV → bị loại.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- View: Tăng tốc -->
+    <section class="view" id="viewTangToc">
+      <div class="tt-count" id="ttCount">40</div>
+      <div class="q-card" id="ttQuestion" style="margin-bottom:var(--sp-4)"></div>
+      <div class="tt-lanes" id="ttLanes"></div>
+    </section>
+
+    <!-- View: Về đích -->
+    <section class="view" id="viewVeDich">
+      <div class="vd-packs">
+        <div class="vd-pack" id="pack20">20 <span class="sub">điểm · 15 giây</span></div>
+        <div class="vd-pack" id="pack30">30 <span class="sub">điểm · 20 giây</span></div>
+      </div>
+      <div class="star-anim" id="starAnim">
+        <span class="star">⭐</span>
+        <div class="label">NGÔI SAO HY VỌNG — ĐÚNG ×2 · SAI −GIÁ TRỊ</div>
+      </div>
+      <div class="q-card" id="vdQuestion" hidden></div>
+      <div class="ring-wrap">
+        <div class="ring" id="ring2">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle class="bg" cx="75" cy="75" r="66"></circle>
+            <circle class="fg" id="ring2Fg" cx="75" cy="75" r="66"
+                    stroke-dasharray="414.7" stroke-dashoffset="0"></circle>
+          </svg>
+          <div class="ring__num" id="ring2Num">--</div>
+        </div>
+      </div>
+      <div class="steal-flash" id="stealFlash">⚡ CƯỚP QUYỀN TRẢ LỜI — 5 GIÂY!</div>
+    </section>
+
+    <!-- View: Kết thúc / podium -->
+    <section class="view" id="viewFinish">
+      <div class="podium" id="podium"></div>
+    </section>
+  </main>
+
+  <!-- Bảng điểm -->
+  <aside class="scoreboard" id="scoreboard" aria-label="Bảng điểm"></aside>
+</div>
+
+<!-- Overlay "CNV được giải" toàn màn -->
+<div class="solve-overlay" id="solveOverlay">
+  <div class="word" id="solveWord">TRƯỜNG SA</div>
+  <div class="who" id="solveWho"></div>
+</div>
+
+<!-- Panel demo: kịch bản -->
+<aside class="demo-panel" id="demoPanel">
+  <div class="demo-panel__head" id="demoToggle">🎬 Kịch bản demo <span>▾</span></div>
+  <div class="demo-panel__body">
+    <button class="btn btn--sm btn--gold" id="btnPlay">▶ Play kịch bản tự động <span class="kbd">P</span></button>
+    <button class="btn btn--sm" id="btnStep">⏭ Bước kế tiếp <span class="kbd">→</span></button>
+    <button class="btn btn--sm btn--ghost" id="btnReset">↺ Reset</button>
+    <div class="text-dim" id="stepLabel" style="font-size:var(--fs-xs)">Bước 0/0 — sẵn sàng</div>
+  </div>
+</aside>
+
+<script src="assets/mock-data.js"></script>
+<script src="assets/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  var E = window.Engine, M = window.MOCK;
+  var $ = function (id) { return document.getElementById(id); };
+  $("roomCode").textContent = M.roomCode;
+
+  /* ============ BẢNG ĐIỂM ============ */
+  var MAX_BAR = 250; // điểm quy chiếu độ dài thanh
+  var sbEls = {};
+  M.contestants.forEach(function (c) {
+    var el = document.createElement("div");
+    el.className = "sb-item"; el.id = "sb-" + c.id;
+    el.innerHTML =
+      '<div class="sb-item__row">' +
+        '<span class="avatar" style="background:' + c.color + '">' + c.name.trim().split(" ").pop()[0] + '</span>' +
+        '<div><div class="sb-item__name">' + c.name + '</div>' +
+        '<div class="sb-item__school">' + c.school + '</div></div>' +
+        '<div class="sb-item__score" data-score="0">0</div></div>' +
+      '<div class="sb-bar"><div class="sb-bar__fill" style="background:' + c.color + '"></div></div>';
+    $("scoreboard").appendChild(el);
+    sbEls[c.id] = el;
+  });
+
+  /* Số điểm đếm lăn (count-up) */
+  function countUp(el, from, to, dur) {
+    var t0 = performance.now();
+    (function frame(now) {
+      var p = Math.min(1, (now - t0) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(from + (to - from) * eased);
+      if (p < 1) requestAnimationFrame(frame);
+    })(t0);
+  }
+
+  E.on("score:change", function (d) {
+    var el = sbEls[d.cid]; if (!el) return;
+    var scoreEl = el.querySelector(".sb-item__score");
+    var from = +scoreEl.dataset.score;
+    scoreEl.dataset.score = d.score;
+    countUp(scoreEl, from, d.score, 700);
+    scoreEl.classList.remove("bump-up", "bump-down");
+    void scoreEl.offsetWidth; // restart animation
+    scoreEl.classList.add(d.delta >= 0 ? "bump-up" : "bump-down");
+    el.querySelector(".sb-bar__fill").style.width = Math.min(100, d.score / MAX_BAR * 100) + "%";
+    /* +/− bay lên */
+    var f = document.createElement("div");
+    f.className = "delta-float";
+    f.style.color = d.delta >= 0 ? "var(--green)" : "var(--red)";
+    f.textContent = (d.delta >= 0 ? "+" : "") + d.delta;
+    el.appendChild(f);
+    setTimeout(function () { f.remove(); }, 1300);
+    updateLeader();
+  });
+
+  function updateLeader() {
+    var top = E.ranking()[0];
+    var topScore = E.state.scores[top.id];
+    M.contestants.forEach(function (c) {
+      sbEls[c.id].classList.toggle("is-leader",
+        c.id === top.id && topScore > 0);
+    });
+  }
+
+  /* ============ TIMER TRÒN ============ */
+  var CIRC = 414.7;
+  function bindRing(fgId, numId, ringId) {
+    E.on("timer:tick", function (t) {
+      var ratio = t.total ? t.remaining / t.total : 0;
+      $(fgId).style.strokeDashoffset = String(CIRC * (1 - ratio));
+      $(numId).textContent = Math.ceil(t.remaining);
+      $(ringId).classList.toggle("is-urgent", t.remaining <= 5 && t.remaining > 0);
+    });
+  }
+  bindRing("ringFg", "ringNum", "ring");
+  bindRing("ring2Fg", "ring2Num", "ring2");
+
+  /* ============ CHUYỂN VIEW ============ */
+  var views = ["viewQuestion", "viewVcnv", "viewTangToc", "viewVeDich", "viewFinish"];
+  function showView(id) {
+    views.forEach(function (v) { $(v).classList.toggle("is-active", v === id); });
+  }
+  function setRound(title, sub) {
+    var h = $("roundTitle");
+    h.textContent = title;
+    h.style.animation = "none"; void h.offsetWidth;
+    h.style.animation = "";
+    $("roundSub").textContent = sub || "";
+  }
+
+  /* ============ KHỞI ĐỘNG: câu hỏi trượt vào + chuông ============ */
+  function showQuestion(text) {
+    var q = $("qCard");
+    q.style.animation = "none"; void q.offsetWidth; q.style.animation = "";
+    q.textContent = text;
+    $("buzzBanner").classList.remove("is-on");
+  }
+  E.on("buzz:won", function (d) {
+    var b = $("buzzBanner");
+    b.innerHTML = "🔔 <strong>" + d.name + "</strong> giành quyền trả lời!";
+    b.classList.remove("is-on"); void b.offsetWidth;
+    b.classList.add("is-on"); // tên thí sinh sáng lên
+    var sb = sbEls[d.cid];
+    sb.classList.add("anim-flash-green");
+    setTimeout(function () { sb.classList.remove("anim-flash-green"); }, 800);
+  });
+
+  /* ============ VCNV: lưới ô chữ + miếng ghép ============ */
+  function buildVcnv() {
+    var wrap = $("vcnvRows"); wrap.innerHTML = "";
+    M.questions.vcnv.rows.forEach(function (row) {
+      var div = document.createElement("div");
+      div.className = "vcnv-row"; div.id = "vrow-" + row.index;
+      var html = '<span class="vcnv-row__num">' + row.index + "</span>";
+      row.answer.split("").forEach(function (ch) {
+        if (ch === " ") { html += '<span style="width:14px"></span>'; return; }
+        html += '<span class="cell"><span class="cell__inner">' +
+          '<span class="cell__face cell__face--front">?</span>' +
+          '<span class="cell__face cell__face--back">' + ch + "</span>" +
+          "</span></span>";
+      });
+      div.innerHTML = html;
+      wrap.appendChild(div);
+    });
+    document.querySelectorAll(".piece").forEach(function (p) { p.classList.remove("is-open"); });
+  }
+  /* Lật từng ô của 1 hàng (stagger flip 3D) */
+  function flipRow(n) {
+    var cells = document.querySelectorAll("#vrow-" + n + " .cell");
+    cells.forEach(function (c, i) {
+      setTimeout(function () { c.classList.add("is-flipped"); }, i * 90);
+    });
+  }
+  E.on("vcnv:open", function (d) {
+    var p = document.querySelector('.piece[data-piece="' + d.opened + '"]');
+    if (p) p.classList.add("is-open"); // mở miếng ghép
+  });
+  E.on("vcnv:solved", function (d) {
+    var c = E.getContestant(d.cid);
+    $("solveWord").textContent = M.questions.vcnv.obstacle.answer;
+    $("solveWho").textContent = c.name + " giải mã thành công · +" + d.points + " điểm";
+    $("solveOverlay").classList.add("is-on");
+    burstConfetti(60);
+    setTimeout(function () { $("solveOverlay").classList.remove("is-on"); }, 3200);
+  });
+  E.on("vcnv:eliminated", function (d) {
+    var sb = sbEls[d.cid];
+    sb.classList.add("anim-shake-red");
+    sb.style.opacity = ".45";
+    setTimeout(function () { sb.classList.remove("anim-shake-red"); }, 500);
+  });
+
+  /* ============ TĂNG TỐC ============ */
+  function buildTangTocLanes() {
+    var wrap = $("ttLanes"); wrap.innerHTML = "";
+    M.contestants.forEach(function (c) {
+      var el = document.createElement("div");
+      el.className = "tt-lane"; el.id = "lane-" + c.id;
+      el.innerHTML =
+        '<span class="avatar" style="background:' + c.color + '">' + c.name.trim().split(" ").pop()[0] + "</span>" +
+        '<div><div class="sb-item__name">' + c.name + '</div>' +
+        '<div class="tt-lane__order text-dim" style="font-size:var(--fs-xs)">—</div></div>' +
+        '<span class="tt-points">+0</span>';
+      wrap.appendChild(el);
+    });
+  }
+  E.on("tangtoc:result", function (d) {
+    d.ranked.forEach(function (r, i) {
+      var lane = $("lane-" + r.cid);
+      lane.classList.add("is-answered");
+      lane.querySelector(".tt-lane__order").textContent =
+        "Hạng " + r.rank + " · " + (r.ms / 1000).toFixed(2) + "s";
+      var pts = lane.querySelector(".tt-points");
+      pts.textContent = "+" + r.points;
+      setTimeout(function () { pts.classList.add("fly-in"); }, 350 * i); // điểm bay vào lần lượt
+    });
+  });
+  /* Countdown lớn của tăng tốc */
+  E.on("timer:tick", function (t) {
+    if (!$("viewTangToc").classList.contains("is-active")) return;
+    $("ttCount").textContent = Math.ceil(t.remaining);
+    $("ttCount").classList.toggle("is-urgent", t.remaining <= 5 && t.remaining > 0);
+  });
+
+  /* ============ VỀ ĐÍCH ============ */
+  function pickPack(v) {
+    $("pack20").classList.toggle("is-picked", v === 20);
+    $("pack30").classList.toggle("is-picked", v === 30);
+  }
+  E.on("star:used", function () {
+    var s = $("starAnim");
+    s.classList.remove("is-on"); void s.offsetWidth;
+    s.classList.add("is-on"); // sao vàng xoay + pop
+  });
+  E.on("vedich:steal-open", function () {
+    var f = $("stealFlash");
+    f.classList.remove("is-on"); void f.offsetWidth;
+    f.classList.add("is-on"); // flash chuyển lượt
+    setTimeout(function () { f.classList.remove("is-on"); }, 2600);
+  });
+
+  /* ============ PODIUM + CONFETTI ============ */
+  function showPodium() {
+    showView("viewFinish");
+    setRound("CHUNG CUỘC", "Xin chúc mừng nhà vô địch!");
+    var order = E.ranking(); // giảm dần
+    var layout = [order[1], order[0], order[2], order[3]]; // 2-1-3-4
+    var heights = [180, 240, 140, 100];
+    var ranks = [2, 1, 3, 4];
+    var pod = $("podium"); pod.innerHTML = "";
+    layout.forEach(function (c, i) {
+      var col = document.createElement("div");
+      col.className = "podium__col" + (ranks[i] === 1 ? " is-champ" : "");
+      col.innerHTML =
+        '<div class="avatar" style="background:' + c.color + ';margin:0 auto var(--sp-2)">' + c.name.trim().split(" ").pop()[0] + "</div>" +
+        '<div class="podium__bar" style="height:' + heights[i] + "px;animation-delay:" + i * 0.18 + 's">' + ranks[i] + "</div>" +
+        '<div class="podium__name">' + c.name + "</div>" +
+        '<div class="podium__score">' + E.state.scores[c.id] + " điểm</div>";
+      pod.appendChild(col);
+    });
+    burstConfetti(140);
+  }
+  /* Confetti CSS/JS thuần */
+  function burstConfetti(n) {
+    var colors = ["#ffc93c", "#4d8dff", "#2ed573", "#ff4757", "#8c6cff", "#ff9f43"];
+    for (var i = 0; i < n; i++) {
+      var p = document.createElement("div");
+      p.className = "confetti-piece";
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.background = colors[i % colors.length];
+      p.style.animationDuration = (2.2 + Math.random() * 2.5) + "s";
+      p.style.animationDelay = Math.random() * 0.8 + "s";
+      p.style.transform = "rotate(" + Math.random() * 360 + "deg)";
+      document.body.appendChild(p);
+      (function (el) { setTimeout(function () { el.remove(); }, 6000); })(p);
+    }
+  }
+
+  /* ============ KỊCH BẢN DEMO (step-by-step / auto) ============ */
+  var C = M.contestants;
+  var steps = [
+    // --- Khởi động ---
+    ["Khởi động riêng: câu hỏi trượt vào", function () {
+      setRound("VÒNG 1 · KHỞI ĐỘNG — LƯỢT RIÊNG", C[0].name + " · 6 câu · 5s/câu · +10");
+      showView("viewQuestion");
+      showQuestion(M.questions.khoiDongRieng.c1[0].text);
+      E.startTimer(E.RULES.KHOI_DONG.riengTime);
+    }],
+    ["KD riêng: trả lời đúng +10", function () { E.stopTimer(); E.scoreKhoiDongRieng(C[0].id, true); }],
+    ["KD riêng: câu 2 + đúng", function () {
+      showQuestion(M.questions.khoiDongRieng.c1[1].text);
+      E.startTimer(5);
+      setTimeout(function () { E.stopTimer(); E.scoreKhoiDongRieng(C[0].id, true); }, 1600);
+    }],
+    ["Khởi động chung: câu hỏi + mở chuông", function () {
+      setRound("VÒNG 1 · KHỞI ĐỘNG — LƯỢT CHUNG", "12 câu bấm chuông · đúng +10 · sai −5");
+      showQuestion(M.questions.khoiDongChung[0].text);
+      E.clearBuzz();
+    }],
+    ["Thí sinh 2 giành chuông (hiệu ứng sáng)", function () {
+      E.buzz(C[1].id); E.startTimer(E.RULES.KHOI_DONG.chungTime);
+    }],
+    ["Chấm đúng +10", function () { E.stopTimer(); E.scoreKhoiDongChung(C[1].id, true); }],
+    ["Câu tiếp: thí sinh 3 bấm chuông rồi SAI −5", function () {
+      showQuestion(M.questions.khoiDongChung[1].text);
+      E.buzz(C[2].id);
+      setTimeout(function () { E.scoreKhoiDongChung(C[2].id, false); }, 1200);
+    }],
+    // --- VCNV ---
+    ["VCNV: dựng lưới ô chữ", function () {
+      setRound("VÒNG 2 · VƯỢT CHƯỚNG NGẠI VẬT", "4 hàng ngang · 15s/hàng · +10 · giải CNV 80/60/40/20");
+      buildVcnv(); showView("viewVcnv");
+    }],
+    ["Hàng 1: 15s suy nghĩ", function () { E.startTimer(15); }],
+    ["Hàng 1: lật ô chữ + mở miếng 1 (TS1, TS2 đúng)", function () {
+      E.stopTimer(); flipRow(1);
+      var r = {}; r[C[0].id] = true; r[C[1].id] = true; r[C[2].id] = false; r[C[3].id] = false;
+      setTimeout(function () { E.scoreVcnvRow(r); }, 900);
+    }],
+    ["Hàng 2: lật + mở miếng 2 (TS4 đúng)", function () {
+      flipRow(2);
+      var r = {}; r[C[3].id] = true;
+      setTimeout(function () { E.scoreVcnvRow(r); }, 900);
+    }],
+    ["TS3 bấm chuông giải CNV nhưng SAI → bị loại", function () {
+      E.buzz(C[2].id);
+      setTimeout(function () { E.scoreVcnvObstacle(C[2].id, false); E.clearBuzz(); }, 1000);
+    }],
+    ["TS1 bấm chuông giải CNV ĐÚNG (+60, đã mở 2 hàng)", function () {
+      E.buzz(C[0].id);
+      setTimeout(function () {
+        flipRow(3); flipRow(4);
+        document.querySelectorAll(".piece").forEach(function (p) { p.classList.add("is-open"); });
+        E.scoreVcnvObstacle(C[0].id, true);
+        E.lockContestant(C[2].id, false); // hết vòng, mở khoá
+        sbEls[C[2].id].style.opacity = "";
+      }, 900);
+    }],
+    // --- Tăng tốc ---
+    ["Tăng tốc: câu 1 + countdown", function () {
+      setRound("VÒNG 3 · TĂNG TỐC", "4 câu · cùng trả lời trên máy · 40/30/20/10 theo tốc độ");
+      buildTangTocLanes(); showView("viewTangToc");
+      $("ttQuestion").textContent = M.questions.tangToc[0].text;
+      E.startTimer(M.questions.tangToc[0].time);
+    }],
+    ["Tăng tốc: kết quả — điểm bay vào 4 lane", function () {
+      E.stopTimer();
+      E.scoreTangToc([
+        { cid: C[1].id, correct: true, ms: 3120 },
+        { cid: C[0].id, correct: true, ms: 4480 },
+        { cid: C[3].id, correct: true, ms: 6890 },
+        { cid: C[2].id, correct: false, ms: 8200 }
+      ]);
+    }],
+    // --- Về đích ---
+    ["Về đích: TS1 chọn gói 30", function () {
+      setRound("VÒNG 4 · VỀ ĐÍCH", C[0].name + " · 3 câu · gói 20/30 · NSHV ×2/−giá trị");
+      showView("viewVeDich");
+      $("starAnim").classList.remove("is-on");
+      pickPack(30);
+      var q = M.questions.veDich[30][0];
+      $("vdQuestion").hidden = false; $("vdQuestion").textContent = q.text;
+      E.startTimer(E.RULES.VE_DICH.timeMap[30]);
+    }],
+    ["Về đích: chọn NGÔI SAO HY VỌNG (sao vàng)", function () {
+      E.emit("star:used", { cid: C[0].id }); // animation trước, chấm sau
+    }],
+    ["NSHV ĐÚNG → +60 (×2 gói 30)", function () {
+      E.stopTimer(); E.scoreVeDich(C[0].id, 30, true, true);
+    }],
+    ["Câu 2 gói 20: TS1 SAI → mở CƯỚP QUYỀN (flash)", function () {
+      pickPack(20);
+      $("vdQuestion").textContent = M.questions.veDich[20][1].text;
+      E.startTimer(E.RULES.VE_DICH.timeMap[20]);
+      setTimeout(function () { E.stopTimer(); E.scoreVeDich(C[0].id, 20, false, false); }, 1400);
+    }],
+    ["TS2 cướp quyền ĐÚNG +20", function () {
+      E.buzz(C[1].id);
+      E.startTimer(E.RULES.VE_DICH.cuopTime);
+      setTimeout(function () { E.stopTimer(); E.scoreCuop(C[1].id, 20, true); }, 1500);
+    }],
+    ["TS4 cướp câu khác nhưng SAI −10 (−½ gói 20)", function () {
+      E.emit("vedich:steal-open", { value: 20 });
+      setTimeout(function () { E.scoreCuop(C[3].id, 20, false); }, 1200);
+    }],
+    // --- Kết thúc ---
+    ["CHUNG CUỘC: podium + confetti", function () { showPodium(); }]
+  ];
+
+  var stepIdx = 0, playing = false, playTimer = null;
+  function runStep() {
+    if (stepIdx >= steps.length) { stopPlay(); return; }
+    var s = steps[stepIdx];
+    $("stepLabel").textContent = "Bước " + (stepIdx + 1) + "/" + steps.length + " — " + s[0];
+    s[1]();
+    stepIdx++;
+  }
+  function startPlay() {
+    playing = true;
+    $("btnPlay").textContent = "⏸ Dừng kịch bản";
+    (function loop() {
+      if (!playing) return;
+      runStep();
+      if (stepIdx >= steps.length) { stopPlay(); return; }
+      playTimer = setTimeout(loop, 3400);
+    })();
+  }
+  function stopPlay() {
+    playing = false; clearTimeout(playTimer);
+    $("btnPlay").innerHTML = '▶ Play kịch bản tự động <span class="kbd">P</span>';
+  }
+  function resetAll() {
+    stopPlay(); stepIdx = 0;
+    M.contestants.forEach(function (c) {
+      E.state.scores[c.id] = 0;
+      var sc = sbEls[c.id].querySelector(".sb-item__score");
+      sc.textContent = "0"; sc.dataset.score = 0;
+      sbEls[c.id].querySelector(".sb-bar__fill").style.width = "0%";
+      sbEls[c.id].classList.remove("is-leader");
+      sbEls[c.id].style.opacity = "";
+    });
+    E.state.vcnvOpened = 0; E.state.lockedOut = {}; E.state.starUsed = {};
+    E.stopTimer(); E.clearBuzz();
+    setRound("OLYMPIA CONTEST SYSTEM", "Màn hình viewer / khán giả — phòng " + M.roomCode);
+    showView("viewQuestion");
+    showQuestion("Nhấn ▶ Play hoặc phím → để chạy kịch bản demo.");
+    $("stepLabel").textContent = "Bước 0/" + steps.length + " — sẵn sàng";
+  }
+
+  $("btnPlay").addEventListener("click", function () { playing ? stopPlay() : startPlay(); });
+  $("btnStep").addEventListener("click", function () { stopPlay(); runStep(); });
+  $("btnReset").addEventListener("click", resetAll);
+  $("demoToggle").addEventListener("click", function () { $("demoPanel").classList.toggle("is-collapsed"); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight") { stopPlay(); runStep(); }
+    if (e.key.toLowerCase() === "p") { playing ? stopPlay() : startPlay(); }
+  });
+
+  resetAll();
+})();
+</script>
+</body>
+</html>

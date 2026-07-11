@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thí sinh — Olympia Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23f5b301'/><text x='50' y='68' font-size='55' font-weight='bold' text-anchor='middle' fill='%230a1128'>O</text></svg>">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  /* Màn thí sinh: TỐI GIẢN + PHẢN HỒI NHANH — không hiệu ứng nặng */
+  body { display: flex; flex-direction: column; min-height: 100vh; background: var(--navy-900); }
+
+  /* ---------- Header mỏng ---------- */
+  .top {
+    display: flex; align-items: center; gap: var(--sp-4);
+    padding: var(--sp-2) var(--sp-4);
+    background: var(--navy-950); border-bottom: var(--border-1);
+    font-size: var(--fs-sm); flex-wrap: wrap;
+  }
+  .top__name { font-weight: 800; font-size: var(--fs-md); }
+  .top__score { color: var(--gold); font-weight: 800; font-size: var(--fs-lg); font-variant-numeric: tabular-nums; }
+  .conn { display: inline-flex; align-items: center; gap: var(--sp-1); color: var(--green); }
+  .conn__dot { width: 8px; height: 8px; border-radius: var(--r-full); background: var(--green); }
+
+  /* ---------- Vùng chính ---------- */
+  .main { flex: 1; display: flex; flex-direction: column; gap: var(--sp-4); padding: var(--sp-4); max-width: 900px; width: 100%; margin: 0 auto; }
+  .phase-label { text-align: center; }
+
+  .question-box {
+    background: var(--navy-800); border: var(--border-2); border-radius: var(--r-lg);
+    padding: var(--sp-5); min-height: 130px;
+    font-size: clamp(1.1rem, 2.6vw, 1.5rem); font-weight: 600; line-height: 1.45;
+  }
+  .question-box .media-ph {
+    margin-top: var(--sp-3); padding: var(--sp-4); border: 1px dashed rgba(255,255,255,.25);
+    border-radius: var(--r-md); color: var(--text-3); font-size: var(--fs-sm); text-align: center;
+  }
+
+  /* Timer bar to rõ */
+  .timer { position: relative; height: var(--timer-h); border-radius: var(--r-full); background: rgba(255,255,255,.08); overflow: hidden; }
+  .timer__fill {
+    position: absolute; inset: 0; transform-origin: left;
+    background: var(--grad-blue); border-radius: var(--r-full);
+    /* width điều khiển bằng transform scaleX — GPU friendly */
+  }
+  .timer.is-urgent .timer__fill { background: var(--red); }
+  .timer.is-urgent { animation: pulse-danger .55s ease-in-out infinite; }
+  .timer__text { text-align: center; font-variant-numeric: tabular-nums; font-weight: 800; font-size: var(--fs-xl); margin-top: var(--sp-1); }
+  .timer__text.is-urgent { color: var(--red); }
+
+  /* Ô nhập đáp án */
+  .answer-row { display: flex; gap: var(--sp-3); }
+  .answer-row .input { font-size: var(--fs-lg); min-height: 56px; }
+
+  /* Nút chuông LỚN */
+  .bell {
+    width: 100%; min-height: 96px;
+    border: none; border-radius: var(--r-xl); cursor: pointer;
+    background: var(--grad-gold); color: var(--text-on-gold);
+    font-size: var(--fs-xl); font-weight: 900; letter-spacing: .03em;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    transition: transform var(--dur-instant) var(--ease-out), filter var(--dur-instant);
+    touch-action: manipulation;
+  }
+  .bell:active { transform: scale(.97); }
+  .bell:disabled { filter: grayscale(.9) brightness(.55); cursor: not-allowed; }
+  .bell.is-won { animation: flash-green var(--dur-slow) var(--ease-out); background: var(--green); color: #04240f; }
+  .bell__hint { font-size: var(--fs-sm); font-weight: 600; opacity: .8; }
+
+  /* VCNV: chọn hàng ngang */
+  .rows-pick { display: none; grid-template-columns: repeat(4, 1fr); gap: var(--sp-2); }
+  .rows-pick .btn { flex-direction: column; min-height: 64px; gap: 0; }
+  .rows-pick .btn.is-picked { background: var(--purple); border-color: transparent; }
+  .rows-pick .btn.is-opened { opacity: .35; text-decoration: line-through; }
+
+  /* Về đích: chọn gói */
+  .pkg-pick { display: none; gap: var(--sp-3); }
+  .pkg-pick .btn { flex: 1; min-height: 64px; font-size: var(--fs-lg); }
+  .pkg-pick .btn.is-picked { background: var(--grad-gold); color: var(--text-on-gold); }
+  .star-btn.is-active { background: var(--grad-gold); color: var(--text-on-gold); box-shadow: var(--shadow-gold); }
+
+  /* Feedback tức thì */
+  .main.judge-wrong { animation: shake-red 400ms var(--ease-out); }
+  .flash-overlay {
+    position: fixed; inset: 0; pointer-events: none; opacity: 0; z-index: 50;
+    transition: opacity var(--dur-fast) var(--ease-out);
+  }
+  .flash-overlay.green { background: radial-gradient(circle at center, rgba(46,213,115,.35), transparent 70%); }
+  .flash-overlay.red { background: radial-gradient(circle at center, rgba(255,71,87,.35), transparent 70%); }
+  .flash-overlay.is-on { opacity: 1; }
+
+  /* Trạng thái bị khoá chuông */
+  body.is-locked-out .main { filter: grayscale(.6); }
+  .locked-banner {
+    display: none; text-align: center; padding: var(--sp-3);
+    background: rgba(255,71,87,.15); border: 1px solid var(--red-dim);
+    border-radius: var(--r-md); color: var(--red); font-weight: 700;
+  }
+  body.is-locked-out .locked-banner { display: block; }
+
+  @media (max-width: 540px) {
+    .answer-row { flex-direction: column; }
+    .rows-pick { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+  <!-- Header mỏng: tên, phòng, điểm, kết nối -->
+  <header class="top">
+    <span class="avatar" id="avatar" style="background:#4d8dff">K</span>
+    <div>
+      <div class="top__name" id="cName">Nguyễn Minh Khang</div>
+      <div class="text-dim">Phòng <span class="mono text-gold" id="roomCode">------</span></div>
+    </div>
+    <div class="grow"></div>
+    <div style="text-align:right">
+      <div class="text-dim" style="font-size:var(--fs-xs)">ĐIỂM</div>
+      <div class="top__score" id="myScore">0</div>
+    </div>
+    <span class="conn" title="Trạng thái kết nối (mock)"><span class="conn__dot"></span> Ổn định</span>
+  </header>
+
+  <main class="main" id="main">
+    <div class="phase-label"><span class="badge badge--blue" id="phaseBadge">ĐANG CHỜ</span></div>
+
+    <div class="locked-banner" role="alert">🔒 Chuông của bạn đang bị khoá</div>
+
+    <!-- Câu hỏi -->
+    <section class="question-box" aria-live="polite">
+      <div id="qText">Chờ trận đấu bắt đầu… Ban tổ chức sẽ khởi động vòng thi.</div>
+      <div class="media-ph" id="qMedia" hidden>🖼 [Media placeholder — ảnh/video câu hỏi]</div>
+    </section>
+
+    <!-- Timer -->
+    <div>
+      <div class="timer" id="timerBar" role="timer" aria-label="Thời gian còn lại">
+        <div class="timer__fill" id="timerFill" style="transform:scaleX(0)"></div>
+      </div>
+      <div class="timer__text" id="timerText">--</div>
+    </div>
+
+    <!-- VCNV: chọn hàng ngang 1–4 -->
+    <section class="rows-pick" id="rowsPick" aria-label="Chọn hàng ngang">
+      <button class="btn" data-row="1">Hàng 1 <span class="kbd">1</span></button>
+      <button class="btn" data-row="2">Hàng 2 <span class="kbd">2</span></button>
+      <button class="btn" data-row="3">Hàng 3 <span class="kbd">3</span></button>
+      <button class="btn" data-row="4">Hàng 4 <span class="kbd">4</span></button>
+    </section>
+
+    <!-- Về đích: chọn gói + NSHV -->
+    <section class="pkg-pick row" id="pkgPick" aria-label="Chọn gói điểm về đích">
+      <button class="btn" data-pkg="20">Gói 20 điểm · 15s</button>
+      <button class="btn" data-pkg="30">Gói 30 điểm · 20s</button>
+      <button class="btn star-btn" id="starBtn" title="Ngôi sao hy vọng: đúng ×2, sai −giá trị">⭐ NSHV</button>
+    </section>
+
+    <!-- Ô nhập đáp án -->
+    <div class="answer-row">
+      <input class="input grow" id="answerInput" placeholder="Nhập đáp án… (Esc để xoá)" autocomplete="off">
+      <button class="btn btn--primary btn--lg" id="submitBtn">Gửi <span class="kbd">Enter</span></button>
+    </div>
+
+    <!-- Nút chuông LỚN -->
+    <button class="bell" id="bellBtn">
+      <span>🔔 BẤM CHUÔNG</span>
+      <span class="bell__hint">Phím <span class="kbd">Space</span></span>
+    </button>
+  </main>
+
+  <!-- Flash phản hồi toàn màn -->
+  <div class="flash-overlay green" id="flashGreen"></div>
+  <div class="flash-overlay red" id="flashRed"></div>
+
+  <!-- Panel demo: chuyển trạng thái -->
+  <aside class="demo-panel" id="demoPanel">
+    <div class="demo-panel__head" id="demoToggle">⚙ Demo trạng thái <span>▾</span></div>
+    <div class="demo-panel__body">
+      <button class="btn btn--sm" data-state="CHO">Chờ</button>
+      <button class="btn btn--sm" data-state="KD_RIENG">Khởi động riêng (5s/câu)</button>
+      <button class="btn btn--sm" data-state="KD_CHUNG">Khởi động chung (chuông)</button>
+      <button class="btn btn--sm" data-state="VCNV">VCNV (15s, chọn hàng)</button>
+      <button class="btn btn--sm" data-state="TANG_TOC">Tăng tốc (gõ nhanh)</button>
+      <button class="btn btn--sm" data-state="VE_DICH">Về đích (chọn gói)</button>
+      <button class="btn btn--sm btn--danger" data-state="LOCKED">Bị khoá chuông</button>
+      <hr style="border-color:rgba(255,255,255,.1)">
+      <button class="btn btn--sm btn--success" id="demoCorrect">Mock: chấm ĐÚNG</button>
+      <button class="btn btn--sm btn--danger" id="demoWrong">Mock: chấm SAI</button>
+    </div>
+  </aside>
+
+<script src="assets/mock-data.js"></script>
+<script src="assets/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  var E = window.Engine, M = window.MOCK;
+  var me = M.contestants[0]; // demo: đóng vai thí sinh 1
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------- Init header ---------- */
+  $("cName").textContent = me.name;
+  $("avatar").textContent = me.name.trim().split(" ").pop()[0];
+  $("avatar").style.background = me.color;
+  $("roomCode").textContent = M.roomCode;
+
+  /* ---------- Timer UI ---------- */
+  E.on("timer:tick", function (t) {
+    var ratio = t.total ? t.remaining / t.total : 0;
+    $("timerFill").style.transform = "scaleX(" + ratio + ")";
+    $("timerText").textContent = Math.ceil(t.remaining) + "s";
+    var urgent = t.remaining <= 5 && t.remaining > 0; // pulse 5s cuối
+    $("timerBar").classList.toggle("is-urgent", urgent);
+    $("timerText").classList.toggle("is-urgent", urgent);
+  });
+  E.on("timer:end", function () {
+    $("timerText").textContent = "HẾT GIỜ";
+    $("timerBar").classList.remove("is-urgent");
+  });
+
+  /* ---------- Điểm ---------- */
+  E.on("score:change", function (d) {
+    if (d.cid !== me.id) return;
+    $("myScore").textContent = E.state.scores[me.id];
+    flash(d.delta >= 0 ? "flashGreen" : "flashRed");
+    if (d.delta < 0) $("main").classList.add("judge-wrong");
+    setTimeout(function () { $("main").classList.remove("judge-wrong"); }, 450);
+  });
+
+  function flash(id) {
+    var el = $(id);
+    el.classList.add("is-on");
+    setTimeout(function () { el.classList.remove("is-on"); }, 320);
+  }
+
+  /* ---------- Chuông ---------- */
+  E.on("buzz:won", function (d) {
+    if (d.cid !== me.id) return;
+    $("bellBtn").classList.add("is-won"); // flash xanh khi giành chuông
+    flash("flashGreen");
+    setTimeout(function () { $("bellBtn").classList.remove("is-won"); }, 800);
+  });
+  E.on("buzz:rejected", function (d) {
+    if (d.cid !== me.id) return;
+    $("bellBtn").classList.add("anim-shake-red");
+    setTimeout(function () { $("bellBtn").classList.remove("anim-shake-red"); }, 450);
+  });
+
+  function doBuzz() {
+    if ($("bellBtn").disabled) return;
+    E.buzz(me.id);
+  }
+  $("bellBtn").addEventListener("click", doBuzz);
+
+  /* ---------- Gửi đáp án ---------- */
+  function submitAnswer() {
+    var v = $("answerInput").value.trim();
+    if (!v) return;
+    E.log(me.name + ' gửi đáp án: "' + v + '"');
+    $("answerInput").value = "";
+    $("submitBtn").classList.add("anim-flash-green");
+    setTimeout(function () { $("submitBtn").classList.remove("anim-flash-green"); }, 700);
+  }
+  $("submitBtn").addEventListener("click", submitAnswer);
+
+  /* ---------- VCNV chọn hàng ---------- */
+  document.querySelectorAll("#rowsPick [data-row]").forEach(function (btn) {
+    btn.addEventListener("click", function () { pickRow(btn.dataset.row); });
+  });
+  function pickRow(n) {
+    document.querySelectorAll("#rowsPick [data-row]").forEach(function (b) {
+      b.classList.toggle("is-picked", b.dataset.row === String(n));
+    });
+    var row = M.questions.vcnv.rows[n - 1];
+    setQuestion("Hàng ngang " + n + " (" + row.len + " chữ cái): " + row.text, false);
+    E.startTimer(E.RULES.VCNV.rowTime);
+  }
+
+  /* ---------- Về đích: chọn gói + NSHV ---------- */
+  document.querySelectorAll("#pkgPick [data-pkg]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll("#pkgPick [data-pkg]").forEach(function (b) {
+        b.classList.toggle("is-picked", b === btn);
+      });
+      var v = +btn.dataset.pkg;
+      var q = M.questions.veDich[v][0];
+      setQuestion("[Gói " + v + " điểm] " + q.text, false);
+      E.startTimer(E.RULES.VE_DICH.timeMap[v]);
+    });
+  });
+  $("starBtn").addEventListener("click", function () {
+    this.classList.toggle("is-active");
+  });
+
+  /* ---------- Hotkeys ---------- */
+  document.addEventListener("keydown", function (e) {
+    if (e.target === $("answerInput")) {
+      if (e.key === "Enter") { e.preventDefault(); submitAnswer(); }
+      if (e.key === "Escape") { $("answerInput").value = ""; }
+      return;
+    }
+    if (e.code === "Space") { e.preventDefault(); doBuzz(); }
+    else if (e.key === "Enter") { e.preventDefault(); submitAnswer(); }
+    else if (e.key === "Escape") { $("answerInput").value = ""; }
+    else if (["1", "2", "3", "4"].indexOf(e.key) >= 0 && state === "VCNV") pickRow(+e.key);
+  });
+
+  /* ---------- State machine trạng thái màn hình ---------- */
+  var state = "CHO";
+  function setQuestion(text, media) {
+    $("qText").textContent = text;
+    $("qMedia").hidden = !media;
+  }
+  function apply(s) {
+    state = s;
+    document.body.classList.toggle("is-locked-out", s === "LOCKED");
+    $("rowsPick").style.display = s === "VCNV" ? "grid" : "none";
+    $("pkgPick").style.display = s === "VE_DICH" ? "flex" : "none";
+    $("bellBtn").disabled = (s === "KD_RIENG" || s === "TANG_TOC" || s === "LOCKED" || s === "CHO");
+    E.stopTimer();
+    var badge = $("phaseBadge");
+    var cfg = {
+      CHO:      ["ĐANG CHỜ", "badge--blue", "Chờ trận đấu bắt đầu… Ban tổ chức sẽ khởi động vòng thi.", null, 0],
+      KD_RIENG: ["KHỞI ĐỘNG — LƯỢT RIÊNG · +10", "badge--blue", M.questions.khoiDongRieng.c1[0].text, null, E.RULES.KHOI_DONG.riengTime],
+      KD_CHUNG: ["KHỞI ĐỘNG — LƯỢT CHUNG · +10/−5", "badge--gold", M.questions.khoiDongChung[0].text, null, E.RULES.KHOI_DONG.chungTime],
+      VCNV:     ["VƯỢT CHƯỚNG NGẠI VẬT · +10/hàng", "badge--purple", "Chọn hàng ngang (phím 1–4). Bấm chuông bất kỳ lúc nào để giải CNV!", null, 0],
+      TANG_TOC: ["TĂNG TỐC · 40/30/20/10", "badge--orange", M.questions.tangToc[0].text, true, M.questions.tangToc[0].time],
+      VE_DICH:  ["VỀ ĐÍCH · gói 20/30", "badge--green", "Chọn gói điểm cho câu hỏi của bạn.", null, 0],
+      LOCKED:   ["CHUÔNG BỊ KHOÁ", "badge--red", "Bạn tạm thời không thể bấm chuông (sai CNV hoặc theo luật).", null, 0]
+    }[s];
+    badge.textContent = cfg[0];
+    badge.className = "badge " + cfg[1];
+    setQuestion(cfg[2], cfg[3]);
+    if (cfg[4] > 0) E.startTimer(cfg[4]);
+    else { $("timerFill").style.transform = "scaleX(0)"; $("timerText").textContent = "--"; }
+    E.clearBuzz();
+    E.lockContestant(me.id, s === "LOCKED");
+  }
+
+  /* ---------- Demo panel ---------- */
+  $("demoToggle").addEventListener("click", function () {
+    $("demoPanel").classList.toggle("is-collapsed");
+  });
+  document.querySelectorAll("#demoPanel [data-state]").forEach(function (btn) {
+    btn.addEventListener("click", function () { apply(btn.dataset.state); });
+  });
+  $("demoCorrect").addEventListener("click", function () { E.addScore(me.id, 10, "demo chấm đúng"); });
+  $("demoWrong").addEventListener("click", function () { E.addScore(me.id, -5, "demo chấm sai"); });
+
+  apply("CHO");
+})();
+</script>
+</body>
+</html>

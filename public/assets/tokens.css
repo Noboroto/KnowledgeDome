@@ -1,0 +1,73 @@
+/* ============================================================
+   tokens.css — Design tokens Olympia Contest System (demo)
+   MỌI style trong demo tham chiếu biến ở đây → sửa design 1 chỗ.
+   ============================================================ */
+:root {
+  /* ---------- Màu nền sân khấu ---------- */
+  --navy-950: #060b1d;
+  --navy-900: #0a1128;   /* nền chính */
+  --navy-800: #101a3c;
+  --navy-700: #182550;
+  --navy-600: #223268;
+  --navy-500: #2e4180;
+
+  /* Gradient sân khấu: xanh dương → tím than */
+  --grad-stage: linear-gradient(160deg, #0a1128 0%, #101a3c 45%, #1a1440 100%);
+  --grad-panel: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  --grad-gold:  linear-gradient(135deg, #ffd166 0%, #f5b301 55%, #c98a00 100%);
+  --grad-blue:  linear-gradient(135deg, #3a7bd5 0%, #2b4fb8 100%);
+
+  /* ---------- Màu chức năng ---------- */
+  --gold:       #ffc93c;  /* accent điểm số / highlight */
+  --gold-dim:   #b8912a;
+  --gold-glow:  rgba(255, 201, 60, .45);
+  --red:        #ff4757;  /* sai / trừ điểm */
+  --red-dim:    #b8323e;
+  --green:      #2ed573;  /* đúng / kết nối OK */
+  --green-dim:  #1fa457;
+  --blue:       #4d8dff;  /* thao tác chính */
+  --purple:     #8c6cff;  /* VCNV / đặc biệt */
+  --orange:     #ff9f43;  /* tăng tốc / cảnh báo */
+
+  /* ---------- Chữ ---------- */
+  --text-1: #f2f5ff;             /* chính */
+  --text-2: #aab4d4;             /* phụ */
+  --text-3: #6b7699;             /* mờ */
+  --text-on-gold: #241a00;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial,
+               "Helvetica Neue", sans-serif; /* hỗ trợ tiếng Việt sẵn */
+  --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* Cỡ chữ */
+  --fs-xs: .75rem;  --fs-sm: .875rem; --fs-md: 1rem;
+  --fs-lg: 1.25rem; --fs-xl: 1.6rem;  --fs-2xl: 2.2rem;
+  --fs-3xl: 3rem;   --fs-4xl: 4.2rem; --fs-huge: 6.5rem;
+
+  /* ---------- Khoảng cách ---------- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+
+  /* ---------- Bo góc ---------- */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-xl: 24px; --r-full: 999px;
+
+  /* ---------- Bóng / viền ---------- */
+  --shadow-1: 0 2px 8px rgba(0,0,0,.35);
+  --shadow-2: 0 8px 28px rgba(0,0,0,.45);
+  --shadow-gold: 0 0 18px var(--gold-glow), 0 0 46px rgba(255,201,60,.18);
+  --border-1: 1px solid rgba(255,255,255,.10);
+  --border-2: 1px solid rgba(255,255,255,.18);
+
+  /* ---------- Animation: duration & easing (chỉnh 1 chỗ) ---------- */
+  --dur-instant: 90ms;    /* phản hồi bấm nút thí sinh */
+  --dur-fast:    180ms;
+  --dur-med:     350ms;
+  --dur-slow:    700ms;
+  --dur-epic:    1200ms;  /* hiệu ứng sân khấu */
+  --ease-out:    cubic-bezier(.22, 1, .36, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+
+  /* ---------- Kích thước tối thiểu ---------- */
+  --touch-min: 44px;      /* WCAG touch target */
+  --timer-h: 14px;        /* timer bar thí sinh */
+}

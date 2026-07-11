@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — Olympia Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23f5b301'/><text x='50' y='68' font-size='55' font-weight='bold' text-anchor='middle' fill='%230a1128'>O</text></svg>">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  .layout {
+    display: grid; grid-template-columns: 280px 1fr 340px; gap: var(--sp-4);
+    padding: var(--sp-4); max-width: 1600px; margin: 0 auto; align-items: start;
+  }
+  @media (max-width: 1100px) { .layout { grid-template-columns: 1fr 1fr; } .col-right { grid-column: 1 / -1; } }
+  @media (max-width: 760px)  { .layout { grid-template-columns: 1fr; } }
+  .col { display: grid; gap: var(--sp-4); align-content: start; }
+
+  /* ---------- Cột trái ---------- */
+  .room-code {
+    text-align: center; font-family: var(--font-mono);
+    font-size: var(--fs-3xl); font-weight: 900; letter-spacing: .18em;
+    color: var(--gold); text-shadow: 0 0 24px var(--gold-glow);
+  }
+  .stepper { display: grid; gap: var(--sp-1); }
+  .step {
+    display: flex; align-items: center; gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3); border-radius: var(--r-md);
+    border: 1px solid transparent; cursor: pointer; background: none;
+    color: var(--text-2); text-align: left; width: 100%;
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+  .step:hover { background: rgba(255,255,255,.06); }
+  .step__dot {
+    width: 26px; height: 26px; border-radius: var(--r-full); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.1); font-size: var(--fs-xs); font-weight: 800;
+  }
+  .step.is-active { border-color: var(--gold-dim); color: var(--text-1); background: rgba(255,201,60,.08); }
+  .step.is-active .step__dot { background: var(--grad-gold); color: var(--text-on-gold); }
+  .step.is-done .step__dot { background: var(--green-dim); }
+  .viewer-item { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) 0; border-bottom: var(--border-1); }
+  .viewer-item:last-child { border-bottom: none; }
+  .viewer-item .btn { min-height: 32px; padding: 0 var(--sp-2); }
+
+  /* ---------- Cột giữa ---------- */
+  .q-admin {
+    background: var(--navy-800); border: var(--border-2); border-radius: var(--r-lg);
+    padding: var(--sp-5); font-size: var(--fs-lg); font-weight: 600; min-height: 110px;
+  }
+  .answer-reveal {
+    margin-top: var(--sp-3); padding: var(--sp-3) var(--sp-4);
+    background: rgba(255,201,60,.1); border: 1px dashed var(--gold-dim);
+    border-radius: var(--r-md); color: var(--gold); font-weight: 700;
+  }
+  .answer-reveal .tag { font-size: var(--fs-xs); color: var(--text-3); display: block; font-weight: 600; }
+  .judge-row { display: flex; gap: var(--sp-3); }
+  .judge-row .btn { flex: 1; min-height: 64px; font-size: var(--fs-lg); }
+  .timer-admin { display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap; }
+  .timer-admin__display {
+    font-family: var(--font-mono); font-size: var(--fs-2xl); font-weight: 900;
+    min-width: 110px; text-align: center; font-variant-numeric: tabular-nums;
+  }
+  .timer-admin__display.is-urgent { color: var(--red); animation: pulse-danger .55s infinite; }
+  .timer-bar-mini { height: 6px; border-radius: var(--r-full); background: rgba(255,255,255,.08); overflow: hidden; }
+  .timer-bar-mini > div { height: 100%; background: var(--grad-blue); transform-origin: left; }
+  .manual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+  .manual-grid label { font-size: var(--fs-xs); color: var(--text-3); display: block; margin-bottom: var(--sp-1); }
+
+  /* ---------- Cột phải ---------- */
+  .score-row { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) 0; border-bottom: var(--border-1); }
+  .score-row:last-child { border-bottom: none; }
+  .score-row__score { margin-left: auto; font-weight: 900; color: var(--gold); font-size: var(--fs-lg); font-variant-numeric: tabular-nums; }
+  .score-row input { width: 72px; min-height: 34px; text-align: right; }
+  .log {
+    max-height: 320px; overflow-y: auto; font-size: var(--fs-xs);
+    font-family: var(--font-mono); display: grid; gap: 4px;
+  }
+  .log__item { padding: var(--sp-1) var(--sp-2); border-left: 2px solid var(--navy-500); background: rgba(255,255,255,.03); border-radius: 0 var(--r-sm) var(--r-sm) 0; animation: slide-up var(--dur-fast) var(--ease-out); }
+  .log__item .t { color: var(--text-3); margin-right: var(--sp-2); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- ============ CỘT TRÁI ============ -->
+  <div class="col">
+    <section class="card">
+      <h2 class="card__title">Mã phòng</h2>
+      <div class="room-code" id="roomCode">------</div>
+      <p class="text-dim" style="text-align:center;font-size:var(--fs-xs)">Thí sinh &amp; viewer nhập mã này để vào</p>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">Vòng thi</h2>
+      <div class="stepper" id="stepper"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">Viewer chờ duyệt <span class="badge badge--orange" id="pendingCount">0</span></h2>
+      <div id="viewerList"></div>
+    </section>
+  </div>
+
+  <!-- ============ CỘT GIỮA ============ -->
+  <div class="col">
+    <section class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:var(--sp-3)">
+        <span class="badge badge--blue" id="qMeta">Câu 1/12</span>
+        <div class="row">
+          <button class="btn btn--sm" id="btnPrev">← Câu trước</button>
+          <button class="btn btn--sm" id="btnNext">Câu sau →</button>
+        </div>
+      </div>
+      <div class="q-admin" id="qText">—</div>
+      <div class="answer-reveal">
+        <span class="tag">ĐÁP ÁN (chỉ admin thấy)</span>
+        <span id="qAnswer">—</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">Chấm điểm — <span id="judgeTarget" class="text-dim">chưa ai giữ chuông</span></h2>
+      <div class="judge-row">
+        <button class="btn btn--success" id="btnCorrect">✓ ĐÚNG <span class="kbd">C</span></button>
+        <button class="btn btn--danger" id="btnWrong">✗ SAI <span class="kbd">X</span></button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">Timer</h2>
+      <div class="timer-admin">
+        <div class="timer-admin__display" id="timerDisplay">--</div>
+        <button class="btn btn--primary" id="btnTimerToggle">▶ Start <span class="kbd">S</span></button>
+        <button class="btn" id="btnTimerReset">↺ Reset</button>
+      </div>
+      <div class="timer-bar-mini" style="margin-top:var(--sp-3)"><div id="timerMini" style="transform:scaleX(0)"></div></div>
+      <div class="manual-grid" style="margin-top:var(--sp-4)">
+        <div>
+          <label for="manualTimer">Chỉnh timer tay (giây)</label>
+          <div class="row">
+            <input class="input" type="number" id="manualTimer" value="15" min="1" max="120">
+            <button class="btn btn--sm" id="btnSetTimer">Đặt</button>
+          </div>
+        </div>
+        <div>
+          <label>Mock: thí sinh bấm chuông</label>
+          <div class="row" id="buzzMockRow"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ CỘT PHẢI ============ -->
+  <div class="col col-right">
+    <section class="card">
+      <h2 class="card__title">Bảng điểm live <span class="text-dim" style="font-size:var(--fs-xs)">(sửa số → Enter để đặt tay)</span></h2>
+      <div id="scoreRows"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="card__title">Log sự kiện</h2>
+      <div class="log" id="logBox"></div>
+    </section>
+  </div>
+</div>
+
+<script src="assets/mock-data.js"></script>
+<script src="assets/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  var E = window.Engine, M = window.MOCK;
+  var $ = function (id) { return document.getElementById(id); };
+  $("roomCode").textContent = M.roomCode;
+
+  /* ---------- Stepper 5 vòng ---------- */
+  var rounds = [
+    { key: "KHOI_DONG", label: "Khởi động", note: "riêng 6 câu + chung 12 câu" },
+    { key: "VCNV", label: "Vượt CNV", note: "4 hàng + CNV 80/60/40/20" },
+    { key: "TANG_TOC", label: "Tăng tốc", note: "4 câu · 40/30/20/10" },
+    { key: "VE_DICH", label: "Về đích", note: "gói 20/30 · NSHV" },
+    { key: "TIE_BREAK", label: "Câu hỏi phụ", note: "hoà điểm · tối đa 3 câu" }
+  ];
+  var activeRound = 0;
+  function renderStepper() {
+    var w = $("stepper"); w.innerHTML = "";
+    rounds.forEach(function (r, i) {
+      var b = document.createElement("button");
+      b.className = "step" + (i === activeRound ? " is-active" : i < activeRound ? " is-done" : "");
+      b.innerHTML = '<span class="step__dot">' + (i < activeRound ? "✓" : i + 1) + "</span>" +
+        "<span><strong>" + r.label + "</strong><br><small class='text-dim'>" + r.note + "</small></span>";
+      b.addEventListener("click", function () {
+        activeRound = i; renderStepper();
+        E.setPhase(r.key); qIndex = 0; renderQuestion();
+      });
+      w.appendChild(b);
+    });
+  }
+
+  /* ---------- Danh sách câu theo vòng (mock: gộp pool) ---------- */
+  function poolForRound() {
+    var q = M.questions;
+    switch (rounds[activeRound].key) {
+      case "KHOI_DONG": return q.khoiDongRieng.c1.concat(q.khoiDongChung);
+      case "VCNV": return q.vcnv.rows;
+      case "TANG_TOC": return q.tangToc;
+      case "VE_DICH": return q.veDich[20].concat(q.veDich[30]);
+      default: return q.tieBreak;
+    }
+  }
+  var qIndex = 0;
+  function renderQuestion() {
+    var pool = poolForRound();
+    qIndex = Math.max(0, Math.min(qIndex, pool.length - 1));
+    var item = pool[qIndex];
+    $("qMeta").textContent = rounds[activeRound].label + " · Câu " + (qIndex + 1) + "/" + pool.length;
+    $("qText").textContent = item.text;
+    $("qAnswer").textContent = item.answer;
+  }
+  $("btnPrev").addEventListener("click", function () { qIndex--; renderQuestion(); });
+  $("btnNext").addEventListener("click", function () { qIndex++; renderQuestion(); });
+
+  /* ---------- Duyệt viewer ---------- */
+  var pending = M.pendingViewers.slice();
+  function renderViewers() {
+    var w = $("viewerList"); w.innerHTML = "";
+    $("pendingCount").textContent = pending.length;
+    if (!pending.length) { w.innerHTML = '<p class="text-dim" style="font-size:var(--fs-sm)">Không có yêu cầu chờ.</p>'; return; }
+    pending.forEach(function (v) {
+      var el = document.createElement("div");
+      el.className = "viewer-item";
+      el.innerHTML = '<div class="grow"><strong style="font-size:var(--fs-sm)">' + v.name + "</strong>" +
+        '<div class="text-dim" style="font-size:var(--fs-xs)">yêu cầu lúc ' + v.requestedAt + "</div></div>";
+      var ok = document.createElement("button");
+      ok.className = "btn btn--success btn--sm"; ok.textContent = "✓";
+      ok.title = "Duyệt";
+      var no = document.createElement("button");
+      no.className = "btn btn--danger btn--sm"; no.textContent = "✗";
+      no.title = "Từ chối";
+      ok.addEventListener("click", function () { remove(v, true); });
+      no.addEventListener("click", function () { remove(v, false); });
+      el.appendChild(ok); el.appendChild(no);
+      w.appendChild(el);
+    });
+    function remove(v, approved) {
+      pending = pending.filter(function (x) { return x !== v; });
+      E.log((approved ? "Duyệt" : "Từ chối") + " viewer: " + v.name);
+      renderViewers();
+    }
+  }
+
+  /* ---------- Chấm điểm ---------- */
+  E.on("buzz:won", function (d) {
+    $("judgeTarget").textContent = d.name + " đang giữ chuông";
+    $("judgeTarget").className = "text-gold";
+  });
+  E.on("buzz:clear", function () {
+    $("judgeTarget").textContent = "chưa ai giữ chuông";
+    $("judgeTarget").className = "text-dim";
+  });
+  function judge(correct) {
+    var cid = E.state.buzzWinner || M.contestants[0].id; // không ai giữ chuông → chấm TS1 (lượt riêng)
+    var key = rounds[activeRound].key;
+    if (key === "KHOI_DONG") {
+      E.state.buzzWinner ? E.scoreKhoiDongChung(cid, correct) : E.scoreKhoiDongRieng(cid, correct);
+    } else if (key === "VCNV") {
+      E.state.buzzWinner ? E.scoreVcnvObstacle(cid, correct) : (function () {
+        var r = {}; r[cid] = correct; E.scoreVcnvRow(r);
+      })();
+      E.clearBuzz();
+    } else if (key === "VE_DICH") {
+      E.scoreVeDich(cid, 20, correct, false);
+    } else {
+      E.addScore(cid, correct ? 10 : 0, key + " chấm tay");
+    }
+    flashBtn(correct ? "btnCorrect" : "btnWrong");
+  }
+  function flashBtn(id) {
+    $(id).classList.add("anim-flash-green");
+    setTimeout(function () { $(id).classList.remove("anim-flash-green"); }, 700);
+  }
+  $("btnCorrect").addEventListener("click", function () { judge(true); });
+  $("btnWrong").addEventListener("click", function () { judge(false); });
+
+  /* ---------- Timer controls ---------- */
+  var timerRunning = false;
+  E.on("timer:tick", function (t) {
+    $("timerDisplay").textContent = t.remaining.toFixed(1) + "s";
+    $("timerDisplay").classList.toggle("is-urgent", t.remaining <= 5 && t.remaining > 0);
+    $("timerMini").style.transform = "scaleX(" + (t.total ? t.remaining / t.total : 0) + ")";
+  });
+  E.on("timer:end", function () { timerRunning = false; $("btnTimerToggle").innerHTML = '▶ Start <span class="kbd">S</span>'; });
+  function toggleTimer() {
+    if (timerRunning) {
+      E.pauseTimer(); timerRunning = false;
+      $("btnTimerToggle").innerHTML = '▶ Resume <span class="kbd">S</span>';
+    } else {
+      var t = E.getTimer();
+      t.remaining > 0 && t.total > 0 ? E.resumeTimer() : E.startTimer(+$("manualTimer").value || 15);
+      timerRunning = true;
+      $("btnTimerToggle").innerHTML = '⏸ Pause <span class="kbd">S</span>';
+    }
+  }
+  $("btnTimerToggle").addEventListener("click", toggleTimer);
+  $("btnTimerReset").addEventListener("click", function () {
+    E.stopTimer(); timerRunning = false;
+    $("timerDisplay").textContent = "--"; $("timerMini").style.transform = "scaleX(0)";
+    $("btnTimerToggle").innerHTML = '▶ Start <span class="kbd">S</span>';
+  });
+  $("btnSetTimer").addEventListener("click", function () {
+    E.startTimer(+$("manualTimer").value || 15); timerRunning = true;
+    $("btnTimerToggle").innerHTML = '⏸ Pause <span class="kbd">S</span>';
+    E.log("Admin đặt timer " + $("manualTimer").value + "s");
+  });
+
+  /* ---------- Mock chuông ---------- */
+  M.contestants.forEach(function (c, i) {
+    var b = document.createElement("button");
+    b.className = "btn btn--sm";
+    b.textContent = "TS" + (i + 1);
+    b.style.borderColor = c.color;
+    b.addEventListener("click", function () { E.buzz(c.id); });
+    $("buzzMockRow").appendChild(b);
+  });
+
+  /* ---------- Bảng điểm live + sửa tay ---------- */
+  var scoreEls = {};
+  M.contestants.forEach(function (c) {
+    var el = document.createElement("div");
+    el.className = "score-row";
+    el.innerHTML =
+      '<span class="avatar" style="background:' + c.color + ';width:32px;height:32px;font-size:var(--fs-sm)">' + c.name.trim().split(" ").pop()[0] + "</span>" +
+      '<div style="font-size:var(--fs-sm)"><strong>' + c.name + "</strong></div>" +
+      '<span class="score-row__score">0</span>';
+    var inp = document.createElement("input");
+    inp.className = "input mono"; inp.type = "number"; inp.value = "0";
+    inp.title = "Đặt điểm tay rồi Enter";
+    inp.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") E.setScore(c.id, +inp.value || 0, "admin đặt điểm tay");
+    });
+    el.appendChild(inp);
+    $("scoreRows").appendChild(el);
+    scoreEls[c.id] = { label: el.querySelector(".score-row__score"), input: inp };
+  });
+  E.on("score:change", function (d) {
+    scoreEls[d.cid].label.textContent = d.score;
+    scoreEls[d.cid].input.value = d.score;
+    scoreEls[d.cid].label.classList.add("anim-pop-in");
+    setTimeout(function () { scoreEls[d.cid].label.classList.remove("anim-pop-in"); }, 400);
+  });
+
+  /* ---------- Log ---------- */
+  E.on("log", function (entry) {
+    var el = document.createElement("div");
+    el.className = "log__item";
+    el.innerHTML = '<span class="t">' + entry.time + "</span>" + entry.msg;
+    $("logBox").prepend(el);
+    while ($("logBox").children.length > 60) $("logBox").lastChild.remove();
+  });
+
+  /* ---------- Hotkeys ---------- */
+  document.addEventListener("keydown", function (e) {
+    if (e.target.tagName === "INPUT") return;
+    var k = e.key.toLowerCase();
+    if (k === "c") judge(true);
+    else if (k === "x") judge(false);
+    else if (k === "s") toggleTimer();
+    else if (e.key === "ArrowLeft") { qIndex--; renderQuestion(); }
+    else if (e.key === "ArrowRight") { qIndex++; renderQuestion(); }
+  });
+
+  /* Init */
+  renderStepper(); renderQuestion(); renderViewers();
+  E.log("Admin mở bàn điều khiển — phòng " + M.roomCode);
+  /* Mock log chuông có sẵn cho sinh động */
+  E.log("(mock) " + M.contestants[1].name + " bấm chuông lúc 00:00:01.245");
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Olympia Contest System — Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23f5b301'/><text x='50' y='68' font-size='55' font-weight='bold' text-anchor='middle' fill='%230a1128'>O</text></svg>">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  .hub { max-width: 1080px; margin: 0 auto; padding: var(--sp-7) var(--sp-4); }
+  .hub__hero { text-align: center; margin-bottom: var(--sp-7); }
+  .hub__logo {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 84px; height: 84px; border-radius: var(--r-full);
+    background: var(--grad-gold); color: var(--text-on-gold);
+    font-size: var(--fs-2xl); font-weight: 900;
+    box-shadow: var(--shadow-gold); margin-bottom: var(--sp-4);
+    animation: pop-in var(--dur-slow) var(--ease-spring);
+  }
+  .hub__title {
+    font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 900;
+    background: var(--grad-gold); -webkit-background-clip: text;
+    background-clip: text; color: transparent;
+  }
+  .hub__sub { color: var(--text-2); max-width: 640px; margin: var(--sp-3) auto 0; }
+  .hub__note {
+    display: inline-block; margin-top: var(--sp-4);
+    padding: var(--sp-2) var(--sp-4); border-radius: var(--r-full);
+    background: rgba(255,159,67,.14); color: var(--orange); font-size: var(--fs-sm);
+  }
+  .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--sp-4); }
+  .screen-card {
+    display: block; color: inherit; text-decoration: none;
+    transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  }
+  .screen-card:hover { text-decoration: none; transform: translateY(-4px); box-shadow: var(--shadow-2); border-color: var(--gold-dim); }
+  .screen-card__icon { font-size: var(--fs-xl); margin-bottom: var(--sp-2); }
+  .screen-card__desc { color: var(--text-2); font-size: var(--fs-sm); margin: var(--sp-2) 0 var(--sp-3); min-height: 3em; }
+  .hotkeys { margin-top: var(--sp-7); }
+  .hotkeys .table td:first-child { white-space: nowrap; }
+  footer { text-align: center; margin-top: var(--sp-7); color: var(--text-3); font-size: var(--fs-sm); }
+</style>
+</head>
+<body>
+<main class="hub">
+  <header class="hub__hero">
+    <div class="hub__logo" aria-hidden="true">O</div>
+    <h1 class="hub__title">Olympia Contest System</h1>
+    <p class="hub__sub">
+      Hệ thống mô phỏng gameshow "Đường lên đỉnh Olympia" theo luật 2026 —
+      4 thí sinh, 4 vòng thi (Khởi động · Vượt chướng ngại vật · Tăng tốc · Về đích) + câu hỏi phụ.
+    </p>
+    <span class="hub__note">⚠ Đây là bản DEMO tĩnh dùng mock data — không có server, dùng để duyệt design &amp; animation.</span>
+  </header>
+
+  <section class="screens" aria-label="Các màn hình demo">
+    <a class="card screen-card" href="contestant.html">
+      <div class="screen-card__icon">🎮</div>
+      <h2 class="card__title">Màn thí sinh</h2>
+      <p class="screen-card__desc">Tối giản, phản hồi tức thì: câu hỏi, timer, ô đáp án, nút chuông lớn. Keyboard-only dùng được toàn bộ.</p>
+      <p><span class="kbd">Space</span> chuông · <span class="kbd">Enter</span> gửi · <span class="kbd">1–4</span> hàng ngang</p>
+    </a>
+    <a class="card screen-card" href="viewer.html">
+      <div class="screen-card__icon">📺</div>
+      <h2 class="card__title">Màn viewer / sân khấu</h2>
+      <p class="screen-card__desc">Bảng điểm animate, hiệu ứng đầy đủ mọi vòng thi, podium + confetti. Có kịch bản tự chạy.</p>
+      <p><span class="kbd">P</span> auto-play · <span class="kbd">→</span> bước tiếp</p>
+    </a>
+    <a class="card screen-card" href="overlay.html?bg=checker">
+      <div class="screen-card__icon">🎬</div>
+      <h2 class="card__title">OBS Overlay 1920×1080</h2>
+      <p class="screen-card__desc">Nền trong suốt cho Browser Source: lower-third, timer ring, score strip, banner vòng. Chỉ transform/opacity.</p>
+      <p><span class="kbd">1–9</span> bật/tắt từng phần tử</p>
+    </a>
+    <a class="card screen-card" href="admin.html">
+      <div class="screen-card__icon">🎛️</div>
+      <h2 class="card__title">Bàn điều khiển admin</h2>
+      <p class="screen-card__desc">Điều hướng vòng, chấm Đúng/Sai, chỉnh timer &amp; điểm tay, duyệt viewer, log sự kiện live.</p>
+      <p><span class="kbd">C</span> đúng · <span class="kbd">X</span> sai · <span class="kbd">S</span> start/pause timer</p>
+    </a>
+    <a class="card screen-card" href="questions.html">
+      <div class="screen-card__icon">🗂️</div>
+      <h2 class="card__title">Kho đề</h2>
+      <p class="screen-card__desc">Bảng câu hỏi đủ metadata: vòng, độ khó, chủ đề, media, trạng thái duyệt. Filter, search, import/export ZIP.</p>
+      <p><span class="kbd">/</span> focus tìm kiếm · <span class="kbd">N</span> câu hỏi mới</p>
+    </a>
+  </section>
+
+  <section class="hotkeys card" aria-label="Bảng hotkey tổng hợp">
+    <h2 class="card__title">Bảng hotkey</h2>
+    <table class="table">
+      <thead><tr><th>Màn</th><th>Phím</th><th>Chức năng</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="4">Thí sinh</td><td><span class="kbd">Space</span></td><td>Bấm chuông giành quyền</td></tr>
+        <tr><td><span class="kbd">Enter</span></td><td>Gửi đáp án</td></tr>
+        <tr><td><span class="kbd">1</span>–<span class="kbd">4</span></td><td>Chọn hàng ngang VCNV</td></tr>
+        <tr><td><span class="kbd">Esc</span></td><td>Xoá ô nhập</td></tr>
+        <tr><td rowspan="2">Viewer</td><td><span class="kbd">P</span></td><td>Chạy kịch bản tự động</td></tr>
+        <tr><td><span class="kbd">→</span></td><td>Bước kế tiếp (step-by-step)</td></tr>
+        <tr><td>Overlay</td><td><span class="kbd">1</span>–<span class="kbd">9</span></td><td>Bật / tắt từng phần tử overlay</td></tr>
+        <tr><td rowspan="3">Admin</td><td><span class="kbd">C</span> / <span class="kbd">X</span></td><td>Chấm Đúng / Sai</td></tr>
+        <tr><td><span class="kbd">S</span></td><td>Start / pause timer</td></tr>
+        <tr><td><span class="kbd">←</span> / <span class="kbd">→</span></td><td>Câu trước / câu sau</td></tr>
+        <tr><td rowspan="2">Kho đề</td><td><span class="kbd">/</span></td><td>Focus ô tìm kiếm</td></tr>
+        <tr><td><span class="kbd">N</span></td><td>Mở editor câu hỏi mới</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>Demo tĩnh — vanilla HTML/CSS/JS · sửa design tại <code class="mono">assets/tokens.css</code></footer>
+</main>
+</body>
+</html>

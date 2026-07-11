@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>OBS Overlay 1920×1080 — Olympia Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23f5b301'/><text x='50' y='68' font-size='55' font-weight='bold' text-anchor='middle' fill='%230a1128'>O</text></svg>">
+<link rel="stylesheet" href="assets/tokens.css">
+<style>
+  /* ============================================================
+     OBS Browser Source 1920×1080 — nền TRONG SUỐT.
+     Animation CHỈ dùng transform/opacity (GPU-friendly).
+     Mở ngoài OBS: thêm ?bg=checker để thấy nền caro.
+     ============================================================ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    background: transparent;
+    font-family: var(--font-sans); color: var(--text-1);
+    position: relative;
+  }
+  body.checker {
+    background:
+      repeating-conic-gradient(#2a2a34 0% 25%, #1c1c24 0% 50%) 0 0 / 40px 40px;
+  }
+
+  /* Mọi phần tử overlay: ẩn/hiện bằng transform/opacity */
+  .ov { position: absolute; transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out); will-change: transform, opacity; }
+  .ov.is-hidden { opacity: 0; pointer-events: none; }
+
+  /* ---------- 1. Lower-third: câu hỏi + đáp án ---------- */
+  .lower-third { left: 120px; right: 120px; bottom: 170px; }
+  .lower-third.is-hidden { transform: translateY(40px); }
+  .lt-q {
+    background: linear-gradient(90deg, rgba(10,17,40,.96), rgba(26,20,64,.93));
+    border-left: 6px solid var(--gold);
+    border-radius: var(--r-md);
+    padding: 22px 34px; font-size: 34px; font-weight: 700; line-height: 1.35;
+    box-shadow: var(--shadow-2);
+  }
+  .lt-a {
+    display: inline-block; margin-top: 10px;
+    background: var(--grad-gold); color: var(--text-on-gold);
+    border-radius: var(--r-md);
+    padding: 10px 26px; font-size: 30px; font-weight: 900;
+    transform-origin: left center;
+  }
+  .lt-a.is-hidden-a { opacity: 0; transform: scaleX(.6); }
+  .lt-a { transition: opacity var(--dur-med) var(--ease-spring), transform var(--dur-med) var(--ease-spring); }
+
+  /* ---------- 2. Timer ring góc phải trên ---------- */
+  .timer-ring { top: 48px; right: 64px; width: 170px; height: 170px; }
+  .timer-ring.is-hidden { transform: scale(.7); }
+  .timer-ring svg { transform: rotate(-90deg); }
+  .timer-ring circle { fill: rgba(10,17,40,.85); stroke-width: 12; }
+  .timer-ring .bg { stroke: rgba(255,255,255,.15); }
+  .timer-ring .fg { stroke: var(--gold); stroke-linecap: round; }
+  .timer-ring__num {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 56px; font-weight: 900; font-variant-numeric: tabular-nums;
+    text-shadow: 0 2px 10px rgba(0,0,0,.6);
+  }
+
+  /* ---------- 3. Score strip cạnh dưới ---------- */
+  .score-strip {
+    left: 0; right: 0; bottom: 0; display: flex; justify-content: center; gap: 14px;
+    padding: 16px 0 20px;
+  }
+  .score-strip.is-hidden { transform: translateY(110%); }
+  .ss-item {
+    display: flex; align-items: center; gap: 14px;
+    background: linear-gradient(180deg, rgba(16,26,60,.97), rgba(10,17,40,.97));
+    border: 1px solid rgba(255,255,255,.14); border-top: 3px solid var(--c, var(--blue));
+    border-radius: var(--r-md);
+    padding: 12px 26px; min-width: 330px;
+    box-shadow: var(--shadow-1);
+  }
+  .ss-item .av {
+    width: 52px; height: 52px; border-radius: 50%; background: var(--c, var(--blue));
+    display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px;
+  }
+  .ss-item .nm { font-size: 22px; font-weight: 700; line-height: 1.15; }
+  .ss-item .sc { margin-left: auto; font-size: 40px; font-weight: 900; color: var(--gold); font-variant-numeric: tabular-nums; }
+
+  /* ---------- 4. Banner vòng thi (trên giữa) ---------- */
+  .round-banner { top: 44px; left: 50%; transform: translateX(-50%); }
+  .round-banner.is-hidden { transform: translateX(-50%) translateY(-140%); }
+  .rb-inner {
+    background: var(--grad-gold); color: var(--text-on-gold);
+    padding: 12px 54px; border-radius: 999px;
+    font-size: 30px; font-weight: 900; letter-spacing: .1em;
+    box-shadow: 0 6px 30px rgba(255,201,60,.35);
+  }
+
+  /* ---------- 5. Badge NGÔI SAO HY VỌNG ---------- */
+  .star-badge { top: 250px; right: 64px; }
+  .star-badge.is-hidden { transform: scale(.5) rotate(-20deg); }
+  .sb-inner {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(10,17,40,.95); border: 2px solid var(--gold);
+    border-radius: var(--r-md); padding: 14px 26px;
+    font-size: 26px; font-weight: 900; color: var(--gold); letter-spacing: .06em;
+    box-shadow: 0 0 30px rgba(255,201,60,.4);
+  }
+  .sb-inner .star { font-size: 34px; display: inline-block; animation: star-pulse 1.4s var(--ease-in-out) infinite; }
+  @keyframes star-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.25) rotate(12deg); } }
+
+  /* ---------- 6. Buzz alert (giữa màn) ---------- */
+  .buzz-alert { top: 46%; left: 50%; transform: translate(-50%, -50%); }
+  .buzz-alert.is-hidden { transform: translate(-50%, -50%) scale(.6); }
+  .ba-inner {
+    background: rgba(10,17,40,.96); border: 3px solid var(--green);
+    border-radius: var(--r-lg); padding: 26px 60px; text-align: center;
+    font-size: 44px; font-weight: 900; color: var(--green);
+    box-shadow: 0 0 50px rgba(46,213,115,.45);
+  }
+  .ba-inner small { display: block; font-size: 22px; color: var(--text-2); font-weight: 600; }
+
+  /* ---------- Bảng trợ giúp phím (chỉ hiện ngoài OBS với ?bg=checker) ---------- */
+  .help {
+    position: absolute; top: 48px; left: 64px; z-index: 99;
+    background: rgba(6,11,29,.92); border: 1px solid rgba(255,255,255,.2);
+    border-radius: var(--r-md); padding: 16px 22px; font-size: 18px; line-height: 1.9;
+    display: none;
+  }
+  body.checker .help { display: block; }
+  .help b { color: var(--gold); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+  <!-- Trợ giúp (chỉ hiện khi ?bg=checker) -->
+  <div class="help">
+    <b>OBS Overlay demo — phím bật/tắt:</b><br>
+    <b>1</b> Lower-third câu hỏi · <b>2</b> Đáp án · <b>3</b> Timer ring<br>
+    <b>4</b> Score strip · <b>5</b> Banner vòng · <b>6</b> Badge NSHV<br>
+    <b>7</b> Buzz alert · <b>8</b> Chạy timer 15s · <b>9</b> Ẩn/hiện tất cả
+  </div>
+
+  <!-- 4. Banner vòng thi -->
+  <div class="ov round-banner" id="el5"><div class="rb-inner">VÒNG 2 · VƯỢT CHƯỚNG NGẠI VẬT</div></div>
+
+  <!-- 2. Timer ring -->
+  <div class="ov timer-ring" id="el3">
+    <svg width="170" height="170" viewBox="0 0 170 170">
+      <circle class="bg" cx="85" cy="85" r="74"></circle>
+      <circle class="fg" id="ringFg" cx="85" cy="85" r="74" stroke-dasharray="465" stroke-dashoffset="0"></circle>
+    </svg>
+    <div class="timer-ring__num" id="ringNum">15</div>
+  </div>
+
+  <!-- 5. Badge NSHV -->
+  <div class="ov star-badge is-hidden" id="el6">
+    <div class="sb-inner"><span class="star">⭐</span> NGÔI SAO HY VỌNG</div>
+  </div>
+
+  <!-- 6. Buzz alert -->
+  <div class="ov buzz-alert is-hidden" id="el7">
+    <div class="ba-inner">🔔 Trần Thuỳ Dương<small>giành quyền trả lời</small></div>
+  </div>
+
+  <!-- 1+2. Lower-third -->
+  <div class="ov lower-third" id="el1">
+    <div class="lt-q" id="ltQ">Tỉnh nào của Việt Nam quản lý hành chính quần đảo Trường Sa?</div>
+    <div class="lt-a is-hidden-a" id="el2">Đáp án: KHÁNH HOÀ</div>
+  </div>
+
+  <!-- 3. Score strip -->
+  <div class="ov score-strip" id="el4"></div>
+
+<script src="assets/mock-data.js"></script>
+<script src="assets/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  var E = window.Engine, M = window.MOCK;
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* Nền caro khi mở ngoài OBS */
+  if (new URLSearchParams(location.search).get("bg") === "checker") {
+    document.body.classList.add("checker");
+  }
+
+  /* Dựng score strip từ mock */
+  var demoScores = { c1: 155, c2: 120, c3: 85, c4: 100 };
+  M.contestants.forEach(function (c) {
+    var el = document.createElement("div");
+    el.className = "ss-item";
+    el.style.setProperty("--c", c.color);
+    el.innerHTML =
+      '<span class="av">' + c.name.trim().split(" ").pop()[0] + "</span>" +
+      '<span class="nm">' + c.name + "</span>" +
+      '<span class="sc">' + demoScores[c.id] + "</span>";
+    $("el4").appendChild(el);
+  });
+
+  /* Timer ring — stroke-dashoffset qua transform-friendly attr */
+  var CIRC = 465;
+  E.on("timer:tick", function (t) {
+    var ratio = t.total ? t.remaining / t.total : 0;
+    $("ringFg").style.strokeDashoffset = String(CIRC * (1 - ratio));
+    $("ringNum").textContent = Math.ceil(t.remaining);
+    $("ringFg").style.stroke = t.remaining <= 5 ? "var(--red)" : "var(--gold)";
+  });
+
+  /* Phím 1–9 bật/tắt từng phần tử */
+  var toggles = {
+    "1": function () { $("el1").classList.toggle("is-hidden"); },
+    "2": function () { $("el2").classList.toggle("is-hidden-a"); },
+    "3": function () { $("el3").classList.toggle("is-hidden"); },
+    "4": function () { $("el4").classList.toggle("is-hidden"); },
+    "5": function () { $("el5").classList.toggle("is-hidden"); },
+    "6": function () { $("el6").classList.toggle("is-hidden"); },
+    "7": function () { $("el7").classList.toggle("is-hidden"); },
+    "8": function () { E.startTimer(15); },
+    "9": function () {
+      ["el1", "el3", "el4", "el5"].forEach(function (id) { $(id).classList.toggle("is-hidden"); });
+    }
+  };
+  document.addEventListener("keydown", function (e) {
+    if (toggles[e.key]) toggles[e.key]();
+  });
+})();
+</script>
+</body>
+</html>

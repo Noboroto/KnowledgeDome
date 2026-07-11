@@ -1,0 +1,188 @@
+/* ============================================================
+   base.css — Reset + component dùng chung toàn demo
+   ============================================================ */
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+  color: var(--text-1);
+  background: var(--grad-stage);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+img, svg, video { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3, h4 { line-height: 1.2; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ---------- Button ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--touch-min); padding: var(--sp-2) var(--sp-4);
+  border: var(--border-2); border-radius: var(--r-md);
+  background: rgba(255,255,255,.06); color: var(--text-1);
+  font-weight: 600; cursor: pointer; user-select: none;
+  transition: background var(--dur-fast) var(--ease-out),
+              transform var(--dur-instant) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+.btn:hover { background: rgba(255,255,255,.12); }
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn--primary { background: var(--grad-blue); border-color: transparent; }
+.btn--gold { background: var(--grad-gold); color: var(--text-on-gold); border-color: transparent; }
+.btn--gold:hover { box-shadow: var(--shadow-gold); background: var(--grad-gold); }
+.btn--danger { background: var(--red-dim); border-color: transparent; }
+.btn--danger:hover { background: var(--red); }
+.btn--success { background: var(--green-dim); border-color: transparent; }
+.btn--success:hover { background: var(--green); color: #04240f; }
+.btn--ghost { background: transparent; border-color: transparent; color: var(--text-2); }
+.btn--sm { min-height: 32px; padding: 2px var(--sp-3); font-size: var(--fs-sm); }
+.btn--lg { min-height: 56px; padding: var(--sp-3) var(--sp-6); font-size: var(--fs-lg); }
+
+/* Hint phím tắt trên nút */
+.kbd {
+  display: inline-block; padding: 1px 7px;
+  border: var(--border-2); border-bottom-width: 2px; border-radius: var(--r-sm);
+  background: rgba(0,0,0,.35); font-family: var(--font-mono);
+  font-size: var(--fs-xs); color: var(--text-2); line-height: 1.6;
+}
+
+/* ---------- Card ---------- */
+.card {
+  background: var(--grad-panel);
+  border: var(--border-1); border-radius: var(--r-lg);
+  box-shadow: var(--shadow-1);
+  padding: var(--sp-5);
+}
+.card__title { font-size: var(--fs-lg); margin-bottom: var(--sp-3); color: var(--gold); }
+
+/* ---------- Badge / Chip ---------- */
+.badge {
+  display: inline-flex; align-items: center; gap: var(--sp-1);
+  padding: 2px 10px; border-radius: var(--r-full);
+  font-size: var(--fs-xs); font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,.1); color: var(--text-2);
+}
+.badge--gold { background: var(--grad-gold); color: var(--text-on-gold); }
+.badge--green { background: rgba(46,213,115,.18); color: var(--green); }
+.badge--red { background: rgba(255,71,87,.18); color: var(--red); }
+.badge--blue { background: rgba(77,141,255,.18); color: var(--blue); }
+.badge--purple { background: rgba(140,108,255,.18); color: var(--purple); }
+.badge--orange { background: rgba(255,159,67,.18); color: var(--orange); }
+
+/* ---------- Input ---------- */
+.input, .select {
+  width: 100%; min-height: var(--touch-min);
+  padding: var(--sp-2) var(--sp-3);
+  background: rgba(0,0,0,.3); border: var(--border-2);
+  border-radius: var(--r-md); color: var(--text-1);
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+.input:focus, .select:focus { border-color: var(--gold); outline: none; }
+.input::placeholder { color: var(--text-3); }
+.select option { background: var(--navy-800); }
+
+/* ---------- Table ---------- */
+.table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+.table th, .table td {
+  padding: var(--sp-2) var(--sp-3); text-align: left;
+  border-bottom: var(--border-1);
+}
+.table th {
+  color: var(--text-3); font-size: var(--fs-xs);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.table tbody tr { transition: background var(--dur-fast) var(--ease-out); }
+.table tbody tr:hover { background: rgba(255,255,255,.04); }
+
+/* ---------- Modal ---------- */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(4,7,18,.7); backdrop-filter: blur(3px);
+  display: none; align-items: center; justify-content: center;
+  padding: var(--sp-4);
+}
+.modal-backdrop.is-open { display: flex; }
+.modal {
+  width: min(640px, 100%); max-height: 88vh; overflow: auto;
+  background: var(--navy-800); border: var(--border-2);
+  border-radius: var(--r-lg); box-shadow: var(--shadow-2);
+  padding: var(--sp-5);
+  animation: modal-in var(--dur-med) var(--ease-spring);
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(18px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+.modal__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sp-4); }
+
+/* ---------- Avatar chữ cái đầu ---------- */
+.avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: var(--r-full);
+  font-weight: 800; color: #fff; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,.25);
+}
+
+/* ---------- Panel demo (góc màn hình, thu gọn được) ---------- */
+.demo-panel {
+  position: fixed; right: var(--sp-4); bottom: var(--sp-4); z-index: 90;
+  width: 280px; max-height: 70vh; overflow: auto;
+  background: rgba(6,11,29,.92); border: var(--border-2);
+  border-radius: var(--r-lg); box-shadow: var(--shadow-2);
+  font-size: var(--fs-sm);
+}
+.demo-panel__head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: var(--sp-2) var(--sp-3); cursor: pointer;
+  color: var(--gold); font-weight: 700; position: sticky; top: 0;
+  background: rgba(6,11,29,.97);
+}
+.demo-panel__body { padding: var(--sp-3); display: grid; gap: var(--sp-2); }
+.demo-panel.is-collapsed .demo-panel__body { display: none; }
+.demo-panel.is-collapsed { width: auto; }
+
+/* ---------- Utility ---------- */
+.text-gold { color: var(--gold); } .text-red { color: var(--red); }
+.text-green { color: var(--green); } .text-dim { color: var(--text-3); }
+.mono { font-family: var(--font-mono); }
+.row { display: flex; gap: var(--sp-3); align-items: center; }
+.grow { flex: 1; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ---------- Animation dùng chung ---------- */
+@keyframes flash-green { 0% { box-shadow: 0 0 0 0 rgba(46,213,115,.8); } 100% { box-shadow: 0 0 0 26px rgba(46,213,115,0); } }
+@keyframes shake-red {
+  0%,100% { transform: translateX(0); }
+  20%,60% { transform: translateX(-9px); }
+  40%,80% { transform: translateX(9px); }
+}
+@keyframes pulse-danger { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+@keyframes pop-in { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
+@keyframes slide-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+
+.anim-flash-green { animation: flash-green var(--dur-slow) var(--ease-out); }
+.anim-shake-red { animation: shake-red 400ms var(--ease-out); }
+.anim-pop-in { animation: pop-in var(--dur-med) var(--ease-spring); }
+.anim-slide-up { animation: slide-up var(--dur-med) var(--ease-out); }
+
+/* ---------- Giảm chuyển động: tắt animation trang trí ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

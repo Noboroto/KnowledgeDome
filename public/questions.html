@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kho đề — Olympia Demo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23f5b301'/><text x='50' y='68' font-size='55' font-weight='bold' text-anchor='middle' fill='%230a1128'>O</text></svg>">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/base.css">
+<style>
+  .wrap { max-width: 1400px; margin: 0 auto; padding: var(--sp-4); display: grid; gap: var(--sp-4); }
+  .toolbar { display: flex; gap: var(--sp-3); flex-wrap: wrap; align-items: center; }
+  .toolbar .input, .toolbar .select { width: auto; min-width: 150px; }
+  .toolbar .input--search { flex: 1; min-width: 220px; }
+
+  /* Chip độ khó */
+  .diff { padding: 2px 10px; border-radius: var(--r-full); font-size: var(--fs-xs); font-weight: 700; }
+  .diff--de { background: rgba(46,213,115,.16); color: var(--green); }
+  .diff--trung-binh { background: rgba(255,159,67,.16); color: var(--orange); }
+  .diff--kho { background: rgba(255,71,87,.16); color: var(--red); }
+
+  .tag { display: inline-block; padding: 1px 8px; margin: 1px; border-radius: var(--r-full); font-size: var(--fs-xs); background: rgba(77,141,255,.14); color: var(--blue); }
+  .q-cell { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .table tbody tr { cursor: pointer; }
+  .count-note { color: var(--text-3); font-size: var(--fs-sm); }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-grid label { display: block; font-size: var(--fs-xs); color: var(--text-3); margin-bottom: var(--sp-1); }
+  @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .zip-tree { font-family: var(--font-mono); font-size: var(--fs-sm); background: rgba(0,0,0,.3); border-radius: var(--r-md); padding: var(--sp-4); line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="row" style="justify-content:space-between;flex-wrap:wrap">
+    <div>
+      <h1 style="font-size:var(--fs-xl)">🗂️ Kho đề <span class="badge badge--gold">DEMO</span></h1>
+      <p class="text-dim" style="font-size:var(--fs-sm)">Quản lý câu hỏi — admin &amp; người ra đề · phòng <span class="mono text-gold" id="roomCode"></span></p>
+    </div>
+    <div class="row">
+      <button class="btn" id="btnImport">📥 Import ZIP</button>
+      <button class="btn" id="btnExport">📤 Export ZIP</button>
+      <button class="btn btn--gold" id="btnNew">+ Câu hỏi mới <span class="kbd">N</span></button>
+    </div>
+  </header>
+
+  <!-- Filter + search -->
+  <section class="card toolbar">
+    <input class="input input--search" id="search" placeholder="Tìm nội dung / đáp án…  (phím /)">
+    <select class="select" id="fRound">
+      <option value="">Mọi vòng thi</option>
+      <option value="KHOI_DONG_RIENG">Khởi động — riêng</option>
+      <option value="KHOI_DONG_CHUNG">Khởi động — chung</option>
+      <option value="VCNV">Vượt CNV</option>
+      <option value="TANG_TOC">Tăng tốc</option>
+      <option value="VE_DICH_20">Về đích 20đ</option>
+      <option value="VE_DICH_30">Về đích 30đ</option>
+      <option value="TIE_BREAK">Câu hỏi phụ</option>
+    </select>
+    <select class="select" id="fDiff">
+      <option value="">Mọi độ khó</option>
+      <option value="de">Dễ</option>
+      <option value="trung-binh">Trung bình</option>
+      <option value="kho">Khó</option>
+    </select>
+    <select class="select" id="fTopic"><option value="">Mọi chủ đề</option></select>
+    <span class="count-note" id="countNote"></span>
+  </section>
+
+  <!-- Bảng câu hỏi -->
+  <section class="card" style="overflow-x:auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nội dung</th><th>Vòng thi</th><th>Độ khó</th><th>Chủ đề</th>
+          <th>Media</th><th>Người tạo</th><th>Trạng thái</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </section>
+</div>
+
+<!-- Modal Import/Export -->
+<div class="modal-backdrop" id="zipModal">
+  <div class="modal">
+    <div class="modal__head">
+      <h2 id="zipTitle">Import bộ đề (ZIP bundle)</h2>
+      <button class="btn btn--ghost btn--sm" data-close>✕</button>
+    </div>
+    <p class="text-dim" style="margin-bottom:var(--sp-3)">
+      Format ZIP bundle (mock — chưa xử lý thật trong demo):
+    </p>
+    <div class="zip-tree">
+de-thi-olympia.zip<br>
+├── manifest.json&nbsp;&nbsp;&nbsp;<span class="text-dim"># metadata bộ đề, version, tác giả</span><br>
+├── questions.json&nbsp;&nbsp;<span class="text-dim"># mảng câu hỏi đủ field (round, difficulty, topics…)</span><br>
+└── media/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── tt-01.png&nbsp;&nbsp;&nbsp;<span class="text-dim"># ảnh câu tăng tốc</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── tt-02.mp4&nbsp;&nbsp;&nbsp;<span class="text-dim"># video câu tăng tốc</span>
+    </div>
+    <div class="row" style="margin-top:var(--sp-4);justify-content:flex-end">
+      <button class="btn" data-close>Đóng</button>
+      <button class="btn btn--gold" id="zipAction">Chọn file… (mock)</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal editor câu hỏi -->
+<div class="modal-backdrop" id="editModal">
+  <div class="modal">
+    <div class="modal__head">
+      <h2 id="editTitle">Câu hỏi mới</h2>
+      <button class="btn btn--ghost btn--sm" data-close>✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="full">
+        <label for="eText">Nội dung câu hỏi *</label>
+        <textarea class="input" id="eText" rows="3"></textarea>
+      </div>
+      <div class="full">
+        <label for="eAnswer">Đáp án *</label>
+        <input class="input" id="eAnswer">
+      </div>
+      <div>
+        <label for="eRound">Vòng thi</label>
+        <select class="select" id="eRound">
+          <option value="KHOI_DONG_RIENG">Khởi động — riêng</option>
+          <option value="KHOI_DONG_CHUNG">Khởi động — chung</option>
+          <option value="VCNV">Vượt CNV</option>
+          <option value="TANG_TOC">Tăng tốc</option>
+          <option value="VE_DICH_20">Về đích 20đ</option>
+          <option value="VE_DICH_30">Về đích 30đ</option>
+          <option value="TIE_BREAK">Câu hỏi phụ</option>
+        </select>
+      </div>
+      <div>
+        <label for="eDiff">Độ khó</label>
+        <select class="select" id="eDiff">
+          <option value="de">Dễ</option>
+          <option value="trung-binh">Trung bình</option>
+          <option value="kho">Khó</option>
+        </select>
+      </div>
+      <div>
+        <label for="eTopics">Chủ đề (phẩy ngăn cách)</label>
+        <input class="input" id="eTopics" placeholder="Toán, IQ">
+      </div>
+      <div>
+        <label for="eMedia">Media đính kèm</label>
+        <select class="select" id="eMedia">
+          <option value="">Không</option>
+          <option value="image">🖼 Ảnh</option>
+          <option value="video">🎬 Video</option>
+          <option value="audio">🔊 Âm thanh</option>
+        </select>
+      </div>
+      <div>
+        <label for="eStatus">Trạng thái duyệt</label>
+        <select class="select" id="eStatus">
+          <option value="pending">Chờ duyệt</option>
+          <option value="approved">Đã duyệt</option>
+          <option value="rejected">Từ chối</option>
+        </select>
+      </div>
+      <div>
+        <label for="eCreator">Người tạo</label>
+        <input class="input" id="eCreator" value="Ban ra đề">
+      </div>
+    </div>
+    <div class="row" style="margin-top:var(--sp-4);justify-content:flex-end">
+      <button class="btn" data-close>Huỷ</button>
+      <button class="btn btn--gold" id="btnSave">Lưu câu hỏi</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/mock-data.js"></script>
+<script>
+(function () {
+  "use strict";
+  var M = window.MOCK;
+  var $ = function (id) { return document.getElementById(id); };
+  $("roomCode").textContent = M.roomCode;
+
+  var bank = M.questionBank.slice();
+  var roundLabels = {
+    KHOI_DONG_RIENG: ["Khởi động · riêng", "badge--blue"],
+    KHOI_DONG_CHUNG: ["Khởi động · chung", "badge--blue"],
+    VCNV: ["Vượt CNV", "badge--purple"],
+    TANG_TOC: ["Tăng tốc", "badge--orange"],
+    VE_DICH_20: ["Về đích 20đ", "badge--green"],
+    VE_DICH_30: ["Về đích 30đ", "badge--green"],
+    TIE_BREAK: ["Câu phụ", "badge--gold"]
+  };
+  var diffLabels = { de: "Dễ", "trung-binh": "Trung bình", kho: "Khó" };
+  var statusLabels = {
+    approved: ["Đã duyệt", "badge--green"],
+    pending: ["Chờ duyệt", "badge--orange"],
+    rejected: ["Từ chối", "badge--red"]
+  };
+  var mediaIcons = { image: "🖼", video: "🎬", audio: "🔊" };
+
+  /* Fill filter chủ đề từ dữ liệu */
+  var topics = {};
+  bank.forEach(function (q) { (q.topics || []).forEach(function (t) { topics[t] = 1; }); });
+  Object.keys(topics).sort().forEach(function (t) {
+    var o = document.createElement("option");
+    o.value = t; o.textContent = t;
+    $("fTopic").appendChild(o);
+  });
+
+  /* ---------- Render bảng ---------- */
+  function render() {
+    var kw = $("search").value.toLowerCase();
+    var fr = $("fRound").value, fd = $("fDiff").value, ft = $("fTopic").value;
+    var rows = bank.filter(function (q) {
+      if (fr && q.round !== fr) return false;
+      if (fd && q.difficulty !== fd) return false;
+      if (ft && (q.topics || []).indexOf(ft) < 0) return false;
+      if (kw && (q.text + " " + q.answer).toLowerCase().indexOf(kw) < 0) return false;
+      return true;
+    });
+    $("countNote").textContent = rows.length + "/" + bank.length + " câu";
+    var tb = $("tbody"); tb.innerHTML = "";
+    rows.forEach(function (q) {
+      var r = roundLabels[q.round] || [q.round, "badge"];
+      var s = statusLabels[q.status] || [q.status, "badge"];
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td class="q-cell" title="' + q.text.replace(/"/g, "&quot;") + '">' + q.text + "</td>" +
+        '<td><span class="badge ' + r[1] + '">' + r[0] + "</span></td>" +
+        '<td><span class="diff diff--' + q.difficulty + '">' + diffLabels[q.difficulty] + "</span></td>" +
+        "<td>" + (q.topics || []).map(function (t) { return '<span class="tag">' + t + "</span>"; }).join("") + "</td>" +
+        '<td style="text-align:center">' + (mediaIcons[q.media] || "—") + "</td>" +
+        '<td class="text-dim">' + q.creator + "</td>" +
+        '<td><span class="badge ' + s[1] + '">' + s[0] + "</span></td>";
+      tr.addEventListener("click", function () { openEditor(q); });
+      tb.appendChild(tr);
+    });
+  }
+  ["search", "fRound", "fDiff", "fTopic"].forEach(function (id) {
+    $(id).addEventListener("input", render);
+  });
+
+  /* ---------- Modals ---------- */
+  function openModal(id) { $(id).classList.add("is-open"); }
+  function closeModals() {
+    document.querySelectorAll(".modal-backdrop").forEach(function (m) { m.classList.remove("is-open"); });
+  }
+  document.querySelectorAll("[data-close]").forEach(function (b) {
+    b.addEventListener("click", closeModals);
+  });
+  document.querySelectorAll(".modal-backdrop").forEach(function (m) {
+    m.addEventListener("click", function (e) { if (e.target === m) closeModals(); });
+  });
+
+  $("btnImport").addEventListener("click", function () {
+    $("zipTitle").textContent = "Import bộ đề (ZIP bundle)";
+    $("zipAction").textContent = "Chọn file… (mock)";
+    openModal("zipModal");
+  });
+  $("btnExport").addEventListener("click", function () {
+    $("zipTitle").textContent = "Export bộ đề (ZIP bundle)";
+    $("zipAction").textContent = "Tải xuống (mock)";
+    openModal("zipModal");
+  });
+  $("zipAction").addEventListener("click", function () {
+    alert("Demo mock — chức năng ZIP sẽ có ở bản thật.");
+  });
+
+  /* ---------- Editor ---------- */
+  var editing = null;
+  function openEditor(q) {
+    editing = q || null;
+    $("editTitle").textContent = q ? "Sửa câu hỏi " + q.id : "Câu hỏi mới";
+    $("eText").value = q ? q.text : "";
+    $("eAnswer").value = q ? q.answer : "";
+    $("eRound").value = q ? q.round : "KHOI_DONG_CHUNG";
+    $("eDiff").value = q ? q.difficulty : "de";
+    $("eTopics").value = q ? (q.topics || []).join(", ") : "";
+    $("eMedia").value = q ? (q.media || "") : "";
+    $("eStatus").value = q ? q.status : "pending";
+    $("eCreator").value = q ? q.creator : "Ban ra đề";
+    openModal("editModal");
+  }
+  $("btnNew").addEventListener("click", function () { openEditor(null); });
+  $("btnSave").addEventListener("click", function () {
+    if (!$("eText").value.trim() || !$("eAnswer").value.trim()) {
+      alert("Cần nhập nội dung và đáp án."); return;
+    }
+    var data = {
+      id: editing ? editing.id : "new-" + Date.now(),
+      text: $("eText").value.trim(),
+      answer: $("eAnswer").value.trim(),
+      round: $("eRound").value,
+      difficulty: $("eDiff").value,
+      topics: $("eTopics").value.split(",").map(function (s) { return s.trim(); }).filter(Boolean),
+      media: $("eMedia").value || null,
+      status: $("eStatus").value,
+      creator: $("eCreator").value
+    };
+    if (editing) Object.assign(editing, data);
+    else bank.unshift(data);
+    closeModals(); render();
+  });
+
+  /* ---------- Hotkeys ---------- */
+  document.addEventListener("keydown", function (e) {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") {
+      if (e.key === "Escape") closeModals();
+      return;
+    }
+    if (e.key === "/") { e.preventDefault(); $("search").focus(); }
+    else if (e.key.toLowerCase() === "n") openEditor(null);
+    else if (e.key === "Escape") closeModals();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
