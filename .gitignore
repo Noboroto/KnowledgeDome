@@ -10,3 +10,9 @@ obj
 /.vs
 .cache
 *.cache
+
+# Tool-local directories
+.serena/
+.obsidian/
+.code-review-graph/
+.claude/
