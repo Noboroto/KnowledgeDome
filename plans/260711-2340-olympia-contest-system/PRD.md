@@ -1,0 +1,115 @@
+# PRD — Olympia Contest System
+
+| | |
+|---|---|
+| **Sản phẩm** | Hệ thống quản lý & mô phỏng chương trình "Đường lên đỉnh Olympia" (luật 2026) |
+| **Phiên bản tài liệu** | 1.0 — 12/07/2026 |
+| **Trạng thái** | Draft — chờ chốt các mục trong `plans/DEFERED.md` (D1-D13) |
+| **Tài liệu liên quan** | `plan.md` (kiến trúc + 10 phase) · `user-stories.md` · `research/rules-2026.md` (luật) · `public/` (demo đã duyệt design) |
+
+## 1. Bối cảnh & Vấn đề
+
+Các trường học/CLB muốn tổ chức thi đấu theo format Đường lên đỉnh Olympia phải dùng PowerPoint thủ công hoặc phần mềm desktop LAN cũ (bản Athena C#/WPF): luật hard-code theo format lỗi thời, không chạy online, không có kho đề dùng lại, không tích hợp livestream, mất kết nối là hỏng trận.
+
+**Sản phẩm này** là web app self-host cho phép tổ chức trọn vẹn một trận Olympia theo luật 2026: kho đề bảo mật có metadata, thi đấu realtime độ trễ thấp, admin toàn quyền điều khiển/can thiệp, khán giả xem qua màn viewer hoặc qua livestream OBS.
+
+## 2. Mục tiêu & Không-mục-tiêu
+
+### Mục tiêu (v1)
+1. Mô phỏng đúng luật O26 đủ 4 vòng + câu hỏi phụ; **mọi timer/điểm số admin config được** per-contest (preset `O26_DEFAULT`).
+2. Kho đề tập trung, bảo mật cao (đáp án không bao giờ tới client trước công bố), metadata đầy đủ, import/export được.
+3. Thi đấu realtime công bằng: chuông xếp hạng theo server-timestamp, timer server-authoritative, chống gian lận mức hợp lý.
+4. Vận hành trận tin cậy: pause/resume, undo chấm điểm, phục hồi sau sự cố server/mạng, audit log phân xử khiếu nại.
+5. Trình diễn: màn viewer animation đẹp + overlay OBS 1920×1080 nền trong suốt cho livestream.
+
+### Không-mục-tiêu (v1)
+- Không stream video (chỉ overlay data cho OBS — quyết định đã chốt).
+- Không giải đấu nhiều trận/bracket tuần→tháng→quý→năm (P3, xem `research/ux-gaps.md`).
+- Không speech-to-text tự chấm câu trả lời miệng (DEFERED D4 — admin chấm).
+- Không đa ngôn ngữ (D2 — tiếng Việt, string tách file).
+- Không multi-tenant nhiều tổ chức (một deployment = một đơn vị tổ chức).
+
+## 3. Người dùng & Vai trò
+
+| Role | Là ai | Quyền chính |
+|---|---|---|
+| **Admin** | BTC/kỹ thuật | Tạo user, tạo contest, gán đề & thí sinh, điều khiển trận (hoặc gán quyền host theo contest — D3b), chấm điểm, chỉnh timer/điểm, duyệt viewer, xem toàn kho đề |
+| **Người ra đề (Setter)** | Giáo viên/ban đề | CRUD câu hỏi của mình trong kho, upload media, import/export phần đề mình phụ trách |
+| **Thí sinh (Contestant)** | Học sinh thi đấu | Đăng nhập **chỉ bằng username+password**, vào phòng bằng mã 6 số, thi đấu (chuông/gõ đáp án) |
+| **Viewer** | Khán giả | **Guest** (D5): mã phòng 6 số + nickname → chờ admin duyệt → xem read-only |
+| *(OBS Overlay)* | Máy stream | Bootstrap token do admin phát; read-only tuyệt đối |
+
+## 4. Yêu cầu chức năng (FR)
+
+### FR-1 Auth & Quản lý user
+- FR-1.1 Đăng nhập username+password (Better-auth); không đăng ký tự do — admin tạo account.
+- FR-1.2 RBAC theo **permission** (đã chốt 12/07), hiện thực bằng **@casl/ability** (+ @casl/prisma, @casl/react): 1 role = tập permission, 1 user có nhiều role, admin tạo được role mới từ permission catalog; 4 role mặc định (ADMIN/SETTER/CONTESTANT + VIEWER guest) là seed; authz check theo ability/permission với conditions (vd "câu hỏi của mình"), không theo tên role; quyền host trận là permission gắn theo contest.
+- FR-1.3 Rate-limit đăng nhập; 1 phiên hoạt động/thí sinh; session thí sinh 24h.
+
+### FR-2 Kho đề
+- FR-2.1 CRUD câu hỏi theo loại vòng (Khởi động / VCNV set / Tăng tốc / Về đích / Câu phụ) + trạng thái duyệt (DRAFT→ACTIVE→ARCHIVED) + versioning khi sửa.
+- FR-2.2 Metadata: độ khó (1-5), chủ đề (tags), kiến thức/lớp, ghi chú, người tạo.
+- FR-2.3 Media ảnh/video/audio lưu MinIO, truy cập qua presigned URL TTL ngắn; giới hạn dung lượng (D6).
+- FR-2.4 **Bảo mật**: đáp án chỉ trong DTO của admin/setter-owner; audit log mọi truy cập đáp án/sửa/xuất.
+- FR-2.5 Import/export ZIP bundle (manifest + questions.json + media) roundtrip-safe; import Excel/CSV với mapping cột linh hoạt.
+
+### FR-3 Contest & Phòng thi
+- FR-3.1 Admin tạo contest: chọn RuleConfig (clone từ preset, sửa được mọi timer/điểm), gán 4 ghế thí sinh (ghế trống được — D1b), gán đề (snapshot).
+- FR-3.2 Mã phòng 6 số random, không reuse 24h; pre-flight validate đề đủ số câu + media trước khi start.
+- FR-3.3 Lobby/tech-check: thí sinh thử chuông (hiện ping ms), thử âm thanh, báo sẵn sàng.
+- FR-3.4 Viewer join guest → hàng chờ → admin duyệt; rate-limit + nút khoá cổng viewer.
+- FR-3.5 Reconnect grace 120s giữ ghế + state-sync; rớt quá grace xử lý theo `dropoutPolicy`.
+
+### FR-4 Thi đấu (Game Engine) — chi tiết luật: `research/rules-2026.md` (kể cả §7 edge-cases)
+- FR-4.1 State machine 5 phần thi server-authoritative; timer server; buzzer xếp hạng theo server-timestamp.
+- FR-4.2 Chấm: auto-match đáp án gõ (normalize) + admin confirm/override; câu miệng admin bấm Đúng/Sai.
+- FR-4.3 Can thiệp admin: cộng/trừ điểm kèm lý do, undo, skip/thay câu dự phòng, pause/resume, chỉnh timer đang chạy.
+- FR-4.4 Event-sourced match log (điểm = reduce(events)); mọi biến động truy vết được; phục hồi trận sau crash (persist-trước-broadcast).
+- FR-4.5 Sound cues (chuông/đúng/sai/hết giờ/nhạc vòng) — bộ SFX mặc định royalty-free, admin thay được (D10b).
+- FR-4.6 Media preload phân tầng: viewer/overlay sớm, thí sinh chỉ lúc reveal (D12a).
+
+### FR-5 Giao diện thi đấu
+- FR-5.1 **Thí sinh**: tối giản, phản hồi cục bộ <50ms, keyboard-only trọn trận (Space chuông, Enter gửi, 1-4 hàng ngang, Esc xoá).
+- FR-5.2 **Admin**: bàn điều khiển 3 cột (vòng/phòng/viewer — câu hỏi/chấm/timer — bảng điểm/log); hotkey chấm nhanh; control lock khi nhiều host.
+- FR-5.3 **Viewer**: animation đầy đủ mọi vòng (bảng điểm count-up, VCNV lật ô + miếng ghép, tăng tốc lane, NSHV, podium+confetti) 60fps, animation-queue không chặn engine.
+- FR-5.4 **OBS Overlay**: 1920×1080 nền trong suốt, phần tử bật/tắt từ admin, chỉ transform/opacity, <50% CPU 1 core trong OBS.
+
+### FR-6 Sau trận
+- FR-6.1 Xuất kết quả PDF (bảng điểm, sự kiện chính, QR verify).
+- FR-6.2 Thống kê câu hỏi (% đúng, thời gian TB) ghi ngược metadata kho đề.
+- FR-6.3 Replay timeline trận từ event log (P2).
+
+### FR-7 Dữ liệu cá nhân & privacy (bổ sung sau gap-analysis — học sinh là trẻ vị thành niên, NĐ 13/2023/NĐ-CP)
+- FR-7.1 Thông tin hiển thị của thí sinh (displayName, ảnh, trường/lớp) là **seat profile thuộc contest** — xoá contest là xoá profile; account chỉ giữ username.
+- FR-7.2 Chức năng **anonymize contestant**: thay tên bằng mã trong dữ liệu trận cũ mà không phá event log; retention mặc định 12 tháng, config được (DEFERED D14).
+- FR-7.3 Overlay/viewer có toggle "dùng nickname" per-contestant cho livestream chưa có consent phụ huynh; docs kèm mẫu consent tham khảo.
+- FR-7.4 Trách nhiệm pháp lý dữ liệu thuộc đơn vị tự host; hệ thống cung cấp công cụ (ghi rõ trong docs triển khai).
+
+## 5. Yêu cầu phi chức năng (NFR)
+
+| # | Yêu cầu | Chỉ tiêu |
+|---|---|---|
+| NFR-1 | Độ trễ realtime | p95 event < 200ms (LAN) / < 500ms (Internet); buzzer công bằng theo server-ts |
+| NFR-2 | Quy mô | ≤500 viewer/contest, ≤2 contest song song (D11a); kiến trúc scale ngang sẵn (Redis adapter, single-writer lease) |
+| NFR-3 | Tin cậy | Kill instance/Redis giữa trận → trận phục hồi, không mất event đã công bố; soak 2h không leak |
+| NFR-4 | Bảo mật | Không rò đáp án qua bất kỳ API/socket nào (test tự động); HttpOnly cookie; presigned URL TTL; audit log; magic-bytes sniffing upload |
+| NFR-5 | Accessibility | WCAG AA contrast; `prefers-reduced-motion`; viewer chỉnh cỡ chữ |
+| NFR-6 | Stack (ràng buộc cứng) | BE: TS, NestJS+Fastify, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO · FE: React+Vite, MUI, Motion, Zustand, TanStack Query · Storage: MinIO |
+
+## 6. Tiêu chí thành công v1
+
+1. Tổ chức 1 trận UAT người thật trọn vẹn 4 vòng + livestream OBS không sự cố chặn trận.
+2. Điểm số cuối trận khớp 100% với tính tay theo rule-spec cho ≥3 kịch bản automated.
+3. Admin đổi luật (timer/điểm) qua UI, trận chạy theo giá trị mới không sửa code.
+4. Bộ test "không rò đáp án" + chaos drills (kill instance, kill Redis, restore backup) pass.
+
+## 7. Rủi ro & Phụ thuộc chính
+
+- NestJS Fastify × Socket.IO/Better-auth (spike Phase 1, fallback Express — D9).
+- Luật O26 có chi tiết chưa xác nhận (D8/D13) — mọi giá trị là config nên không chặn dev.
+- Bản quyền: nhạc hiệu (D10) VÀ **format/tên "Olympia" thuộc VTV** — tên sản phẩm nên trung tính, tên vòng thi là data trong preset, disclaimer không liên kết VTV (D7); license repo chốt trước commit đầu (D7b).
+- Dữ liệu cá nhân học sinh vị thành niên — xem FR-7 + DEFERED D14.
+
+## 8. Lộ trình
+
+10 phase trong `plan.md`; critical path là Phase 6 (game engine, có milestone 6a/6b). Demo design (`public/`) đã hoàn thành và verify — là design reference cho Phase 7-9.
