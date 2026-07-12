@@ -273,22 +273,24 @@ Red-team v2 đề xuất đẩy teams / clue-buzz / VCNV 5-8 hàng / rút đề 
 
 **Bối cảnh:** Bạn chốt có bản portable chạy LAN. Gap-sweep cuối chỉ ra 2 điểm cần bạn quyết:
 
-**D19.1 — HTTP hay HTTPS trên LAN?**
+**D19.1 — HTTP hay HTTPS trên LAN? ✅ ĐÃ CHỐT (12/07): (a) HTTP thuần, không cần HTTPS.** `Secure` cookie tắt theo profile portable; web cùng origin với api. (Phân tích các phương án HTTPS giữ bên dưới làm tham khảo nếu sau này đổi ý.)
 - **Vấn đề:** cookie `Secure` (chuẩn bảo mật của bản compose) không hoạt động trên `http://192.168.x.x`.
-| Phương án | Ưu | Nhược |
-|---|---|---|
-| (a) HTTP thuần, tắt `Secure` theo profile, api serve luôn web static cùng origin | Zero-config cho giáo viên — chạy `start.bat` là xong | Traffic LAN không mã hoá (chấp nhận được trong phòng thi kín) |
-| (b) HTTPS self-signed | Mã hoá + Secure cookie giữ nguyên | MỌI thiết bị thí sinh/viewer phải bấm qua cảnh báo "not secure" hoặc cài cert — ma sát lớn ngày thi |
-**→ Đề xuất (a)** — mối đe doạ thực tế trên LAN phòng thi kín rất thấp, ma sát của (b) thì chắc chắn xảy ra với hàng chục thiết bị.
 
-**D19.2 — Target tải cho portable?** Máy Windows cá nhân + Wi-Fi AP trường nghẹt ở ~50-100 client. **Đề xuất: 12 thí sinh + ~75 viewer LAN** (viewer đông hơn thì xem qua projector/OBS chiếu). Bạn cho con số bạn muốn để load test Phase 10 đo đúng.
+| Phương án | Khả thi? | Ưu | Nhược |
+|---|---|---|---|
+| (a) HTTP thuần, tắt `Secure` theo profile, web cùng origin với api | ✅ | Zero-config — chạy `start.bat` là xong | Traffic LAN không mã hoá (chấp nhận được trong phòng thi kín) |
+| (b) HTTPS self-signed | ⚠️ nửa vời | Mã hoá thật | 12 máy thí sinh bấm qua cảnh báo được; **~75 điện thoại viewer mỗi người thấy màn hình đỏ "not private"** — ma sát chết người |
+| (c) mkcert cài CA từng máy | ⚠️ chỉ cho máy BTC | Ổ khoá xanh thật | Không thể cài CA lên điện thoại khán giả; CA lộ key = MITM mọi web trên máy đã cài |
+| (d) **Domain thật + Let's Encrypt DNS-01** (record `lan.domain.vn → IP LAN`, xin cert không cần server public, bundle vào bản portable) | ✅ nếu có domain | HTTPS hợp lệ, không thiết bị nào phải cài/bấm gì | Cần domain + gia hạn cert 90 ngày (script chạy trước đợt thi); thiết bị tại sự kiện phải phân giải được DNS (Wi-Fi có internet, hoặc DNS override trên router nếu offline) |
+
+**→ Đề xuất cập nhật: hỗ trợ CẢ HAI** — `start.bat` mặc định (a) HTTP; thêm config `HTTPS_CERT_PATH` cho BTC có domain dùng (d) — code gần như 0 đồng (đọc cert + bật `Secure` theo protocol thực tế). (b)/(c) không làm. Bạn xác nhận là chốt.
+
+**D19.2 — Target tải cho portable? ✅ ĐÃ CHỐT (12/07):** user cho biết **thực tế thường chỉ < 10 viewer**. Load test portable: 12 thí sinh + 30 viewer (3× headroom so với thực tế) — dư sức với 1 máy Windows + Wi-Fi thường. Con số này cũng hạ nhiệt D11 (compose vẫn thiết kế 500 nhưng đó là trần kiến trúc, không phải nhu cầu thật).
 
 ## D20. Last-wins tăng tốc — 1 chi tiết cần xác nhận
 
-**D20.1 — Submission RỖNG (thí sinh xoá hết rồi Enter) xử lý sao?**
-- (a) **Bỏ qua, giữ bản trước** (đề xuất — tránh mất điểm oan do lỡ tay xoá; muốn "rút đáp án" thì không có khái niệm đó trong luật Olympia)
-- (b) Rỗng = rút đáp án (bản trước bị huỷ)
-Đã ghi default (a) vào spec §6; các chi tiết khác (dedup nội dung y hệt không reset timestamp, chấm trên bản cuối sau TIME_UP) là fix kỹ thuật không cần hỏi.
+**D20.1 — Submission RỖNG ✅ ĐÃ CHỐT (12/07): (a) SKIP — bỏ qua, giữ bản trước.**
+Kèm quyết định đi cùng của user: **TRIM toàn bộ** nội dung đề + đáp án + acceptedAnswers (bỏ space đầu/cuối) — áp cả lúc LƯU vào kho (phase-03) lẫn lúc SO KHỚP (answer-matcher phase-06); submission chỉ toàn whitespace sau trim = rỗng = skip. Dedup nội-dung-y-hệt so sánh SAU trim.
 
 ---
 <!-- Claude sẽ thêm mục mới bên dưới trong quá trình planning -->

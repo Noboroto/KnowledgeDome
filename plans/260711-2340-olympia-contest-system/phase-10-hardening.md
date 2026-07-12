@@ -34,7 +34,7 @@ Biến hệ thống chạy được thành hệ thống tin cậy được: load
 
 ## Success Criteria
 - [ ] Load test đạt chỉ tiêu; không memory leak sau soak 2h.
-- [ ] **Portable (gap-sweep H-F5/M-F4)**: kill process giữa VCNV → `start.bat` → trận resume đúng; `start.bat` gồm `prisma migrate deploy` + mở Windows Firewall rule (netsh) + in URL/QR IP LAN + tắt PG sạch khi đóng; script backup 1-click (pg_dump + copy thư mục storage); load test LAN đạt target riêng (12 thí sinh + ~75 viewer — 🟡 D19.2 user chốt số); runbook khuyến cáo Ethernet cho thí sinh, chuột rời đồng nhất.
+- [ ] **Portable (gap-sweep H-F5/M-F4)**: kill process giữa VCNV → `start.bat` → trận resume đúng; `start.bat` gồm `prisma migrate deploy` + mở Windows Firewall rule (netsh) + in URL/QR IP LAN + tắt PG sạch khi đóng; script backup 1-click (pg_dump + copy thư mục storage); load test LAN đạt target: 12 thí sinh + 30 viewer (✅ D19.2 — thực tế user cho biết <10 viewer, 3× headroom); runbook khuyến cáo Ethernet cho thí sinh, chuột rời đồng nhất.
 - [ ] Bộ test "không rò đáp án" pass trên toàn bộ API + socket (bao gồm invariant submission chéo — red-team H10).
 - [ ] Chaos drills 1b pass cả 3 kịch bản (failover lease, Redis chết, restore từ backup) — không event nào client đã thấy bị mất (red-team H8).
 - [ ] PDF kết quả đúng với bảng điểm; UAT trận thật thành công.

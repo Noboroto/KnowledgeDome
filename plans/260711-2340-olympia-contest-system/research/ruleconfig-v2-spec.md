@@ -103,8 +103,9 @@ TangTocConfig = {
   // đáp án tính điểm = BẢN CUỐI CÙNG per đơn vị điểm; ranking theo server-received timestamp của bản cuối.
   // Server time là source of truth duy nhất — submission tới sau server-timeout bị loại bất kể client hiển thị gì.
   // Chi tiết last-wins (gap-sweep H-F4):
-  //  - Submission NỘI DUNG Y HỆT bản trước (per seat) → KHÔNG cập nhật timestamp (double-Enter vô tình không làm tụt hạng).
-  //  - Submission RỖNG → bỏ qua, giữ bản trước 🟡 D20.1 (user xác nhận; alternative: rỗng = rút đáp án).
+  //  - Mọi submission TRIM trước khi xử lý (user chốt 12/07 — đề/đáp án trong kho cũng trim khi lưu).
+  //  - Submission NỘI DUNG Y HỆT bản trước (so sánh SAU trim, per seat) → KHÔNG cập nhật timestamp.
+  //  - Submission RỖNG (kể cả toàn whitespace sau trim) → SKIP, giữ bản trước (✅ user chốt D20.1).
   //  - Sửa đúng→sai sát giờ: đúng tinh thần last-wins — UI luôn hiện rõ "bản sẽ được tính" của mình.
   //  - Chấm (auto-match + admin confirm) chỉ chạy trên BẢN CUỐI sau TIME_UP; admin channel realtime collapse per-seat-latest (không spam mỗi lần gửi lại).
   rankPoints?: number[],       // length == số đơn vị điểm ĐÃ KHAI BÁO; runtime prefix (§1.4)
