@@ -11,11 +11,11 @@ dependencies: [10]
 ## Overview
 Kích hoạt chế độ thi ĐỘI (user chốt D1: bấm chuông/trả lời CÁ NHÂN, điểm về ĐỘI — kiểu Pop Culture Jeopardy). SCHEMA đã có sẵn từ v1 (`Team`, `seat.teamId nullable`, `scoringUnit`, reducer team-aware — v1 mỗi seat là trường hợp suy biến team size 1); phase này bật semantics đội trong engine theo **spec §2b**, UI đội mọi màn, preset `TEAM_12@1`.
 
-**Chặn trước khi code:** D17.1 (teamLockout), D17.3 (VCNV loại cả đội), D17.4 (NSHV 1/đội) phải được user chốt — default đã đề xuất trong spec §2b; D17.2 (last-wins bản cuối của bất kỳ thành viên) ✅ đã chốt.
+**✅ D17 ĐÃ CHỐT TOÀN BỘ (12/07)** — không còn blocker: D17.1 khoá CÁ NHÂN khi bấm sai (`teamLockout: false` default, option true); D17.2 last-wins; D17.3 VCNV sai CNV loại CẢ ĐỘI; D17.4 NSHV 1/đội.
 
 ## Requirements
 - Functional (semantics §2b — engine áp theo `scoringUnit: team`):
-  - **Buzz/khoá theo đội**: thành viên bấm sai ở vòng chuông → khoá theo `teamLockout` (default: khoá CẢ ĐỘI câu đó — D17.1a, option `false` cho giải giao lưu).
+  - **Buzz/khoá**: thành viên bấm sai ở vòng chuông (khởi động chung, clue-buzz, cướp về đích) → **khoá CÁ NHÂN, thành viên khác vẫn bấm được** (`teamLockout: false` default — ✅ D17.1 12/07; option `true` cho giải công bằng quân số nghiêm ngặt); vì khoá cá nhân nên CẤM same-team-steal càng bắt buộc.
   - **Submission đội (VCNV/Tăng tốc)**: mọi thành viên gõ được; tính **bản CUỐI của bất kỳ thành viên** trước server-timeout (✅ D17.2 last-wins); ranking theo server-received ts của bản cuối.
   - **VCNV sai CNV**: loại CẢ ĐỘI (D17.3 default) — tránh đội 4 người có 4 lần đoán.
   - **NSHV**: 1 lần/ĐỘI/trận (D17.4 default).
@@ -34,8 +34,7 @@ Kích hoạt chế độ thi ĐỘI (user chốt D1: bấm chuông/trả lời C
 - Test: `apps/api/test/engine/teams/` — kịch bản §2b từng vòng; same-team-steal bị reject; NSHV/đội; teamLockout cả 2 giá trị
 
 ## Implementation Steps
-1. Chốt D17.1/.3/.4 với user (nếu chưa) — engine code theo default spec §2b nếu không đổi.
-2. Reducer + round engines: nhánh team cho từng vòng (khởi động chung/riêng theo individualTurnMode, VCNV, tăng tốc last-wins any-member, về đích + cấm same-team steal, tie-break đại diện).
+1. Reducer + round engines: nhánh team cho từng vòng theo §2b đã chốt (khởi động chung/riêng theo individualTurnMode + khoá cá nhân, VCNV loại cả đội, tăng tốc last-wins any-member, về đích + cấm same-team steal, NSHV 1/đội, tie-break đại diện).
 3. Contest builder: teams setup UI + pre-flight teams.
 4. Team display: contestant → viewer/overlay → MC (adaptive layout đã thiết kế sẵn phase-09).
 5. Preset `TEAM_12@1` + bộ test kịch bản đội đầy đủ (bao gồm edge: thành viên rớt mạng giữa lượt cá nhân của đội, đội bị khoá toàn bộ, lệch quân số 1v4).
@@ -45,7 +44,7 @@ Kích hoạt chế độ thi ĐỘI (user chốt D1: bấm chuông/trả lời C
 ## Success Criteria
 - [ ] Kịch bản automated `TEAM_12@1` (12 người/4 đội) ra điểm đúng bảng tính tay ≥1 kịch bản đủ 4 vòng.
 - [ ] Same-team steal bị server reject (test); NSHV dùng 2 lần/đội bị reject.
-- [ ] teamLockout=true: 1 thành viên sai → cả đội bị khoá câu đó; =false: thành viên khác vẫn bấm được.
+- [ ] teamLockout=false (default): 1 thành viên sai → chỉ cá nhân bị khoá, đồng đội vẫn bấm được; =true: cả đội bị khoá câu đó.
 - [ ] Tăng tốc đội: bản cuối của BẤT KỲ thành viên được tính; ranking đúng theo server-ts.
 - [ ] Viewer/overlay hiển thị đúng theo đội ở cả 4 vòng + podium; 60fps giữ nguyên.
 

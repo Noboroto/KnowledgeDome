@@ -9,7 +9,7 @@ dependencies: [1]
 # Phase 2: Auth & User Management
 
 ## Overview
-Better-auth với username+password (không email, không OAuth cho thí sinh), RBAC theo permission (role = tập permission, user nhiều role, role mở rộng được — 4 role mặc định là seed), admin tạo/quản lý user + role. Auth phủ cả HTTP lẫn WebSocket handshake.
+Better-auth với username+password (không email, không OAuth cho thí sinh), RBAC theo permission (role = tập permission, user nhiều role, role mở rộng được — **5 role mặc định là seed, gồm REVIEWER ✅ D15.1**), admin tạo/quản lý user + role. Auth phủ cả HTTP lẫn WebSocket handshake.
 
 ## Requirements
 - Functional: đăng nhập username+password; admin CRUD user + gán role; session HttpOnly cookie; WS handshake xác thực bằng session cookie; viewer là guest (không account — DEFERED D5).
@@ -30,7 +30,7 @@ erDiagram
   Permission { string key PK "user.manage, contest.create, contest.control, question.create, question.viewAnswer, contest.viewerGate, ..." }
 ```
 
-Permission catalog (hằng số trong `packages/shared`, nhóm theo module): `user.*`, `question.*` (create/update/viewAnswer/export/import), `contest.*` (create/control/adjustScore/viewerGate/soundboard), `match.viewAnswer`, `system.*`. Seed 4 role mặc định: ADMIN (toàn bộ), SETTER (question.* của mình), CONTESTANT (thi đấu), VIEWER (guest — không phải account, ticket riêng).
+Permission catalog (hằng số trong `packages/shared`, nhóm theo module): `user.*`, `question.*` (create/update/**review** [activate DRAFT→ACTIVE — ✅ D15.1 12/07]/viewAnswer/export/import), `contest.*` (create/control/adjustScore/viewerGate/soundboard), `match.viewAnswer`, `system.*`. Seed **5 role** mặc định: ADMIN (toàn bộ), SETTER (question.* của mình), **REVIEWER (`question.review` + xem đáp án câu đang duyệt — ✅ D15.1)**, CONTESTANT (thi đấu), VIEWER (guest — không phải account, ticket riêng).
 
 - Better-auth qua `@thallesp/nestjs-better-auth` (pin version), **bọc sau interface `AuthService` nội bộ** để cô lập rủi ro package cộng đồng.
 - Better-auth `username` plugin; tắt đăng ký tự do — chỉ admin tạo account.
@@ -47,7 +47,7 @@ Permission catalog (hằng số trong `packages/shared`, nhóm theo module): `us
 - Prisma: model `User`, `Session` (theo Better-auth schema), `Role`
 
 ## Implementation Steps
-1. Prisma schema User/Session/Account theo Better-auth + bảng `Role`, `Permission`, `UserRole`, `RolePermission` (như ERD); seed permission catalog + 4 role mặc định (`system: true` không xoá được); `displayName`, `disabled`.
+1. Prisma schema User/Session/Account theo Better-auth + bảng `Role`, `Permission`, `UserRole`, `RolePermission` (như ERD); seed permission catalog + 5 role mặc định gồm REVIEWER (`system: true` không xoá được); `displayName`, `disabled`.
 1b. UI + API admin quản lý role: tạo role mới từ danh sách permission, gán nhiều role cho 1 user.
 2. Cấu hình Better-auth: username plugin, Argon2id, cookie `HttpOnly; SameSite=Lax`; `Secure` bật ở profile compose (HTTPS). **Profile portable chạy HTTP LAN — ✅ user chốt 12/07, không cần HTTPS** (gap-sweep H-F1): `Secure` off theo `INFRA_PROFILE`, **api serve luôn web static cùng origin** (`express.static` / ServeStaticModule) để khỏi vỡ cookie cross-origin, Better-auth `baseURL`/`trustedOrigins` đọc từ IP LAN máy lúc start (in ra console + QR). Session theo role: thí sinh **24h**, admin/setter 7 ngày; admin có nút "logout mọi phiên thí sinh" sau trận.
 3. Rate limit đăng nhập: Redis sliding window 5 lần/phút/username.

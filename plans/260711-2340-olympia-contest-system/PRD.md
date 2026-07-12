@@ -4,7 +4,7 @@
 |---|---|
 | **Sản phẩm** | Hệ thống quản lý & mô phỏng chương trình "Đường lên đỉnh Olympia" (luật 2026) |
 | **Phiên bản tài liệu** | 1.0 — 12/07/2026 |
-| **Trạng thái** | Draft v3 (12/07) — đã chốt D1-D6, D8 (Fandom = source of truth), D9, D12b, D15-MC, D16, D17.2, D18 (**lộ trình 3 mốc: v1 solo / v1.5 practice / v2 teams — DB đủ từ v1**), D19-D22; còn chờ: D10 cue map, D11, D13 (một phần), D15.1, D17.1/.3/.4 (trước v2) — xem `DEFERED.md` |
+| **Trạng thái** | Draft v3 (12/07) — **đã chốt TOÀN BỘ D1-D25** (D7/D14 bỏ; D18 = lộ trình 3 mốc v1 solo / v1.5 practice / v2 teams — DB đủ từ v1; D24 pool/displayId; D25 typography); còn duy nhất D10 cue map (việc research, không phải quyết định) — xem `DEFERED.md` |
 | **Tài liệu liên quan** | `plan.md` (kiến trúc + 10 phase) · `user-stories.md` · `research/rules-2026.md` (luật) · `public/` (demo đã duyệt design) |
 
 ## 1. Bối cảnh & Vấn đề
@@ -46,6 +46,8 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 |---|---|---|
 | **Admin** | BTC/kỹ thuật | Tạo user, tạo contest, gán đề & thí sinh, điều khiển trận (hoặc gán quyền host theo contest — D3b), chấm điểm, chỉnh timer/điểm, khoá cổng/kick viewer, xem toàn kho đề |
 | **Người ra đề (Setter)** | Giáo viên/ban đề | CRUD câu hỏi của mình trong kho, upload media, import/export phần đề mình phụ trách |
+| **Reviewer** (✅ D15.1) | Người duyệt đề | Duyệt DRAFT→ACTIVE (permission `question.review`); xem đáp án câu đang duyệt (audit); role seed thứ 5 |
+| **Trainer** (mốc v1.5 — ✅ D21.2) | Phụ trách CLB | Tạo practice match + Rematch (permission `contest.create`) |
 | **Thí sinh (Contestant)** | Học sinh thi đấu | Đăng nhập **chỉ bằng username+password**, vào phòng bằng mã 6 số, thi đấu (chuông/gõ đáp án) |
 | **Viewer** | Khán giả | nhập mã 6 số → xem NGAY (public, không duyệt — ✅ 12/07); read-only |
 | **MC** (permission theo contest) | Người dẫn chương trình | Màn `/mc` read-only: câu hỏi + đáp án + tóm tắt kết quả — không điều khiển |
@@ -55,12 +57,12 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 
 ### FR-1 Auth & Quản lý user
 - FR-1.1 Đăng nhập username+password (Better-auth); không đăng ký tự do — admin tạo account.
-- FR-1.2 RBAC theo **permission** (đã chốt 12/07), hiện thực bằng **@casl/ability** (+ @casl/prisma, @casl/react): 1 role = tập permission, 1 user có nhiều role, admin tạo được role mới từ permission catalog; 4 role mặc định (ADMIN/SETTER/CONTESTANT + VIEWER guest) là seed; authz check theo ability/permission với conditions (vd "câu hỏi của mình"), không theo tên role; quyền host trận là permission gắn theo contest.
+- FR-1.2 RBAC theo **permission** (đã chốt 12/07), hiện thực bằng **@casl/ability** (+ @casl/prisma, @casl/react): 1 role = tập permission, 1 user có nhiều role, admin tạo được role mới từ permission catalog; 5 role mặc định (ADMIN/SETTER/**REVIEWER** [`question.review` — ✅ D15.1]/CONTESTANT + VIEWER guest) là seed; authz check theo ability/permission với conditions (vd "câu hỏi của mình"), không theo tên role; quyền host trận là permission gắn theo contest.
 - FR-1.3 Rate-limit đăng nhập; 1 phiên hoạt động/thí sinh; session thí sinh 24h.
 
 ### FR-2 Kho đề & Bộ đề
-- FR-2.1 CRUD câu hỏi theo loại vòng (Khởi động / VCNV set / Tăng tốc / Về đích / Câu phụ) + trạng thái duyệt (DRAFT→ACTIVE→ARCHIVED, chỉ admin activate) + versioning khi sửa.
-- FR-2.2 Mỗi câu: `displayId` tra cứu, lĩnh vực (taxonomy `Field` quản lý được), wordCount (auto), nội dung, đáp án + acceptedAnswers, giải thích, người thực hiện, ghi chú, media; thuộc tính riêng theo loại: `timeSeconds` (TT/VĐ), `value` (VĐ), `clues[]` (TT clue-buzz); metadata cũ (độ khó, tags) giữ nguyên.
+- FR-2.1 CRUD câu hỏi theo **3 POOL (✅ D24 12/07): `KV` — dùng chung Khởi động + Về đích (+ câu phụ), lẫn nhau khi thoả điều kiện điểm (`value` ∈ valueChoices cho về đích); `TT` — tăng tốc; `CN` — bộ đề VCNV trọn** + trạng thái duyệt (DRAFT→ACTIVE→ARCHIVED — activate gate bằng permission **`question.review`**, seed role REVIEWER, admin mặc định có — ✅ D15.1 12/07) + versioning khi sửa.
+- FR-2.2 Mỗi câu: **UUID (khoá kỹ thuật) + `displayId` chứa loại pool (✅ D24: `<POOL 2 ký tự>-<4 HEX đầu UUID>-<4 HEX cuối UUID>` uppercase — `KV-A1B2-7890` / `TT-…` / `CN-…`, hàng ngang `-R1..R8`; derive từ UUID, unique index, immutable)**, lĩnh vực (taxonomy `Field` quản lý được), wordCount (auto), nội dung, đáp án + acceptedAnswers, giải thích, người thực hiện, ghi chú, media; thuộc tính theo pool: `timeSeconds` (per câu), `value` (điều kiện dùng ở về đích), `clues[]` (TT clue-buzz); metadata cũ (độ khó, tags) giữ nguyên.
 - FR-2.2b **Bộ đề (QuestionSet)**: `displayId`; PRIVATE (owner+ACL; share-link password+TTL revoke được) / PUBLIC (xem/tải tự do, kèm đáp án theo setting per-set default có, cảnh báo trước khi public, chặn public khi gắn contest chưa diễn); item = reference câu kho theo ID hoặc nhập tay (checkbox lưu vào kho); tra cứu theo ID/lĩnh vực/người thực hiện/đáp án (đáp án cần quyền).
 - FR-2.3 Media ảnh/video/audio lưu MinIO, truy cập qua presigned URL TTL ngắn; giới hạn dung lượng **ảnh ≤10MB, video ≤200MB, audio ≤20MB — env config (✅ D6)**; khuyến nghị transcode 1080p H.264 trước upload (docs).
 - FR-2.4 **Bảo mật**: đáp án chỉ trong DTO của admin/setter-owner; audit log mọi truy cập đáp án/sửa/xuất. (trong trận: + kênh MC FR-5.5; + ngoại lệ revealAnswerAfterJudge NFR-4)
@@ -77,7 +79,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 
 ### FR-4 Thi đấu (Game Engine) — spec: `research/ruleconfig-v2-spec.md`; luật gốc + edge-cases: `research/rules-2026.md` §7
 - FR-4.1 Orchestrator chạy **round playlist** server-authoritative; timer server; buzzer cá nhân xếp hạng theo server-timestamp, điểm reduce về seat (reducer team-aware — semantics đội kích hoạt **v2**); khởi động hỗ trợ **rút đề ngẫu nhiên theo lĩnh vực TRONG danh sách đề đã gán** (✅ D22 — hệ thống không tự lấy từ kho; slot theo Field + RANDOM, noRepeatInMatch, xáo thứ tự — event `QUESTIONS_DRAWN` replay được).
-- FR-4.2 Chấm: auto-match đáp án gõ (normalize) + admin confirm/override; câu miệng admin bấm Đúng/Sai.
+- FR-4.2 Chấm: toggle **`autoJudge` per-contest — DEFAULT TẮT** (✅ D4 12/07): tắt → người điều khiển chấm mọi câu (auto-match chỉ hiện gợi ý); bật → câu gõ tự chốt theo auto-match + admin override; **normalize BẮT BUỘC: case-insensitive + trim đầu/cuối + collapse khoảng trắng thừa giữa từ** (bỏ dấu tiếng Việt = config); câu miệng luôn admin bấm Đúng/Sai.
 - FR-4.3 Can thiệp admin: cộng/trừ điểm kèm lý do, undo, skip/thay câu dự phòng, pause/resume, chỉnh timer đang chạy.
 - FR-4.4 Event-sourced match log (điểm = reduce(events)); mọi biến động truy vết được; phục hồi trận sau crash (persist-trước-broadcast).
 - FR-4.5 Âm thanh: **cue slot theo từng thành phần × loại vòng** (intro/question/countdown/buzz/correct/wrong/timeup/reveal...) — **admin tự upload file cho từng slot, slot trống = silent (✅ D10 — không cần bộ SFX default)**; client pre-download toàn bộ SFX khi vào phòng (nhỏ, phát tức thì); **nhạc nền playlist** điều khiển bằng soundboard admin (phát/dừng/next/volume/duck), phát ở viewer/overlay, contestant mặc định tắt.
@@ -90,7 +92,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 - FR-5.3 **Viewer**: animation đầy đủ mọi vòng (bảng điểm count-up, VCNV lật ô + miếng ghép, tăng tốc lane, NSHV, podium+confetti) 60fps, animation-queue không chặn engine.
 - FR-5.4 **OBS Overlay**: 1920×1080 nền trong suốt, phần tử bật/tắt từ admin, chỉ transform/opacity, <50% CPU 1 core trong OBS.
 - FR-5.5 **Màn MC** (`/mc`, đã chốt 12/07): read-only chữ rất to — câu hỏi hiện tại + **đáp án** + tóm tắt kết quả/bảng điểm; permission `match.viewAnswer` theo contest, audit log (đáp án chỉ tới admin + MC channel).
-- FR-5.6 **Theming per contest**: đổi màu thành tố đồ hoạ (design tokens), logo/banner cuộc thi, ảnh thí sinh, video hình hiệu (phát ở intro/INTERMISSION) — áp cho viewer/overlay/MC.
+- FR-5.6 **Theming per contest**: đổi màu thành tố đồ hoạ (design tokens), logo/banner cuộc thi, ảnh thí sinh, video hình hiệu (phát ở intro/INTERMISSION) — áp cho viewer/overlay/MC. **Typography toàn hệ (✅ D25): "Be Vietnam Pro" self-host trong bundle (portable offline) + fallback font hệ thống hỗ trợ tiếng Việt (Segoe UI/-apple-system/Helvetica Neue/Arial/Tahoma).**
 - FR-5.7 Layout adaptive: tối ưu ≤4 đơn vị điểm (sân khấu đầy đủ); 5-12 grid gọn vẫn đủ animation; hiển thị theo đội khi có đội (**v2**).
 
 ### FR-6 Sau trận
@@ -109,13 +111,13 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 | # | Yêu cầu | Chỉ tiêu |
 |---|---|---|
 | NFR-1 | Độ trễ realtime | p95 event < 200ms (LAN) / < 500ms (Internet); buzzer công bằng theo server-ts |
-| NFR-2 | Quy mô | ≤500 viewer/contest, ≤2 contest song song (D11a); kiến trúc scale ngang sẵn (Redis adapter, single-writer lease) |
+| NFR-2 | Quy mô | **<50 viewer/trận, ~5 trận LIVE song song (✅ D11 12/07)** — điểm nhấn là nhiều match đồng thời (single-writer lease per match); trần kiến trúc 500 viewer/trận giữ làm headroom |
 | NFR-3 | Tin cậy | Kill instance/Redis giữa trận → trận phục hồi, không mất event đã công bố; soak 2h không leak |
 | NFR-4 | Bảo mật (zero-trust — chốt 12/07) | Không rò đáp án qua bất kỳ API/socket nào (test tự động; viewer/thí sinh/overlay không hiển thị đáp án — chỉ admin+MC; **ngoại lệ: contest bật `revealAnswerAfterJudge` [default TẮT] cho luyện tập → đáp án đẩy xuống SAU khi chấm**); mọi event verify permission server-side; HttpOnly cookie; URL media có TTL; magic-bytes sniffing upload |
 | NFR-4b | **Audit MỌI thao tác, MỌI role** (chốt 12/07) | AuditLog chung append-only (actor, action, target, ts, IP): auth, CRUD đề/bộ đề/contest, event trong trận, viewer join/kick, import/export, xem đáp án |
 | NFR-5 | Accessibility | WCAG AA contrast; `prefers-reduced-motion`; viewer chỉnh cỡ chữ |
 | NFR-6 | Stack (ràng buộc cứng) | BE: TS, **NestJS + Express adapter** (✅ D9 12/07 — đổi từ Fastify vì tương thích), Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO · FE: React+Vite, MUI, Motion, Zustand, TanStack Query · Storage: MinIO · **Chỉ tiếng Việt, múi giờ UTC+7 thống nhất (✅ D2)** |
-| NFR-7 | **2 hình thức triển khai** (chốt 12/07) | (a) Docker compose trên server Internet (đủ PG+Redis+MinIO, multi-instance); (b) **portable trên Windows cá nhân KHÔNG Docker, mạng LAN, 1 máy** — hạ tầng qua abstraction layer (driver Redis/in-process, MinIO/filesystem), đang research queue + hạ tầng portable |
+| NFR-7 | **2 hình thức triển khai** (chốt 12/07) | (a) Docker compose trên server Internet (`compose.yml` dev / **`prod.compose.yml`** prod — đủ PG+Redis+MinIO, multi-instance, chỉ expose proxy); (b) **portable trên Windows cá nhân KHÔNG Docker, mạng LAN, 1 máy** — hạ tầng qua abstraction layer (driver Redis/in-process, MinIO/filesystem, pg-boss); chuyển đề giữa 2 bản qua contest bundle (✅ D23) |
 
 ## 6. Tiêu chí thành công (v1)
 

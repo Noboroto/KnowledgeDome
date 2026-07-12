@@ -39,7 +39,7 @@ Portable: thay Q bằng in-process FIFO, W cùng process, broadcast trực tiế
 ## Quy ước compose (user chốt 12/07)
 
 - **`compose.yml`** — DEV: luồng chính vẫn đi qua proxy (đồng dạng prod), **NHƯNG đồng thời map TOÀN BỘ port từng service ra host** (pg 5432, redis 6379, minio 9000/9001, api 3000, web 5173, proxy 80) để test/debug trực tiếp từng service không cần qua proxy.
-- **`compose.prod.yml`** — SERVER: **chỉ expose đúng 1 port của reverse proxy** (80/443); mọi service khác chỉ nằm trong network nội bộ.
+- **`prod.compose.yml`** (user đổi tên 12/07 — không phải `compose.prod.yml`) — SERVER: **chỉ expose đúng 1 port của reverse proxy** (80/443); mọi service khác chỉ nằm trong network nội bộ.
 - **Cả hai file đều có reverse proxy nginx** (user chốt; TLS ở prod qua certbot; dev cũng đi qua proxy để môi trường đồng dạng: cùng domain/cookie/path như prod; nginx config chú ý `proxy_read_timeout` + `Upgrade`/`Connection` headers cho WebSocket). **Không cần sticky session** — websocket-only + Redis adapter + QueueDriver forward là đủ, đừng thêm `ip_hash` thừa; hệ quả websocket-only: không có polling fallback sau proxy khắt khe (đã là quyết định có chủ đích).
 - Port service ở compose.yml dev bind `127.0.0.1` (không mở default-credential ra LAN — gap-sweep M-F3).
 

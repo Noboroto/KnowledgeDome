@@ -83,18 +83,18 @@ Gói câu chỉ còn 2 mức 20/30 (bỏ mức 10 của luật cũ).
 
 | Tình huống | Hành vi đề xuất |
 |---|---|
-| 🟡 VCNV: cả 4 thí sinh bị loại (đều sai CNV) | Kết thúc vòng ngay: mở toàn bộ miếng ghép + công bố CNV, không ai được điểm CNV; các hàng ngang chưa hỏi bị bỏ |
-| 🟡 VCNV: người bị loại có được trả lời hàng ngang còn lại? | **Không** (theo luật thật) — chỉ mất quyền CNV lẫn hàng ngang |
+| ✅ VCNV: cả 4 thí sinh bị loại (đều sai CNV) | **User chốt 12/07:** kết thúc lượt/vòng, không ai được điểm CNV; **mở toàn bộ miếng ghép + công bố CNV là NÚT THỦ CÔNG của admin** (không auto — giữ nhịp dẫn); các hàng ngang chưa hỏi bị bỏ |
+| ✅ VCNV: người bị loại có được trả lời hàng ngang còn lại? | **Không** — Fandom xác nhận (lượt chọn dồn cho người chưa bị loại, quay vòng về vị trí 1) |
 | VCNV: bấm chuông giải CNV giữa lúc timer hàng ngang đang chạy | Timer hàng ngang PAUSE, xử lý CNV xong (đúng → kết thúc vòng; sai → loại người bấm) rồi RESUME cho người còn lại |
-| Khởi động lượt chung: không ai bấm chuông | Hết `buzzWindowSec` (default 5s sau khi đọc xong) → công bố đáp án, sang câu tiếp (admin có nút next thủ công override) |
+| Khởi động lượt chung: không ai bấm chuông | Hết `buzzWindowSec` (default **3s** sau khi đọc xong — Fandom) → công bố đáp án, sang câu tiếp (admin có nút next thủ công override) |
 | ✅ Khởi động lượt chung: bấm sai | −5, câu đó KHÔNG mở lại chuông cho người khác (Fandom; admin override được) |
 | ✅ Tăng tốc: 2 người đúng cùng timestamp (ms) | Cùng nhận mức điểm cao (40/40/20/10) — **Fandom xác nhận** ("cùng khoảng thời gian → cùng mức điểm"); so sánh ở độ phân giải ms server-received |
 | Tăng tốc với ghế trống/2 người chơi (D1b) | Thang điểm vẫn 40/30/... theo thứ hạng thực tế trong số người đúng |
-| 🟡 Thí sinh rớt mạng đúng lượt riêng của mình (khởi động riêng / về đích) | Engine tự PAUSE + prompt admin: chờ reconnect (trong grace) / skip lượt / thay thế; chưa chọn gói về đích khi tới lượt → admin chọn hộ (default 20/20/20) |
+| ✅ Thí sinh rớt mạng đúng lượt riêng của mình (khởi động riêng / về đích) | **User chốt 12/07:** engine tự PAUSE + prompt admin: chờ reconnect (trong grace) / skip lượt / thay thế; chưa chọn gói về đích khi tới lượt → admin chọn hộ (default 20/20/20) |
 | Về đích: quyền cướp đang mở mà câu bị skip (media hỏng) | Huỷ cửa sổ cướp, không ai cộng/trừ; câu thay thế chạy lại từ đầu |
 | NSHV đã chọn, câu bị thay bằng câu dự phòng | NSHV áp sang câu thay thế (không mất lượt chọn) |
 | Tie-break hòa 3-4 người / hòa nhiều vị trí | Chạy tie-break **per nhóm hòa, theo thứ tự vị trí cần phân định** (function `(tiedSeats[], targetPosition) → winner`); người bấm sai bị loại khỏi CÂU đó, những người còn lại thi tiếp cùng câu; hết 3 câu → bốc thăm |
-| 🟡 Vị trí nào cần tie-break? | Default: chỉ vị trí NHẤT (giải thưởng); config `tieBreakPositions` |
+| ✅ Vị trí nào cần tie-break? | **User chốt 12/07:** chỉ vị trí NHẤT; config `tieBreakPositions` đổi được |
 | ✅ Hết câu hỏi phụ khi hoà dai dẳng | Preflight yêu cầu tối thiểu N câu phụ (config, default 3); vẫn hết → bốc thăm — **Fandom xác nhận** |
 | Điểm lẻ khi admin config mức điểm tuỳ ý (cướp sai −½ của 25) | RuleConfig ép giá trị câu là số chẵn (Zod); nếu vẫn lẻ → làm tròn về 0 (floor với âm là ceil) |
 

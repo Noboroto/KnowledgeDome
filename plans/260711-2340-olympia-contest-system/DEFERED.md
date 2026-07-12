@@ -66,9 +66,10 @@ flowchart LR
 
 **→ Đề xuất: (b).** v1 thực tế vẫn là admin tự host (admin mặc nhiên có quyền), nhưng data model để quyền điều khiển theo contest — một quyết định rẻ bây giờ, đắt nếu làm sau.
 
-## D4. Chấm câu trả lời miệng ✅ ĐÃ CHỐT (12/07): CƠ CHẾ (a)
+## D4. Chấm điểm ✅ ĐÃ CHỐT (12/07, bổ sung lần 2)
 
 > **User chốt:** admin bấm Đúng/Sai cho câu miệng; câu gõ auto-match + admin override.
+> **Bổ sung 12/07 (lần 2):** contest có toggle **`autoJudge` bật/tắt chấm tự động — DEFAULT TẮT**: mặc định MỌI câu (kể cả câu gõ) do NGƯỜI ĐIỀU KHIỂN chấm (auto-match vẫn chạy ngầm nhưng chỉ hiện **gợi ý** cho admin, không tự chốt điểm); bật `autoJudge` → câu gõ tự chốt theo auto-match, admin vẫn override được. Câu miệng luôn chấm tay bất kể toggle. **So khớp auto BẮT BUỘC: case-INSENSITIVE + TRIM đầu/cuối + COLLAPSE mọi khoảng trắng thừa giữa từ về 1 space** (áp cả submission lẫn acceptedAnswers — đã trim từ lúc lưu kho D20.1; bỏ dấu tiếng Việt là tuỳ chọn config).
 
 **Bối cảnh cũ (tham khảo):** Khởi động & Về đích là trả lời **miệng** (thí sinh nói, không gõ) — máy không tự chấm được. VCNV/Tăng tốc gõ đáp án — auto-match được.
 
@@ -118,14 +119,12 @@ sequenceDiagram
 
 **→ Đề xuất: (a)** — giá trị đặt trong env, đổi lúc nào cũng được. Kèm khuyến nghị vận hành: video câu hỏi nên transcode 1080p H.264 trước khi upload (ghi vào docs, chưa làm auto-transcode ở v1).
 
-## D15. Quy trình duyệt đề & màn hình MC — ✅ MC ĐÃ CHỐT (12/07)
-> **User chốt:** có view MC riêng, **xem được câu hỏi + đáp án + tóm tắt kết quả** (route `/mc`, permission theo contest, audit). Còn lại chờ: mục 1 bên dưới (admin-là-người-duyệt-đề có đủ không).
+## D15. Quy trình duyệt đề & màn hình MC — ✅ ĐÃ CHỐT TOÀN BỘ (12/07)
 
-**Bối cảnh:** (1) Trạng thái đề DRAFT→ACTIVE cần người duyệt — v1 plan đặt: **chỉ admin được activate** (admin vốn đã thấy đáp án theo thiết kế). (2) Olympia thật có MC đọc câu hỏi — plan thêm route `/mc` read-only chữ to (P2).
+1. **Duyệt đề ✅ CHỐT 12/07: bổ sung theo dạng PERMISSION** — activate DRAFT→ACTIVE gate bằng permission **`question.review`** (không hard-code theo role): seed thêm role **REVIEWER** (chỉ mang `question.review` + `question.view`); admin mặc định có permission này. Ai có `question.review` xem được đáp án câu đang duyệt (audit log). Zero công engine — đúng mô hình RBAC D3.
+2. ~~MC có được thấy đáp án trước khi công bố không?~~ **ĐÃ CHỐT 12/07: CÓ** — MC xem câu hỏi + đáp án + tóm tắt kết quả (route `/mc`, permission `match.viewAnswer` theo contest, audit log). Threat model cập nhật: đáp án rời server tới các kênh authenticated có permission (admin, MC, reviewer khi duyệt).
 
-Cần bạn chốt:
-1. Admin-là-người-duyệt-đề có đủ không, hay cần role "reviewer" riêng (với RBAC permission mới thì chỉ là tạo role gán `question.review`)? **Đề xuất: admin đủ cho v1.**
-2. ~~MC có được thấy đáp án trước khi công bố không?~~ **ĐÃ CHỐT 12/07: CÓ** — MC xem câu hỏi + đáp án + tóm tắt kết quả (route `/mc`, permission `match.viewAnswer` theo contest, audit log). Threat model cập nhật: đáp án rời server tới đúng 2 kênh authenticated (admin + MC).
+**Bối cảnh cũ:** (1) DRAFT→ACTIVE cần người duyệt — plan cũ đặt "chỉ admin activate"; user nâng thành permission riêng. (2) Olympia thật có MC đọc câu hỏi — route `/mc` read-only chữ to.
 
 ## D16. Hướng sản phẩm: practice mode solo cho thí sinh? — ✅ ĐÃ CHỐT (12/07)
 > **User chốt:** (1) bộ đề có visibility **PUBLIC** (share link/download, kèm đáp án theo setting per-set default có) — nền tảng dữ liệu cho practice đã thành yêu cầu chính thức (phase-03); (2) **thêm sẵn cột `visibility: PRIVATE|PUBLIC`** vào Question ngay từ v1 (1 cột, 0 chi phí, tránh migration sau — khớp nguyên tắc DB-đủ-từ-v1 của D18). Bộ đề PUBLIC + share-link + UI luyện tập thuộc mốc **v1.5 (practice)** theo lộ trình D18.
@@ -149,7 +148,7 @@ Cần bạn chốt:
 | Về đích | Gói **3 câu chọn từ 2 mức {20, 30}** (không còn mức 10); mặc định 20đ=15s, 30đ=20s (câu thực hành: +30s/60s thực hành; cướp: 20s/40s); sai → 3 TS còn lại chuông trong **5s**; **cướp thành công = LẤY điểm từ người trả lời sai (`stealMode: 'transfer'`)**; chuông mà sai → **trừ NỬA điểm câu**; NSHV 1 lần/TS đặt TRƯỚC khi đọc câu, đúng ×2, sai −value (kể cả có người cướp); thứ tự lượt: điểm cao nhất TẠI THỜI ĐIỂM XẾP LƯỢT (tính lại sau mỗi lượt), hoà → vị trí đứng thấp hơn; người thi chính = đáp án CUỐI, người cướp = đáp án ĐẦU |
 | Câu hỏi phụ | 3 câu, 15s/câu, chuông nhanh + đúng → thắng; hết 3 câu chưa phân → **bốc thăm**; bấm trước hiệu lệnh MC → mất quyền câu đó |
 
-**Việc plan phải làm theo:** cập nhật `research/rules-2026.md` + preset `O26_DEFAULT@1` + demo `public/assets/engine.js` (RULES mock đang dùng default cũ: 5s khởi động, VCNV 80/60/40/20, tăng tốc 10/20/30/40 — SAI so với wiki).
+**Việc plan làm theo — ✅ ĐÃ XONG 12/07:** `research/rules-2026.md` viết lại theo Fandom; preset `O26_DEFAULT@1` spec theo đó; demo `public/assets/engine.js` (RULES) + text hiển thị đã sync (3s khởi động, VCNV 60/50/40/30+20, tăng tốc 20/20/30/30, steal transfer) và verify bằng Chrome.
 
 ## D9. Kỹ thuật: NestJS + Fastify + Socket.IO ✅ ĐÃ CHỐT (12/07): ĐỔI EXPRESS ADAPTER
 
@@ -185,17 +184,11 @@ flowchart TD
 
 **→ Đề xuất: (b).** Kiến trúc là "sound cue slot" (engine chỉ emit event `sound-cue`, client phát file gắn với slot) — hệ thống trung lập bản quyền, nội dung âm thanh là data admin quản lý, không phải code. File nhạc/SFX pre-download về client khi vào phòng (kích thước nhỏ, không đáng lo lag) → phát tức thì đúng lúc engine emit cue, không phụ thuộc mạng lúc reveal.
 
-## D11. Quy mô viewer đồng thời mục tiêu?
+## D11. Quy mô viewer đồng thời ✅ ĐÃ CHỐT (12/07): <50 VIEWER/TRẬN, ~5 TRẬN SONG SONG
 
-**Bối cảnh & lý do phải hỏi:** "Performance tốt" trong yêu cầu cần một con số cụ thể để thiết kế và load-test. Contest nội bộ trường ~50-200 viewer rất khác event public ~5.000+; đích sai thì hoặc over-engineer hoặc sập giữa trận.
+> **User chốt:** mục tiêu thiết kế + load test = **<50 viewer/trận, khoảng 5 trận song song** (~250 kết nối viewer + 5×12 thí sinh toàn hệ). Điểm nhấn KHÔNG phải fanout viewer mà là **nhiều match live đồng thời** — kiến trúc single-writer per match (Redis lease, queue FIFO per match) đã thiết kế sẵn cho việc này; load test Phase 10 đổi kịch bản: **5 trận live song song × (12 thí sinh + 50 viewer) + buzzer storm trên 2 trận cùng lúc**. 1 VPS 4-8GB vẫn dư sức; trần kiến trúc 500 viewer/trận giữ làm headroom, không phải mục tiêu test.
 
-| Phương án                                     | Thiết kế tương ứng                                                                      | Chi phí                       |
-| --------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------- |
-| (a) ≤500 viewer/contest, ≤2 contest song song | 1-2 instance api + Redis adapter (đã có sẵn từ Phase 1); 1 VPS 4-8GB là đủ              | Thấp                          |
-| (b) ~5.000 viewer                             | Read-only fanout tách riêng, nhiều instance, cân nhắc SSE/CDN cho viewer thay Socket.IO | Trung                         |
-| (c) Hàng chục nghìn                           | Kiến trúc broadcast chuyên dụng (HLS overlay data, edge)                                | Cao — đổi cả kiến trúc viewer |
-
-**→ Đề xuất: (a) cho v1**, và vì Redis adapter + viewer namespace read-only đã nằm trong thiết kế từ đầu, đường nâng cấp lên (b) là thêm instance chứ không đập kiến trúc. Load test Phase 10 sẽ đo đúng mục tiêu này. Bạn cho biết quy mô thật bạn nhắm tới.
+**Bối cảnh cũ (tham khảo):** "Performance tốt" cần con số cụ thể; các phương án cũ (a) ≤500/2 trận, (b) ~5.000, (c) chục nghìn — user chọn quy mô thật nhỏ hơn (a) về viewer nhưng NHIỀU trận song song hơn.
 
 ## D12. Preload media cho THÍ SINH ✅ ĐÃ CHỐT (12/07): PHƯƠNG ÁN (b)
 
@@ -211,46 +204,34 @@ flowchart TD
 
 **Đề xuất cũ của Claude là (a)** (LAN nên độ trễ không đáng kể) — **user chọn (b)** để mượt cả khi thi qua Internet. Config `preloadPolicy: encrypted|reveal-only` vẫn giữ: mặc định `encrypted` (b), fallback `reveal-only` (a) khi service worker không khả dụng hoặc BTC muốn đơn giản.
 
-## D13. Edge-cases luật — cần bạn xác nhận theo luật thật (5 phút)
+## D13. Edge-cases luật ✅ ĐÃ CHỐT TOÀN BỘ (12/07 — user + Fandom)
 
-**Bối cảnh:** Red-team chỉ ra nguồn công khai chỉ mô tả happy path; engine phải encode cả "luật của tình huống xấu". Claude đã đề xuất đầy đủ trong `research/rules-2026.md` §7, các mục sau cần bạn xác nhận:
+1. **VCNV cả 4 bị loại ✅ user chốt:** kết thúc lượt/vòng, không ai được điểm CNV; **mở miếng ghép là THAO TÁC THỦ CÔNG của admin** (nút "mở toàn bộ miếng ghép + công bố CNV" — không auto), giữ nhịp dẫn chương trình.
+2. **Người bị loại VCNV** KHÔNG được trả lời hàng ngang còn lại ✅ (Fandom xác nhận: lượt chọn dồn cho người chưa bị loại).
+3. **Tăng tốc đồng thời gian** → cùng mức điểm cao ✅ (Fandom xác nhận).
+4. **Thí sinh rớt mạng đúng lượt riêng ✅ user chốt:** engine pause + admin quyết (chờ trong grace / skip lượt); chưa chọn gói về đích → admin chọn hộ.
+5. **Tie-break ✅ user chốt:** chỉ áp vị trí NHẤT; config `tieBreakPositions` đổi được.
+6. **Hết câu hỏi phụ** → bốc thăm ✅ (Fandom xác nhận; preflight yêu cầu tối thiểu N câu phụ config).
 
-1. **VCNV cả 4 bị loại** → kết thúc vòng ngay, mở hết miếng ghép, không ai được điểm CNV? (đề xuất: đúng vậy)
-2. **Người bị loại VCNV** có được trả lời các hàng ngang còn lại không? (đề xuất: KHÔNG — theo luật thật)
-3. **Tăng tốc 2 người đúng cùng thời gian (ms)** → cùng nhận mức điểm cao (40/40/20/10)? (đề xuất: đúng vậy)
-4. **Thí sinh rớt mạng đúng lượt riêng của mình** → engine pause + admin quyết (chờ/skip)? (đề xuất: đúng vậy)
-5. **Tie-break áp cho vị trí nào** — chỉ nhất, hay cả nhì/ba? (đề xuất: chỉ nhất, config được)
-6. **Hết câu hỏi phụ khi hoà dai dẳng** → preflight yêu cầu tối thiểu N câu phụ (config); vẫn hết thì fallback là gì: bốc thăm ngay / admin quyết? (đề xuất: bốc thăm — khớp luật gốc)
+## D17. Ngữ nghĩa THI ĐỘI × từng vòng ✅ ĐÃ CHỐT TOÀN BỘ (12/07) — áp dụng khi code Phase 12/v2
 
-## D17. Ngữ nghĩa THI ĐỘI × từng vòng — 4 điểm cần bạn xác nhận
+> **User chốt:**
+> - **D17.1 — Khởi động (chuông) + Về đích (cướp): khoá CÁ NHÂN** khi bấm sai — thành viên khác trong đội vẫn bấm được (`teamLockout` default **false**; option `true` cho giải muốn công bằng quân số nghiêm ngặt). Áp cả clue-buzz tăng tốc (cùng cơ chế chuông).
+> - **D17.2 — Tăng tốc: LAST-WINS** ✅ (chốt trước đó) — bản cuối của bất kỳ thành viên; ranking theo server-received ts.
+> - **D17.3 — VCNV sai CNV: loại CẢ ĐỘI** — tránh đội 4 người có 4 lần đoán CNV.
+> - **D17.4 — NSHV: 1 lần/ĐỘI/trận** (theo đề xuất — user không đổi).
+>
+> Hard-code không config: **CẤM cùng đội cướp điểm về đích** (exploit — đặc biệt quan trọng vì D17.1 khoá cá nhân); tie-break đội cử 1 người bấm. Spec §2b + phase-12 cập nhật theo: default `teamLockout: false`.
 
-**Bối cảnh & lý do phải hỏi:** Bạn đã chốt thi đội (buzz/trả lời cá nhân, điểm về đội) — **theo lộ trình D18 (12/07), teams phát hành ở v2; các câu dưới cần chốt TRƯỚC KHI CODE teams engine (v2), không chặn v1**. Schema DB/Zod cho teams vẫn dựng sẵn từ v1. Red-team chỉ ra: nếu không định nghĩa rõ luật đội ở TỪNG vòng thì đội đông người có **lợi thế cấu trúc** (nhiều lượt bấm chuông, nhiều lần thử) và có cả **exploit** (đồng đội "cướp" câu của chính đội mình = lượt trả lời lại miễn phí). Claude đã viết default vào spec (`research/ruleconfig-v2-spec.md` §2b) — engine sẽ code theo default này nếu bạn không đổi; riêng chống same-team-steal là bắt buộc (exploit, không phải lựa chọn).
+**Lưu ý cân bằng (ghi nhận, không chặn):** khoá cá nhân + đội lệch quân số → đội đông có nhiều lượt bấm ở vòng chuông; pre-flight cảnh báo lệch quân số + guide-admin khuyến nghị đội đều người (đã có trong phase-12).
 
 ```mermaid
 flowchart LR
-  subgraph doi ["Đội A (3 người)"]
-    a1[TV1 bấm sai] -.->|teamLockout=true| lock[KHOÁ CẢ ĐỘI câu này]
-    a1 -.->|teamLockout=false| free[TV2, TV3 vẫn bấm được<br/>→ đội đông = nhiều mạng]
+  subgraph doi ["Đội A (3 người) — teamLockout=false (✅ user chốt)"]
+    a1[TV1 bấm sai] -.-> free[TV2, TV3 vẫn bấm được câu đó]
+    a1 -.->|"option true (giải nghiêm ngặt)"| lock[khoá cả đội]
   end
 ```
-
-**D17.1 — Một thành viên bấm chuông SAI (khởi động chung, clue-buzz): khoá ai?**
-| Phương án | Ưu | Nhược |
-|---|---|---|
-| (a) Khoá CẢ ĐỘI câu đó — default | Công bằng giữa đội 1 người và đội 4 người | Cảm giác "bị vạ lây" trong đội |
-| (b) Chỉ khoá cá nhân | Tự nhiên hơn | Đội đông có nhiều "mạng" — bất công cấu trúc ở MỌI vòng chuông |
-**→ Đề xuất (a)** — công bằng quân số quan trọng hơn cảm giác cá nhân trong thi đấu; (b) để làm option `teamLockout: false` cho giải giao lưu.
-
-**D17.2 — Tăng tốc khi thi đội: đội lấy đáp án nào? ✅ ĐÃ CHỐT (12/07)**
-> **User chốt luật chung cho tăng tốc: LAST-WINS** — nhận mọi lần trả lời đến khi hết giờ (server-timeout), không chặn gửi lại; đáp án tính = **bản cuối cùng** (với đội: bản cuối của bất kỳ thành viên); ranking theo server-received timestamp của bản cuối; **server time là quyết định cuối cùng**. Các phương án first-locks/best-correct cũ bỏ.
-
-**D17.3 — VCNV trả lời sai chướng ngại vật: loại cá nhân hay cả đội?**
-**→ Đề xuất: loại CẢ ĐỘI** (khi điểm về đội) — nếu chỉ loại cá nhân thì đội 4 người có 4 lần đoán CNV, phá cân bằng nghiêm trọng (CNV là điểm lớn nhất vòng). Nhất quán với D17.1.
-
-**D17.4 — Ngôi sao hy vọng khi thi đội: mấy lần?**
-**→ Đề xuất: 1 lần/ĐỘI/trận** (không phải 1 lần/thành viên) — NSHV gắn với "đơn vị điểm"; đội đông có nhiều NSHV là bất công trực tiếp vào điểm số.
-
-*(Đã hard-code không cần hỏi: CẤM cùng đội cướp điểm về đích — exploit; tie-break đội cử 1 người bấm.)*
 
 ## D18. Scope & lộ trình version ✅ SUPERSEDED (12/07 — chốt lại lần 2): CHIA 3 MỐC, DB ĐỦ TỪ V1
 
@@ -299,7 +280,8 @@ Kèm quyết định đi cùng của user: **TRIM toàn bộ** nội dung đề 
 
 > **User chốt:**
 > 1. **Animation ĐỘC LẬP với engine/rule**: mỗi animation là module client-side riêng, chỉ nhận semantic event từ server (qua animation-queue) — mục đích: nhà phát triển sửa RULE (vd cách hệ thống chọn câu hỏi) không phải đụng animation và ngược lại. Engine không biết animation tồn tại (đã là nguyên tắc "viewer không bao giờ chặn engine", nay nâng thành yêu cầu kiến trúc: mapping event→animation là bảng cấu hình, animation module thay/thêm không sửa engine).
-> 2. **Người tạo contest PHẢI chọn danh sách câu hỏi TRƯỚC khi contest bắt đầu** — hệ thống KHÔNG tự lấy đề từ kho; chức năng "rút đề ngẫu nhiên" (drawConfig) chỉ **RANDOM TRONG danh sách đã được gán** (snapshot vào trận). Công cụ chọn đề: **full-text search kho đề + các loại filter + sort** (filter: loại vòng, lĩnh vực, mức điểm, độ khó, tags, người thực hiện, trạng thái duyệt; sort: mới nhất, mức điểm, độ khó, lần dùng gần nhất, tần suất dùng). Pre-flight chặn start khi danh sách thiếu so với playlist.
+> 2. **Người tạo contest PHẢI chọn danh sách câu hỏi TRƯỚC khi contest bắt đầu** — hệ thống KHÔNG tự lấy đề từ kho; chức năng "rút đề ngẫu nhiên" (drawConfig) chỉ **RANDOM TRONG danh sách đã được gán** (snapshot vào trận). Công cụ chọn đề: **full-text search kho đề + các loại filter + sort** (filter: loại pool D24, lĩnh vực, mức điểm, độ khó, tags, người thực hiện, trạng thái duyệt; sort: mới nhất, mức điểm, độ khó, lần dùng gần nhất, tần suất dùng). Pre-flight chặn start khi danh sách thiếu so với playlist.
+> 3. **Gán phần dùng bằng CHECKBOX (chốt bổ sung 12/07):** mỗi câu được chọn có checkbox **"được phép dùng ở phần nào"** trong contest (chỉ hiện các phần hợp lệ theo pool D24 + điều kiện điểm — vd câu `KV` value 20 tick được Khởi động và/hoặc Về đích; câu `TT` chỉ tick Tăng tốc). **Pool được phép DƯ:** người tạo chọn NHIỀU HƠN số câu cần thiết — hệ thống rút random từ pool dư; câu không dùng tới thì thôi (dư = dự phòng skip/thay câu). **No-repeat toàn CONTEST:** câu đã SỬ DỤNG (đã hỏi trong bất kỳ match/vòng nào của contest) KHÔNG xuất hiện lại trong contest đó — engine đánh dấu `usedInContest` khi câu được hỏi; draw loại câu đã dùng khỏi pool; pre-flight chỉ yêu cầu pool CÒN LẠI ≥ nhu cầu worst-case (dư bao nhiêu cũng hợp lệ).
 
 ## D23. Import/Export CONTEST CONFIG trọn gói ✅ ĐÃ CHỐT (12/07)
 
@@ -310,6 +292,28 @@ Kèm quyết định đi cùng của user: **TRIM toàn bộ** nội dung đề 
 > - **ZIP chứa tất cả** — import roundtrip không mất dữ liệu.
 >
 > Export tuân ACL đáp án (spec §9); import validate Zod + magic-bytes media + đối chiếu checksum.
+
+## D24. Human-readable ID theo LOẠI POOL câu hỏi ✅ ĐÃ CHỐT (12/07)
+
+> **User chốt:** ngoài UUID (khoá kỹ thuật), câu hỏi có thêm cột **Id đọc được, PHẢI chứa loại câu hỏi**. Taxonomy theo **pool sử dụng** (không phải 1 vòng = 1 loại):
+> - **`KV-xxxxxx`** — pool CHUNG **Khởi động + Về đích**: hai vòng dùng lẫn câu của nhau khi **thoả điều kiện về điểm** (về đích yêu cầu câu có `value` ∈ valueChoices của config, vd 20/30; khởi động dùng tự do không cần value). Câu phụ (tie-break) rút từ pool này (câu hỏi nhanh, không tính điểm trận) — *đề xuất của Claude, đổi được*.
+> - **`TT-xxxxxx`** — câu **Tăng tốc** (media/clues, chấm theo tốc độ).
+> - **`CN-xxxxxx`** — **bộ đề VCNV trọn** (Id cấp SET: rowCount hàng ngang + CNV + hintMap + ảnh; hàng ngang là item con `CN-xxxxxx-R1..R8`).
+>
+> Hệ quả data model: `Question.type` đổi từ 6 loại-theo-vòng (KHOI_DONG/VE_DICH/TIE_BREAK tách rời) → **3 pool (KV / TT / CN)**; `value`/`timeSeconds` là metadata quyết định câu KV có đủ điều kiện cho về đích không; pre-flight + QuestionPicker filter theo pool + điều kiện điểm.
+>
+> **Format Id (user chốt lại 12/07):** `<POOL 2 ký tự><4 HEX ĐẦU của UUID><4 HEX CUỐI của UUID>` — uppercase, derive từ chính UUID của câu (vd UUID `a1b2c3d4-…-e5f67890` → `KV-A1B2-7890`; hàng ngang VCNV: `CN-A1B2-7890-R1..R8`). Deterministic từ UUID nên không cần sequence; unique index trên displayId — đụng độ (hiếm, 8 hex) thì regenerate UUID lúc tạo. Immutable, dùng ở picker/import-export/tra cứu/log.
+
+## D25. Typography ✅ ĐÃ CHỐT (12/07): BE VIETNAM PRO + FALLBACK HỆ THỐNG
+
+> **User chốt:** font chữ toàn hệ thống = **Be Vietnam Pro**, fallback các font hệ thống hỗ trợ tiếng Việt sẵn trên Windows/macOS. Font stack chuẩn (đã áp vào `public/assets/tokens.css` `--font-sans`):
+> ```
+> "Be Vietnam Pro", "Segoe UI Variable", "Segoe UI", -apple-system,
+> BlinkMacSystemFont, "Helvetica Neue", Roboto, Arial, Tahoma, sans-serif
+> ```
+> (Windows: Segoe UI/Arial/Tahoma; macOS: SF Pro qua -apple-system, Helvetica Neue — đều đủ glyph tiếng Việt.)
+>
+> **Triển khai:** app thật **SELF-HOST woff2** (Vietnamese + Latin subset, weights 400-900) trong bundle `apps/web` — KHÔNG phụ thuộc Google Fonts CDN vì profile portable chạy LAN offline (phase-01 setup, phase-10 kiểm tra offline). Demo `public/` dùng Google Fonts CDN (host Vercel có internet). `font-display: swap`.
 
 ---
 <!-- Claude sẽ thêm mục mới bên dưới trong quá trình planning -->

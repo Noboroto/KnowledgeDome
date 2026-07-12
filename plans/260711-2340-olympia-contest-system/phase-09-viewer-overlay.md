@@ -45,7 +45,7 @@ flowchart LR
 7. **Sound cues (✅ D10 chốt lại)**: KHÔNG cần bộ SFX default cầu kỳ — admin tự upload file cho từng cue slot ở sound editor (phase-08); CueSlot matrix theo spec v2 §10 (mỗi round type × ~10 cue + global) với **fallback chain: slot → global → SILENT** (slot trống = im lặng, trận vẫn chạy); client pre-download toàn bộ file cue khi vào phòng (nhỏ, phát tức thì theo event).
 
 ## Bổ sung từ gap-analysis
-- **Viewer mobile là mặc định thực tế** (480/500 viewer là điện thoại): responsive ≥360px, test trên Android tầm trung; `?kiosk=1` ẩn UI chrome cho projector/khán giả tại chỗ (gap 4.4).
+- **Viewer mobile là mặc định thực tế** (đa số trong <50 viewer/trận — D11 — là điện thoại): responsive ≥360px, test trên Android tầm trung; `?kiosk=1` ẩn UI chrome cho projector/khán giả tại chỗ (gap 4.4).
 - **Route `/mc`** (nâng lên P1, user đã chốt 12/07): màn cho MC — read-only, chữ rất to, hiện **câu hỏi + ĐÁP ÁN + tóm tắt kết quả/bảng điểm vòng**. Permission `match.viewAnswer` gán theo contest; MC channel là nơi thứ 2 (sau admin) đáp án được phép tới — authenticated + audit log.
 - **Overlay toggle "ẩn tên thật"** per-contestant (dùng nickname từ seat profile) cho livestream chưa có consent phụ huynh (gap 1.2).
 

@@ -1,6 +1,6 @@
 # RuleConfig v2 — Spec tổng quát hoá (round playlist)
 
-> **v2.1 — 12/07, sau red-team v2.** User đã chốt: KHÔNG cắt scope, toàn bộ tính năng trong 1 version. Vì vậy mọi lỗ hổng red-team chỉ ra được vá bằng thiết kế trong bản này. Các điểm cần user xác nhận đánh dấu 🟡 (chi tiết ở `DEFERED.md` cùng plan dir, D17-D19).
+> **v2.2 — 12/07.** Lộ trình phát hành theo ✅ D18 (chốt lại): **v1 solo contest (cá nhân 1-12 ghế) / v1.5 practice / v2 teams** — spec này mô tả NĂNG LỰC ĐẦY ĐỦ của engine; phần teams (§2/§2b) hiện thực ở Phase 12/v2, practice (§13) ở Phase 11/v1.5, nhưng **schema DB/Zod dựng đủ từ v1**. Mọi lỗ hổng red-team v2 đã vá bằng thiết kế trong bản này; D17-D19 đã chốt (xem `DEFERED.md`).
 > File này là **spec engine chính**; `rules-2026.md` giữ vai trò luật gốc O26 + edge-cases (§6 của file đó đã bị thay bởi file này).
 > Quyết định nền: teams config per-contest; bộ đề private = owner+ACL, password chỉ cho share-link; public set kèm đáp án theo setting per-set (default có); UI tối ưu 4 ghế, adaptive 1-12.
 
@@ -28,10 +28,10 @@ individualTurnMode: 'all-members' | 'representative'
 
 | Tình huống | Luật (default, config được) |
 |---|---|
-| Khởi động chung / clue-buzz: 1 thành viên bấm sai | **Khoá chuông CẢ ĐỘI** cho câu đó (`teamLockout: true` default) — chặn lợi thế quân số 🟡 D17.1 |
+| Khởi động chung / clue-buzz / cướp về đích: 1 thành viên bấm sai | **Khoá CÁ NHÂN** người bấm sai — thành viên khác vẫn bấm được (`teamLockout: false` default — ✅ D17.1 user chốt 12/07; option `true` cho giải công bằng quân số nghiêm ngặt; pre-flight cảnh báo đội lệch quân số) |
 | Tăng tốc ranked-speed khi team | **`last-wins` (user chốt 12/07)**: mọi thành viên gửi/gửi lại tự do đến server-timeout; đáp án của đội = **bản CUỐI CÙNG** (bất kỳ thành viên) theo server-received timestamp; ranking theo timestamp bản cuối |
-| VCNV trả lời sai CNV | Loại **CẢ ĐỘI** khỏi phần thi khi scoringUnit=team (`wrongCnvEliminates` áp theo đơn vị điểm) 🟡 D17.3 |
-| NSHV | **1 lần / đơn vị điểm / trận** (đội = 1 lần dù all-members) 🟡 D17.4 |
+| VCNV trả lời sai CNV | Loại **CẢ ĐỘI** khỏi phần thi khi scoringUnit=team (`wrongCnvEliminates` áp theo đơn vị điểm) ✅ D17.3 user chốt 12/07 |
+| NSHV | **1 lần / đơn vị điểm / trận** (đội = 1 lần dù all-members) ✅ D17.4 chốt 12/07 |
 | Cướp điểm về đích | **CẤM cùng đội cướp** (same-team steal = lượt trả lời lại miễn phí — exploit); chỉ đơn vị điểm khác được bấm |
 | Tie-break giữa các đội | Mỗi đội cử 1 người bấm chuông (representative của round đó; nếu all-members thì đội trưởng chỉ định trước khi tie-break bắt đầu) |
 | Hàng ngang VCNV / câu chung khác | Mọi thành viên cùng trả lời; đội tính theo `teamSubmission` như trên |
@@ -151,7 +151,7 @@ Chạy per nhóm hòa theo thứ tự vị trí (rules-2026 §7); teams: đại 
 
 ## 9. Kho đề & Bộ đề (chi tiết phase-03/04) — vá C-v2-1, C-v2-3
 
-- Question thêm: `displayId`, `fieldId`, `wordCount` (auto), `explanation`, `note`, `timeSeconds?`, `value?`, `clues[]?`, và **`everPublic: boolean` (cờ vĩnh viễn, một chiều)**.
+- Question thêm: `displayId` (✅ D24: `<POOL 2 ký tự>-<4 hex đầu UUID>-<4 hex cuối UUID>` uppercase — pool `KV` [chung Khởi động+Về đích+câu phụ] / `TT` / `CN`, hàng ngang VCNV `-R1..R8`; derive từ UUID, unique, immutable), `fieldId`, `wordCount` (auto), `explanation`, `note`, `timeSeconds?`, `value?` (điều kiện câu KV dùng ở về đích), `clues[]?`, và **`everPublic: boolean` (cờ vĩnh viễn, một chiều)**.
 - **QuestionSet**: `displayId`, visibility `PRIVATE|PUBLIC`, `everPublic` (một chiều).
   - PRIVATE: owner + **ACL 3 mức: `view` / `viewAnswer` / `export`** (export-kèm-đáp-án yêu cầu viewAnswer + export; export câu reference của setter khác yêu cầu quyền trên CÂU theo CASL conditions).
   - **Share-link**: token ≥128-bit random + password (rate-limit 5 lần/phút/IP+link, lockout) + TTL + revoke; share-link **mặc định KHÔNG kèm đáp án** (bật kèm đáp án là hành động riêng, cảnh báo); mọi truy cập share-link audit theo token+IP (không có user vẫn audit được).

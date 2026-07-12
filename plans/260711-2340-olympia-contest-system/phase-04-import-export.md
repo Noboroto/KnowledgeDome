@@ -73,7 +73,7 @@ sequenceDiagram
 7. **Contest bundle (✅ D23)**: export contest (contest.json + questions.xlsx theo vòng + media subfolder vòng + assets theme/sound) / import tạo contest nháp + pre-flight; test roundtrip compose → portable trên máy Windows thật (kết hợp Phase 10 profile portable).
 
 ## Success Criteria
-- [ ] Roundtrip: export 50 câu đủ 5 loại + media → import vào DB sạch → diff logic = 0 khác biệt.
+- [ ] Roundtrip: export 50 câu đủ 3 pool (KV/TT/CN — D24) + media → import vào DB sạch → diff logic = 0 khác biệt, displayId giữ nguyên.
 - [ ] Import file hỏng/thiếu media → báo lỗi từng mục, không ghi nửa vời (transaction).
 - [ ] Import Excel với template mẫu hoạt động; cột lệch vẫn map được bằng tay.
 - [ ] Contest bundle roundtrip: export contest đầy đủ (đề + media + theme/sound) từ compose → import vào portable → pre-flight PASS, trận chạy được ngay (✅ D23).
