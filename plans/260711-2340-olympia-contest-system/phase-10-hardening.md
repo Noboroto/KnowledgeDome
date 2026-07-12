@@ -18,7 +18,7 @@ Biến hệ thống chạy được thành hệ thống tin cậy được: load
 ## Related Code Files
 - Create: `apps/api/src/reports/` (pdf.service — @react-pdf hoặc puppeteer, stats.service)
 - Create: `apps/api/src/monitoring/` (metrics: Socket.IO ping histogram, connection count, event rate — Prometheus format)
-- Create: `deploy/` (docker-compose.prod.yml, Caddy/nginx reverse proxy TLS, backup script pg_dump + MinIO mirror)
+- Create: `deploy/` (compose.prod.yml, **nginx** reverse proxy + TLS certbot, backup script pg_dump + MinIO mirror)
 - Create: `docs/deployment.md` (kèm NTP/chrony, staging compose thứ 2 — gap 3.1/5.1), `docs/runbook.md` (xử lý sự cố giữa trận: pause → chẩn đoán → restore; crew tối thiểu 2 người; checklist ngày thi; quy trình xác minh danh tính thí sinh offline)
 - Create: `docs/guide-admin.md`, `docs/guide-setter.md`, `docs/guide-contestant.md` — hướng dẫn NGƯỜI DÙNG cuối (giáo viên/học sinh, không phải dev — gap 3.2); guide contestant tích hợp vào màn lobby; kèm mẫu consent phụ huynh cho livestream (gap 1.2)
 
@@ -29,7 +29,7 @@ Biến hệ thống chạy được thành hệ thống tin cậy được: load
 3. Monitoring + alert đơn giản (lag/error spike hiện trên admin UI) + **disk usage với ngưỡng cảnh báo** (kiến trúc persist-trước-broadcast nghĩa là disk đầy = trận đứng hình — gap 5.2) + log rotation (pino) + trạng thái backup gần nhất (backup fail phải NHÌN THẤY, không âm thầm — gap 3.4); chaos drill bổ sung: disk 95%.
 4. PDF kết quả + stats câu hỏi ghi ngược metadata kho đề.
 5. Replay timeline (đọc MatchEvent log, UI scrub) — P2, làm nếu còn thời gian.
-6. Deploy — **2 profile (user chốt 12/07)**: (a) compose prod (api ×2 + redis adapter, reverse proxy cùng domain, backup cron); (b) **portable Windows không Docker cho LAN**: bundle 1 thư mục (node runtime + app build + Postgres portable + storage driver filesystem thay MinIO + driver in-process thay Redis — single instance nên lease/adapter/queue đều in-process qua abstraction layer thiết kế từ Phase 1), script `start.bat`, không cần cài đặt; chi tiết theo research queue/hạ tầng (đang chạy). Runbook sự cố cho cả 2 profile.
+6. Deploy — **2 profile (user chốt 12/07, chi tiết `research/queue-decision.md`)**: (a) **`compose.prod.yml`** — api ×2 + BullMQ/Redis adapter + MinIO + **proxy nginx là port DUY NHẤT expose (80/443, TLS qua certbot/lego)**, mọi service khác internal; backup cron; (b) **portable Windows không Docker cho LAN**: bundle 1 thư mục (node runtime + app build + **Postgres portable binaries zip** + pg-boss + in-process queue + filesystem storage — qua abstraction layer Phase 1), script `start.bat`, không cần cài đặt. Runbook sự cố cho cả 2 profile.
 7. UAT: tổ chức 1 trận thật end-to-end với người thật + OBS livestream thử.
 
 ## Success Criteria

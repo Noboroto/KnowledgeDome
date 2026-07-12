@@ -42,9 +42,9 @@ flowchart LR
 - Create: `.github/workflows/ci.yml` (lint + typecheck + test)
 
 ## Implementation Steps
-0. **Abstraction layer hạ tầng ngay từ đầu (user chốt 12/07 — 2 deployment profile)**: interface `StateDriver` / `QueueDriver` / `StorageDriver` / `SocketAdapterFactory` trong `packages/shared` hoặc `apps/api/src/infra` — implementation Redis/MinIO cho profile compose, in-process/filesystem cho profile **portable Windows không Docker (LAN, 1 instance)**. Mọi code nghiệp vụ chỉ gọi qua interface; chọn driver bằng env `INFRA_PROFILE=compose|portable`.
+0. **Abstraction layer hạ tầng ngay từ đầu (user chốt 12/07 — 2 deployment profile, chi tiết `research/queue-decision.md`)**: interface `StateDriver` / `QueueDriver` / `StorageDriver` / `SocketAdapterFactory` — profile compose: BullMQ + Redis + MinIO; profile **portable Windows không Docker (LAN, 1 instance)**: in-process FIFO + pg-boss + filesystem. Mọi code nghiệp vụ chỉ gọi qua interface; chọn bằng env `INFRA_PROFILE=compose|portable`.
 1. Init pnpm workspace 3 package; tsconfig strict, path alias `@shared/*`.
-2. `docker-compose.dev.yml`: postgres:16, redis:7, minio + tạo bucket `question-media` (init script).
+2. Compose theo quy ước user (12/07): **`compose.yml`** cho dev — postgres:16, redis:7, minio (+bucket init), api, web, **proxy nginx**, map TOÀN BỘ port ra host; **`compose.prod.yml`** — cùng services nhưng **chỉ expose 1 port của proxy** (80/443), còn lại internal network. Dev cũng đi qua proxy để đồng dạng prod (cùng domain/cookie).
 3. Scaffold NestJS với `FastifyAdapter`; module `ConfigModule` validate env bằng Zod; healthcheck `/healthz`.
 4. **SPIKE (timebox 1 ngày — DEFERED D9, mở rộng theo red-team H7)**: trên FastifyAdapter phải PASS đủ CẢ HAI: (a) Socket.IO qua custom `IoAdapter` trên `app.getHttpServer()` — connect + echo + room broadcast; (b) **Better-auth** mount handler + đăng nhập username/password + đọc session từ cookie. Fail bất kỳ cái nào → chuyển `ExpressAdapter` (chỉ đổi `main.ts` + dependency), ghi journal lý do.
 5. Cài `@socket.io/redis-adapter` + verify broadcast giữa 2 instance api (chạy 2 port); thử `createShardedAdapter` (Redis 7) — không chạy được với Redis đang dùng thì fallback adapter thường (red-team L5).
