@@ -36,7 +36,7 @@ User chốt **không cắt scope (1 version đủ tính năng — DEFERED D18)**
 | # | Finding | Xử lý |
 |---|---|---|
 | C1 | Engine stateful in-process nhưng plan hứa HA 2-instance — không có match ownership. Race khi 2 instance cùng mutate state | ✅ phase-06: thêm kiến trúc **single-writer per match** (Redis lease + forward event tới owner, failover = lease hết hạn → instance khác restore); phase-10 SC sửa theo |
-| C2 | Preload media câu N+1 cho THÍ SINH = rò đề (media chính là câu hỏi ở Tăng tốc/VCNV; DevTools xem trước được) | ✅ phase-06: preload phân tầng theo audience (viewer/overlay sớm, thí sinh chỉ lúc reveal); 🟡 DEFERED D12 |
+| C2 | Preload media câu N+1 cho THÍ SINH = rò đề (media chính là câu hỏi ở Tăng tốc/VCNV; DevTools xem trước được) | ✅ phase-06: ✅ D12b user chốt 12/07 — thí sinh preload blob MÃ HOÁ qua service worker, key phát lúc reveal; fallback reveal-only |
 | C3 | Redis là SPOF giết trận live — không có persistence/degraded mode/kill-test | ✅ phase-06 degraded mode auto-pause khi mất Redis; phase-10: Redis AOF everysec + kill-Redis test + runbook entry |
 
 ## HIGH

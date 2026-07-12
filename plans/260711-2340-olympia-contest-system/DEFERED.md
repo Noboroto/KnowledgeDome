@@ -15,7 +15,7 @@
 
 ## D1. Số thí sinh mỗi trận ✅ ĐÃ CHỐT (12/07)
 
-> **User chốt:** hỗ trợ **1-12 thí sinh**, cho phép gộp đội (bấm chuông/trả lời cá nhân, điểm về đội — kiểu Pop Culture Jeopardy); lượt cá nhân khi có đội: config per-contest (all-members / representative). UI tối ưu 4 ghế, adaptive 1-12. Chi tiết: `260711-2340-olympia-contest-system/research/ruleconfig-v2-spec.md` §2.
+> **User chốt:** hỗ trợ **1-12 thí sinh**, cho phép gộp đội (bấm chuông/trả lời cá nhân, điểm về đội — kiểu Pop Culture Jeopardy); lượt cá nhân khi có đội: config per-contest (all-members / representative). UI tối ưu 4 ghế, adaptive 1-12. Chi tiết: `260711-2340-olympia-contest-system/research/ruleconfig-v2-spec.md` §2. **Lộ trình (D18 12/07): v1 chỉ CÁ NHÂN 1-12 ghế; tính năng ĐỘI phát hành ở v2 — nhưng schema DB/Zod (Team, seat.teamId, scoringUnit) có sẵn từ v1.**
 
 **Bối cảnh cũ (lưu tham khảo):** Olympia chuẩn là đúng 4 thí sinh. Nhưng quyết định này ảnh hưởng **sâu** đến engine: luật Tăng tốc chấm 40/30/20/10 theo thứ hạng (4 mức = 4 người), VCNV thứ tự chọn hàng ngang, Về đích mỗi người một lượt. Nếu sau này mới đổi số ghế, phải sửa cả scoring lẫn UI layout — nên phải chốt trước Phase 6.
 
@@ -105,42 +105,18 @@ sequenceDiagram
 
 **→ Đề xuất: (a) cho v1**, thiết kế sẵn cột `userId nullable` trong ViewerSession để nâng lên (c) sau nếu cần. Việc duyệt tay của admin đã là lớp kiểm soát chính rồi — account không thêm được bao nhiêu an toàn mà tăng ma sát rất nhiều.
 
-## D6. Giới hạn dung lượng media mỗi câu hỏi
+## D6. Giới hạn dung lượng media mỗi câu hỏi ✅ ĐÃ CHỐT (12/07): PHƯƠNG ÁN (a)
 
-**Bối cảnh:** MinIO self-host nên không lo phí cloud, nhưng cần giới hạn để (1) video quá nặng làm nghẽn preload giữa trận — rủi ro livestream, (2) tránh kho đề phình vô hạn.
+> **User chốt:** Ảnh ≤10MB, video ≤200MB, audio ≤20MB (env config). Kèm khuyến nghị vận hành: video câu hỏi nên transcode 1080p H.264 trước khi upload (ghi vào docs, chưa làm auto-transcode ở v1).
 
-| Phương án | Ưu | Nhược |
-|---|---|---|
-| (a) Ảnh ≤10MB, video ≤200MB, audio ≤20MB (env config) | Đủ cho video 1080p ~2-3 phút; preload kịp trong 1 câu hỏi | Video 4K dài không vừa (không cần cho chiếu web) |
-| (b) Không giới hạn | Tự do | Một video 2GB có thể giết preload pipeline giữa trận livestream |
+**Bối cảnh cũ (tham khảo):** MinIO self-host nên không lo phí cloud, nhưng cần giới hạn để (1) video quá nặng làm nghẽn preload giữa trận — rủi ro livestream, (2) tránh kho đề phình vô hạn.
+
+| Phương án                                             | Ưu                                                        | Nhược                                                           |
+| ----------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------- |
+| (a) Ảnh ≤10MB, video ≤200MB, audio ≤20MB (env config) | Đủ cho video 1080p ~2-3 phút; preload kịp trong 1 câu hỏi | Video 4K dài không vừa (không cần cho chiếu web)                |
+| (b) Không giới hạn                                    | Tự do                                                     | Một video 2GB có thể giết preload pipeline giữa trận livestream |
 
 **→ Đề xuất: (a)** — giá trị đặt trong env, đổi lúc nào cũng được. Kèm khuyến nghị vận hành: video câu hỏi nên transcode 1080p H.264 trước khi upload (ghi vào docs, chưa làm auto-transcode ở v1).
-
-## D7. Tên dự án + bản quyền format + license repo (gap-analysis vòng 2 nâng cấp mục này)
-
-**Bối cảnh & lý do phải hỏi:** Không chỉ là thẩm mỹ nữa. Gap-analysis chỉ ra: tên "Đường lên đỉnh Olympia", logo, tên các vòng thi là **tài sản của VTV** — dùng nội bộ trường thì rủi ro thấp, nhưng tên sản phẩm chứa "Olympia" in vào UI/overlay/stream public thì tự gắn mình vào thương hiệu của họ. Đồng thời repo GitHub public **chưa có LICENSE** — mặc định "all rights reserved", người khác dùng là vi phạm của họ, còn bạn thì chưa chọn được mức bảo hộ mình muốn.
-
-**7a. Tên sản phẩm:**
-| Phương án | Ưu | Nhược |
-|---|---|---|
-| (a) "Olympia Contest System" (đang dùng tạm) | Ai cũng hiểu ngay | Chứa "Olympia" — rủi ro thương hiệu khi stream public/thương mại |
-| (b) Tên trung tính không chứa "Olympia" (vd "KnowledgeDome Arena", "Summit Quiz", tên bạn thích) + mô tả "lấy cảm hứng từ format leo núi 4 vòng" | An toàn pháp lý; UI đã thiết kế để tên vòng thi là data trong RuleConfig nên đổi rẻ | Kém gợi nhớ hơn |
-**→ Đề xuất: (b)**, kèm disclaimer "không liên kết với VTV" trong README; tên các vòng thi giữ trong preset RuleConfig (data, người dùng tự chịu trách nhiệm nội dung họ hiển thị) — hệ thống trung lập giống cách xử lý nhạc (D10).
-
-**7b. License repo:**
-| Phương án | Ưu | Nhược |
-|---|---|---|
-| MIT | Đơn giản, ai cũng dùng được | Bên khác lấy host bán dịch vụ được luôn |
-| AGPL-3.0 | Ai host public phải mở mã nguồn phần sửa — chặn "lấy không" thương mại | Một số đơn vị ngại AGPL |
-| Không license (giữ private/all-rights-reserved) | Toàn quyền | Không ai đóng góp/dùng hợp pháp được |
-**→ Đề xuất: AGPL-3.0** cho dự án dạng self-host này. Cần chốt TRƯỚC commit code Phase 1.
-
-## D14. Dữ liệu cá nhân học sinh — retention & vai trò pháp lý
-
-**Bối cảnh & lý do phải hỏi:** Hệ thống lưu tên + trường + kết quả thi + log hành vi (ms-precision) của **trẻ vị thành niên** — thuộc phạm vi Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân. Plan đã sửa để data model hỗ trợ (profile thí sinh thuộc contest, chức năng anonymize thay tên bằng mã trong event log mà không phá event-sourcing, retention config được). Còn 2 câu thuộc về bạn:
-
-1. **Retention mặc định**: giữ dữ liệu trận (kèm tên thật) bao lâu rồi tự anonymize? Đề xuất: **12 tháng** (đủ một mùa giải), config được.
-2. **Bên kiểm soát dữ liệu là ai**: mỗi trường tự host tự chịu trách nhiệm (hệ thống chỉ cần cung cấp công cụ xoá/ẩn danh + mẫu consent phụ huynh trong docs)? Đề xuất: đúng vậy — ghi rõ trong docs triển khai.
 
 ## D15. Quy trình duyệt đề & màn hình MC — ✅ MC ĐÃ CHỐT (12/07)
 > **User chốt:** có view MC riêng, **xem được câu hỏi + đáp án + tóm tắt kết quả** (route `/mc`, permission theo contest, audit). Còn lại chờ: mục 1 bên dưới (admin-là-người-duyệt-đề có đủ không).
@@ -151,27 +127,29 @@ Cần bạn chốt:
 1. Admin-là-người-duyệt-đề có đủ không, hay cần role "reviewer" riêng (với RBAC permission mới thì chỉ là tạo role gán `question.review`)? **Đề xuất: admin đủ cho v1.**
 2. ~~MC có được thấy đáp án trước khi công bố không?~~ **ĐÃ CHỐT 12/07: CÓ** — MC xem câu hỏi + đáp án + tóm tắt kết quả (route `/mc`, permission `match.viewAnswer` theo contest, audit log). Threat model cập nhật: đáp án rời server tới đúng 2 kênh authenticated (admin + MC).
 
-## D16. Hướng sản phẩm: practice mode solo cho thí sinh? — 🟠 MỘT NỬA ĐÃ CHỐT (12/07)
-> **User chốt:** bộ đề có visibility **PUBLIC** (share link/download, kèm đáp án theo setting per-set default có) — nền tảng dữ liệu cho practice đã thành yêu cầu chính thức (phase-03). Còn lại chờ: có làm UI luyện tập solo (tự bấm chuông với đề public) ở v1.x không — vẫn đề xuất P3.
+## D16. Hướng sản phẩm: practice mode solo cho thí sinh? — ✅ ĐÃ CHỐT (12/07)
+> **User chốt:** (1) bộ đề có visibility **PUBLIC** (share link/download, kèm đáp án theo setting per-set default có) — nền tảng dữ liệu cho practice đã thành yêu cầu chính thức (phase-03); (2) **thêm sẵn cột `visibility: PRIVATE|PUBLIC`** vào Question ngay từ v1 (1 cột, 0 chi phí, tránh migration sau — khớp nguyên tắc DB-đủ-từ-v1 của D18). Bộ đề PUBLIC + share-link + UI luyện tập thuộc mốc **v1.5 (practice)** theo lộ trình D18.
 
-**Bối cảnh:** Giá trị dài hạn với CLB là luyện tập hàng tuần, không chỉ 2 trận/năm. Nhưng luyện solo cần "đề công khai" — mâu thuẫn với nguyên tắc bảo mật đề. Plan đã thêm sẵn cột `visibility: PRIVATE|PUBLIC` vào Question (1 cột, không tốn gì) để tương lai không phải migration.
-- Bạn có muốn v1.x có practice solo không? Nếu **không bao giờ** làm, cột visibility vẫn vô hại. **Đề xuất: để P3, quyết sau khi v1 chạy thật.**
+**Bối cảnh cũ (tham khảo):** Giá trị dài hạn với CLB là luyện tập hàng tuần, không chỉ 2 trận/năm. Nhưng luyện solo cần "đề công khai" — mâu thuẫn với nguyên tắc bảo mật đề. Cột `visibility` thêm sẵn nên nếu **không bao giờ** làm solo thì cột vẫn vô hại.
 
 ---
 
-## D8. Mâu thuẫn luật 2026 giữa các nguồn — cần bạn đối chiếu tập phát sóng thật
+## D8. Luật 2026 ✅ ĐÃ CHỐT (12/07): FANDOM WIKI LÀ SOURCE OF TRUTH + NÚT "ÁP DỤNG LUẬT 2026"
 
-**Bối cảnh & lý do phải hỏi:** Nguồn công khai (Wikipedia, báo) mâu thuẫn nhau về vài con số timer/điểm của O25/O26; Fandom wiki (nguồn chi tiết nhất) không truy cập được. Vì **mọi giá trị đều là RuleConfig** nên việc này KHÔNG chặn dev — nhưng preset `O26_DEFAULT` phát hành ra phải đúng, và demo đang dùng các default này. Chi tiết từng nguồn: `research/rules-2026.md`.
+> **User chốt:** (1) Thời gian, số câu, điểm của TỪNG VÒNG là **CÓ THỂ CUSTOM** (RuleConfig — như thiết kế); (2) contest builder có nút **"Áp dụng luật 2026"** áp preset `O26_DEFAULT` với **source of truth = [Fandom: Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26)**; (3) **ĐIỂM độc lập với THỜI GIAN**: `timeSeconds` là **metadata của từng CÂU HỎI** (vd cùng mức 20 điểm có câu 15s và câu 40s) — hệ thống chọn câu theo SỐ ĐIỂM phù hợp, thời gian lấy theo câu; preset chỉ đặt default thời gian theo mức điểm, per-question override thắng.
 
-| # | Tham số | Nguồn nói A | Nguồn nói B | Claude default | Lý do chọn |
-|---|---|---|---|---|---|
-| 1 | Khởi động lượt riêng, thời gian/câu | **5s** (Dân Trí, O24) | 3s | **5s** | Báo lớn đưa tin đổi luật O24 ghi 5s; 3s chỉ xuất hiện ở nguồn yếu |
-| 2 | VCNV điểm giải CNV | **80/60/40/20** theo số hàng đã mở (Athena cũ + Wikipedia luật cổ điển) | 60/50/40/30/20 | **80/60/40/20** | Khớp 2 nguồn độc lập; bài báo đổi-luật-O24 chỉ nói đổi Khởi động + Về đích, không nói VCNV |
-| 3 | Tăng tốc thời gian 4 câu | **10/20/30/40s** | O26 đổi 20/20/30/30 | **10/20/30/40** | Phương án B chỉ có 1 nguồn chưa kiểm chứng |
-| 4 | Về đích thời gian suy nghĩ | **15s/20s** (câu 20đ/30đ) | 20s/40s | **15s/20s** | Nhất quán với công thức Athena cũ (value/2+5) hơn |
-| 5 | Về đích cướp điểm | Đúng: +value, **không trừ** người bị cướp | Đúng: +value **lấy từ** điểm người bị cướp (steal) | **không steal** | Ít gây tranh cãi; config `stealMode: 'add'|'transfer'` đổi 1 dòng |
+**Giá trị O26 đã đối chiếu Fandom (12/07) — thay các default cũ:**
 
-**→ Việc cần bạn làm:** xem 1 tập O26 gần nhất (hoặc bạn nhớ chính xác), trả lời 5 dòng trên (giữ default nào, đổi cái nào). Nếu bạn có link Fandom/tài liệu luật chi tiết, đưa Claude đối chiếu lại toàn bộ rule-spec một lần nữa.
+| Vòng | Tham số chốt theo Fandom |
+|---|---|
+| Khởi động — lượt riêng | 6 câu/TS; **3s/câu** (từ lúc MC đọc xong); đúng +10, sai không trừ |
+| Khởi động — lượt chung | **12 câu**, bấm chuông (được bấm khi MC đang đọc); 3s suy nghĩ sau khi giành quyền; đúng +10, **sai/không đáp án −5**; 3s không ai bấm → bỏ qua câu |
+| VCNV | 4 hàng ngang, **15s/hàng**, đúng +10; ảnh 5 miếng (4 góc + trung tâm); giải CNV: **60/50/40/30** theo bấm trong hàng thứ 1/2/3/4, **+10** câu ô trung tâm, giải sau gợi ý cuối = **20** (15s suy nghĩ); sai CNV → loại khỏi phần thi |
+| Tăng tốc | 4 câu; thời gian **20/20/30/30s**; điểm theo tốc độ **40/30/20/10**; đồng thời gian → cùng mức điểm |
+| Về đích | Gói **3 câu chọn từ 2 mức {20, 30}** (không còn mức 10); mặc định 20đ=15s, 30đ=20s (câu thực hành: +30s/60s thực hành; cướp: 20s/40s); sai → 3 TS còn lại chuông trong **5s**; **cướp thành công = LẤY điểm từ người trả lời sai (`stealMode: 'transfer'`)**; chuông mà sai → **trừ NỬA điểm câu**; NSHV 1 lần/TS đặt TRƯỚC khi đọc câu, đúng ×2, sai −value (kể cả có người cướp); thứ tự lượt: điểm cao nhất TẠI THỜI ĐIỂM XẾP LƯỢT (tính lại sau mỗi lượt), hoà → vị trí đứng thấp hơn; người thi chính = đáp án CUỐI, người cướp = đáp án ĐẦU |
+| Câu hỏi phụ | 3 câu, 15s/câu, chuông nhanh + đúng → thắng; hết 3 câu chưa phân → **bốc thăm**; bấm trước hiệu lệnh MC → mất quyền câu đó |
+
+**Việc plan phải làm theo:** cập nhật `research/rules-2026.md` + preset `O26_DEFAULT@1` + demo `public/assets/engine.js` (RULES mock đang dùng default cũ: 5s khởi động, VCNV 80/60/40/20, tăng tốc 10/20/30/40 — SAI so với wiki).
 
 ## D9. Kỹ thuật: NestJS + Fastify + Socket.IO ✅ ĐÃ CHỐT (12/07): ĐỔI EXPRESS ADAPTER
 
@@ -195,7 +173,7 @@ flowchart TD
 
 ## D10. Nhạc hiệu & sound cue 🟠 MỘT NỬA ĐÃ CHỐT (12/07)
 
-> **User chốt:** admin sẽ tự upload file nhạc/SFX (không cần bộ default cầu kỳ). Việc còn lại của plan: **định nghĩa đúng CUE MAP event-driven** — đang research (wiki + source Athena + video) xem chương trình thật phát nhạc ở những thời điểm nào → kết quả vào `research/sound-cues.md` + cập nhật CueSlot matrix spec §10.
+> **User chốt:** admin sẽ tự upload file nhạc/SFX (không cần bộ default cầu kỳ). **Kiến trúc "sound cue slot"** (engine chỉ emit event `sound-cue`, client phát file gắn với slot); **file nhạc pre-download về client** khi vào phòng (dung lượng rất nhỏ — không đáng lo preload/lag). Việc còn lại của plan: **định nghĩa đúng CUE MAP event-driven** — đang research (wiki + source Athena + video) xem chương trình thật phát nhạc ở những thời điểm nào → kết quả vào `research/sound-cues.md` + cập nhật CueSlot matrix spec §10.
 
 **Bối cảnh cũ (tham khảo):** Research UX chỉ ra âm thanh (nhạc hiệu vòng, tiếng chuông, đúng/sai, hết giờ) là thứ làm nên "cảm giác Olympia" — nhưng yêu cầu gốc không nhắc đến. Đồng thời **nhạc hiệu Olympia gốc thuộc bản quyền VTV** — phát trong livestream public có rủi ro claim/gỡ video.
 
@@ -205,7 +183,7 @@ flowchart TD
 | (b) Bộ SFX mặc định royalty-free + admin upload thay thế từng cue | Chạy được ngay không cần chuẩn bị; ai muốn "chất Olympia" thì tự upload và tự chịu trách nhiệm bản quyền | Âm mặc định không phải nhạc Olympia gốc |
 | (c) Không âm thanh ở v1 | Bớt 1 việc | Mất linh hồn gameshow; thêm sau tốn công gắn vào engine/UI |
 
-**→ Đề xuất: (b).** Kiến trúc là "sound cue slot" (engine chỉ emit event `sound-cue`, client phát file gắn với slot) — hệ thống trung lập bản quyền, nội dung âm thanh là data admin quản lý, không phải code.
+**→ Đề xuất: (b).** Kiến trúc là "sound cue slot" (engine chỉ emit event `sound-cue`, client phát file gắn với slot) — hệ thống trung lập bản quyền, nội dung âm thanh là data admin quản lý, không phải code. File nhạc/SFX pre-download về client khi vào phòng (kích thước nhỏ, không đáng lo lag) → phát tức thì đúng lúc engine emit cue, không phụ thuộc mạng lúc reveal.
 
 ## D11. Quy mô viewer đồng thời mục tiêu?
 
@@ -219,17 +197,19 @@ flowchart TD
 
 **→ Đề xuất: (a) cho v1**, và vì Redis adapter + viewer namespace read-only đã nằm trong thiết kế từ đầu, đường nâng cấp lên (b) là thêm instance chứ không đập kiến trúc. Load test Phase 10 sẽ đo đúng mục tiêu này. Bạn cho biết quy mô thật bạn nhắm tới.
 
-## D12. Preload media cho THÍ SINH — đánh đổi giữa "không lag" và "không rò đề"
+## D12. Preload media cho THÍ SINH ✅ ĐÃ CHỐT (12/07): PHƯƠNG ÁN (b)
 
-**Bối cảnh & lý do phải hỏi:** Red-team phát hiện lỗ hổng trong thiết kế ban đầu: preload media câu kế tiếp xuống client để chống lag — nhưng với Tăng tốc/VCNV, **media chính là đề bài**. Thí sinh mở DevTools → tab Network → xem trước video/ảnh câu sau 10-40 giây so với đối thủ. "Không gửi kèm đáp án" không cứu được vì bytes đề đã nằm trên máy họ.
+> **User chốt:** **preload blob MÃ HOÁ qua service worker, phát key đúng lúc reveal** — thí sinh vẫn được preload sớm (mượt như viewer/overlay) nhưng bytes trên máy là ciphertext, không xem trước đề được; server chỉ đẩy decryption key tại thời điểm reveal (server time). Chấp nhận chi phí phức tạp SW + key delivery + decrypt; plan Phase 6/7 phải thêm hạng mục này (SW cache mã hoá, kênh phát key qua socket, fallback khi SW không khả dụng → rớt về chế độ nhận URL lúc reveal như (a)).
 
-| Phương án | Ưu | Nhược |
-|---|---|---|
+**Bối cảnh cũ (tham khảo):** Red-team phát hiện lỗ hổng trong thiết kế ban đầu: preload media câu kế tiếp xuống client để chống lag — nhưng với Tăng tốc/VCNV, **media chính là đề bài**. Thí sinh mở DevTools → tab Network → xem trước video/ảnh câu sau 10-40 giây so với đối thủ. "Không gửi kèm đáp án" không cứu được vì bytes đề đã nằm trên máy họ.
+
+| Phương án                                                                                       | Ưu                               | Nhược                                                                                                      |
+| ----------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------- |
 | (a) Thí sinh KHÔNG preload — chỉ nhận URL media đúng lúc reveal; viewer/overlay vẫn preload sớm | Không thể xem trước đề; đơn giản | Thí sinh mạng chậm có thể thấy media trễ hơn nhau vài trăm ms (thi thật trên LAN thì gần như không vấn đề) |
-| (b) Preload blob MÃ HOÁ qua service worker, phát key đúng lúc reveal | Vừa mượt vừa kín | Phức tạp đáng kể (SW, key delivery, decrypt media lớn), thêm bề mặt lỗi giữa trận |
-| (c) Preload thường cho cả thí sinh (thiết kế cũ) | Mượt nhất | Rò đề — không chấp nhận được với yêu cầu "bảo mật kho đề cao" của bạn |
+| (b) Preload blob MÃ HOÁ qua service worker, phát key đúng lúc reveal                            | Vừa mượt vừa kín                 | Phức tạp đáng kể (SW, key delivery, decrypt media lớn), thêm bề mặt lỗi giữa trận                          |
+| (c) Preload thường cho cả thí sinh (thiết kế cũ)                                                | Mượt nhất                        | Rò đề — không chấp nhận được với yêu cầu "bảo mật kho đề cao" của bạn                                      |
 
-**→ Đề xuất: (a)**, vì trận đấu nghiêm túc nên chạy LAN (đã khuyến cáo trong plan) — khi đó độ trễ media không đáng kể, còn (b) là chi phí lớn cho một vấn đề chỉ tồn tại khi thi qua Internet. Config `preloadPolicy` cho phép đổi sau.
+**Đề xuất cũ của Claude là (a)** (LAN nên độ trễ không đáng kể) — **user chọn (b)** để mượt cả khi thi qua Internet. Config `preloadPolicy: encrypted|reveal-only` vẫn giữ: mặc định `encrypted` (b), fallback `reveal-only` (a) khi service worker không khả dụng hoặc BTC muốn đơn giản.
 
 ## D13. Edge-cases luật — cần bạn xác nhận theo luật thật (5 phút)
 
@@ -244,7 +224,7 @@ flowchart TD
 
 ## D17. Ngữ nghĩa THI ĐỘI × từng vòng — 4 điểm cần bạn xác nhận
 
-**Bối cảnh & lý do phải hỏi:** Bạn đã chốt thi đội (buzz/trả lời cá nhân, điểm về đội) và **không cắt scope — toàn bộ trong 1 version**. Red-team chỉ ra: nếu không định nghĩa rõ luật đội ở TỪNG vòng thì đội đông người có **lợi thế cấu trúc** (nhiều lượt bấm chuông, nhiều lần thử) và có cả **exploit** (đồng đội "cướp" câu của chính đội mình = lượt trả lời lại miễn phí). Claude đã viết default vào spec (`research/ruleconfig-v2-spec.md` §2b) — engine sẽ code theo default này nếu bạn không đổi; riêng chống same-team-steal là bắt buộc (exploit, không phải lựa chọn).
+**Bối cảnh & lý do phải hỏi:** Bạn đã chốt thi đội (buzz/trả lời cá nhân, điểm về đội) — **theo lộ trình D18 (12/07), teams phát hành ở v2; các câu dưới cần chốt TRƯỚC KHI CODE teams engine (v2), không chặn v1**. Schema DB/Zod cho teams vẫn dựng sẵn từ v1. Red-team chỉ ra: nếu không định nghĩa rõ luật đội ở TỪNG vòng thì đội đông người có **lợi thế cấu trúc** (nhiều lượt bấm chuông, nhiều lần thử) và có cả **exploit** (đồng đội "cướp" câu của chính đội mình = lượt trả lời lại miễn phí). Claude đã viết default vào spec (`research/ruleconfig-v2-spec.md` §2b) — engine sẽ code theo default này nếu bạn không đổi; riêng chống same-team-steal là bắt buộc (exploit, không phải lựa chọn).
 
 ```mermaid
 flowchart LR
@@ -272,12 +252,16 @@ flowchart LR
 
 *(Đã hard-code không cần hỏi: CẤM cùng đội cướp điểm về đích — exploit; tie-break đội cử 1 người bấm.)*
 
-## D18. Ghi nhận: KHÔNG cắt scope — toàn bộ tính năng trong 1 version ✅ (bạn chốt 12/07)
+## D18. Scope & lộ trình version ✅ SUPERSEDED (12/07 — chốt lại lần 2): CHIA 3 MỐC, DB ĐỦ TỪ V1
 
-Red-team v2 đề xuất đẩy teams / clue-buzz / VCNV 5-8 hàng / rút đề / custom-build / public-set / soundboard / theme-editor xuống v1.1 để giảm test matrix Phase 6 (~3×). **Bạn đã quyết: làm tất cả trong 1 version.** Hệ quả đã phản ánh vào plan:
-- Spec v2.1 vá đầy đủ các lỗ hổng thay vì cắt (everPublic hard-block, ACL 3 mức view/viewAnswer/export, share-link không đáp án mặc định + rate-limit + audit token/IP, teams semantics §2b, TieBreakConfig đầy đủ, pre-flight worst-case cho draw/custom-build, asset pipeline chung + Zod màu chống CSS injection, permission soundboard).
-- Phase 6 là critical path DÀI HƠN đáng kể — milestone nội bộ đã chia lại (6a: orchestrator-skeleton + reducer + buzzer + khởi động cơ bản để mở khoá Phase 7/8; 6b: toàn bộ round engines + biến thể).
-- Trade-off bạn chấp nhận: thời gian đến bản chạy được đầu tiên dài hơn; UAT phải phủ thêm preset TEAM_12 và các biến thể.
+> **User chốt lại 12/07 (thay quyết định "1 version" trước đó):** chia lộ trình 3 mốc phát hành:
+> - **v1 — Solo contest**: contest chính thức, thí sinh CÁ NHÂN (1-12 ghế, không đội), đủ 4 vòng + biến thể, viewer/overlay/MC/admin, kho đề + import/export.
+> - **v1.5 — Practice contest**: `matchPurpose: practice` (reveal sau chấm, retention riêng, rematch, trainer role), bộ đề PUBLIC + share-link, UI luyện tập.
+> - **v2 — Thi ĐỘI**: teams (buzz cá nhân điểm về đội, teamLockout, NSHV/đội, semantics §2b spec, preset TEAM_12).
+>
+> **Ràng buộc xuyên suốt: DATABASE + schema chuẩn bị ĐẦY ĐỦ ngay từ v1** để tránh migrate nhiều — Prisma có sẵn `Team`/`seat.teamId nullable`/`scoringUnit`, `Match.matchPurpose`, `Question.visibility`, `everPublic`, ACL bộ đề, retention fields; RuleConfig v2 Zod schema đầy đủ (teams/practice fields tồn tại, v1 chỉ chưa có UI/engine-path kích hoạt). Reducer thiết kế team-aware từ đầu (v1 mỗi seat là đơn vị điểm riêng — trường hợp suy biến của team size 1).
+
+**Lịch sử:** trước đó user chốt "không cắt scope, toàn bộ trong 1 version" (red-team v2 từng đề xuất cắt) — nay thay bằng lộ trình 3 mốc ở trên để giảm tải Phase 6 (critical path): test matrix v1 không còn TEAM_12; spec v2.1 giữ nguyên giá trị (mọi lỗ hổng đã vá bằng thiết kế, phần teams/practice thành tài liệu cho v1.5/v2).
 
 ## D19. Profile portable (Windows LAN không Docker) — 2 quyết định
 
@@ -302,13 +286,30 @@ Red-team v2 đề xuất đẩy teams / clue-buzz / VCNV 5-8 hàng / rút đề 
 **D20.1 — Submission RỖNG ✅ ĐÃ CHỐT (12/07): (a) SKIP — bỏ qua, giữ bản trước.**
 Kèm quyết định đi cùng của user: **TRIM toàn bộ** nội dung đề + đáp án + acceptedAnswers (bỏ space đầu/cuối) — áp cả lúc LƯU vào kho (phase-03) lẫn lúc SO KHỚP (answer-matcher phase-06); submission chỉ toàn whitespace sau trim = rỗng = skip. Dedup nội-dung-y-hệt so sánh SAU trim.
 
-## D21. Dual-purpose (luyện tập + contest) — 3 điểm cần bạn xác nhận
+## D21. Dual-purpose (luyện tập + contest) ✅ ĐÃ CHỐT (12/07): ACCEPT TOÀN BỘ ĐỀ XUẤT
 
-**Bối cảnh:** Bạn chốt hệ thống có 2 mục đích ngang hàng. Plan đã thêm `matchPurpose: official|practice` (spec §13 — bảng khác biệt policy giữa 2 loại). 3 điểm chờ:
+> **User chốt (12/07) — accept cả 3 đề xuất** *(toàn bộ practice thuộc mốc **v1.5** theo lộ trình D18; schema `matchPurpose` + retention fields có sẵn trong DB từ v1)*:
+> 1. **D21.1 — Retention**: practice match tự xoá/anonymize sau **3 tháng** (config); official giữ **12 tháng** (config). Cần background job dọn retention (queue).
+> 2. **D21.2 — Ai tạo practice match**: chỉ người có `contest.create` (admin gán role "trainer" qua RBAC sẵn có — 0 công). Contestant tự tạo từ đề public = gộp với UI solo (D16), cùng mốc v1.5+.
+> 3. **D21.3 — Default practice**: không ghi ngược thống kê kho đề, không vào podium/kết quả chính thức, PDF watermark "LUYỆN TẬP" không QR.
 
-1. **D21.1 — Retention dữ liệu practice**: CLB luyện hàng tuần → event log + audit phình nhanh, vẫn là PII học sinh nhưng giá trị lưu thấp. Đề xuất: practice match tự xoá/anonymize sau **3 tháng** (config), official theo D14 (12 tháng).
-2. **D21.2 — Contestant tự tạo practice match?** v1 đề xuất: chỉ người có `contest.create` (admin gán role "trainer" qua RBAC sẵn có — 0 công). Contestant tự tạo từ đề public = gộp với D16 (UI solo), vẫn để P3. Bạn muốn đưa lên v1 không?
-3. **D21.3 — Practice không ghi ngược thống kê kho đề, không vào podium/kết quả chính thức, PDF watermark "LUYỆN TẬP" không QR** — xác nhận đây là default đúng ý.
+**Bối cảnh cũ (tham khảo):** Hệ thống có 2 mục đích ngang hàng, phân biệt bằng `matchPurpose: official|practice` (spec §13 — bảng khác biệt policy giữa 2 loại).
+
+## D22. Kiến trúc animation + nguồn đề của trận ✅ ĐÃ CHỐT (12/07)
+
+> **User chốt:**
+> 1. **Animation ĐỘC LẬP với engine/rule**: mỗi animation là module client-side riêng, chỉ nhận semantic event từ server (qua animation-queue) — mục đích: nhà phát triển sửa RULE (vd cách hệ thống chọn câu hỏi) không phải đụng animation và ngược lại. Engine không biết animation tồn tại (đã là nguyên tắc "viewer không bao giờ chặn engine", nay nâng thành yêu cầu kiến trúc: mapping event→animation là bảng cấu hình, animation module thay/thêm không sửa engine).
+> 2. **Người tạo contest PHẢI chọn danh sách câu hỏi TRƯỚC khi contest bắt đầu** — hệ thống KHÔNG tự lấy đề từ kho; chức năng "rút đề ngẫu nhiên" (drawConfig) chỉ **RANDOM TRONG danh sách đã được gán** (snapshot vào trận). Công cụ chọn đề: **full-text search kho đề + các loại filter + sort** (filter: loại vòng, lĩnh vực, mức điểm, độ khó, tags, người thực hiện, trạng thái duyệt; sort: mới nhất, mức điểm, độ khó, lần dùng gần nhất, tần suất dùng). Pre-flight chặn start khi danh sách thiếu so với playlist.
+
+## D23. Import/Export CONTEST CONFIG trọn gói ✅ ĐÃ CHỐT (12/07)
+
+> **User chốt:** contest config import/export dễ dàng — use-case chính: **soạn đề trên bản Internet (compose) → export → import vào bản portable** (LAN ngày thi). Định dạng bundle ZIP:
+> - **Excel/CSV/Google Sheet** (default **Excel**) cho thông tin CÂU HỎI;
+> - **JSON** cho metadata liên quan media (mapping câu↔file, checksum) + contest config (RuleConfig, playlist, theme/sound refs);
+> - **Media gom theo SUBFOLDER từng vòng** (`media/khoi-dong/`, `media/vcnv/`, `media/tang-toc/`, `media/ve-dich/`...);
+> - **ZIP chứa tất cả** — import roundtrip không mất dữ liệu.
+>
+> Export tuân ACL đáp án (spec §9); import validate Zod + magic-bytes media + đối chiếu checksum.
 
 ---
 <!-- Claude sẽ thêm mục mới bên dưới trong quá trình planning -->

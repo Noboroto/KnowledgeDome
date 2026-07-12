@@ -12,7 +12,7 @@ dependencies: [2]
 Admin tạo contest, gán thí sinh + đề (snapshot), phát mã phòng 6 số; flows join cho thí sinh (login) và viewer/overlay (public theo mã phòng — user chốt 12/07); hạ tầng socket room + reconnect. Đây là "vỏ" để Phase 6 nhét game engine vào.
 
 ## Requirements
-- Functional: contest CRUD (tên, lịch, RuleConfig v2 — playlist/preset, **1-12 ghế ± đội**, bộ đề); room code 6 số duy nhất khi contest mở; thí sinh login rồi nhập room code → vào ghế; viewer/overlay nhập room code (+ nickname tuỳ chọn) → vào xem ngay (public, không duyệt; admin có khoá cổng + kick); lobby trước trận (tech check: thử chuông, âm thanh, đo ping); pre-flight validate đề đủ câu cho RuleConfig.
+- Functional: contest CRUD (tên, lịch, RuleConfig v2 — playlist/preset, **1-12 ghế cá nhân** [teams UI → Phase 12/v2; schema Team/scoringUnit vẫn dựng từ phase này — D18], bộ đề); **người tạo contest PHẢI CHỌN danh sách câu hỏi + gán (snapshot) TRƯỚC khi contest bắt đầu — hệ thống KHÔNG tự lấy đề từ kho; draw chỉ random trong danh sách đã gán (✅ D22)**; room code 6 số duy nhất khi contest mở; thí sinh login rồi nhập room code → vào ghế; viewer/overlay nhập room code (+ nickname tuỳ chọn) → vào xem ngay (public, không duyệt; admin có khoá cổng + kick); lobby trước trận (tech check: thử chuông, âm thanh, đo ping); pre-flight validate danh sách đã gán đủ câu cho RuleConfig (chặn start nếu thiếu).
 - Non-functional: reconnect grace 120s giữ ghế; 1 phiên đăng nhập/thí sinh (login mới đá phiên cũ, có cảnh báo); room code không đoán được tuần tự (random, không reuse trong 24h).
 
 ## Architecture

@@ -21,7 +21,8 @@ Giao diện thí sinh: tối giản, phản hồi tức thì, dùng được ho�
 - Timer render từ `{remainingMs, serverNow}` tick + `requestAnimationFrame` interpolation — không tự đếm bằng clock client.
 - Optimistic buzz: bấm → UI khoá nút + hiệu ứng ngay → server trả `buzz-result` (thắng/thua/muộn) → cập nhật. Mọi kết quả cuối theo server.
 - Hotkey qua 1 hook `useHotkeys` toàn màn (không phụ thuộc focus input, trừ khi đang gõ đáp án); hint hotkey in trên nút.
-- Audio: preload toàn bộ SFX khi vào lobby (unlock audio context bằng cú click "sẵn sàng").
+- Audio: pre-download toàn bộ SFX khi vào lobby (✅ D10 — file nhỏ, phát tức thì theo `sound-cue`, không phụ thuộc mạng lúc cue; unlock audio context bằng cú click "sẵn sàng").
+- **Media mã hoá (✅ D12b)**: service worker cache blob mã hoá câu N+1; nhận `MEDIA_KEY` qua socket lúc reveal → decrypt + play; SW không khả dụng (browser cũ/lỗi) → client tự khai báo, nhận URL lúc reveal (fallback reveal-only) — trận không bao giờ đứng vì SW.
 
 ## Related Code Files
 - Create: `apps/web/src/pages/contestant/` (MatchScreen, round views: KhoiDong, Vcnv, TangToc, VeDich, TieBreak; BuzzButton, AnswerInput, TimerBar, ScoreStrip)

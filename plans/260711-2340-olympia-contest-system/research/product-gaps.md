@@ -6,10 +6,10 @@
 
 | # | Gap | Ưu tiên | Xử lý |
 |---|---|---|---|
-| 1.1 | **Dữ liệu cá nhân học sinh vị thành niên** (tên, trường, kết quả, IP) — không có retention/xoá/ẩn danh; NĐ 13/2023/NĐ-CP áp dụng | P1 | ✅ PRD FR-7 + phase-05 (profile theo ghế, thuộc contest), phase-06 (anonymize không phá event log); 🟡 D14 retention |
+| 1.1 | **Dữ liệu cá nhân học sinh vị thành niên** (tên, trường, kết quả, IP) — không có retention/xoá/ẩn danh; NĐ 13/2023/NĐ-CP áp dụng | P1 | ✅ PRD FR-7 + phase-05 (profile theo ghế, thuộc contest), phase-06 (anonymize không phá event log); ✅ retention chốt qua D21.1: official 12 tháng / practice 3 tháng (D14 riêng đã bỏ 12/07) |
 | 1.2 | Consent livestream mặt + tên học sinh | P2 | ✅ Overlay toggle ẩn tên thật/nickname (phase-09); mẫu consent tham khảo vào docs |
-| 1.3 | **Bản quyền FORMAT Olympia** (tên, logo, cấu trúc vòng là tài sản VTV) — D10 mới chỉ lo nhạc | P1 | 🟡 gộp vào D7 (tên sản phẩm); UI dùng thuật ngữ generic từ RuleConfig; disclaimer không liên kết VTV |
-| 1.4 | License repo chưa chọn | P1 | 🟡 D7 (cùng quyết định) |
+| 1.3 | **Bản quyền FORMAT Olympia** (tên, logo, cấu trúc vòng là tài sản VTV) — D10 mới chỉ lo nhạc | P1 | ⏸️ User bỏ mục quyết định (D7 đã xoá 12/07); thiết kế trung lập vẫn giữ: tên vòng là data trong RuleConfig |
+| 1.4 | License repo chưa chọn | P1 | ⏸️ User bỏ mục quyết định (D7 đã xoá 12/07) |
 
 ## Quy trình con người
 

@@ -6,10 +6,10 @@ priority: P2
 dependencies: [3]
 ---
 
-# Phase 4: Import / Export đề
+# Phase 4: Import / Export đề & Contest config
 
 ## Overview
-Import/export kho đề & bộ đề. **Excel theo template quy ước là format CHÍNH cho người dùng** (đã nâng cấp 12/07 — nhập bộ đề từ Excel + xuất bộ đề ra Excel, roundtrip); ZIP bundle (manifest + questions.json + media/) giữ vai trò format đầy đủ khi có media. Không rò đáp án cho role không đủ quyền.
+Import/export kho đề & bộ đề & **CONTEST CONFIG trọn gói (✅ D23 12/07)**. **Excel theo template quy ước là format CHÍNH cho người dùng** (nhập/xuất bộ đề, roundtrip); ZIP bundle giữ vai trò format đầy đủ khi có media. **Use-case chính của contest bundle: soạn đề trên bản Internet (compose) → export → import vào bản portable (LAN ngày thi).** Không rò đáp án cho role không đủ quyền.
 
 ## Bổ sung 12/07 — Excel convention
 
@@ -18,18 +18,31 @@ Import/export kho đề & bộ đề. **Excel theo template quy ước là forma
 - Mapping cột linh hoạt vẫn giữ cho file không đúng template.
 
 ## Requirements
-- Functional: export theo filter (vòng/topic/bộ đề đã chọn) ra `.zip`; import zip có validate + preview + báo lỗi từng dòng; import Excel/CSV với cột mapping linh hoạt (không hard-code vùng ô như Athena cũ).
+- Functional: export theo filter (vòng/topic/bộ đề đã chọn) ra `.zip`; import zip có validate + preview + báo lỗi từng dòng; import Excel/CSV/Google Sheet (default Excel — ✅ D23) với cột mapping linh hoạt (không hard-code vùng ô như Athena cũ); **export/import CONTEST CONFIG trọn gói (✅ D23)** — roundtrip compose → portable không mất dữ liệu (RuleConfig + đề đã gán + media + theme/sound assets).
 - Non-functional: file lớn (media nhiều) xử lý streaming, không load hết vào RAM; export tuân **ACL 3 mức của bộ đề (view/viewAnswer/export — spec v2 §9)**: export-kèm-đáp-án cần viewAnswer+export, câu reference của setter khác cần quyền trên CÂU theo CASL conditions; export ghi audit log.
 
 ## Architecture
 
-Format bundle:
+Format bundle kho đề/bộ đề:
 ```
 olympia-bank-export.zip
 ├── manifest.json    # { formatVersion: 1, exportedAt, counts, checksums }
-├── questions.json   # QuestionExport[] — Zod schema trong packages/shared
-└── media/<sha256>.<ext>
+├── questions.xlsx   # format CHÍNH cho câu hỏi (CSV/Google Sheet cũng nhận — default Excel, ✅ D23)
+├── media-meta.json  # metadata media: mapping câu ↔ file, checksum sha256, loại
+└── media/<round-type>/<file>   # media gom SUBFOLDER THEO VÒNG (✅ D23): khoi-dong/ vcnv/ tang-toc/ ve-dich/ tie-break/
 ```
+
+**Contest bundle (✅ D23 — export/import trọn contest):**
+```
+olympia-contest-export.zip
+├── manifest.json      # formatVersion, exportedAt, checksums
+├── contest.json       # RuleConfig + playlist + theme config + sound cue mapping + seats khung
+├── questions.xlsx     # toàn bộ câu hỏi đã gán theo vòng (sheet per round — template phase-04)
+├── media-meta.json    # mapping câu ↔ media, checksum
+├── media/<round-type>/...        # media đề theo subfolder vòng
+└── assets/            # theme/sound file của contest (logo, video hình hiệu, SFX cue)
+```
+Import contest bundle vào portable: validate Zod contest.json + đối chiếu checksum + magic-bytes; tạo contest ở trạng thái nháp, chạy pre-flight như thường (danh sách đề đã gán sẵn trong bundle — khớp D22).
 
 ```mermaid
 sequenceDiagram
@@ -57,11 +70,13 @@ sequenceDiagram
 4. Excel/CSV parser (exceljs / papaparse): bước 1 upload file → server đọc header → FE cho map cột ↔ field; template mẫu tải về được.
 5. Idempotency: import lại cùng bundle không nhân đôi (so `sourceId` + checksum, hỏi user overwrite/skip).
 6. Audit: EXPORT log kèm số câu + filter.
+7. **Contest bundle (✅ D23)**: export contest (contest.json + questions.xlsx theo vòng + media subfolder vòng + assets theme/sound) / import tạo contest nháp + pre-flight; test roundtrip compose → portable trên máy Windows thật (kết hợp Phase 10 profile portable).
 
 ## Success Criteria
 - [ ] Roundtrip: export 50 câu đủ 5 loại + media → import vào DB sạch → diff logic = 0 khác biệt.
 - [ ] Import file hỏng/thiếu media → báo lỗi từng mục, không ghi nửa vời (transaction).
 - [ ] Import Excel với template mẫu hoạt động; cột lệch vẫn map được bằng tay.
+- [ ] Contest bundle roundtrip: export contest đầy đủ (đề + media + theme/sound) từ compose → import vào portable → pre-flight PASS, trận chạy được ngay (✅ D23).
 
 ## Risk Assessment
 - Zip bomb / file độc → giới hạn tổng dung lượng giải nén + số entry; chỉ nhận MIME whitelist **kèm sniff magic bytes**; sanitize entry path chống **zip-slip** (`media/../../etc` — reject mọi entry có `..` hoặc path tuyệt đối) (red-team M4).

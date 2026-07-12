@@ -1,6 +1,6 @@
 # Research — Kiến trúc kỹ thuật realtime quiz (stack đã chốt)
 
-> Tổng hợp từ researcher (07/2026). Stack KHÔNG đổi: NestJS+Fastify, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO / React+Vite, MUI, Motion, Zustand, TanStack Query / MinIO.
+> Tổng hợp từ researcher (07/2026). Stack hiện hành: NestJS + **Express adapter** (✅ D9 12/07 — thay Fastify), Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO / React+Vite, MUI, Motion, Zustand, TanStack Query / MinIO.
 
 ## 1. NestJS + Fastify + Socket.IO — ✅ SUPERSEDED (12/07): D9 chốt ĐỔI EXPRESS ADAPTER, mục này chỉ còn giá trị lịch sử
 

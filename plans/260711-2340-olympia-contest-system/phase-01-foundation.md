@@ -60,5 +60,5 @@ flowchart LR
 - [ ] CI xanh trên PR đầu tiên.
 
 ## Risk Assessment
-- **nest#14953** (cao): đã có kế hoạch spike + fallback ở step 4.
+- ~~nest#14953~~ đã hoá giải: D9 chốt Express adapter — step 4 chỉ còn là smoke test wiring, không phải spike quyết định.
 - Windows dev environment (docker/pnpm path issues): dùng WSL2 nếu gặp vấn đề, ghi vào README.

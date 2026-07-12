@@ -26,6 +26,7 @@ flowchart LR
 ```
 
 - **Animation queue**: event server đến dồn dập → hàng đợi tuần tự hoá animation (điểm cộng xong mới chạy hiệu ứng tiếp theo), skip-to-latest khi tụt hậu > N event (viewer không bao giờ chặn engine — engine không chờ animation).
+- **Animation là MODULE ĐỘC LẬP (✅ D22)**: mỗi hiệu ứng (count-up, lật ô VCNV, lane tăng tốc, podium...) là component riêng chỉ nhận **semantic event** từ animation-queue; mapping event→animation là bảng cấu hình client-side — nhà phát triển sửa RULE server (vd cách chọn câu hỏi) không đụng animation, thay/thêm animation không đụng engine.
 - Overlay: route riêng không MUI layout (bundle tối thiểu), join public bằng room code (Phase 5), query `?elements=` + admin toggle runtime; hint checkerboard khi mở ngoài OBS.
 - Motion for React cho hiệu ứng phức hợp; hiệu ứng lặp thuần CSS.
 
@@ -41,7 +42,7 @@ flowchart LR
 4. Về đích: gói điểm, NSHV, cướp quyền; Podium + confetti (canvas, tự viết — không lib nặng).
 5. Overlay route: các phần tử độc lập bật/tắt, animation enter/exit transform-only; đo CPU trong OBS thật.
 6. Viewer settings (cỡ chữ, reduced motion, âm lượng); soak test 2h không memory leak.
-7. **Bộ SFX mặc định royalty-free** (DEFERED D10b): chọn nguồn (Pixabay/freesound CC0...), commit file + LICENSE; CueSlot matrix theo spec v2 §10 (mỗi round type × ~10 cue + global) với **fallback chain: slot → global default → silent** — bộ default chỉ cần phủ nhóm global + cue cơ bản; admin thay từng slot ở sound editor (phase-08).
+7. **Sound cues (✅ D10 chốt lại)**: KHÔNG cần bộ SFX default cầu kỳ — admin tự upload file cho từng cue slot ở sound editor (phase-08); CueSlot matrix theo spec v2 §10 (mỗi round type × ~10 cue + global) với **fallback chain: slot → global → SILENT** (slot trống = im lặng, trận vẫn chạy); client pre-download toàn bộ file cue khi vào phòng (nhỏ, phát tức thì theo event).
 
 ## Bổ sung từ gap-analysis
 - **Viewer mobile là mặc định thực tế** (480/500 viewer là điện thoại): responsive ≥360px, test trên Android tầm trung; `?kiosk=1` ẩn UI chrome cho projector/khán giả tại chỗ (gap 4.4).

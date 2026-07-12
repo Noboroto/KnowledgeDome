@@ -16,11 +16,11 @@ Kho câu hỏi bảo mật cao: schema Prisma với metadata + versioning, CRUD 
 - **Question thêm fields**: `displayId` (mã ngắn tra cứu, vd `Q-000123`), `fieldId` (FK → bảng `Field` — nhãn lĩnh vực do admin/setter tạo/quản lý), `wordCount` (auto-compute từ content khi save), `explanation` (giải thích đáp án), `note`, `timeSeconds?` (thuộc tính thời gian từng câu — TT/VĐ), `value?` (mức điểm VĐ), `clues[]?` (3-4 dữ kiện cho tăng tốc format clue-buzz).
 - **QuestionSet (bộ đề)** — mô hình đầy đủ theo **spec v2 §9 (đã vá red-team C-v2-1/C-v2-3)**: `displayId`, name, `visibility: PRIVATE|PUBLIC`, `everPublic` (cờ một chiều trên cả Set lẫn Question); PRIVATE = owner + **ACL 3 mức view/viewAnswer/export**; share-link = token ≥128-bit + password (rate-limit 5 lần/phút/IP+link) + TTL + revoke, **mặc định KHÔNG kèm đáp án**, audit theo token+IP; PUBLIC = xem/tải tự do kèm đáp án theo setting per-set (default có, cảnh báo) và đóng dấu everPublic vĩnh viễn; **pre-flight mọi match hard-block câu everPublic/đang-public** (kiểm ở đơn vị CÂU, cả chiều gán set public vào contest).
 - **SetItem**: reference câu kho theo displayId HOẶC câu nhập tay inline (thuộc set); câu nhập tay có checkbox "lưu vào kho đề".
-- **Tra cứu kho đề** theo: displayId, lĩnh vực, người thực hiện, đáp án (search theo đáp án chỉ cho người có `question.viewAnswer`) + các filter metadata cũ.
+- **Tra cứu kho đề** theo: displayId, lĩnh vực, người thực hiện, đáp án (search theo đáp án chỉ cho người có `question.viewAnswer`) + các filter metadata cũ. **Full-text search (✅ D22): Postgres FTS (`tsvector` trên content+explanation+tags, config `simple` + unaccent cho tiếng Việt, GIN index) + filter (loại vòng/lĩnh vực/mức điểm/độ khó/tags/người thực hiện/trạng thái) + sort (mới nhất/mức điểm/độ khó/lần dùng gần nhất/tần suất dùng — 2 sort sau đọc từ stats phase-10)** — đây là backend cho QuestionPicker của contest builder (phase-08, người tạo contest bắt buộc chọn đề trước khi start).
 
 ## Requirements
 - Functional: CRUD câu hỏi theo 6 loại (KHOI_DONG, VCNV, VCNV_ROW, TANG_TOC, VE_DICH, TIE_BREAK — ERD rút gọn ở dưới thiếu VCNV_ROW, schema thật đủ 6); metadata: độ khó (1-5), chủ đề (tags), lớp/kiến thức, ghi chú; đính kèm ảnh/video/audio; trạng thái DRAFT→ACTIVE→ARCHIVED; versioning khi sửa câu ACTIVE.
-- Non-functional: đáp án chỉ trả về cho ADMIN (và SETTER với câu mình tạo); mọi truy cập đáp án ghi audit; media giới hạn dung lượng (DEFERED D6).
+- Non-functional: đáp án chỉ trả về cho ADMIN (và SETTER với câu mình tạo); mọi truy cập đáp án ghi audit; media giới hạn dung lượng **ảnh ≤10MB, video ≤200MB, audio ≤20MB — env config (✅ D6 chốt 12/07; khuyến nghị vận hành: transcode video 1080p H.264 trước upload, ghi docs)**.
 
 ## Architecture
 

@@ -1,65 +1,72 @@
-# Rule-spec Đường lên đỉnh Olympia — Luật O24-O26 ("luật 2026")
+# Rule-spec Đường lên đỉnh Olympia — Luật O26 ("luật 2026")
 
-> Bản tổng hợp từ research online (Wikipedia VN O25/O26, Dân Trí, VietnamNet, Tiền Phong, VTV).
-> Đây là **draft chờ user duyệt**. Mọi giá trị đều là DEFAULT của hệ thống — admin config được per-contest.
-> Các chỗ đánh dấu ⚠️ là nguồn mâu thuẫn / chưa chắc chắn (xem DEFERED.md D8).
+> ✅ **XÁC NHẬN 12/07 (D8 đã chốt): SOURCE OF TRUTH = [Fandom — Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26)** (đã truy cập + đối chiếu toàn văn 12/07). Mọi giá trị dưới đây đã sửa theo Fandom, hết mâu thuẫn ⚠️.
+> Mọi giá trị vẫn là DEFAULT của hệ thống (RuleConfig) — admin config được per-contest; contest builder có nút **"Áp dụng luật 2026"** áp nguyên preset này.
+> **Điểm độc lập với thời gian**: `timeSeconds` là metadata TỪNG CÂU HỎI (cùng mức 20đ có thể có câu 15s và câu 40s); hệ thống chọn câu theo MỨC ĐIỂM, thời gian lấy theo câu; bảng dưới chỉ là default khi câu không tự khai thời gian.
 
-Tổng điểm lý thuyết toàn trận: ~800 (giảm từ ~980 của luật cũ). 4 thí sinh, 4 vòng + câu hỏi phụ.
+4 thí sinh, 4 vòng + câu hỏi phụ.
 
 ## 1. Khởi động (KHOI_DONG)
 
-Từ O24: tách 2 lượt — riêng + chung.
+Tách 2 lượt — riêng + chung.
 
-| Tham số | Default | Ghi chú |
+| Tham số | Default (Fandom O26) | Ghi chú |
 |---|---|---|
 | Lượt riêng: số câu/thí sinh | 6 | thi lần lượt từng thí sinh |
-| Lượt riêng: thời gian mỗi câu | 5s ⚠️ | nguồn khác nói 3s; admin config |
+| Lượt riêng: thời gian mỗi câu | **3s** (từ lúc MC đọc xong) | ✅ Fandom (default cũ 5s SAI) |
 | Lượt riêng: điểm đúng / sai | +10 / 0 | |
-| Lượt chung: số câu | 12 | cả 4 thí sinh bấm chuông giành quyền |
-| Lượt chung: thời gian trả lời sau khi bấm chuông | 5s | |
-| Lượt chung: điểm đúng / sai | +10 / **-5** | sai thì các thí sinh khác KHÔNG được bấm lại câu đó (MC công bố đáp án) ⚠️ |
+| Lượt chung: số câu | 12 | cả 4 thí sinh bấm chuông giành quyền; **được bấm khi MC đang đọc** |
+| Lượt chung: thời gian trả lời sau khi giành quyền | **3s** | ✅ Fandom (default cũ 5s SAI) |
+| Lượt chung: cửa sổ chuông sau khi MC đọc xong | 3s — không ai bấm → bỏ qua câu | `buzzWindowSec` default 3 |
+| Lượt chung: điểm đúng / sai | +10 / **−5** | "sai hoặc bấm chuông mà không có đáp án sau 3s" đều −5; sai thì KHÔNG mở lại chuông cho người khác |
+| Ghi nhận đáp án | đổi liên tục trước khi MC công bố — **tính bản CUỐI**; không đổi → tính bản đầu | khớp nguyên tắc last-wins |
 | Chấm | MC/admin bấm Đúng/Sai (trả lời miệng) | |
 
 ## 2. Vượt chướng ngại vật (VCNV)
 
-| Tham số | Default | Ghi chú |
+| Tham số | Default (Fandom O26) | Ghi chú |
 |---|---|---|
-| Số hàng ngang | 4 | + 1 ô trung tâm (miếng ghép thứ 5) |
-| Ảnh chướng ngại vật | 5 miếng ghép (4 góc + trung tâm) | mỗi hàng ngang đúng → mở miếng tương ứng |
-| Thời gian suy nghĩ mỗi hàng ngang | 15s | cả 4 thí sinh cùng trả lời bằng bàn phím |
+| Số hàng ngang | 4 | + 1 ô trung tâm (miếng ghép thứ 5, gợi ý cuối) |
+| Ảnh chướng ngại vật | 5 miếng ghép (4 góc đánh số cố định + trung tâm) | hàng ngang đúng → mở miếng tương ứng |
+| Lượt chọn hàng ngang | mỗi TS tối đa 1 lượt, từ vị trí số 1; có người bị loại → lượt dồn, quay vòng về vị trí 1 nếu còn hàng chưa chọn | ✅ Fandom |
+| Thời gian suy nghĩ mỗi hàng ngang | 15s | cả 4 cùng trả lời bằng bàn phím; yêu cầu đúng chính tả |
 | Điểm hàng ngang đúng | +10 | |
 | Bấm chuông trả lời CNV | bất kỳ lúc nào | trả lời sai → **bị loại khỏi phần thi này** |
-| Điểm trả lời đúng CNV | 80 / 60 / 40 / 20 ⚠️ | theo số hàng ngang đã mở (0-1 / 2 / 3 / 4+trung tâm). Một nguồn khác nói 60/50/40/30/20 — cần user xác nhận; admin config mảng điểm |
+| Điểm giải đúng CNV | **60 / 50 / 40 / 30** khi bấm trong hàng ngang thứ 1/2/3/4 | ✅ Fandom (default cũ 80/60/40/20 SAI) |
+| Ô trung tâm (sau 4 hàng, chưa ai giải CNV) | câu hỏi gợi ý cuối: đúng +10 (mở ô), sai không mở; sau đó **15s** suy nghĩ CNV; giải đúng lúc này = **20 điểm** | ✅ Fandom |
 
 ## 3. Tăng tốc (TANG_TOC)
 
-| Tham số | Default | Ghi chú |
+| Tham số | Default (Fandom O26) | Ghi chú |
 |---|---|---|
-| Số câu | 4 | độ khó tăng dần, thường có câu video/hình ảnh |
-| Thời gian mỗi câu | 10 / 20 / 30 / 40s ⚠️ | có nguồn nói O26 đổi thành 20/20/30/30; admin config mảng |
-| Cách trả lời | cả 4 cùng trả lời trên máy (KHÔNG bấm chuông) | hệ thống ghi timestamp |
-| Điểm theo thứ hạng tốc độ (trong số người đúng) | 40 / 30 / 20 / 10 | sai = 0, không trừ |
+| Số câu | 4 | 4 loại: nhìn nhanh / sắp xếp / suy luận / đoạn băng |
+| Thời gian mỗi câu | **20 / 20 / 30 / 30s** | ✅ Fandom (default cũ 10/20/30/40 SAI) |
+| Cách trả lời | cả 4 cùng trả lời trên máy (KHÔNG bấm chuông) | hệ thống ghi timestamp; đúng chính tả |
+| Điểm theo thứ hạng tốc độ (trong số người đúng) | 40 / 30 / 20 / 10 | sai = 0, không trừ; **đồng thời gian → cùng mức điểm** (✅ Fandom xác nhận đề xuất D13.3) |
 | Chấm | auto so khớp đáp án + admin override | |
 
 ## 4. Về đích (VE_DICH)
 
-Từ O24: gói câu chỉ còn 2 mức 20/30 (bỏ mức 10 của luật cũ).
+Gói câu chỉ còn 2 mức 20/30 (bỏ mức 10 của luật cũ).
 
-| Tham số | Default | Ghi chú |
+| Tham số | Default (Fandom O26) | Ghi chú |
 |---|---|---|
-| Số câu mỗi thí sinh | 3 | thí sinh tự chọn mức điểm từng câu trước lượt thi |
-| Mức điểm mỗi câu | 20 hoặc 30 | |
-| Thời gian suy nghĩ | 20đ → 15s, 30đ → 20s ⚠️ | nguồn khác nói 20s/40s; admin config map |
+| Số câu mỗi thí sinh | 3 (chọn từ 2 mức 20/30 thành gói) | chọn trước lượt thi |
+| Thứ tự lượt thi | điểm cao nhất TẠI THỜI ĐIỂM xếp lượt (tính lại sau mỗi lượt hoàn thành); hoà → vị trí đứng thấp hơn đi trước | ✅ Fandom |
+| Thời gian suy nghĩ (default theo mức điểm) | 20đ → 15s, 30đ → 20s | ✅ Fandom; per-question `timeSeconds` override |
+| Câu thực hành | 20đ: 15s nghĩ + 30s thực hành; 30đ: 20s nghĩ + 60s thực hành | ✅ Fandom |
 | Trả lời đúng | +giá trị câu | |
 | Trả lời sai/hết giờ | 0, mở quyền cướp | |
-| Cướp quyền (thí sinh khác bấm chuông, 5s) | đúng: **+giá trị câu** (điểm lấy từ thí sinh về đích ⚠️ — cần xác nhận có steal hay chỉ cộng); sai: **-½ giá trị câu** | |
-| Ngôi sao hy vọng | 1 lần/thí sinh, chọn trước khi đọc câu hỏi; đúng ×2 giá trị câu, sai −giá trị câu | |
+| Cướp quyền (3 TS còn lại bấm chuông, **5s**) | đúng: **+giá trị câu LẤY TỪ điểm người trả lời sai (`stealMode: 'transfer'`)** ✅ Fandom; sai: **−½ giá trị câu**; câu thực hành khi cướp: 20đ→20s, 30đ→40s thực hành | default cũ "không steal" SAI |
+| Ghi nhận đáp án | người thi chính: **bản CUỐI** trước hết giờ; người cướp: **bản ĐẦU TIÊN** | ✅ Fandom — engine phân biệt 2 chế độ |
+| Ngôi sao hy vọng | 1 lần/thí sinh, đặt TRƯỚC khi câu được đọc/hiện; đúng ×2 giá trị câu, sai −giá trị câu (kể cả có người cướp hay không) | ✅ Fandom |
 
 ## 5. Câu hỏi phụ (TIE_BREAK)
 
 - Kích hoạt khi hòa điểm ở vị trí cần phân định.
-- Tối đa 3 câu, 15s/câu, bấm chuông giành quyền; đúng → thắng; sai → thí sinh còn lại có cơ hội.
-- Không cộng vào điểm trận. Hết 3 câu chưa phân định → bốc thăm (hệ thống random, admin xác nhận).
+- 3 câu, 15s/câu, bấm chuông giành quyền; **bấm nhanh nhất + trả lời đúng → thắng; sai → cả nhóm sang câu TIẾP THEO** (✅ Fandom — không mở lại cùng câu cho người còn lại).
+- **Bấm chuông trước hiệu lệnh MC → mất quyền trả lời câu đó** (✅ Fandom).
+- Không cộng vào điểm trận. Hết 3 câu chưa phân định → **bốc thăm** (✅ Fandom xác nhận đề xuất D13.6; hệ thống random, admin xác nhận).
 
 ## 6. Nguyên tắc thiết kế engine — ⚠️ ĐÃ THAY THẾ
 
@@ -80,19 +87,20 @@ Từ O24: gói câu chỉ còn 2 mức 20/30 (bỏ mức 10 của luật cũ).
 | 🟡 VCNV: người bị loại có được trả lời hàng ngang còn lại? | **Không** (theo luật thật) — chỉ mất quyền CNV lẫn hàng ngang |
 | VCNV: bấm chuông giải CNV giữa lúc timer hàng ngang đang chạy | Timer hàng ngang PAUSE, xử lý CNV xong (đúng → kết thúc vòng; sai → loại người bấm) rồi RESUME cho người còn lại |
 | Khởi động lượt chung: không ai bấm chuông | Hết `buzzWindowSec` (default 5s sau khi đọc xong) → công bố đáp án, sang câu tiếp (admin có nút next thủ công override) |
-| 🡪 Khởi động lượt chung: bấm sai | −5, câu đó KHÔNG mở lại chuông cho người khác (theo research; admin override được) |
-| 🟡 Tăng tốc: 2 người đúng cùng timestamp (ms) | Cùng nhận mức điểm cao (kiểu thể thao: 40/40/20/10); so sánh ở độ phân giải microsecond trước khi coi là hòa |
+| ✅ Khởi động lượt chung: bấm sai | −5, câu đó KHÔNG mở lại chuông cho người khác (Fandom; admin override được) |
+| ✅ Tăng tốc: 2 người đúng cùng timestamp (ms) | Cùng nhận mức điểm cao (40/40/20/10) — **Fandom xác nhận** ("cùng khoảng thời gian → cùng mức điểm"); so sánh ở độ phân giải ms server-received |
 | Tăng tốc với ghế trống/2 người chơi (D1b) | Thang điểm vẫn 40/30/... theo thứ hạng thực tế trong số người đúng |
 | 🟡 Thí sinh rớt mạng đúng lượt riêng của mình (khởi động riêng / về đích) | Engine tự PAUSE + prompt admin: chờ reconnect (trong grace) / skip lượt / thay thế; chưa chọn gói về đích khi tới lượt → admin chọn hộ (default 20/20/20) |
 | Về đích: quyền cướp đang mở mà câu bị skip (media hỏng) | Huỷ cửa sổ cướp, không ai cộng/trừ; câu thay thế chạy lại từ đầu |
 | NSHV đã chọn, câu bị thay bằng câu dự phòng | NSHV áp sang câu thay thế (không mất lượt chọn) |
 | Tie-break hòa 3-4 người / hòa nhiều vị trí | Chạy tie-break **per nhóm hòa, theo thứ tự vị trí cần phân định** (function `(tiedSeats[], targetPosition) → winner`); người bấm sai bị loại khỏi CÂU đó, những người còn lại thi tiếp cùng câu; hết 3 câu → bốc thăm |
 | 🟡 Vị trí nào cần tie-break? | Default: chỉ vị trí NHẤT (giải thưởng); config `tieBreakPositions` |
-| 🟡 Hết câu hỏi phụ khi hoà dai dẳng | Preflight yêu cầu tối thiểu N câu phụ (config, default 3); vẫn hết → bốc thăm (khớp luật gốc), admin xác nhận |
+| ✅ Hết câu hỏi phụ khi hoà dai dẳng | Preflight yêu cầu tối thiểu N câu phụ (config, default 3); vẫn hết → bốc thăm — **Fandom xác nhận** |
 | Điểm lẻ khi admin config mức điểm tuỳ ý (cướp sai −½ của 25) | RuleConfig ép giá trị câu là số chẵn (Zod); nếu vẫn lẻ → làm tròn về 0 (floor với âm là ceil) |
 
 ## Nguồn
 
+- **SOURCE OF TRUTH (D8 chốt 12/07):** https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26
 - https://vi.wikipedia.org/wiki/Đường_lên_đỉnh_Olympia
 - https://vi.wikipedia.org/wiki/Đường_lên_đỉnh_Olympia_năm_thứ_25
 - https://vi.wikipedia.org/wiki/Đường_lên_đỉnh_Olympia_năm_thứ_26

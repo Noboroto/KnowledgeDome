@@ -4,7 +4,7 @@
 |---|---|
 | **Sản phẩm** | Hệ thống quản lý & mô phỏng chương trình "Đường lên đỉnh Olympia" (luật 2026) |
 | **Phiên bản tài liệu** | 1.0 — 12/07/2026 |
-| **Trạng thái** | Draft v2 (12/07, sau mở rộng scope + red-team) — đã chốt D1/D3/D15-MC/D18; chờ các mục còn lại trong `DEFERED.md` cùng thư mục (nổi bật: D7, D8, D17) |
+| **Trạng thái** | Draft v3 (12/07) — đã chốt D1-D6, D8 (Fandom = source of truth), D9, D12b, D15-MC, D16, D17.2, D18 (**lộ trình 3 mốc: v1 solo / v1.5 practice / v2 teams — DB đủ từ v1**), D19-D22; còn chờ: D10 cue map, D11, D13 (một phần), D15.1, D17.1/.3/.4 (trước v2) — xem `DEFERED.md` |
 | **Tài liệu liên quan** | `plan.md` (kiến trúc + 10 phase) · `user-stories.md` · `research/rules-2026.md` (luật) · `public/` (demo đã duyệt design) |
 
 ## 1. Bối cảnh & Vấn đề
@@ -15,15 +15,25 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 
 ## 2. Mục tiêu & Không-mục-tiêu
 
-### Mục tiêu (v1)
-0. **Mục tiêu kép ngang hàng (chốt 12/07)**: (a) tổ chức contest chính thức; (b) luyện tập/rehearsal — cùng một engine, phân biệt bằng `matchPurpose` per-match (spec §13).
-1. **Nền tảng gameshow tuỳ biến** (mở rộng 12/07 — spec: `research/ruleconfig-v2-spec.md`): round playlist tuỳ ý (số vòng/loại/thứ tự không cứng), 1-12 thí sinh hoặc gộp đội (buzz cá nhân, điểm về đội), mọi timer/điểm/phổ điểm/số câu là config, thời gian là thuộc tính từng câu; luật O26 chuẩn là preset mặc định `O26_DEFAULT@1`. Biến thể vòng: khởi động 4 kiểu lượt + rút đề ngẫu nhiên theo lĩnh vực; VCNV 4-8 hàng ± gợi ý ký tự; tăng tốc ranked-speed / clue-buzz (3-4 dữ kiện); về đích gói preset / custom-build.
+### Lộ trình version (✅ D18 chốt lại 12/07)
+
+| Mốc | Scope | Phase |
+|---|---|---|
+| **v1 — Solo contest** | Contest chính thức, thí sinh CÁ NHÂN 1-12 ghế, đủ loại vòng + biến thể, kho đề, viewer/overlay/MC/admin, 2 profile deploy | 1-10 |
+| **v1.5 — Practice** | `matchPurpose: practice`, bộ đề PUBLIC + share-link, UI luyện tập solo, trainer role, retention riêng | 11 |
+| **v2 — Teams** | Thi đội (buzz cá nhân điểm về đội, semantics spec §2b, preset TEAM_12, UI đội mọi màn) | 12 |
+
+**DB + Zod schema chuẩn bị ĐẦY ĐỦ từ v1** (Team/seat.teamId/scoringUnit, matchPurpose, visibility/everPublic, ACL, retention) — tránh migrate; v1 chưa bật UI/engine-path tương ứng.
+
+### Mục tiêu
+0. **Mục tiêu kép (chốt 12/07)**: (a) tổ chức contest chính thức (**v1**); (b) luyện tập/rehearsal (**v1.5**) — cùng một engine, phân biệt bằng `matchPurpose` per-match (spec §13), schema từ v1.
+1. **Nền tảng gameshow tuỳ biến** (spec: `research/ruleconfig-v2-spec.md`): round playlist tuỳ ý (số vòng/loại/thứ tự không cứng), 1-12 thí sinh (gộp đội = **v2**), **thời gian/số câu/điểm từng vòng đều CUSTOM** — nút **"Áp dụng luật 2026"** áp preset `O26_DEFAULT@1` theo [Fandom wiki (✅ D8 — source of truth)](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26); **điểm ĐỘC LẬP thời gian: `timeSeconds` là metadata từng câu** (cùng 20đ có thể câu 15s/40s — hệ thống chọn câu theo mức điểm, thời gian theo câu). Biến thể vòng: khởi động 4 kiểu lượt + rút đề ngẫu nhiên (chỉ random TRONG danh sách đề đã gán — ✅ D22); VCNV 4-8 hàng ± gợi ý ký tự; tăng tốc ranked-speed / clue-buzz (3-4 dữ kiện); về đích gói preset / custom-build.
 2. Kho đề tập trung, bảo mật cao (đáp án không bao giờ tới client trước công bố), metadata đầy đủ, import/export được.
 3. Thi đấu realtime công bằng: chuông xếp hạng theo server-timestamp, timer server-authoritative, chống gian lận mức hợp lý.
 4. Vận hành trận tin cậy: pause/resume, undo chấm điểm, phục hồi sau sự cố server/mạng, audit log phân xử khiếu nại.
 5. Trình diễn: màn viewer animation đẹp (tối ưu 4 ghế, adaptive 1-12/đội) + overlay OBS 1920×1080 nền trong suốt + **màn MC** (câu hỏi + đáp án + tóm tắt kết quả) cho livestream; **theming per contest** (màu sắc, logo, ảnh thí sinh, video hình hiệu) + **âm thanh tuỳ chỉnh mọi thành phần** (cue slots + nhạc nền soundboard).
 
-### Không-mục-tiêu (v1)
+### Không-mục-tiêu
 - Không stream video (chỉ overlay data cho OBS — quyết định đã chốt).
 - Không giải đấu nhiều trận/bracket tuần→tháng→quý→năm (P3, xem `research/ux-gaps.md`).
 - Không speech-to-text tự chấm câu trả lời miệng (DEFERED D4 — admin chấm).
@@ -52,12 +62,13 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 - FR-2.1 CRUD câu hỏi theo loại vòng (Khởi động / VCNV set / Tăng tốc / Về đích / Câu phụ) + trạng thái duyệt (DRAFT→ACTIVE→ARCHIVED, chỉ admin activate) + versioning khi sửa.
 - FR-2.2 Mỗi câu: `displayId` tra cứu, lĩnh vực (taxonomy `Field` quản lý được), wordCount (auto), nội dung, đáp án + acceptedAnswers, giải thích, người thực hiện, ghi chú, media; thuộc tính riêng theo loại: `timeSeconds` (TT/VĐ), `value` (VĐ), `clues[]` (TT clue-buzz); metadata cũ (độ khó, tags) giữ nguyên.
 - FR-2.2b **Bộ đề (QuestionSet)**: `displayId`; PRIVATE (owner+ACL; share-link password+TTL revoke được) / PUBLIC (xem/tải tự do, kèm đáp án theo setting per-set default có, cảnh báo trước khi public, chặn public khi gắn contest chưa diễn); item = reference câu kho theo ID hoặc nhập tay (checkbox lưu vào kho); tra cứu theo ID/lĩnh vực/người thực hiện/đáp án (đáp án cần quyền).
-- FR-2.3 Media ảnh/video/audio lưu MinIO, truy cập qua presigned URL TTL ngắn; giới hạn dung lượng (D6).
+- FR-2.3 Media ảnh/video/audio lưu MinIO, truy cập qua presigned URL TTL ngắn; giới hạn dung lượng **ảnh ≤10MB, video ≤200MB, audio ≤20MB — env config (✅ D6)**; khuyến nghị transcode 1080p H.264 trước upload (docs).
 - FR-2.4 **Bảo mật**: đáp án chỉ trong DTO của admin/setter-owner; audit log mọi truy cập đáp án/sửa/xuất. (trong trận: + kênh MC FR-5.5; + ngoại lệ revealAnswerAfterJudge NFR-4)
-- FR-2.5 Import/export: **Excel theo template quy ước là format chính** (nhập/xuất bộ đề, roundtrip); ZIP bundle cho trường hợp kèm media; mapping cột linh hoạt cho file tự do.
+- FR-2.5 Import/export: **Excel theo template quy ước là format chính** (CSV/Google Sheet cũng nhận — ✅ D23); ZIP bundle khi kèm media (media-meta.json + media subfolder theo vòng); mapping cột linh hoạt cho file tự do.
+- FR-2.6 **Export/import CONTEST CONFIG trọn gói (✅ D23)**: ZIP = contest.json (RuleConfig/playlist/theme/sound) + questions.xlsx + media-meta.json + media theo subfolder vòng + assets — use-case chính: soạn trên bản Internet → import vào portable ngày thi; roundtrip không mất dữ liệu; export tuân ACL đáp án + audit.
 
 ### FR-3 Contest & Phòng thi
-- FR-3.1 Admin tạo contest bằng **contest builder**: dựng round playlist (thêm/xoá/sắp xếp vòng, config từng vòng theo RuleConfig v2, chọn preset rồi tuỳ biến), setup **1-12 ghế** ± gộp đội (scoringUnit, individualTurnMode all-members/representative), theme (màu/logo/ảnh/video hình hiệu), sound (cue slots + nhạc nền), gán bộ đề (snapshot).
+- FR-3.1 Admin tạo contest bằng **contest builder**: dựng round playlist (thêm/xoá/sắp xếp vòng, config từng vòng theo RuleConfig v2, **nút "Áp dụng luật 2026"** ✅ D8), setup **1-12 ghế cá nhân** (gộp đội scoringUnit/individualTurnMode = **v2**; schema sẵn từ v1), theme (màu/logo/ảnh/video hình hiệu), sound (cue slots + nhạc nền — admin tự upload ✅ D10); **BẮT BUỘC chọn danh sách câu hỏi trước khi start (✅ D22): QuestionPicker full-text search + filter + sort trên kho đề; hệ thống không tự lấy đề, draw chỉ random trong danh sách đã gán (snapshot)**.
 - FR-3.2 Mã phòng 6 số random, không reuse 24h; pre-flight validate đề đủ số câu + media trước khi start.
 - FR-3.3 Lobby/tech-check: thí sinh thử chuông (hiện ping ms), thử âm thanh, báo sẵn sàng.
 - FR-3.4 **Viewer + overlay OBS PUBLIC theo mã phòng** (user chốt 12/07 — không account, không duyệt): có mã 6 số là xem; read-only enforced server-side (zero-trust); kiểm soát = rate-limit IP + nút khoá cổng + kick. Thí sinh/MC/admin luôn cần auth.
@@ -65,12 +76,13 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 - FR-3.5 Reconnect grace 120s giữ ghế + state-sync; rớt quá grace xử lý theo `dropoutPolicy`.
 
 ### FR-4 Thi đấu (Game Engine) — spec: `research/ruleconfig-v2-spec.md`; luật gốc + edge-cases: `research/rules-2026.md` §7
-- FR-4.1 Orchestrator chạy **round playlist** server-authoritative; timer server; buzzer cá nhân xếp hạng theo server-timestamp, điểm reduce về seat/team theo scoringUnit; khởi động hỗ trợ **rút đề ngẫu nhiên theo lĩnh vực** (slot theo Field + RANDOM, noRepeatInMatch, xáo thứ tự — event `QUESTIONS_DRAWN` replay được).
+- FR-4.1 Orchestrator chạy **round playlist** server-authoritative; timer server; buzzer cá nhân xếp hạng theo server-timestamp, điểm reduce về seat (reducer team-aware — semantics đội kích hoạt **v2**); khởi động hỗ trợ **rút đề ngẫu nhiên theo lĩnh vực TRONG danh sách đề đã gán** (✅ D22 — hệ thống không tự lấy từ kho; slot theo Field + RANDOM, noRepeatInMatch, xáo thứ tự — event `QUESTIONS_DRAWN` replay được).
 - FR-4.2 Chấm: auto-match đáp án gõ (normalize) + admin confirm/override; câu miệng admin bấm Đúng/Sai.
 - FR-4.3 Can thiệp admin: cộng/trừ điểm kèm lý do, undo, skip/thay câu dự phòng, pause/resume, chỉnh timer đang chạy.
 - FR-4.4 Event-sourced match log (điểm = reduce(events)); mọi biến động truy vết được; phục hồi trận sau crash (persist-trước-broadcast).
-- FR-4.5 Âm thanh: **cue slot theo từng thành phần × loại vòng** (intro/question/countdown/buzz/correct/wrong/timeup/reveal...) — bộ SFX mặc định royalty-free, admin thay từng slot (D10b); **nhạc nền playlist** điều khiển bằng soundboard admin (phát/dừng/next/volume/duck), phát ở viewer/overlay, contestant mặc định tắt.
-- FR-4.6 Media preload phân tầng: viewer/overlay sớm, thí sinh chỉ lúc reveal (D12a).
+- FR-4.5 Âm thanh: **cue slot theo từng thành phần × loại vòng** (intro/question/countdown/buzz/correct/wrong/timeup/reveal...) — **admin tự upload file cho từng slot, slot trống = silent (✅ D10 — không cần bộ SFX default)**; client pre-download toàn bộ SFX khi vào phòng (nhỏ, phát tức thì); **nhạc nền playlist** điều khiển bằng soundboard admin (phát/dừng/next/volume/duck), phát ở viewer/overlay, contestant mặc định tắt.
+- FR-4.6 Media preload MÃ HOÁ phân tầng (✅ **D12b**): viewer/overlay preload sớm URL thường; **thí sinh preload blob mã hoá qua service worker, server phát key đúng lúc reveal** — mượt cả qua Internet, không rò đề; fallback reveal-only khi SW không khả dụng; `preloadPolicy: encrypted|reveal-only`.
+- FR-4.7 **Animation độc lập engine (✅ D22)**: engine chỉ emit semantic event; mỗi animation là module client riêng, mapping event→animation là config — sửa rule không đụng animation và ngược lại.
 
 ### FR-5 Giao diện thi đấu
 - FR-5.1 **Thí sinh**: tối giản, phản hồi cục bộ <50ms; **chuông CHỈ nhận click chuột** (không hotkey); keyboard cho phần còn lại (Enter gửi, 1-8 hàng ngang, Esc xoá); **không chặn gửi lại — tăng tốc tính bản trả lời CUỐI CÙNG trước server-timeout; server time là source of truth duy nhất**.
@@ -79,7 +91,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 - FR-5.4 **OBS Overlay**: 1920×1080 nền trong suốt, phần tử bật/tắt từ admin, chỉ transform/opacity, <50% CPU 1 core trong OBS.
 - FR-5.5 **Màn MC** (`/mc`, đã chốt 12/07): read-only chữ rất to — câu hỏi hiện tại + **đáp án** + tóm tắt kết quả/bảng điểm; permission `match.viewAnswer` theo contest, audit log (đáp án chỉ tới admin + MC channel).
 - FR-5.6 **Theming per contest**: đổi màu thành tố đồ hoạ (design tokens), logo/banner cuộc thi, ảnh thí sinh, video hình hiệu (phát ở intro/INTERMISSION) — áp cho viewer/overlay/MC.
-- FR-5.7 Layout adaptive: tối ưu ≤4 đơn vị điểm (sân khấu đầy đủ); 5-12 grid gọn vẫn đủ animation; hiển thị theo đội khi có đội.
+- FR-5.7 Layout adaptive: tối ưu ≤4 đơn vị điểm (sân khấu đầy đủ); 5-12 grid gọn vẫn đủ animation; hiển thị theo đội khi có đội (**v2**).
 
 ### FR-6 Sau trận
 - FR-6.1 Xuất kết quả PDF (bảng điểm, sự kiện chính, QR verify).
@@ -88,7 +100,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 
 ### FR-7 Dữ liệu cá nhân & privacy (bổ sung sau gap-analysis — học sinh là trẻ vị thành niên, NĐ 13/2023/NĐ-CP)
 - FR-7.1 Thông tin hiển thị của thí sinh (displayName, ảnh, trường/lớp) là **seat profile thuộc contest** — xoá contest là xoá profile; account chỉ giữ username.
-- FR-7.2 Chức năng **anonymize contestant**: thay tên bằng mã trong dữ liệu trận cũ mà không phá event log; retention mặc định 12 tháng, config được (DEFERED D14).
+- FR-7.2 Chức năng **anonymize contestant**: thay tên bằng mã trong dữ liệu trận cũ mà không phá event log; retention official **12 tháng** / practice **3 tháng**, config được, background job tự chạy (✅ D21.1 — job kích hoạt v1.5).
 - FR-7.3 Overlay/viewer có toggle "dùng nickname" per-contestant cho livestream chưa có consent phụ huynh; docs kèm mẫu consent tham khảo.
 - FR-7.4 Trách nhiệm pháp lý dữ liệu thuộc đơn vị tự host; hệ thống cung cấp công cụ (ghi rõ trong docs triển khai).
 
@@ -105,7 +117,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 | NFR-6 | Stack (ràng buộc cứng) | BE: TS, **NestJS + Express adapter** (✅ D9 12/07 — đổi từ Fastify vì tương thích), Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO · FE: React+Vite, MUI, Motion, Zustand, TanStack Query · Storage: MinIO · **Chỉ tiếng Việt, múi giờ UTC+7 thống nhất (✅ D2)** |
 | NFR-7 | **2 hình thức triển khai** (chốt 12/07) | (a) Docker compose trên server Internet (đủ PG+Redis+MinIO, multi-instance); (b) **portable trên Windows cá nhân KHÔNG Docker, mạng LAN, 1 máy** — hạ tầng qua abstraction layer (driver Redis/in-process, MinIO/filesystem), đang research queue + hạ tầng portable |
 
-## 6. Tiêu chí thành công v1
+## 6. Tiêu chí thành công (v1)
 
 1. Tổ chức 1 trận UAT người thật trọn vẹn 4 vòng + livestream OBS không sự cố chặn trận.
 2. Điểm số cuối trận khớp 100% với tính tay theo rule-spec cho ≥3 kịch bản automated.
@@ -115,10 +127,11 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 ## 7. Rủi ro & Phụ thuộc chính
 
 - ~~NestJS Fastify × Socket.IO/Better-auth~~ ✅ đã hoá giải: D9 chốt Express adapter (12/07) — không còn rủi ro tương thích.
-- Luật O26 có chi tiết chưa xác nhận (D8/D13) — mọi giá trị là config nên không chặn dev.
-- Bản quyền: nhạc hiệu (D10) VÀ **format/tên "Olympia" thuộc VTV** — tên sản phẩm nên trung tính, tên vòng thi là data trong preset, disclaimer không liên kết VTV (D7); license repo chốt trước commit đầu (D7b).
-- Dữ liệu cá nhân học sinh vị thành niên — xem FR-7 + DEFERED D14.
+- ~~Luật O26 nguồn mâu thuẫn~~ ✅ đã hoá giải: D8 chốt Fandom wiki = source of truth (12/07); demo `public/` còn dùng default cũ — phải sync trước Phase 7-9.
+- Bản quyền nhạc hiệu: admin tự upload file (✅ D10) — trách nhiệm nội dung thuộc đơn vị tổ chức, hệ thống trung lập (disclaimer khi upload).
+- Dữ liệu cá nhân học sinh vị thành niên — xem FR-7 (retention/anonymize theo D21.1).
+- Encrypted preload (D12b) là hạng mục kỹ thuật phức tạp nhất phía client — đã có fallback reveal-only để trận không bao giờ đứng vì SW.
 
 ## 8. Lộ trình
 
-10 phase trong `plan.md`; critical path là Phase 6 (game engine, có milestone 6a/6b). Demo design (`public/`) đã hoàn thành và verify — là design reference cho Phase 7-9.
+12 phase trong `plan.md` theo 3 mốc release: **Phase 1-10 = v1** (critical path Phase 6, milestone 6a/6b; sau Phase 2 chạy 3 track song song, sau 6a chạy 3 track UI song song — sơ đồ trong plan.md), **Phase 11 = v1.5 (practice)**, **Phase 12 = v2 (teams)**. Demo design (`public/`) đã hoàn thành và verify — là design reference cho Phase 7-9 (⚠️ cần sync RULES mock theo D8 Fandom trước).

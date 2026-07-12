@@ -9,14 +9,24 @@ blocks: []
 
 # Olympia Contest System
 
-Nền tảng web tổ chức thi đấu gameshow kiến thức **tuỳ biến hoàn toàn** theo mô hình Đường lên đỉnh Olympia: round playlist tuỳ ý (số vòng/loại vòng/thứ tự), 1-12 thí sinh hoặc theo đội, mọi timer/điểm là config (luật O26 chỉ là preset mặc định), kho đề + bộ đề bảo mật có chia sẻ, thi đấu realtime độ trễ thấp, overlay OBS + màn MC cho livestream, theming đồ hoạ/âm thanh per contest. *(Scope mở rộng 12/07 từ "mô phỏng O26" — chi tiết `research/ruleconfig-v2-spec.md`.)*
+Nền tảng web tổ chức thi đấu gameshow kiến thức **tuỳ biến hoàn toàn** theo mô hình Đường lên đỉnh Olympia: round playlist tuỳ ý (số vòng/loại vòng/thứ tự), 1-12 thí sinh, mọi timer/điểm là config (nút **"Áp dụng luật 2026"** áp preset O26 theo [Fandom wiki — source of truth D8](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26)), kho đề + bộ đề bảo mật, thi đấu realtime độ trễ thấp, overlay OBS + màn MC cho livestream, theming đồ hoạ/âm thanh per contest.
+
+**Lộ trình version (✅ D18 chốt lại 12/07):**
+
+| Mốc | Scope phát hành | Phase |
+|---|---|---|
+| **v1 — Solo contest** | Contest chính thức, thí sinh CÁ NHÂN 1-12 ghế, đủ mọi loại vòng + biến thể, kho đề + import/export, viewer/overlay/MC/admin, 2 profile deploy | Phase 1-10 |
+| **v1.5 — Practice contest** | `matchPurpose: practice` (reveal sau chấm, retention 3 tháng, rematch, trainer role), bộ đề PUBLIC + share-link, UI luyện tập solo | Phase 11 ([chi tiết](phase-11-practice-mode.md)) |
+| **v2 — Thi ĐỘI** | Teams: buzz cá nhân điểm về đội, teamLockout, NSHV/đội, preset TEAM_12, UI đội mọi màn | Phase 12 ([chi tiết](phase-12-teams.md)) |
+
+**Ràng buộc xuyên suốt: DB + Zod schema chuẩn bị ĐẦY ĐỦ ngay từ v1** (Team/seat.teamId/scoringUnit, matchPurpose, visibility/everPublic, ACL bộ đề, retention fields) — tránh migrate về sau; v1 chỉ chưa bật UI/engine-path tương ứng. *(Chi tiết engine: `research/ruleconfig-v2-spec.md`.)*
 
 ## Tài liệu
 
 | File | Nội dung |
 |---|---|
 | `research/ruleconfig-v2-spec.md` | **Spec engine chính**: RuleConfig v2 — round playlist, 1-12 ghế + đội, mọi timer/điểm tuỳ biến, rút đề, sound slots, theming (12/07) |
-| `research/rules-2026.md` | Luật gốc O26 + edge-cases (nguồn cho preset `O26_DEFAULT`; D8 chờ user xác nhận) |
+| `research/rules-2026.md` | Luật gốc O26 + edge-cases — ✅ D8 chốt 12/07: **Fandom wiki = source of truth**, giá trị đã đối chiếu toàn văn |
 | `research/tech-architecture.md` | Research kiến trúc: Better-auth, game state, buzzer, MinIO, import/export (§1 Fastify đã superseded — D9 chốt Express) |
 | `research/sound-cues.md` | **Cue map event-driven** từ 36 cue của Athena + chương trình thật (12/07 — D10) |
 | `research/athena-scout.md` | Bài học từ bản C#/WPF cũ (Athena) |
@@ -25,7 +35,7 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức **tuỳ biến ho
 | `research/product-gaps.md` | Gap-analysis vòng 2: pháp lý/privacy, quy trình con người, vòng đời sản phẩm |
 | `research/queue-decision.md` | Queue + 2 deployment profile: BullMQ (compose) / in-process + pg-boss (portable), quy ước compose.yml/compose.prod.yml (12/07) |
 | `PRD.md` / `user-stories.md` | Yêu cầu sản phẩm + user stories theo epic (map về phase) |
-| `DEFERED.md` | Các quyết định chờ user chốt (D1-D21; nhiều mục đã ✅) |
+| `DEFERED.md` | Các quyết định (D1-D23; đa số đã ✅ — còn chờ D10 cue map, D11, D13 một phần, D15.1, D17.1/.3/.4 trước v2) |
 | `../../public/` | Demo tĩnh mock data + animation (deliverable của giai đoạn planning, host Vercel được) |
 
 ## Stack (đã chốt, không đổi)
@@ -79,8 +89,36 @@ Nguyên tắc xương sống (rút từ nghiên cứu + bài học Athena):
 | 8 | [Admin Control UI](phase-08-admin-ui.md) | pending | 6 |
 | 9 | [Viewer UI + OBS Overlay](phase-09-viewer-overlay.md) | pending | 6 |
 | 10 | [Hardening, Ops & Release](phase-10-hardening.md) | pending | 7, 8, 9 |
+| 11 | [Practice Mode — **v1.5**](phase-11-practice-mode.md) | pending | 10 (release v1) |
+| 12 | [Teams (thi đội) — **v2**](phase-12-teams.md) | pending | 10 (release v1); D17.1/.3/.4 |
 
-Ghi chú thứ tự: Phase 3-4 (kho đề) và Phase 5 (contest/room) có thể chạy song song sau Phase 2. Phase 7-9 song song sau Phase 6, tái sử dụng design từ `public/`.
+Phase 1-10 = release **v1**; Phase 11 = release **v1.5**; Phase 12 = release **v2** (11 và 12 độc lập nhau, có thể đảo nếu nhu cầu đổi).
+
+### Thi công song song (chia track theo ranh giới file-ownership)
+
+```mermaid
+flowchart LR
+  P1[Phase 1<br/>Foundation] --> P2[Phase 2<br/>Auth]
+  P2 --> A[Track A — Kho đề<br/>Phase 3 → 4]
+  P2 --> B[Track B — Contest/Room<br/>Phase 5]
+  P2 --> C[Track C — Engine core 6a<br/>reducer/timer/buzzer/orchestrator-skeleton]
+  C --> D[6b — round engines còn lại<br/>+ encrypted preload]
+  A --> D
+  B --> C
+  C --> U1[Track UI-1: Phase 7 Contestant]
+  C --> U2[Track UI-2: Phase 8 Admin]
+  C --> U3[Track UI-3: Phase 9 Viewer/Overlay/MC]
+  D --> P10[Phase 10 Hardening → release v1]
+  U1 --> P10
+  U2 --> P10
+  U3 --> P10
+  P10 --> P11[Phase 11 Practice → v1.5]
+  P10 --> P12[Phase 12 Teams → v2]
+```
+
+- **Sau Phase 2, ba track chạy song song**: A (kho đề 3→4, own `apps/api/src/questions|import-export` + `apps/web/src/pages/questions`), B (contest/room 5, own `apps/api/src/contests|rooms|gateway`), C (engine 6a, own `apps/api/src/engine`). Track B xong socket topology là C gắn vào; A chỉ chạm C ở `ContestQuestionSnapshot` (contract định nghĩa trong `packages/shared` từ Phase 1).
+- **Milestone 6a mở khoá cả 3 track UI cùng lúc** (7/8/9 own 3 thư mục pages riêng, không đụng file nhau; socket contracts + `matchStore` pattern là ranh giới chung — định nghĩa xong trong 6a). 6b (round engines còn lại) chạy song song với UI vì UI render theo playlist config, không cứng theo engine nào.
+- **Quy tắc chống conflict**: mọi contract (Zod schemas, socket events, RuleConfig, permission catalog) chỉ sửa ở `packages/shared` và phải merge trước; mỗi track PR riêng theo thư mục ownership; Phase 11 và 12 là 2 track độc lập sau release v1 (11 own `retention|practice pages`, 12 own `engine teams-branch + team UI`).
 
 **Gate trước Phase 7-9 (gap-analysis 6.1):** đem demo `public/` (host Vercel) cho **người thật dùng thử** — tối thiểu 1 giáo viên tạo thử câu hỏi trên màn kho đề + 2 học sinh thi thử màn thí sinh, 30 phút. Toàn bộ review đến nay là AI-review-AI; phản hồi người thật rẻ nhất tại thời điểm này, đắt dần theo mỗi phase code thật.
 
@@ -91,15 +129,16 @@ Ghi chú thứ tự: Phase 3-4 (kho đề) và Phase 5 (contest/room) có thể 
 | ~~NestJS Fastify + Socket.IO incompatibility~~ | ĐÃ HOÁ GIẢI | D9 chốt Express adapter (12/07) — gateway + Better-auth đều đường chính thống |
 | Engine stateful × multi-instance (race, timer đôi) | Cao | Single-writer per match qua Redis lease; failover restore từ snapshot (phase-06, red-team C1) |
 | Redis chết giữa trận live | Cao | AOF everysec + degraded mode auto-pause + khôi phục từ Postgres; chaos drill Phase 10 (red-team C3) |
-| Luật 2026 sai chi tiết (nguồn mâu thuẫn) | Trung | Mọi giá trị là RuleConfig; user confirm D8; sửa preset không sửa code |
+| ~~Luật 2026 sai chi tiết (nguồn mâu thuẫn)~~ | ĐÃ HOÁ GIẢI | ✅ D8 12/07: Fandom wiki = source of truth, đã đối chiếu toàn văn; mọi giá trị vẫn là RuleConfig |
+| Encrypted preload (D12b) phức tạp phía client | Trung | Fallback reveal-only tự động; test D12b riêng trong Phase 6/7 |
 | Better-auth + NestJS là package cộng đồng | Trung | Pin version, wrap sau interface `AuthService` riêng để thay được |
 | Buzzer fairness qua Internet | Trung | Server timestamp + websocket-only; khuyến cáo LAN khi thi thật |
 | Overlay lag trong OBS | Thấp | Chỉ transform/opacity; test OBS thật ở Phase 9 |
 
 ## Demo
 
-`public/` đã build xong và **được verify bằng Playwright** (6 trang render đúng, console 0 error, luật điểm mock áp đúng: +10/−5 khởi động, VCNV 80/60/40/20, tăng tốc 40/30/20/10). Lưu ý: demo hard-code default D8 — nếu user chốt D8 khác, cập nhật `public/assets/engine.js` (RULES) trước khi dùng demo làm design reference cho Phase 7-9 (red-team L2).
+`public/` đã build xong và **được verify bằng Playwright** (6 trang render đúng, console 0 error). ⚠️ **Demo đang dùng default D8 CŨ đã bị Fandom bác (khởi động 5s, VCNV 80/60/40/20, tăng tốc 10/20/30/40)** — D8 đã chốt 12/07 theo Fandom (3s, 60/50/40/30+20, 20/20/30/30, về đích steal transfer): phải cập nhật `public/assets/engine.js` (RULES) trước khi dùng demo làm design reference cho Phase 7-9 (red-team L2).
 
 ## Open questions
 
-Xem `DEFERED.md` (cùng thư mục). **Đã chốt:** D1 (1-12 ghế + đội), D2 (chỉ tiếng Việt + UTC+7), D3 (admin điều khiển + RBAC/CASL), D4 (admin chấm miệng, auto-match câu gõ), D5 (viewer public theo mã phòng), D9 (**Express adapter** — bỏ Fastify), D15-MC, D17.2 (last-wins), D18 (không cắt scope), D19 (portable HTTP, <10 viewer), D20 (skip rỗng + trim). **Còn chờ:** D6 (giới hạn media), **D7 (tên + bản quyền + license — trước commit code)**, **D8 (mâu thuẫn luật O26)**, D10 (cue map đang research — admin upload sau), D11, D12, D13, D14, D15.1, D16, **D17.1/.3/.4 (ngữ nghĩa thi đội — cần trước Phase 6)**, D21 (dual-purpose). Mỗi mục có khuyến nghị tạm để không chặn tiến độ.
+Xem `DEFERED.md` (cùng thư mục). **Đã chốt:** D1 (1-12 ghế; đội = v2), D2 (chỉ tiếng Việt + UTC+7), D3 (admin điều khiển + RBAC/CASL), D4 (admin chấm miệng, auto-match câu gõ), D5 (viewer public theo mã phòng), D6 (ảnh ≤10MB / video ≤200MB / audio ≤20MB, env config), **D8 (Fandom wiki = source of truth; nút "Áp dụng luật 2026"; điểm độc lập thời gian — `timeSeconds` là metadata từng câu)**, D9 (**Express adapter** — bỏ Fastify), **D12 (b — preload blob MÃ HOÁ qua service worker, key phát lúc reveal; fallback reveal-only)**, D15-MC, D16 (cột `visibility` từ v1; public set + UI solo = v1.5), D17.2 (last-wins), **D18 (lộ trình 3 mốc: v1 solo / v1.5 practice / v2 teams — DB đủ từ v1)**, D19 (portable HTTP, <10 viewer), D20 (skip rỗng + trim), D21 (retention practice 3 tháng / official 12 tháng; trainer tạo practice match — thuộc v1.5). D10 chốt kiến trúc (cue slot + admin upload + pre-download SFX về client) — còn chờ cue map research. **D7/D14 đã bỏ (12/07 — không còn là hạng mục).** **Còn chờ:** D10 (cue map), D11 (quy mô viewer), D13 (edge-cases luật — Fandom đã xác nhận D13.3/D13.6 và một phần D13.2), D15.1 (admin duyệt đề đủ chưa), **D17.1/.3/.4 (ngữ nghĩa thi đội — cần trước Phase 12/v2, KHÔNG chặn v1)**. Mỗi mục có khuyến nghị tạm để không chặn tiến độ.

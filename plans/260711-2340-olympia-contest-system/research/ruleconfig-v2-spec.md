@@ -41,7 +41,7 @@ individualTurnMode: 'all-members' | 'representative'
 ```ts
 rounds: RoundConfig[]     // Zod: min(1); thứ tự/số lượng/lặp loại tuỳ ý
 type RoundConfig = KhoiDongConfig | VcnvConfig | TangTocConfig | VeDichConfig | TieBreakConfig
-// chung: id, label hiển thị tuỳ ý (phục vụ cả D7 tránh thương hiệu), intermission trước/sau
+// chung: id, label hiển thị tuỳ ý (tên vòng là data, không hard-code thương hiệu), intermission trước/sau
 ```
 
 - TieBreakConfig chỉ hợp lệ ở **cuối playlist** hoặc auto-trigger theo `tieBreakPositions` sau vòng cuối (Zod chặn đứng giữa).
@@ -202,9 +202,9 @@ Route `/mc` (permission `match.viewAnswer` theo contest): câu hỏi chữ rất
 | `revealAnswerAfterJudge` (per-MATCH, không phải per-contest) | default **OFF**; bật = cảnh báo + confirm 2 bước + audit (đáp án sẽ lên mọi màn có mã phòng) | default **ON**, tắt được |
 | Lobby/tech-check | bắt buộc | optional + nút **Rematch** (giữ seats + room code, về LOBBY rút gọn) |
 | Anti-cheat (fullscreen, visibilitychange log) | on | off |
-| Stats ghi ngược kho đề + kết quả/podium contest + PDF QR-verify | có | không (PDF watermark "LUYỆN TẬP", không QR; 🟡 D21.3) |
-| Audit + event log | full | full, tag `matchPurpose` (retention riêng 🟡 D21.1) |
-| Viewer public, zero-trust read-only, server-authoritative, TRIM, last-wins, preload reveal-only | **giống hệt nhau — không nhánh code** | |
+| Stats ghi ngược kho đề + kết quả/podium contest + PDF QR-verify | có | không (PDF watermark "LUYỆN TẬP", không QR; ✅ D21.3) |
+| Audit + event log | full | full, tag `matchPurpose` (retention: official 12 tháng / practice 3 tháng — ✅ D21.1) |
+| Viewer public, zero-trust read-only, server-authoritative, TRIM, last-wins, preload encrypted (D12b, fallback reveal-only) | **giống hệt nhau — không nhánh code** | |
 
 - Footgun cần cảnh báo (P12): match dùng câu CHƯA everPublic + bật reveal + cổng viewer mở → đáp án lộ cho ai có mã phòng. UI cảnh báo "khuyến nghị khoá cổng viewer"; KHÔNG đóng dấu everPublic (tương đương MC đọc miệng).
 - Room code scope (P13): room code thuộc **contest đang mở** — match FINISHED không giết mã nếu contest còn match khác; mã chết khi contest đóng.
