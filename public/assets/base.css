@@ -183,8 +183,9 @@ h1, h2, h3, h4 { line-height: 1.2; }
   animation: spin .7s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-/* Nút đang chờ phản hồi: khoá double-submit */
-.btn.is-loading { pointer-events: none; opacity: .75; }
+/* Nút đang chờ phản hồi: CHỈ báo trạng thái, không khoá — gửi lại được,
+   server nhận bản cuối cùng (rule chống double-submit đã bỏ) */
+.btn.is-loading { opacity: .85; }
 
 /* ---------- Nút Back dùng chung (top-left mọi trang) ---------- */
 .nav-back {

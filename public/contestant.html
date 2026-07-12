@@ -178,10 +178,10 @@
       <button class="btn btn--primary btn--lg" id="submitBtn">Gửi <span class="kbd">Enter</span></button>
     </div>
 
-    <!-- Nút chuông LỚN -->
+    <!-- Nút chuông LỚN — CHỈ nhận click chuột (không hotkey, tránh bấm nhầm khi gõ đáp án) -->
     <button class="bell" id="bellBtn">
       <span>🔔 BẤM CHUÔNG</span>
-      <span class="bell__hint">Phím <span class="kbd">Space</span></span>
+      <span class="bell__hint">Click chuột</span>
     </button>
   </main>
 
@@ -273,18 +273,21 @@
   }
   $("bellBtn").addEventListener("click", doBuzz);
 
-  /* ---------- Gửi đáp án: loading 300-600ms → toast, chống double-submit ---------- */
+  /* ---------- Gửi đáp án: KHÔNG chặn gửi lại — server tính BẢN CUỐI CÙNG
+     trước timeout (server time là source of truth duy nhất) ---------- */
   function submitAnswer() {
     var v = $("answerInput").value.trim();
     if (!v) { UI.toast("Chưa nhập đáp án", "error"); return; }
-    if ($("submitBtn").disabled) return; // đang gửi — chặn double
     E.log(me.name + ' gửi đáp án: "' + v + '"');
+    var isTangToc = (state === "TANG_TOC" || state === "TT_CLUE");
     UI.mockAsync({
       btn: $("submitBtn"),
       loading: "Đang gửi đáp án…",
-      success: "Đã gửi: “" + v + "”"
+      success: isTangToc
+        ? "Đã ghi nhận: “" + v + "” — sửa và gửi lại được, tính bản CUỐI trước khi hết giờ"
+        : "Đã gửi: “" + v + "”"
     }).then(function () {
-      $("answerInput").value = "";
+      if (!isTangToc) $("answerInput").value = ""; // tăng tốc: giữ input để sửa/gửi lại
       $("submitBtn").classList.add("anim-flash-green");
       setTimeout(function () { $("submitBtn").classList.remove("anim-flash-green"); }, 700);
     });
@@ -371,8 +374,8 @@
       if (e.key === "Escape") { $("answerInput").value = ""; }
       return;
     }
-    if (e.code === "Space") { e.preventDefault(); doBuzz(); }
-    else if (e.key === "Enter") { e.preventDefault(); submitAnswer(); }
+    // Chuông CHỈ nhận click chuột (yêu cầu chủ dự án) — không gán hotkey
+    if (e.key === "Enter") { e.preventDefault(); submitAnswer(); }
     else if (/^[1-8]$/.test(e.key) && (state === "VCNV" || state === "VCNV8")) pickRow(+e.key);
   });
 

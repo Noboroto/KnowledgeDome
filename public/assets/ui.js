@@ -1,7 +1,8 @@
 /* ============================================================
    ui.js — Component UX dùng chung (window.UI)
    - Toast: pattern loading → success/error sau MỖI action
-   - mockAsync: giả lập network 300-600ms, khoá nút chống double-submit
+   - mockAsync: giả lập network 300-600ms (KHÔNG khoá nút — cho phép gửi lại,
+     server nhận bản cuối cùng; dedup/chống spam là việc của server)
    - Điều hướng: Esc = back (đóng modal trước nếu có), H = về hub
    ============================================================ */
 window.UI = (function () {
@@ -63,13 +64,14 @@ window.UI = (function () {
     };
   }
 
-  /* ---------- mockAsync: giả lập request, khoá nút, toast lifecycle ----------
+  /* ---------- mockAsync: giả lập request + toast lifecycle ----------
+     KHÔNG khoá nút (rule chống double-submit đã bỏ theo yêu cầu chủ dự án):
+     người dùng gửi lại được, hệ thống thật nhận BẢN CUỐI CÙNG trước server-timeout.
      UI.mockAsync({ btn, loading, success, error, fail, delay }).then(ok => …) */
   function mockAsync(opts) {
     opts = opts || {};
     var btn = opts.btn, spin = null;
-    if (btn) { // Prevent Double Submission: disable đến khi có phản hồi
-      btn.disabled = true;
+    if (btn) { // chỉ hiện spinner báo trạng thái, KHÔNG disable
       btn.classList.add("is-loading");
       spin = document.createElement("span");
       spin.className = "spinner";
@@ -80,7 +82,6 @@ window.UI = (function () {
     return new Promise(function (resolve) {
       setTimeout(function () {
         if (btn) {
-          btn.disabled = false;
           btn.classList.remove("is-loading");
           if (spin) spin.remove();
         }

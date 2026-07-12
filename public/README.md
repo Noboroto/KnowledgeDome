@@ -51,8 +51,9 @@ Output Directory = `.` (toàn bộ là static asset).
    duyệt viewer, share-link, public bộ đề…) giả lập delay 300-600ms và hiện spinner/toast loading.
 2. **Immediate Feedback** — UI phản hồi ≤100ms (`--dur-instant`); toast success/error sau MỖI action
    (pattern loading → success/error trong `assets/ui.js`).
-3. **Prevent Double Submission** — nút action tự disable + spinner đến khi có phản hồi
-   (`UI.mockAsync({ btn })`); chấm điểm admin khoá cả 2 nút Đúng/Sai.
+3. **Không chặn gửi lại (rule chống double-submit ĐÃ BỎ theo yêu cầu chủ dự án)** — nút chỉ hiện
+   spinner báo trạng thái, không disable; tăng tốc gửi lại thoải mái, hệ thống tính **BẢN CUỐI CÙNG**
+   trước server-timeout. **Server time là source of truth duy nhất.** Nút chuông CHỈ nhận click chuột.
 4. **Viewport-Conscious Layout** — reference laptop **1440×900** (~844px usable): nội dung chính
    mỗi màn gọn 1 viewport; bảng kho đề **phân trang 10 dòng**; hub gập bảng hotkey vào `<details>`.
 
@@ -121,7 +122,7 @@ Các giá trị nằm trong `Engine.RULES` (`assets/engine.js`) — hệ thống
 ## Hotkey nhanh
 
 - **Mọi trang**: `Esc` quay lại (đóng modal trước) · `H` về hub
-- **Thí sinh**: `Space` chuông · `Enter` gửi · `1–8` hàng ngang VCNV · `Esc` (trong ô nhập) xoá
+- **Thí sinh**: chuông = **click chuột (không hotkey)** · `Enter` gửi · `1–8` hàng ngang VCNV · `Esc` (trong ô nhập) xoá
 - **Viewer**: `P` auto-play kịch bản · `→` từng bước
 - **Overlay**: `1–9` bật/tắt phần tử
 - **Admin**: `C` đúng · `X` sai · `S` start/pause timer · `←/→` chuyển câu
