@@ -1,8 +1,22 @@
 # KnowledgeDome — Olympia Contest System
 
-Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô hình Đường lên đỉnh Olympia). Planning tại `plans/260711-2340-olympia-contest-system/` (spec engine: `research/ruleconfig-v2-spec.md`); quyết định chờ chốt: `plans/260711-2340-olympia-contest-system/DEFERED.md`; demo tĩnh: `public/`.
+Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô hình Đường lên đỉnh Olympia). Planning tại `plans/260711-2340-olympia-contest-system/` (spec engine: `research/ruleconfig-v2-spec.md`); sổ quyết định: `plans/260711-2340-olympia-contest-system/DEFERED.md` (D1-D23, đa số đã chốt); demo tĩnh: `public/`.
 
 Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO, @casl/ability · React+Vite, MUI, Motion for React, Zustand, TanStack Query · MinIO.
+
+## Lộ trình version (✅ D18 chốt 12/07)
+
+- **v1 — Solo contest** (Phase 1-10): contest chính thức, thí sinh CÁ NHÂN 1-12 ghế, đủ loại vòng + biến thể, kho đề, viewer/overlay/MC/admin, 2 profile deploy (compose + portable Windows).
+- **v1.5 — Practice** (Phase 11): `matchPurpose: practice`, bộ đề PUBLIC + share-link, UI luyện tập solo, trainer role, retention riêng (practice 3 tháng / official 12 tháng).
+- **v2 — Teams** (Phase 12): thi đội — buzz cá nhân, điểm về đội (semantics spec §2b).
+- **DB + Zod schema chuẩn bị ĐẦY ĐỦ ngay từ v1** (Team/seat.teamId/scoringUnit, matchPurpose, visibility/everPublic, ACL, retention) — KHÔNG để dành schema cho version sau, tránh migrate; v1 chỉ chưa bật UI/engine-path tương ứng.
+
+## Luật chơi & đề thi (chốt 12/07)
+
+- **Source of truth luật O26 = Fandom wiki** ([Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26)) — bảng giá trị đã đối chiếu: `plans/.../research/rules-2026.md`. Mọi giá trị vẫn là RuleConfig custom được; contest builder có nút **"Áp dụng luật 2026"** áp preset `O26_DEFAULT@1`.
+- **Điểm ĐỘC LẬP thời gian**: `timeSeconds` là metadata TỪNG CÂU HỎI (cùng mức 20đ có thể câu 15s và 40s) — hệ thống chọn câu theo MỨC ĐIỂM, thời gian lấy theo câu; preset chỉ đặt default.
+- **Người tạo contest PHẢI chọn danh sách câu hỏi trước khi start** (full-text search + filter + sort trên kho đề); hệ thống KHÔNG tự lấy đề — draw chỉ RANDOM TRONG danh sách đã gán (snapshot). Pre-flight chặn start khi thiếu.
+- **Contest config import/export trọn gói** (D23): ZIP = Excel câu hỏi (default; nhận CSV/Google Sheet) + JSON metadata media + media theo subfolder từng vòng — use-case soạn trên bản Internet → import vào portable.
 
 ## UX — BẮT BUỘC
 
@@ -41,5 +55,9 @@ Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, 
 - **Chỉ tiếng Việt** (không i18n); **múi giờ thống nhất UTC+7** — DB lưu UTC, mọi hiển thị/log/PDF format theo UTC+7, không có timezone setting per-user.
 - **Stack: NestJS + Express adapter** (✅ D9 12/07 — không dùng Fastify).
 - Mọi timer/điểm là RuleConfig — KHÔNG hard-code luật trong code/UI.
+- **Animation là module ĐỘC LẬP với engine/rule** (D22): engine chỉ emit semantic event; mapping event→animation là config client-side — sửa rule (vd cách chọn câu hỏi) không đụng animation và ngược lại.
+- **Media thí sinh preload MÃ HOÁ qua service worker** (D12b): key phát đúng lúc reveal theo server time; fallback reveal-only khi SW không khả dụng. Viewer/overlay preload URL thường.
+- **Sound**: engine emit `sound-cue {slot}`; admin tự upload file per slot (slot trống = silent, không có bộ SFX default); client pre-download toàn bộ SFX khi vào phòng.
+- Giới hạn media (D6, env config): ảnh ≤10MB, video ≤200MB, audio ≤20MB.
 - String UI tiếng Việt tách file constants (`vi.ts`), không hard-code trong JSX.
 - Commit theo Conventional Commits, KHÔNG AI attribution.
