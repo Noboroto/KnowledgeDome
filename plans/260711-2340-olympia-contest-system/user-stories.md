@@ -29,7 +29,7 @@
 | ID | User story | AC chính | Phase |
 |---|---|---|---|
 | US-3.1 | Là **admin**, tôi muốn tạo contest với luật tuỳ chỉnh (timer, điểm từng vòng) từ preset O26 để phù hợp giải của mình | Clone preset → sửa từng tham số qua UI; validate ràng buộc; luật freeze khi trận start | 5, 6 |
-| US-3.2 | Là **admin**, tôi muốn gán 4 ghế thí sinh (được để trống ghế) và bộ đề cho contest | Ghế trống hợp lệ (D1b); gán đề = snapshot | 5 |
+| US-3.2 | Là **admin**, tôi muốn gán 1-12 ghế thí sinh (được để trống ghế) ± gộp đội, và bộ đề cho contest | Ghế trống hợp lệ; teams theo US-8.2; gán đề = snapshot | 5 |
 | US-3.3 | Là **admin**, tôi muốn hệ thống phát mã phòng 6 số để thí sinh/viewer vào đúng phòng | Mã unique, không reuse 24h, hiện to trên bàn điều khiển | 5 |
 | US-3.4 | Là **admin**, tôi muốn pre-flight check trước khi start để không "chết trên sân khấu" | Chặn start khi: đề thiếu câu theo RuleConfig, media hỏng, thí sinh chưa tech-check (force-start có confirm 2 bước) | 5, 8 |
 | US-3.5 | Là **thí sinh**, tôi muốn lobby có thử chuông/âm thanh/đo ping để yên tâm trước giờ thi | Bấm thử chuông thấy round-trip ms; trạng thái sẵn sàng hiện cho admin | 5 |
@@ -40,7 +40,7 @@
 
 | ID | User story | AC chính | Phase |
 |---|---|---|---|
-| US-4.1 | Là **admin**, tôi muốn điều khiển tuần tự các bước trận (mở vòng → hiện câu → chạy timer → chấm → câu tiếp) để làm chủ nhịp chương trình | Stepper 5 phần thi; mọi client đổi trạng thái theo lệnh admin <300ms; không có bước nào tự trôi ngoài các timer luật định | 6, 8 |
+| US-4.1 | Là **admin**, tôi muốn điều khiển tuần tự các bước trận (mở vòng → hiện câu → chạy timer → chấm → câu tiếp) để làm chủ nhịp chương trình | Stepper theo round playlist; mọi client đổi trạng thái theo lệnh admin <300ms; không có bước nào tự trôi ngoài các timer luật định | 6, 8 |
 | US-4.2 | Là **admin**, tôi muốn thấy câu hỏi + đáp án (chỉ mình thấy) và chấm Đúng/Sai bằng 1 phím | Hotkey C/X; câu gõ text hiện kết quả auto-match chờ confirm; override được | 6, 8 |
 | US-4.3 | Là **admin**, tôi muốn chỉnh điểm tay và undo thao tác chấm sai để sửa nhầm lẫn ngay trong trận | Chỉnh điểm bắt buộc nhập lý do; undo event chấm gần nhất; điểm tự tính lại đúng; tất cả vào audit log | 6, 8 |
 | US-4.4 | Là **admin**, tôi muốn pause/resume trận và skip/thay câu hỏi lỗi để xử lý sự cố mà không hỏng trận | Pause đóng băng timer + khoá input; viewer thấy "tạm dừng kỹ thuật"; câu thay chạy lại từ đầu | 6, 8 |
@@ -77,6 +77,32 @@
 | US-7.2 | Là **admin**, tôi muốn thống kê câu hỏi (% đúng, thời gian TB) để cải thiện kho đề | Ghi ngược metadata sau trận; xem trên trang kho đề | 10 |
 | US-7.3 | Là **admin**, tôi muốn trận sống sót qua sự cố server/Redis giữa chừng | Chaos drills pass: failover lease, Redis chết → auto-pause → khôi phục, không mất event đã công bố | 6, 10 |
 | US-7.4 | Là **admin**, tôi muốn xem lại timeline trận (P2) để rút kinh nghiệm/giải khiếu nại muộn | Scrub theo event log, trạng thái tại từng thời điểm | 10 |
+
+## Epic 8 — Tuỳ biến luật & format (bổ sung 12/07, spec: `research/ruleconfig-v2-spec.md`)
+
+| ID | User story | AC chính | Phase |
+|---|---|---|---|
+| US-8.1 | Là **admin**, tôi muốn dựng trận bằng round playlist (số vòng, loại vòng, thứ tự tuỳ ý) thay vì 4 vòng cứng | Contest builder thêm/xoá/sắp xếp vòng; mỗi vòng form config riêng; chọn preset (`O26_DEFAULT@1`...) rồi tuỳ biến; Zod validate + pre-flight | 5, 6, 8 |
+| US-8.2 | Là **admin**, tôi muốn tổ chức 1-12 thí sinh hoặc gộp thành đội (bấm chuông cá nhân, điểm về đội) | Team setup kéo thả; scoringUnit seat/team; individualTurnMode all-members/representative config per-contest; phổ điểm mảng theo số đơn vị điểm | 5, 6 |
+| US-8.3 | Là **admin**, tôi muốn khởi động có 4 kiểu lượt (cá nhân/chung × giới hạn thời gian/số câu) với số lượt tuỳ ý | 4 turn kinds đúng spec §4; tham số thời gian/số câu tự do trong bounds + preset chips | 6 |
+| US-8.4 | Là **admin**, tôi muốn rút đề ngẫu nhiên theo lĩnh vực cho khởi động (X câu Toán + Y câu RANDOM...), câu đã dùng trong trận không lặp lại, xáo được thứ tự | drawConfig slots theo Field taxonomy; rút server-side thành event replay được; pre-flight kiểm pool đủ worst-case | 3, 6 |
+| US-8.5 | Là **admin**, tôi muốn VCNV 4-8 hàng ngang, bật/tắt gợi ý ký tự trong hàng ngang (kiểu O11-O12) | rowCount 4-8, revealCharHints; ảnh chia miếng theo số hàng | 6, 9 |
+| US-8.6 | Là **admin**, tôi muốn tăng tốc chọn format ranked-speed hoặc clue-buzz (3-4 dữ kiện mở dần, bấm chuông), thời gian là thuộc tính từng câu | 2 format đúng spec §6; câu clue-buzz validate có clues; timeSeconds per-question override default | 3, 6, 7, 9 |
+| US-8.7 | Là **admin**, tôi muốn về đích dùng gói điểm preset tự quy định (30/50/70/90...) hoặc thí sinh tự build gói từ các mốc, thời gian từng câu tự chỉnh | packageMode preset/custom-build; defaultTimeByValue + per-question timeSeconds | 6, 7, 8 |
+| US-8.8 | Là **admin**, tôi muốn đổi theme trận: màu đồ hoạ, logo, ảnh thí sinh, video hình hiệu | Theme editor map design tokens; asset MinIO; viewer/overlay/MC áp theme; video phát ở intro/INTERMISSION | 8, 9 |
+| US-8.9 | Là **admin**, tôi muốn gán nhạc cho TỪNG thành phần (cue slot × loại vòng) và có playlist nhạc nền điều khiển bằng soundboard | Sound editor per-slot; soundboard phát/dừng/next/volume/duck, ngoài control lock; contestant mặc định tắt nhạc nền | 8, 9 |
+| US-8.10 | Là **MC**, tôi muốn màn riêng chữ rất to hiện câu hỏi + đáp án + tóm tắt kết quả để dẫn chương trình | Route `/mc` read-only; permission match.viewAnswer theo contest; audit log | 9 |
+
+## Epic 9 — Bộ đề (bổ sung 12/07)
+
+| ID | User story | AC chính | Phase |
+|---|---|---|---|
+| US-9.1 | Là **setter/admin**, tôi muốn tạo bộ đề có mã ID, gom câu từ kho theo displayId hoặc nhập tay (tuỳ chọn lưu vào kho) | SetItem reference/inline; checkbox "lưu vào kho"; bộ đề có displayId | 3 |
+| US-9.2 | Là **setter/admin**, tôi muốn quản lý nhãn lĩnh vực và gán cho câu hỏi/bộ đề | Field taxonomy CRUD; filter theo lĩnh vực | 3 |
+| US-9.3 | Là **chủ bộ đề**, tôi muốn để bộ đề private (chỉ tôi + người được cấp) và chia sẻ có kiểm soát | Owner+ACL; share-link password+TTL revoke được (đã chốt) | 3 |
+| US-9.4 | Là **chủ bộ đề**, tôi muốn public bộ đề cho cộng đồng tải/dùng | Public = link/download tự do, kèm đáp án theo setting per-set (default có) + cảnh báo; chặn public khi gắn contest chưa diễn | 3 |
+| US-9.5 | Là **setter/admin**, tôi muốn tra cứu câu hỏi theo ID/lĩnh vực/người thực hiện/đáp án | Search đa chiều; search theo đáp án yêu cầu quyền viewAnswer | 3 |
+| US-9.6 | Là **setter/admin**, tôi muốn nhập bộ đề từ Excel theo template quy ước và xuất ngược ra Excel | Template per-round-type; roundtrip; kèm/không kèm đáp án theo quyền | 4 |
 
 ## Ngoài phạm vi v1 (đã ghi nhận, không cam kết)
 

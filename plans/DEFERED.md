@@ -13,9 +13,11 @@
 
 ---
 
-## D1. Số thí sinh mỗi trận
+## D1. Số thí sinh mỗi trận ✅ ĐÃ CHỐT (12/07)
 
-**Bối cảnh & lý do phải hỏi:** Olympia chuẩn là đúng 4 thí sinh. Nhưng quyết định này ảnh hưởng **sâu** đến engine: luật Tăng tốc chấm 40/30/20/10 theo thứ hạng (4 mức = 4 người), VCNV thứ tự chọn hàng ngang, Về đích mỗi người một lượt. Nếu sau này mới đổi số ghế, phải sửa cả scoring lẫn UI layout — nên phải chốt trước Phase 6.
+> **User chốt:** hỗ trợ **1-12 thí sinh**, cho phép gộp đội (bấm chuông/trả lời cá nhân, điểm về đội — kiểu Pop Culture Jeopardy); lượt cá nhân khi có đội: config per-contest (all-members / representative). UI tối ưu 4 ghế, adaptive 1-12. Chi tiết: `260711-2340-olympia-contest-system/research/ruleconfig-v2-spec.md` §2.
+
+**Bối cảnh cũ (lưu tham khảo):** Olympia chuẩn là đúng 4 thí sinh. Nhưng quyết định này ảnh hưởng **sâu** đến engine: luật Tăng tốc chấm 40/30/20/10 theo thứ hạng (4 mức = 4 người), VCNV thứ tự chọn hàng ngang, Về đích mỗi người một lượt. Nếu sau này mới đổi số ghế, phải sửa cả scoring lẫn UI layout — nên phải chốt trước Phase 6.
 
 | Phương án | Ưu | Nhược |
 |---|---|---|
@@ -134,15 +136,17 @@ sequenceDiagram
 1. **Retention mặc định**: giữ dữ liệu trận (kèm tên thật) bao lâu rồi tự anonymize? Đề xuất: **12 tháng** (đủ một mùa giải), config được.
 2. **Bên kiểm soát dữ liệu là ai**: mỗi trường tự host tự chịu trách nhiệm (hệ thống chỉ cần cung cấp công cụ xoá/ẩn danh + mẫu consent phụ huynh trong docs)? Đề xuất: đúng vậy — ghi rõ trong docs triển khai.
 
-## D15. Quy trình duyệt đề & màn hình MC
+## D15. Quy trình duyệt đề & màn hình MC — ✅ MC ĐÃ CHỐT (12/07)
+> **User chốt:** có view MC riêng, **xem được câu hỏi + đáp án + tóm tắt kết quả** (route `/mc`, permission theo contest, audit). Còn lại chờ: mục 1 bên dưới (admin-là-người-duyệt-đề có đủ không).
 
 **Bối cảnh:** (1) Trạng thái đề DRAFT→ACTIVE cần người duyệt — v1 plan đặt: **chỉ admin được activate** (admin vốn đã thấy đáp án theo thiết kế). (2) Olympia thật có MC đọc câu hỏi — plan thêm route `/mc` read-only chữ to (P2).
 
 Cần bạn chốt:
 1. Admin-là-người-duyệt-đề có đủ không, hay cần role "reviewer" riêng (với RBAC permission mới thì chỉ là tạo role gán `question.review`)? **Đề xuất: admin đủ cho v1.**
-2. **MC có được thấy đáp án TRƯỚC khi công bố không?** Ảnh hưởng threat model "đáp án không rời server". Đề xuất: **không** — màn MC chỉ hiện câu hỏi, đáp án hiện sau khi admin reveal (MC đọc đáp án từ màn hình sau reveal, giống chương trình thật đọc từ giấy do BTC kiểm soát).
+2. ~~MC có được thấy đáp án trước khi công bố không?~~ **ĐÃ CHỐT 12/07: CÓ** — MC xem câu hỏi + đáp án + tóm tắt kết quả (route `/mc`, permission `match.viewAnswer` theo contest, audit log). Threat model cập nhật: đáp án rời server tới đúng 2 kênh authenticated (admin + MC).
 
-## D16. Hướng sản phẩm: practice mode solo cho thí sinh?
+## D16. Hướng sản phẩm: practice mode solo cho thí sinh? — 🟠 MỘT NỬA ĐÃ CHỐT (12/07)
+> **User chốt:** bộ đề có visibility **PUBLIC** (share link/download, kèm đáp án theo setting per-set default có) — nền tảng dữ liệu cho practice đã thành yêu cầu chính thức (phase-03). Còn lại chờ: có làm UI luyện tập solo (tự bấm chuông với đề public) ở v1.x không — vẫn đề xuất P3.
 
 **Bối cảnh:** Giá trị dài hạn với CLB là luyện tập hàng tuần, không chỉ 2 trận/năm. Nhưng luyện solo cần "đề công khai" — mâu thuẫn với nguyên tắc bảo mật đề. Plan đã thêm sẵn cột `visibility: PRIVATE|PUBLIC` vào Question (1 cột, không tốn gì) để tương lai không phải migration.
 - Bạn có muốn v1.x có practice solo không? Nếu **không bao giờ** làm, cột visibility vẫn vô hại. **Đề xuất: để P3, quyết sau khi v1 chạy thật.**
@@ -227,6 +231,47 @@ flowchart TD
 4. **Thí sinh rớt mạng đúng lượt riêng của mình** → engine pause + admin quyết (chờ/skip)? (đề xuất: đúng vậy)
 5. **Tie-break áp cho vị trí nào** — chỉ nhất, hay cả nhì/ba? (đề xuất: chỉ nhất, config được)
 6. **Hết câu hỏi phụ khi hoà dai dẳng** → preflight yêu cầu tối thiểu N câu phụ (config); vẫn hết thì fallback là gì: bốc thăm ngay / admin quyết? (đề xuất: bốc thăm — khớp luật gốc)
+
+## D17. Ngữ nghĩa THI ĐỘI × từng vòng — 4 điểm cần bạn xác nhận
+
+**Bối cảnh & lý do phải hỏi:** Bạn đã chốt thi đội (buzz/trả lời cá nhân, điểm về đội) và **không cắt scope — toàn bộ trong 1 version**. Red-team chỉ ra: nếu không định nghĩa rõ luật đội ở TỪNG vòng thì đội đông người có **lợi thế cấu trúc** (nhiều lượt bấm chuông, nhiều lần thử) và có cả **exploit** (đồng đội "cướp" câu của chính đội mình = lượt trả lời lại miễn phí). Claude đã viết default vào spec (`research/ruleconfig-v2-spec.md` §2b) — engine sẽ code theo default này nếu bạn không đổi; riêng chống same-team-steal là bắt buộc (exploit, không phải lựa chọn).
+
+```mermaid
+flowchart LR
+  subgraph doi ["Đội A (3 người)"]
+    a1[TV1 bấm sai] -.->|teamLockout=true| lock[KHOÁ CẢ ĐỘI câu này]
+    a1 -.->|teamLockout=false| free[TV2, TV3 vẫn bấm được<br/>→ đội đông = nhiều mạng]
+  end
+```
+
+**D17.1 — Một thành viên bấm chuông SAI (khởi động chung, clue-buzz): khoá ai?**
+| Phương án | Ưu | Nhược |
+|---|---|---|
+| (a) Khoá CẢ ĐỘI câu đó — default | Công bằng giữa đội 1 người và đội 4 người | Cảm giác "bị vạ lây" trong đội |
+| (b) Chỉ khoá cá nhân | Tự nhiên hơn | Đội đông có nhiều "mạng" — bất công cấu trúc ở MỌI vòng chuông |
+**→ Đề xuất (a)** — công bằng quân số quan trọng hơn cảm giác cá nhân trong thi đấu; (b) để làm option `teamLockout: false` cho giải giao lưu.
+
+**D17.2 — Tăng tốc ranked-speed khi thi đội: đội lấy đáp án nào?**
+| Phương án | Ưu | Nhược |
+|---|---|---|
+| (a) `first-locks` — submission ĐẦU TIÊN của bất kỳ thành viên chốt cho đội — default | Công bằng quân số (đội chỉ có 1 lần thử như cá nhân); tạo kịch tính "ai bấm gửi là chốt" | Thành viên nhanh ẩu có thể chốt sai khi đồng đội đang gõ đáp án đúng |
+| (b) `best-correct` — lấy submission đúng sớm nhất trong đội | Khoan dung, vui cho giải giao lưu | Đội 4 người = 4 lần thử ≫ đội ít người |
+**→ Đề xuất (a) làm default**, (b) là config cho giải giao lưu — cả hai đều trong spec, chỉ cần bạn xác nhận default.
+
+**D17.3 — VCNV trả lời sai chướng ngại vật: loại cá nhân hay cả đội?**
+**→ Đề xuất: loại CẢ ĐỘI** (khi điểm về đội) — nếu chỉ loại cá nhân thì đội 4 người có 4 lần đoán CNV, phá cân bằng nghiêm trọng (CNV là điểm lớn nhất vòng). Nhất quán với D17.1.
+
+**D17.4 — Ngôi sao hy vọng khi thi đội: mấy lần?**
+**→ Đề xuất: 1 lần/ĐỘI/trận** (không phải 1 lần/thành viên) — NSHV gắn với "đơn vị điểm"; đội đông có nhiều NSHV là bất công trực tiếp vào điểm số.
+
+*(Đã hard-code không cần hỏi: CẤM cùng đội cướp điểm về đích — exploit; tie-break đội cử 1 người bấm.)*
+
+## D18. Ghi nhận: KHÔNG cắt scope — toàn bộ tính năng trong 1 version ✅ (bạn chốt 12/07)
+
+Red-team v2 đề xuất đẩy teams / clue-buzz / VCNV 5-8 hàng / rút đề / custom-build / public-set / soundboard / theme-editor xuống v1.1 để giảm test matrix Phase 6 (~3×). **Bạn đã quyết: làm tất cả trong 1 version.** Hệ quả đã phản ánh vào plan:
+- Spec v2.1 vá đầy đủ các lỗ hổng thay vì cắt (everPublic hard-block, ACL 3 mức view/viewAnswer/export, share-link không đáp án mặc định + rate-limit + audit token/IP, teams semantics §2b, TieBreakConfig đầy đủ, pre-flight worst-case cho draw/custom-build, asset pipeline chung + Zod màu chống CSS injection, permission soundboard).
+- Phase 6 là critical path DÀI HƠN đáng kể — milestone nội bộ đã chia lại (6a: orchestrator-skeleton + reducer + buzzer + khởi động cơ bản để mở khoá Phase 7/8; 6b: toàn bộ round engines + biến thể).
+- Trade-off bạn chấp nhận: thời gian đến bản chạy được đầu tiên dài hơn; UAT phải phủ thêm preset TEAM_12 và các biến thể.
 
 ---
 <!-- Claude sẽ thêm mục mới bên dưới trong quá trình planning -->

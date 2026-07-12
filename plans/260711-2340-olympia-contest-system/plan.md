@@ -9,13 +9,14 @@ blocks: []
 
 # Olympia Contest System
 
-Hệ thống web quản lý và mô phỏng chương trình Đường lên đỉnh Olympia theo luật 2026 (O24-O26), với timer/điểm số admin config được, kho đề bảo mật, thi đấu realtime độ trễ thấp, và overlay OBS cho livestream.
+Nền tảng web tổ chức thi đấu gameshow kiến thức **tuỳ biến hoàn toàn** theo mô hình Đường lên đỉnh Olympia: round playlist tuỳ ý (số vòng/loại vòng/thứ tự), 1-12 thí sinh hoặc theo đội, mọi timer/điểm là config (luật O26 chỉ là preset mặc định), kho đề + bộ đề bảo mật có chia sẻ, thi đấu realtime độ trễ thấp, overlay OBS + màn MC cho livestream, theming đồ hoạ/âm thanh per contest. *(Scope mở rộng 12/07 từ "mô phỏng O26" — chi tiết `research/ruleconfig-v2-spec.md`.)*
 
 ## Tài liệu
 
 | File | Nội dung |
 |---|---|
-| `research/rules-2026.md` | Rule-spec luật O26 (draft chờ user duyệt — xem `plans/DEFERED.md` D8) |
+| `research/ruleconfig-v2-spec.md` | **Spec engine chính**: RuleConfig v2 — round playlist, 1-12 ghế + đội, mọi timer/điểm tuỳ biến, rút đề, sound slots, theming (12/07) |
+| `research/rules-2026.md` | Luật gốc O26 + edge-cases (nguồn cho preset `O26_DEFAULT`; D8 chờ user xác nhận) |
 | `research/tech-architecture.md` | Research kiến trúc: Fastify+Socket.IO issue, Better-auth, game state, buzzer, MinIO, import/export |
 | `research/athena-scout.md` | Bài học từ bản C#/WPF cũ (Athena) |
 | `research/ux-gaps.md` | Các khía cạnh UX/vận hành bị bỏ quên (sound cues, pause/undo, grace reconnect...) |
@@ -99,4 +100,4 @@ Ghi chú thứ tự: Phase 3-4 (kho đề) và Phase 5 (contest/room) có thể 
 
 ## Open questions
 
-Xem `plans/DEFERED.md` — D1 (số thí sinh), D2 (i18n), D3 (role host), D4 (chấm miệng), D5 (viewer guest), D6 (giới hạn media), D7 (tên dự án), D8 (mâu thuẫn luật), D9 (Fastify+Socket.IO), D10 (âm thanh), D11 (quy mô viewer), D12 (preload media cho thí sinh), D13 (edge-cases luật). Mỗi mục đã có khuyến nghị tạm để không chặn tiến độ.
+Xem `plans/DEFERED.md`. **Đã chốt:** D1 (1-12 ghế + đội), D3 (admin điều khiển + RBAC permission/CASL), D15-phần-MC (MC thấy đáp án), D18 (không cắt scope — 1 version đủ tính năng). **Còn chờ:** D2 (i18n), D4 (chấm miệng), D5 (viewer guest), D6 (giới hạn media), D7 (tên sản phẩm + bản quyền format + license — nên chốt trước commit code), D8 (mâu thuẫn luật O26), D9 (Fastify spike/fallback), D10 (nguồn âm thanh), D11 (quy mô viewer), D12 (preload thí sinh), D13 (edge-cases luật), D14 (retention dữ liệu học sinh), D15.1 (admin-duyệt-đề đủ chưa), D16 (UI practice solo), **D17 (4 ngữ nghĩa thi đội — cần trước Phase 6)**. Mỗi mục có khuyến nghị tạm để không chặn tiến độ.

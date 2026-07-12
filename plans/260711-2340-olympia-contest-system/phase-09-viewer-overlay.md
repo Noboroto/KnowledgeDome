@@ -12,7 +12,7 @@ dependencies: [6]
 Màn viewer "sân khấu" với animation đầy đủ nhưng không lag, và trang overlay OBS 1920×1080 nền trong suốt cho livestream. Port design + animation từ `public/viewer.html` và `public/overlay.html`.
 
 ## Requirements
-- Functional: viewer join qua room code + duyệt (Phase 5); hiển thị đủ 5 phần thi với animation (bảng điểm count-up, VCNV lật ô + mở miếng ghép, tăng tốc lane, về đích NSHV/cướp, podium + confetti); overlay OBS: lower-third câu hỏi, timer ring, score strip, banner vòng, badge NSHV, điều khiển hiển thị phần tử từ admin; sound đồng bộ theo sound-cue.
+- Functional: viewer join qua room code + duyệt (Phase 5); hiển thị mọi loại vòng trong playlist với animation (bảng điểm count-up, VCNV lật ô + mở miếng ghép, tăng tốc lane, về đích NSHV/cướp, podium + confetti); overlay OBS: lower-third câu hỏi, timer ring, score strip, banner vòng, badge NSHV, điều khiển hiển thị phần tử từ admin; sound đồng bộ theo sound-cue.
 - Non-functional: 60fps trên máy phổ thông (chỉ transform/opacity, GPU-friendly); `prefers-reduced-motion`; viewer chỉnh cỡ chữ + contrast AA; overlay chạy trong OBS Browser Source < 50% CPU; read-only tuyệt đối.
 
 ## Architecture
@@ -41,12 +41,17 @@ flowchart LR
 4. Về đích: gói điểm, NSHV, cướp quyền; Podium + confetti (canvas, tự viết — không lib nặng).
 5. Overlay route: các phần tử độc lập bật/tắt, animation enter/exit transform-only; đo CPU trong OBS thật.
 6. Viewer settings (cỡ chữ, reduced motion, âm lượng); soak test 2h không memory leak.
-7. **Bộ SFX mặc định royalty-free** (DEFERED D10b, red-team M10): chọn nguồn (Pixabay/freesound CC0...), commit file + LICENSE, mapping cue→file (`buzz|correct|wrong|timeup|round-intro` × 5 vòng); admin upload thay từng cue ở settings contest.
+7. **Bộ SFX mặc định royalty-free** (DEFERED D10b): chọn nguồn (Pixabay/freesound CC0...), commit file + LICENSE; CueSlot matrix theo spec v2 §10 (mỗi round type × ~10 cue + global) với **fallback chain: slot → global default → silent** — bộ default chỉ cần phủ nhóm global + cue cơ bản; admin thay từng slot ở sound editor (phase-08).
 
 ## Bổ sung từ gap-analysis
 - **Viewer mobile là mặc định thực tế** (480/500 viewer là điện thoại): responsive ≥360px, test trên Android tầm trung; `?kiosk=1` ẩn UI chrome cho projector/khán giả tại chỗ (gap 4.4).
-- **Route `/mc`** (P2): màn cho MC đọc câu hỏi — read-only, chữ rất to, chỉ câu hỏi hiện tại; đáp án chỉ hiện SAU khi admin reveal (mặc định theo D15.2, chờ user chốt).
+- **Route `/mc`** (nâng lên P1, user đã chốt 12/07): màn cho MC — read-only, chữ rất to, hiện **câu hỏi + ĐÁP ÁN + tóm tắt kết quả/bảng điểm vòng**. Permission `match.viewAnswer` gán theo contest; MC channel là nơi thứ 2 (sau admin) đáp án được phép tới — authenticated + audit log.
 - **Overlay toggle "ẩn tên thật"** per-contestant (dùng nickname từ seat profile) cho livestream chưa có consent phụ huynh (gap 1.2).
+
+## Bổ sung 12/07 — theming + adaptive layout
+- **Theme per contest**: CSS variables override từ theme config (màu), logo/banner/ảnh thí sinh/video hình hiệu từ MinIO; INTERMISSION phát video hình hiệu; viewer/overlay/MC đều áp theme.
+- **Adaptive layout theo số đơn vị điểm (đã chốt)**: ≤4 giữ layout sân khấu đầy đủ như demo; 5-12 chuyển grid/list gọn (vẫn count-up + delta animation); hiển thị theo ĐỘI khi scoringUnit=team (điểm đội to, thành viên nhỏ).
+- **Tăng tốc clue-buzz**: UI mở dần 3-4 dữ kiện + hiệu ứng chuông giành quyền; **background music** phát ở viewer/overlay theo soundboard admin (duck khi cue).
 
 ## Success Criteria
 - [ ] Viewer dùng được trên điện thoại Android tầm trung (≥360px, không vỡ layout, animation không giật quá 30fps).

@@ -1,5 +1,21 @@
 # Red-team review — findings & trạng thái xử lý
 
+## VÒNG 2 (12/07) — review phần mở rộng RuleConfig v2
+
+User chốt **không cắt scope (1 version đủ tính năng — DEFERED D18)** nên mọi finding được vá bằng thiết kế trong `ruleconfig-v2-spec.md` v2.1:
+
+| # | Finding | Xử lý |
+|---|---|---|
+| C-v2-1 | "Chặn public khi gắn contest" hở 4 đường vòng (multi-match, thứ tự ngược, reference chung, un-public) | ✅ cờ `everPublic` một chiều trên Set + Question; pre-flight MỌI match hard-block ở đơn vị CÂU; chặn cả chiều gán |
+| C-v2-2 | 6 ngữ nghĩa Teams × round chưa định nghĩa | ✅ spec §2b (teamLockout, teamSubmission, loại cả đội VCNV, NSHV 1/đội, CẤM same-team steal, tie-break đại diện); 🟡 D17 chờ user xác nhận 4 default |
+| C-v2-3 | Không có mô hình quyền đáp án của Set → export = máy in đáp án | ✅ ACL 3 mức view/viewAnswer/export; share-link mặc định KHÔNG đáp án + audit token/IP |
+| H-v2-1..10 | CONFIG_PATCH bypass preflight; draw pool cạn; rankPoints active; VCNV data model; cluePoints; share-link bruteforce; search-by-answer oracle; custom-build worst-case; theme/sound asset pipeline; visibility 2 tầng | ✅ tất cả vá trong spec v2.1 (§3, §4b, §1.4, §5, §6, §9, §7, §10) |
+| M-v2-1..9, L-v2-1..3 | rep scope, lệch quân số, playlist bounds, inline bypass duyệt, soundboard permission, CSS injection màu, disclaimer nhạc, milestone 6a/6b, KD kind params, SFX fallback, demo reference, rules-2026 §6 pointer | ✅ vá trong spec + phase files + rules-2026 deprecation note; demo đang rework theo UX rules mới |
+| 14 mâu thuẫn tài liệu | "4 ghế/5 phần thi/5 miếng..." rải rác | ✅ dọn toàn bộ (phase-03/05/06/07/08/09/10, plan.md, PRD, user-stories, DEFERED D15) |
+| Đề xuất cắt scope | Teams/clue-buzz/public-set/soundboard... → v1.1 | ❌ USER TỪ CHỐI — ghi nhận tại D18, hệ quả: Phase 6 dài hơn, milestone chia lại |
+
+## VÒNG 1 — findings & trạng thái xử lý
+
 > Reviewer thù địch chạy 12/07/2026 trên toàn bộ plan. Dưới đây là findings và cách plan đã được sửa (✅ = đã sửa vào plan, 🟡 = ghi DEFERED chờ user).
 
 ## CRITICAL

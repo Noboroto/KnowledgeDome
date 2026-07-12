@@ -12,11 +12,12 @@ dependencies: [6]
 Giao diện thí sinh: tối giản, phản hồi tức thì, dùng được hoàn toàn bằng bàn phím với hotkey dễ nhớ. Port design từ `public/contestant.html` (đã được user duyệt/sửa) sang React.
 
 ## Requirements
-- Functional: login → nhập room code → lobby tech-check → thi đủ 5 phần; bấm chuông (`Space`), nhập + gửi đáp án (`Enter`), chọn hàng ngang VCNV (`1-4`), xoá input (`Esc`); hiển thị điểm, trạng thái chuông, timer, kết quả chấm; phát sound cue.
+- Functional: login → nhập room code → lobby tech-check → thi mọi loại vòng trong playlist; bấm chuông (`Space`), nhập + gửi đáp án (`Enter`), chọn hàng ngang VCNV (`1-4`), xoá input (`Esc`); hiển thị điểm, trạng thái chuông, timer, kết quả chấm; phát sound cue.
 - Non-functional: input-to-feedback cục bộ < 50ms (optimistic UI: nút chuông phản hồi ngay, server confirm sau); bundle nhỏ, không animation nặng; hoạt động tốt trên laptop yếu; fullscreen mềm + log rời tab (P2, theo `research/ux-gaps.md`).
 
 ## Architecture
 - Route `/contestant`; Zustand store `matchStore` nhận delta qua socket, `state-sync` khi (re)connect.
+- Render theo RuleConfig v2: round view lấy từ playlist (không cứng 5 loại màn); tăng tốc clue-buzz hiện dữ kiện mở dần + chuông; chế độ đội hiển thị tên đội + điểm đội; nhạc nền mặc định TẮT ở contestant (setting).
 - Timer render từ `{remainingMs, serverNow}` tick + `requestAnimationFrame` interpolation — không tự đếm bằng clock client.
 - Optimistic buzz: bấm → UI khoá nút + hiệu ứng ngay → server trả `buzz-result` (thắng/thua/muộn) → cập nhật. Mọi kết quả cuối theo server.
 - Hotkey qua 1 hook `useHotkeys` toàn màn (không phụ thuộc focus input, trừ khi đang gõ đáp án); hint hotkey in trên nút.

@@ -11,8 +11,13 @@ dependencies: [6]
 ## Overview
 Bàn điều khiển trận cho admin: điều khiển vòng thi/câu hỏi/timer, chấm điểm, can thiệp (adjust/undo/skip/pause), duyệt viewer, giám sát kết nối. Port design từ `public/admin.html`.
 
+**Bổ sung 12/07:**
+- **Contest builder UI**: trình dựng round playlist (thêm/xoá/sắp xếp vòng, form config từng loại vòng theo RuleConfig v2, chọn preset rồi tuỳ biến), setup seats/teams (1-12, kéo thả vào đội), theme editor (màu theo design tokens, upload logo/ảnh/video hình hiệu), sound editor (gán file cho từng cue slot theo thành phần, playlist nhạc nền).
+- **Soundboard** trong trận: phát/dừng/next nhạc nền, volume/duck, mute nhanh — nằm ngoài control lock (co-host phụ trách được).
+- Stepper vòng thi render theo playlist (không cứng 5 bước); panel rút đề hiển thị kết quả `QUESTIONS_DRAWN` + pool còn lại.
+
 ## Requirements
-- Functional: stepper 5 phần thi; hiển thị câu hỏi + đáp án (chỉ admin); chấm Đúng/Sai + xác nhận kết quả auto-match; chỉnh điểm tay (kèm lý do bắt buộc); undo; skip/thay câu dự phòng; start/pause/reset timer + chỉnh thời gian nhanh; duyệt viewer; pre-flight checklist trước start; sự kiện log realtime (chuông/đáp án kèm ms); MC cue script theo vòng (P2); practice mode (P2).
+- Functional: stepper theo round playlist (không cứng số vòng); hiển thị câu hỏi + đáp án (chỉ admin); chấm Đúng/Sai + xác nhận kết quả auto-match; chỉnh điểm tay (kèm lý do bắt buộc); undo; skip/thay câu dự phòng; start/pause/reset timer + chỉnh thời gian nhanh; duyệt viewer; pre-flight checklist trước start; sự kiện log realtime (chuông/đáp án kèm ms); MC cue script theo vòng (P2); practice mode (P2).
 - Non-functional: mọi hành động phá huỷ (reset, force-end, undo) có confirm; thao tác thường có hotkey (`C` đúng, `X` sai, `N` next...); hiển thị trạng thái kết nối từng thí sinh (ping, online).
 
 ## Architecture
@@ -29,7 +34,7 @@ Bàn điều khiển trận cho admin: điều khiển vòng thi/câu hỏi/time
 2. JudgingPanel: câu hỏi + media preview + đáp án + nút Đúng/Sai/hotkey + kết quả auto-match chờ confirm.
 3. TimerControl (start/pause/+10s/−10s/reset, đổi duration câu hiện tại) + ScoreAdjustDialog (delta + reason bắt buộc) + Undo (chọn event trong log).
 4. ViewerQueue realtime approve/reject (một-nhấp) + đếm viewer đang xem. **Duyệt viewer nằm NGOÀI control lock** — co-host duyệt viewer song song trong khi host chính chấm điểm (1 người ôm hết là single point of failure con người; runbook khuyến nghị crew ≥2: host chấm + kỹ thuật OBS/viewer — gap 2.4).
-5. PreflightChecklist (kết quả validate đề + tech-check 4 thí sinh) — nút Start chỉ mở khi đủ điều kiện (force-start có confirm 2 bước).
+5. PreflightChecklist (kết quả validate đề theo spec v2 §12 + tech-check mọi thí sinh) — nút Start chỉ mở khi đủ điều kiện (force-start có confirm 2 bước; riêng everPublic-block force cần confirm 2 bước + audit).
 6. EventLog ảo hoá (react-virtuoso) + filter; ConnectionMonitor ping từng ghế.
 7. E2E: admin điều khiển trọn trận với 4 contestant giả.
 

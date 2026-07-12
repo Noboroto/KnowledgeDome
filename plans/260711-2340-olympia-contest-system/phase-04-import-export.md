@@ -9,11 +9,17 @@ dependencies: [3]
 # Phase 4: Import / Export đề
 
 ## Overview
-Import/export kho đề dạng ZIP bundle tự định nghĩa (manifest + questions.json + media/), thêm import Excel/CSV cho người ra đề quen bảng tính. Roundtrip an toàn, không rò đáp án cho role không đủ quyền.
+Import/export kho đề & bộ đề. **Excel theo template quy ước là format CHÍNH cho người dùng** (đã nâng cấp 12/07 — nhập bộ đề từ Excel + xuất bộ đề ra Excel, roundtrip); ZIP bundle (manifest + questions.json + media/) giữ vai trò format đầy đủ khi có media. Không rò đáp án cho role không đủ quyền.
+
+## Bổ sung 12/07 — Excel convention
+
+- Template Excel quy ước theo **bộ đề**: sheet đầu = metadata set, mỗi round type một sheet (cột theo loại: khởi động, VCNV set + hàng ngang, tăng tốc kèm clues/timeSeconds, về đích kèm value/timeSeconds, câu phụ); cột chung: displayId (để reference câu kho), lĩnh vực, nội dung, đáp án, acceptedAnswers, giải thích, ghi chú, tên file media (đi kèm ZIP khi có media).
+- Export bộ đề ra Excel (kèm hoặc không kèm đáp án tuỳ quyền + lựa chọn); import Excel roundtrip được với chính file export.
+- Mapping cột linh hoạt vẫn giữ cho file không đúng template.
 
 ## Requirements
 - Functional: export theo filter (vòng/topic/bộ đề đã chọn) ra `.zip`; import zip có validate + preview + báo lỗi từng dòng; import Excel/CSV với cột mapping linh hoạt (không hard-code vùng ô như Athena cũ).
-- Non-functional: file lớn (media nhiều) xử lý streaming, không load hết vào RAM; chỉ ADMIN và SETTER được export (SETTER: câu của mình); export ghi audit log.
+- Non-functional: file lớn (media nhiều) xử lý streaming, không load hết vào RAM; export tuân **ACL 3 mức của bộ đề (view/viewAnswer/export — spec v2 §9)**: export-kèm-đáp-án cần viewAnswer+export, câu reference của setter khác cần quyền trên CÂU theo CASL conditions; export ghi audit log.
 
 ## Architecture
 

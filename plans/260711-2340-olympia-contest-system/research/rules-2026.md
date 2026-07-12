@@ -61,7 +61,9 @@ Từ O24: gói câu chỉ còn 2 mức 20/30 (bỏ mức 10 của luật cũ).
 - Tối đa 3 câu, 15s/câu, bấm chuông giành quyền; đúng → thắng; sai → thí sinh còn lại có cơ hội.
 - Không cộng vào điểm trận. Hết 3 câu chưa phân định → bốc thăm (hệ thống random, admin xác nhận).
 
-## 6. Nguyên tắc thiết kế engine
+## 6. Nguyên tắc thiết kế engine — ⚠️ ĐÃ THAY THẾ
+
+> **Mục này đã bị thay bởi `ruleconfig-v2-spec.md`** (12/07 — round playlist, 1-12 ghế + đội, mọi biến thể vòng). Nội dung dưới giữ lại làm ngữ cảnh lịch sử; engine code theo spec v2.
 
 1. **Mọi con số ở trên là `RuleConfig` (JSON, Zod-validated)** — admin sửa per-contest, có preset "O26 chuẩn".
 2. Server-authoritative: timer, timestamp bấm chuông, điểm đều tính ở server.

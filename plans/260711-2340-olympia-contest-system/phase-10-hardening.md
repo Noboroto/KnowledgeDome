@@ -23,7 +23,7 @@ Biến hệ thống chạy được thành hệ thống tin cậy được: load
 - Create: `docs/guide-admin.md`, `docs/guide-setter.md`, `docs/guide-contestant.md` — hướng dẫn NGƯỜI DÙNG cuối (giáo viên/học sinh, không phải dev — gap 3.2); guide contestant tích hợp vào màn lobby; kèm mẫu consent phụ huynh cho livestream (gap 1.2)
 
 ## Implementation Steps
-1. Load test (k6 + socket.io client): kịch bản 4 thí sinh + 500 viewer, buzzer storm 50 đồng thời; đo p95 latency event < 200ms LAN / < 500ms Internet; tìm bottleneck.
+1. Load test (k6 + socket.io client): kịch bản preset O26 (4 thí sinh) + kịch bản `TEAM_12@1` (12 thiết bị thí sinh) + 500 viewer, buzzer storm 50 đồng thời; đo p95 latency event < 200ms LAN / < 500ms Internet; tìm bottleneck.
 1b. **Chaos drills giữa trận** (red-team C1/C3/M8): (a) kill instance đang own match → instance kia giành lease, trận PAUSE rồi resume đúng state; (b) kill Redis (AOF everysec bật) → engine tự PAUSE, Redis về → khôi phục từ PG, resume; (c) restore drill từ backup pg_dump + MinIO mirror ra môi trường sạch — trận cũ replay được. Backup chưa restore thử = không có backup.
 2. Security pass: quét rò đáp án mọi endpoint/socket payload (test tự động từ Phase 3 chạy lại toàn hệ); rate limits; helmet/CSP; dependency audit; kiểm tra IDOR trên contest/question id (cuid đủ, thêm authz check test).
 3. Monitoring + alert đơn giản (lag/error spike hiện trên admin UI) + **disk usage với ngưỡng cảnh báo** (kiến trúc persist-trước-broadcast nghĩa là disk đầy = trận đứng hình — gap 5.2) + log rotation (pino) + trạng thái backup gần nhất (backup fail phải NHÌN THẤY, không âm thầm — gap 3.4); chaos drill bổ sung: disk 95%.

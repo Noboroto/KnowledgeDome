@@ -4,7 +4,7 @@
 |---|---|
 | **Sản phẩm** | Hệ thống quản lý & mô phỏng chương trình "Đường lên đỉnh Olympia" (luật 2026) |
 | **Phiên bản tài liệu** | 1.0 — 12/07/2026 |
-| **Trạng thái** | Draft — chờ chốt các mục trong `plans/DEFERED.md` (D1-D13) |
+| **Trạng thái** | Draft v2 (12/07, sau mở rộng scope + red-team) — đã chốt D1/D3/D15-MC/D18; chờ các mục còn lại trong `plans/DEFERED.md` (nổi bật: D7, D8, D17) |
 | **Tài liệu liên quan** | `plan.md` (kiến trúc + 10 phase) · `user-stories.md` · `research/rules-2026.md` (luật) · `public/` (demo đã duyệt design) |
 
 ## 1. Bối cảnh & Vấn đề
