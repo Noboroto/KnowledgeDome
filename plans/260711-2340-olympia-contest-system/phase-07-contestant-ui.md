@@ -12,7 +12,7 @@ dependencies: [6]
 Giao diện thí sinh: tối giản, phản hồi tức thì, dùng được hoàn toàn bằng bàn phím với hotkey dễ nhớ. Port design từ `public/contestant.html` (đã được user duyệt/sửa) sang React.
 
 ## Requirements
-- Functional: login → nhập room code → lobby tech-check → thi mọi loại vòng trong playlist; bấm chuông (`Space`), nhập + gửi đáp án (`Enter`), chọn hàng ngang VCNV (`1-4`), xoá input (`Esc`); hiển thị điểm, trạng thái chuông, timer, kết quả chấm; phát sound cue.
+- Functional: login → nhập room code → lobby tech-check → thi mọi loại vòng trong playlist; **bấm chuông CHỈ bằng click chuột (user chốt 12/07 — không hotkey chuông, tránh bấm nhầm khi gõ)**; nhập + gửi đáp án (`Enter`), chọn hàng ngang VCNV (`1-8`), xoá input (`Esc`); **tăng tốc: gửi lại tự do, tính bản cuối trước server-timeout, không khoá nút** (rule chống double-submit đã gỡ toàn hệ thống — dedup là việc server); hiển thị điểm, trạng thái chuông, timer, kết quả chấm; phát sound cue.
 - Non-functional: input-to-feedback cục bộ < 50ms (optimistic UI: nút chuông phản hồi ngay, server confirm sau); bundle nhỏ, không animation nặng; hoạt động tốt trên laptop yếu; fullscreen mềm + log rời tab (P2, theo `research/ux-gaps.md`).
 
 ## Architecture

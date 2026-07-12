@@ -251,12 +251,8 @@ flowchart LR
 | (b) Chỉ khoá cá nhân | Tự nhiên hơn | Đội đông có nhiều "mạng" — bất công cấu trúc ở MỌI vòng chuông |
 **→ Đề xuất (a)** — công bằng quân số quan trọng hơn cảm giác cá nhân trong thi đấu; (b) để làm option `teamLockout: false` cho giải giao lưu.
 
-**D17.2 — Tăng tốc ranked-speed khi thi đội: đội lấy đáp án nào?**
-| Phương án | Ưu | Nhược |
-|---|---|---|
-| (a) `first-locks` — submission ĐẦU TIÊN của bất kỳ thành viên chốt cho đội — default | Công bằng quân số (đội chỉ có 1 lần thử như cá nhân); tạo kịch tính "ai bấm gửi là chốt" | Thành viên nhanh ẩu có thể chốt sai khi đồng đội đang gõ đáp án đúng |
-| (b) `best-correct` — lấy submission đúng sớm nhất trong đội | Khoan dung, vui cho giải giao lưu | Đội 4 người = 4 lần thử ≫ đội ít người |
-**→ Đề xuất (a) làm default**, (b) là config cho giải giao lưu — cả hai đều trong spec, chỉ cần bạn xác nhận default.
+**D17.2 — Tăng tốc khi thi đội: đội lấy đáp án nào? ✅ ĐÃ CHỐT (12/07)**
+> **User chốt luật chung cho tăng tốc: LAST-WINS** — nhận mọi lần trả lời đến khi hết giờ (server-timeout), không chặn gửi lại; đáp án tính = **bản cuối cùng** (với đội: bản cuối của bất kỳ thành viên); ranking theo server-received timestamp của bản cuối; **server time là quyết định cuối cùng**. Các phương án first-locks/best-correct cũ bỏ.
 
 **D17.3 — VCNV trả lời sai chướng ngại vật: loại cá nhân hay cả đội?**
 **→ Đề xuất: loại CẢ ĐỘI** (khi điểm về đội) — nếu chỉ loại cá nhân thì đội 4 người có 4 lần đoán CNV, phá cân bằng nghiêm trọng (CNV là điểm lớn nhất vòng). Nhất quán với D17.1.

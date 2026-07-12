@@ -29,7 +29,7 @@ individualTurnMode: 'all-members' | 'representative'
 | Tình huống | Luật (default, config được) |
 |---|---|
 | Khởi động chung / clue-buzz: 1 thành viên bấm sai | **Khoá chuông CẢ ĐỘI** cho câu đó (`teamLockout: true` default) — chặn lợi thế quân số 🟡 D17.1 |
-| Tăng tốc ranked-speed khi team | `teamSubmission: 'first-locks'` (default): submission ĐẦU TIÊN của bất kỳ thành viên chốt đáp án đội — công bằng quân số; option `'best-correct'`: lấy submission đúng sớm nhất (đội đông lợi thế, dùng cho giải giao lưu) 🟡 D17.2 |
+| Tăng tốc ranked-speed khi team | **`last-wins` (user chốt 12/07)**: mọi thành viên gửi/gửi lại tự do đến server-timeout; đáp án của đội = **bản CUỐI CÙNG** (bất kỳ thành viên) theo server-received timestamp; ranking theo timestamp bản cuối |
 | VCNV trả lời sai CNV | Loại **CẢ ĐỘI** khỏi phần thi khi scoringUnit=team (`wrongCnvEliminates` áp theo đơn vị điểm) 🟡 D17.3 |
 | NSHV | **1 lần / đơn vị điểm / trận** (đội = 1 lần dù all-members) 🟡 D17.4 |
 | Cướp điểm về đích | **CẤM cùng đội cướp** (same-team steal = lượt trả lời lại miễn phí — exploit); chỉ đơn vị điểm khác được bấm |
@@ -98,10 +98,12 @@ VcnvConfig = {
 TangTocConfig = {
   questionCount: number,
   format: 'ranked-speed' | 'clue-buzz',
-  // ranked-speed: cùng trả lời trên máy, xếp hạng tốc độ trong số đơn vị trả lời đúng
+  // ranked-speed: cùng trả lời trên máy, xếp hạng tốc độ trong số đơn vị trả lời đúng.
+  // LAST-WINS (user chốt 12/07): nhận MỌI submission đến server-timeout, KHÔNG khoá sau khi gửi;
+  // đáp án tính điểm = BẢN CUỐI CÙNG per đơn vị điểm; ranking theo server-received timestamp của bản cuối.
+  // Server time là source of truth duy nhất — submission tới sau server-timeout bị loại bất kể client hiển thị gì.
   rankPoints?: number[],       // length == số đơn vị điểm ĐÃ KHAI BÁO; runtime prefix (§1.4)
   tieRule?: 'share-high' | 'microsecond',
-  teamSubmission?: 'first-locks' | 'best-correct',   // §2b
   // clue-buzz ("3-4 dữ kiện"): dữ kiện mở dần, bấm chuông bất kỳ lúc nào
   maxClues?: 3 | 4,
   cluePoints?: number[],       // Zod: length == maxClues; câu ít dữ kiện hơn dùng PREFIX (vá H-v2-5)

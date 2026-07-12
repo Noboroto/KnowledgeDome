@@ -71,7 +71,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 - FR-4.6 Media preload phân tầng: viewer/overlay sớm, thí sinh chỉ lúc reveal (D12a).
 
 ### FR-5 Giao diện thi đấu
-- FR-5.1 **Thí sinh**: tối giản, phản hồi cục bộ <50ms, keyboard-only trọn trận (Space chuông, Enter gửi, 1-4 hàng ngang, Esc xoá).
+- FR-5.1 **Thí sinh**: tối giản, phản hồi cục bộ <50ms; **chuông CHỈ nhận click chuột** (không hotkey); keyboard cho phần còn lại (Enter gửi, 1-8 hàng ngang, Esc xoá); **không chặn gửi lại — tăng tốc tính bản trả lời CUỐI CÙNG trước server-timeout; server time là source of truth duy nhất**.
 - FR-5.2 **Admin**: bàn điều khiển 3 cột (vòng/phòng/viewer — câu hỏi/chấm/timer — bảng điểm/log); hotkey chấm nhanh; control lock khi nhiều host.
 - FR-5.3 **Viewer**: animation đầy đủ mọi vòng (bảng điểm count-up, VCNV lật ô + miếng ghép, tăng tốc lane, NSHV, podium+confetti) 60fps, animation-queue không chặn engine.
 - FR-5.4 **OBS Overlay**: 1920×1080 nền trong suốt, phần tử bật/tắt từ admin, chỉ transform/opacity, <50% CPU 1 core trong OBS.
@@ -100,6 +100,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 | NFR-4 | Bảo mật | Không rò đáp án qua bất kỳ API/socket nào (test tự động); HttpOnly cookie; presigned URL TTL; audit log; magic-bytes sniffing upload |
 | NFR-5 | Accessibility | WCAG AA contrast; `prefers-reduced-motion`; viewer chỉnh cỡ chữ |
 | NFR-6 | Stack (ràng buộc cứng) | BE: TS, NestJS+Fastify, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO · FE: React+Vite, MUI, Motion, Zustand, TanStack Query · Storage: MinIO |
+| NFR-7 | **2 hình thức triển khai** (chốt 12/07) | (a) Docker compose trên server Internet (đủ PG+Redis+MinIO, multi-instance); (b) **portable trên Windows cá nhân KHÔNG Docker, mạng LAN, 1 máy** — hạ tầng qua abstraction layer (driver Redis/in-process, MinIO/filesystem), đang research queue + hạ tầng portable |
 
 ## 6. Tiêu chí thành công v1
 

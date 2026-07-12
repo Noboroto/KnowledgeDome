@@ -54,7 +54,7 @@
 | ID | User story | AC chính | Phase |
 |---|---|---|---|
 | US-5.1 | Là **thí sinh**, tôi muốn giao diện tối giản phản hồi tức thì để tập trung thi | Phản hồi cục bộ <50ms (optimistic); không animation nặng; Lighthouse ≥90 | 7 |
-| US-5.2 | Là **thí sinh**, tôi muốn thi trọn trận chỉ bằng bàn phím với hotkey dễ nhớ | Space chuông · Enter gửi · 1-4 hàng ngang · Esc xoá; hint in trên nút; đi trọn trận không cần chuột (E2E) | 7 |
+| US-5.2 | Là **thí sinh**, tôi muốn hotkey dễ nhớ cho nhập liệu, còn chuông là nút click chuột riêng biệt để không bấm nhầm | Chuông CHỈ click chuột (không hotkey); Enter gửi · 1-8 hàng ngang · Esc xoá; hint in trên nút; tăng tốc gửi lại tự do — tính bản cuối (E2E) | 7 |
 | US-5.3 | Là **thí sinh**, tôi muốn biết ngay mình thắng/thua chuông và đúng/sai | Flash xanh giành chuông, rung đỏ khi sai/bị từ chối, sound cue | 7 |
 | US-5.4 | Là **thí sinh**, tôi muốn quay lại trận đúng trạng thái nếu rớt mạng ngắn | Reconnect trong 120s → tự về đúng vòng/câu/điểm; banner "đang kết nối lại" | 5, 7 |
 | US-5.5 | Là **thí sinh** ở vòng Về đích, tôi muốn chọn gói điểm và dùng Ngôi sao hy vọng đúng luật | Chọn gói trước lượt; NSHV chọn trước khi câu hiện, dùng 1 lần; UI khoá sau khi chọn | 6, 7 |

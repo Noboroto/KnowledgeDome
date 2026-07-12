@@ -42,6 +42,7 @@ flowchart LR
 - Create: `.github/workflows/ci.yml` (lint + typecheck + test)
 
 ## Implementation Steps
+0. **Abstraction layer hạ tầng ngay từ đầu (user chốt 12/07 — 2 deployment profile)**: interface `StateDriver` / `QueueDriver` / `StorageDriver` / `SocketAdapterFactory` trong `packages/shared` hoặc `apps/api/src/infra` — implementation Redis/MinIO cho profile compose, in-process/filesystem cho profile **portable Windows không Docker (LAN, 1 instance)**. Mọi code nghiệp vụ chỉ gọi qua interface; chọn driver bằng env `INFRA_PROFILE=compose|portable`.
 1. Init pnpm workspace 3 package; tsconfig strict, path alias `@shared/*`.
 2. `docker-compose.dev.yml`: postgres:16, redis:7, minio + tạo bucket `question-media` (init script).
 3. Scaffold NestJS với `FastifyAdapter`; module `ConfigModule` validate env bằng Zod; healthcheck `/healthz`.
