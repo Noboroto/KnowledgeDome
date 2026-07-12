@@ -36,6 +36,13 @@
     margin-top: var(--sp-3); padding: var(--sp-4); border: 1px dashed rgba(255,255,255,.25);
     border-radius: var(--r-md); color: var(--text-3); font-size: var(--fs-sm); text-align: center;
   }
+  /* Reveal đáp án practice (spec v2 §13 — revealAnswerAfterJudge) */
+  .answer-line {
+    margin-top: var(--sp-3); padding: var(--sp-2) var(--sp-3);
+    border: 1px dashed var(--gold-dim); border-radius: var(--r-md);
+    color: var(--gold); font-weight: 700; font-size: var(--fs-md);
+    animation: slide-up var(--dur-fast) var(--ease-out);
+  }
 
   /* Timer bar to rõ */
   .timer { position: relative; height: var(--timer-h); border-radius: var(--r-full); background: rgba(255,255,255,.08); overflow: hidden; }
@@ -146,6 +153,8 @@
     <section class="question-box" aria-live="polite">
       <div id="qText">Chờ trận đấu bắt đầu… Ban tổ chức sẽ khởi động vòng thi.</div>
       <div class="media-ph" id="qMedia" hidden>🖼 [Media placeholder — ảnh/video câu hỏi]</div>
+      <!-- Đáp án chỉ hiện sau chấm khi match bật revealAnswerAfterJudge (practice, spec §13) -->
+      <div class="answer-line" id="answerLine" hidden></div>
     </section>
 
     <!-- Timer -->
@@ -204,6 +213,7 @@
       <button class="btn btn--sm" data-state="CAU_PHU">Câu hỏi phụ (chuông)</button>
       <button class="btn btn--sm btn--danger" data-state="LOCKED">Bị khoá chuông</button>
       <hr style="border-color:rgba(255,255,255,.1)">
+      <button class="btn btn--sm" id="demoPractice">Luyện tập: OFF</button>
       <button class="btn btn--sm btn--success" id="demoCorrect">Mock: chấm ĐÚNG</button>
       <button class="btn btn--sm btn--danger" id="demoWrong">Mock: chấm SAI</button>
     </div>
@@ -316,7 +326,7 @@
     document.querySelectorAll("#rowsPick [data-row]").forEach(function (b) {
       b.classList.toggle("is-picked", b.dataset.row === String(n));
     });
-    setQuestion("Hàng ngang " + n + " (" + row.answer.replace(/ /g, "").length + " chữ cái): " + row.text, false);
+    setQuestion("Hàng ngang " + n + " (" + row.answer.replace(/ /g, "").length + " chữ cái): " + row.text, false, row.answer);
     E.startTimer(E.RULES.VCNV.rowTime);
   }
 
@@ -359,7 +369,7 @@
       });
       var v = +btn.dataset.pkg;
       var q = M.questions.veDich[v][0];
-      setQuestion("[Gói " + v + " điểm] " + q.text, false);
+      setQuestion("[Gói " + v + " điểm] " + q.text, false, q.answer);
       E.startTimer(E.RULES.VE_DICH.timeMap[v]);
     });
   });
@@ -381,9 +391,12 @@
 
   /* ---------- State machine trạng thái màn hình ---------- */
   var state = "CHO";
-  function setQuestion(text, media) {
+  var currentAnswer = ""; // đáp án mock của câu đang hiện — dùng cho reveal practice
+  function setQuestion(text, media, answer) {
     $("qText").textContent = text;
     $("qMedia").hidden = !media;
+    currentAnswer = answer || "";
+    $("answerLine").hidden = true; // câu mới → ẩn đáp án cũ
   }
   function apply(s) {
     state = s;
@@ -397,21 +410,22 @@
     if (s === "TT_CLUE") startClueBuzz(); else stopClueBuzz();
     E.stopTimer();
     var badge = $("phaseBadge");
+    /* cfg[5] = đáp án mock của câu hiện tại (reveal practice) */
     var cfg = {
-      CHO:      ["ĐANG CHỜ", "badge--blue", "Chờ trận đấu bắt đầu… Ban tổ chức sẽ khởi động vòng thi.", null, 0],
-      KD_RIENG: ["KHỞI ĐỘNG — LƯỢT RIÊNG · +10", "badge--blue", M.questions.khoiDongRieng.c1[0].text, null, E.RULES.KHOI_DONG.riengTime],
-      KD_CHUNG: ["KHỞI ĐỘNG — LƯỢT CHUNG · +10/−5", "badge--gold", M.questions.khoiDongChung[0].text, null, E.RULES.KHOI_DONG.chungTime],
-      VCNV:     ["VƯỢT CHƯỚNG NGẠI VẬT · +10/hàng", "badge--purple", "Chọn hàng ngang (phím 1–4). Bấm chuông bất kỳ lúc nào để giải CNV!", null, 0],
-      VCNV8:    ["VƯỢT CNV · 8 HÀNG NGANG", "badge--purple", "Biến thể 8 hàng ngang (phím 1–8). Bấm chuông bất kỳ lúc nào để giải CNV!", null, 0],
-      TANG_TOC: ["TĂNG TỐC · RANKED-SPEED 40/30/20/10", "badge--orange", M.questions.tangToc[0].text, true, M.questions.tangToc[0].time],
-      TT_CLUE:  ["TĂNG TỐC · CLUE-BUZZ 40/30/20/10", "badge--orange", "Dữ kiện mở dần — bấm chuông bất kỳ lúc nào. Mốc càng sớm điểm càng cao!", null, 0],
-      VE_DICH:  ["VỀ ĐÍCH · gói 20/30", "badge--green", "Chọn gói điểm cho câu hỏi của bạn.", null, 0],
-      CAU_PHU:  ["CÂU HỎI PHỤ · 15s", "badge--gold", M.questions.tieBreak[0].text, null, E.RULES.TIE_BREAK.time],
-      LOCKED:   ["CHUÔNG BỊ KHOÁ", "badge--red", "Bạn tạm thời không thể bấm chuông (sai CNV hoặc theo luật).", null, 0]
+      CHO:      ["ĐANG CHỜ", "badge--blue", "Chờ trận đấu bắt đầu… Ban tổ chức sẽ khởi động vòng thi.", null, 0, null],
+      KD_RIENG: ["KHỞI ĐỘNG — LƯỢT RIÊNG · +10", "badge--blue", M.questions.khoiDongRieng.c1[0].text, null, E.RULES.KHOI_DONG.riengTime, M.questions.khoiDongRieng.c1[0].answer],
+      KD_CHUNG: ["KHỞI ĐỘNG — LƯỢT CHUNG · +10/−5", "badge--gold", M.questions.khoiDongChung[0].text, null, E.RULES.KHOI_DONG.chungTime, M.questions.khoiDongChung[0].answer],
+      VCNV:     ["VƯỢT CHƯỚNG NGẠI VẬT · +10/hàng", "badge--purple", "Chọn hàng ngang (phím 1–4). Bấm chuông bất kỳ lúc nào để giải CNV!", null, 0, null],
+      VCNV8:    ["VƯỢT CNV · 8 HÀNG NGANG", "badge--purple", "Biến thể 8 hàng ngang (phím 1–8). Bấm chuông bất kỳ lúc nào để giải CNV!", null, 0, null],
+      TANG_TOC: ["TĂNG TỐC · RANKED-SPEED 40/30/20/10", "badge--orange", M.questions.tangToc[0].text, true, M.questions.tangToc[0].time, M.questions.tangToc[0].answer],
+      TT_CLUE:  ["TĂNG TỐC · CLUE-BUZZ 40/30/20/10", "badge--orange", "Dữ kiện mở dần — bấm chuông bất kỳ lúc nào. Mốc càng sớm điểm càng cao!", null, 0, clueQ.answer],
+      VE_DICH:  ["VỀ ĐÍCH · gói 20/30", "badge--green", "Chọn gói điểm cho câu hỏi của bạn.", null, 0, null],
+      CAU_PHU:  ["CÂU HỎI PHỤ · 15s", "badge--gold", M.questions.tieBreak[0].text, null, E.RULES.TIE_BREAK.time, M.questions.tieBreak[0].answer],
+      LOCKED:   ["CHUÔNG BỊ KHOÁ", "badge--red", "Bạn tạm thời không thể bấm chuông (sai CNV hoặc theo luật).", null, 0, null]
     }[s];
     badge.textContent = cfg[0];
     badge.className = "badge " + cfg[1];
-    setQuestion(cfg[2], cfg[3]);
+    setQuestion(cfg[2], cfg[3], cfg[5]);
     if (cfg[4] > 0) E.startTimer(cfg[4]);
     else { $("timerFill").style.transform = "scaleX(0)"; $("timerText").textContent = "--"; }
     E.clearBuzz();
@@ -425,8 +439,22 @@
   document.querySelectorAll("#demoPanel [data-state]").forEach(function (btn) {
     btn.addEventListener("click", function () { apply(btn.dataset.state); });
   });
-  $("demoCorrect").addEventListener("click", function () { E.addScore(me.id, 10, "demo chấm đúng"); });
-  $("demoWrong").addEventListener("click", function () { E.addScore(me.id, -5, "demo chấm sai"); });
+  /* Reveal đáp án sau chấm — CHỈ khi match bật revealAnswerAfterJudge (practice ON, spec §13) */
+  var practiceOn = false;
+  function revealAnswer() {
+    if (!practiceOn || !currentAnswer) return;
+    $("answerLine").textContent = "✓ Đáp án: " + currentAnswer;
+    $("answerLine").hidden = false;
+  }
+  $("demoPractice").addEventListener("click", function () {
+    practiceOn = !practiceOn;
+    this.textContent = "Luyện tập: " + (practiceOn ? "ON" : "OFF");
+    this.classList.toggle("btn--gold", practiceOn);
+    if (!practiceOn) $("answerLine").hidden = true; // OFF: không bao giờ hiện
+    UI.toast("Chế độ luyện tập " + (practiceOn ? "BẬT — hiện đáp án sau chấm" : "TẮT"), "success");
+  });
+  $("demoCorrect").addEventListener("click", function () { E.addScore(me.id, 10, "demo chấm đúng"); revealAnswer(); });
+  $("demoWrong").addEventListener("click", function () { E.addScore(me.id, -5, "demo chấm sai"); revealAnswer(); });
 
   /* ---------- Deep-link: ?round=khoidong|vcnv|tangtoc|vedich|cauphu (&format=clue) ---------- */
   var ROUND_STATE = {

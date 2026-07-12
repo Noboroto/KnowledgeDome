@@ -90,6 +90,12 @@ Giá trị: `khoidong` · `vcnv` · `tangtoc` · `vedich` · `cauphu`
   share-link modal (link + password + cảnh báo "không kèm đáp án");
   nút Public hiện cảnh báo đỏ "public = công khai đáp án vĩnh viễn".
 - **MC view** (`mc.html`): route read-only theo spec §11 — đáp án chỉ tới admin + MC.
+- **matchPurpose + Rematch** (admin, cột trái — spec §13): toggle `CHÍNH THỨC / LUYỆN TẬP`;
+  practice hiện badge cảnh báo + nút `🔄 Rematch` (giữ ghế + mã phòng, về lobby), emit `purpose:change`.
+- **ConnectionMonitor** (admin, cột phải): trạng thái 4 ghế `🟢 online · ping` (mock 15-80ms, refresh 3s),
+  nút `Mock: ghế 3 rớt mạng` → 🔴 offline + cảnh báo đỏ; viewer/MC chỉ hiện SỐ LƯỢNG online.
+- **Reveal đáp án practice** (contestant & viewer, spec §13 `revealAnswerAfterJudge`): nút demo panel
+  `Luyện tập: OFF/ON` (default OFF); khi ON, sau mỗi lần chấm hiện 1 dòng đáp án gold dưới câu hỏi hiện tại.
 
 ## Sửa design qua tokens.css
 

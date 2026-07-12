@@ -101,6 +101,25 @@
   .team-block .score-row { padding: 2px 0; font-size: var(--fs-xs); }
   .team-block .score-row input { width: 60px; min-height: 28px; }
   .seat-switch .btn.is-on { background: var(--grad-gold); color: var(--text-on-gold); border-color: transparent; }
+
+  /* ---------- matchPurpose (spec v2 §13) ---------- */
+  .purpose-switch .btn { flex: 1; }
+  .practice-badge {
+    display: block; white-space: normal; line-height: 1.5;
+    margin-top: var(--sp-2); padding: var(--sp-2) var(--sp-3);
+  }
+
+  /* ---------- ConnectionMonitor ---------- */
+  .conn-row { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) 0; border-bottom: var(--border-1); font-size: var(--fs-sm); }
+  .conn-row:last-child { border-bottom: none; }
+  .conn-row.is-off { color: var(--text-3); }
+  .conn-row__status { margin-left: auto; font-family: var(--font-mono); font-size: var(--fs-xs); white-space: nowrap; }
+  .conn-alert {
+    margin-top: var(--sp-2); padding: var(--sp-2) var(--sp-3);
+    background: rgba(255,71,87,.15); border: 1px solid var(--red-dim);
+    border-radius: var(--r-md); color: var(--red); font-weight: 700; font-size: var(--fs-sm);
+    animation: pulse-danger 1s ease-in-out infinite;
+  }
 </style>
 </head>
 <body>
@@ -118,6 +137,17 @@
       <h2 class="card__title">Mã phòng</h2>
       <div class="room-code" id="roomCode">------</div>
       <p class="text-dim" style="text-align:center;font-size:var(--fs-xs)">Thí sinh &amp; viewer nhập mã này để vào</p>
+    </section>
+
+    <!-- matchPurpose (spec v2 §13): official | practice — chọn lúc tạo match, immutable sau start -->
+    <section class="card">
+      <h2 class="card__title">Mục đích trận <span class="text-dim" style="font-size:var(--fs-xs)">(spec §13)</span></h2>
+      <div class="row purpose-switch seat-switch" id="purposeSwitch" style="gap:var(--sp-1)">
+        <button class="btn btn--sm is-on" data-purpose="official">CHÍNH THỨC</button>
+        <button class="btn btn--sm" data-purpose="practice">LUYỆN TẬP</button>
+      </div>
+      <div class="badge badge--gold practice-badge" id="practiceBadge" hidden>⚠ LUYỆN TẬP — reveal đáp án BẬT, pre-flight chỉ cảnh báo, không vào thống kê</div>
+      <button class="btn btn--sm" id="btnRematch" hidden style="width:100%;margin-top:var(--sp-2)">🔄 Rematch</button>
     </section>
 
     <section class="card">
@@ -213,6 +243,15 @@
         <button class="btn btn--sm" id="btnTeamMode" title="12 người → 4 đội × 3">👥 Đội</button>
       </div>
       <div class="score-grid" id="scoreRows"></div>
+    </section>
+
+    <!-- ConnectionMonitor: trạng thái kết nối 4 ghế + đếm viewer/MC (không danh sách) -->
+    <section class="card">
+      <h2 class="card__title">Kết nối</h2>
+      <div id="connList"></div>
+      <div class="conn-alert" id="connAlert" hidden>⚠ Thí sinh ghế 3 mất kết nối!</div>
+      <button class="btn btn--sm" id="btnMockDrop" style="width:100%;margin-top:var(--sp-2)">Mock: ghế 3 rớt mạng</button>
+      <p class="text-dim" style="font-size:var(--fs-xs);margin-top:var(--sp-2)">Viewer: <strong>3</strong> online · MC: <strong>1</strong> online</p>
     </section>
 
     <section class="card">
@@ -563,6 +602,65 @@
     else if (e.key === "ArrowRight") { qIndex++; renderQuestion(); }
   });
 
+  /* ---------- matchPurpose toggle (spec v2 §13): official | practice ---------- */
+  window.DEMO_PRACTICE = false;
+  function setPurpose(practice) {
+    window.DEMO_PRACTICE = practice;
+    document.querySelectorAll("#purposeSwitch [data-purpose]").forEach(function (b) {
+      b.classList.toggle("is-on", (b.dataset.purpose === "practice") === practice);
+    });
+    $("practiceBadge").hidden = !practice;
+    $("btnRematch").hidden = !practice;
+    /* Engine pub/sub: các màn khác nghe purpose:change để bật reveal đáp án */
+    E.emit("purpose:change", { practice: practice });
+    E.log("Mục đích trận: " + (practice ? "LUYỆN TẬP" : "CHÍNH THỨC"));
+    UI.toast(practice ? "Chuyển sang LUYỆN TẬP — reveal đáp án BẬT" : "Chuyển sang CHÍNH THỨC", "success");
+  }
+  document.querySelectorAll("#purposeSwitch [data-purpose]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var p = b.dataset.purpose === "practice";
+      if (p !== window.DEMO_PRACTICE) setPurpose(p);
+    });
+  });
+  /* Rematch (chỉ practice): giữ nguyên ghế + mã phòng, về lobby rút gọn */
+  $("btnRematch").addEventListener("click", function () {
+    UI.mockAsync({ btn: this, loading: "Đang tạo rematch…", success: "Rematch — giữ nguyên ghế + mã phòng, về lobby" })
+      .then(function () { E.log("Rematch (practice) — giữ ghế + mã phòng, về lobby"); });
+  });
+
+  /* ---------- ConnectionMonitor: 4 ghế + ping mock, refresh 3s ---------- */
+  var connSeats = M.contestants.map(function (c, i) {
+    return { c: c, seat: i + 1, online: true, ping: 0 };
+  });
+  function rollPing() {
+    connSeats.forEach(function (s) { if (s.online) s.ping = 15 + Math.floor(Math.random() * 66); }); // 15-80ms
+  }
+  function renderConn() {
+    var w = $("connList"); w.innerHTML = "";
+    connSeats.forEach(function (s) {
+      var el = document.createElement("div");
+      el.className = "conn-row" + (s.online ? "" : " is-off");
+      var nm = document.createElement("span");
+      nm.textContent = "Ghế " + s.seat + " — " + s.c.name;
+      var st = document.createElement("span");
+      st.className = "conn-row__status";
+      st.textContent = s.online ? "🟢 online · " + s.ping + "ms" : "🔴 offline";
+      el.appendChild(nm); el.appendChild(st);
+      w.appendChild(el);
+    });
+  }
+  setInterval(function () { rollPing(); renderConn(); }, 3000);
+  $("btnMockDrop").addEventListener("click", function () {
+    var s = connSeats[2]; // ghế 3
+    s.online = !s.online;
+    $("connAlert").hidden = s.online;
+    this.textContent = s.online ? "Mock: ghế 3 rớt mạng" : "Mock: ghế 3 kết nối lại";
+    this.classList.toggle("btn--danger", !s.online);
+    renderConn();
+    UI.toast(s.online ? "Ghế 3 đã kết nối lại" : "⚠ Thí sinh ghế 3 mất kết nối!", s.online ? "success" : "error");
+    E.log("Ghế 3 (" + s.c.name + ") " + (s.online ? "kết nối lại" : "mất kết nối"));
+  });
+
   /* ---------- Deep-link: ?round=khoidong|vcnv|tangtoc|vedich|cauphu ---------- */
   var ROUND_TYPE = { khoidong: "KHOI_DONG", vcnv: "VCNV", tangtoc: "TANG_TOC", vedich: "VE_DICH", cauphu: "TIE_BREAK" };
   var rq = ROUND_TYPE[UI.param("round")];
@@ -574,6 +672,7 @@
   /* Init */
   renderStepper(); renderQuestion(); renderViewers();
   renderScores(); refreshSeatSwitch(); renderSnd();
+  rollPing(); renderConn();
   E.log("Admin mở bàn điều khiển — phòng " + M.roomCode);
   /* Mock log chuông có sẵn cho sinh động */
   E.log("(mock) " + M.contestants[1].name + " bấm chuông lúc 00:00:01.245");

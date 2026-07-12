@@ -290,6 +290,13 @@
     height: 100%; border-radius: var(--r-full); width: 0%;
     transition: width var(--dur-slow) var(--ease-out);
   }
+  /* Reveal đáp án practice (spec v2 §13 — revealAnswerAfterJudge) */
+  .practice-answer {
+    margin-top: var(--sp-3); padding: var(--sp-2) var(--sp-3);
+    border: 1px dashed var(--gold-dim); border-radius: var(--r-md);
+    color: var(--gold); font-weight: 700; font-size: var(--fs-sm);
+    max-width: 760px; animation: slide-up var(--dur-fast) var(--ease-out);
+  }
   .delta-float {
     position: absolute; right: 12px; top: 6px; font-weight: 900; pointer-events: none;
     animation: delta-up var(--dur-epic) var(--ease-out) forwards;
@@ -423,6 +430,10 @@
     <button class="btn btn--sm btn--danger" id="btnClueBuzzNo">Mock: TS3 chuông + SAI</button>
 
     <hr style="border-color:rgba(255,255,255,.1)">
+    <div class="text-dim" style="font-size:var(--fs-xs)">LUYỆN TẬP (spec §13)</div>
+    <button class="btn btn--sm" id="btnPractice">Luyện tập: OFF</button>
+
+    <hr style="border-color:rgba(255,255,255,.1)">
     <div class="text-dim" style="font-size:var(--fs-xs)">VCNV — BIẾN THỂ</div>
     <button class="btn btn--sm" id="btnVcnvRows">⇄ 4 hàng ↔ 8 hàng</button>
     <button class="btn btn--sm" id="btnVcnvHints">💡 Gợi ý ký tự CNV: TẮT</button>
@@ -438,6 +449,43 @@
   var E = window.Engine, M = window.MOCK, UI = window.UI;
   var $ = function (id) { return document.getElementById(id); };
   $("roomCode").textContent = M.roomCode;
+
+  /* ============ Reveal đáp án practice (spec v2 §13 — revealAnswerAfterJudge) ============
+     Chỉ hiện 1 dòng đáp án ở khu vực câu hỏi hiện tại SAU KHI có chấm điểm, khi practice ON */
+  var practiceOn = false;
+  var revealEl = document.createElement("div");
+  revealEl.className = "practice-answer";
+  /* Tra đáp án từ questionBank theo text câu đang hiện (mock — bản thật server gửi kèm event) */
+  function findAnswerByText(txt) {
+    if (!txt) return null;
+    var hit = M.questionBank.find(function (q) { return q.text && txt.indexOf(q.text) >= 0; });
+    return hit ? hit.answer : null;
+  }
+  function showPracticeAnswer() {
+    if (!practiceOn) return;
+    var target, ans, label = "Đáp án: ";
+    if ($("viewVeDich").classList.contains("is-active")) {
+      target = $("vdQuestion"); ans = findAnswerByText(target.textContent);
+    } else if ($("viewTangToc").classList.contains("is-active")) {
+      if (ttFormat === "clue") { target = $("clueCards"); ans = clueQ.answer; }
+      else { target = $("ttQuestion"); ans = findAnswerByText(target.textContent); }
+    } else if ($("viewVcnv").classList.contains("is-active")) {
+      target = $("vcnvRows"); ans = currentVcnvSet().obstacle.answer; label = "Đáp án CNV: ";
+    } else {
+      target = $("qCard"); ans = findAnswerByText(target.textContent);
+    }
+    revealEl.textContent = label + (ans || "(mock) đáp án câu hiện tại");
+    target.insertAdjacentElement("afterend", revealEl);
+  }
+  E.on("answer:judged", showPracticeAnswer);
+  E.on("score:change", showPracticeAnswer);
+  $("btnPractice").addEventListener("click", function () {
+    practiceOn = !practiceOn;
+    this.textContent = "Luyện tập: " + (practiceOn ? "ON" : "OFF");
+    this.classList.toggle("btn--gold", practiceOn);
+    if (!practiceOn) revealEl.remove(); // OFF: không bao giờ hiện
+    UI.toast("Chế độ luyện tập " + (practiceOn ? "BẬT — hiện đáp án sau chấm" : "TẮT"), "success");
+  });
 
   /* ============ BẢNG ĐIỂM ADAPTIVE (4 / 8-12 / đội) ============ */
   var MAX_BAR = 250; // điểm quy chiếu độ dài thanh
@@ -625,6 +673,7 @@
     q.style.animation = "none"; void q.offsetWidth; q.style.animation = "";
     q.textContent = text;
     $("buzzBanner").classList.remove("is-on");
+    revealEl.remove(); // câu mới → gỡ dòng đáp án practice cũ
   }
   E.on("buzz:won", function (d) {
     var b = $("buzzBanner");
