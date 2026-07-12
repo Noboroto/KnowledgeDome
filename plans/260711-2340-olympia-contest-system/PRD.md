@@ -4,7 +4,7 @@
 |---|---|
 | **Sản phẩm** | Hệ thống quản lý & mô phỏng chương trình "Đường lên đỉnh Olympia" (luật 2026) |
 | **Phiên bản tài liệu** | 1.0 — 12/07/2026 |
-| **Trạng thái** | Draft v2 (12/07, sau mở rộng scope + red-team) — đã chốt D1/D3/D15-MC/D18; chờ các mục còn lại trong `plans/DEFERED.md` (nổi bật: D7, D8, D17) |
+| **Trạng thái** | Draft v2 (12/07, sau mở rộng scope + red-team) — đã chốt D1/D3/D15-MC/D18; chờ các mục còn lại trong `DEFERED.md` cùng thư mục (nổi bật: D7, D8, D17) |
 | **Tài liệu liên quan** | `plan.md` (kiến trúc + 10 phase) · `user-stories.md` · `research/rules-2026.md` (luật) · `public/` (demo đã duyệt design) |
 
 ## 1. Bối cảnh & Vấn đề
@@ -102,7 +102,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 | NFR-4 | Bảo mật (zero-trust — chốt 12/07) | Không rò đáp án qua bất kỳ API/socket nào (test tự động; viewer/thí sinh/overlay không hiển thị đáp án — chỉ admin+MC; **ngoại lệ: contest bật `revealAnswerAfterJudge` [default TẮT] cho luyện tập → đáp án đẩy xuống SAU khi chấm**); mọi event verify permission server-side; HttpOnly cookie; URL media có TTL; magic-bytes sniffing upload |
 | NFR-4b | **Audit MỌI thao tác, MỌI role** (chốt 12/07) | AuditLog chung append-only (actor, action, target, ts, IP): auth, CRUD đề/bộ đề/contest, event trong trận, viewer join/kick, import/export, xem đáp án |
 | NFR-5 | Accessibility | WCAG AA contrast; `prefers-reduced-motion`; viewer chỉnh cỡ chữ |
-| NFR-6 | Stack (ràng buộc cứng) | BE: TS, NestJS+Fastify, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO · FE: React+Vite, MUI, Motion, Zustand, TanStack Query · Storage: MinIO |
+| NFR-6 | Stack (ràng buộc cứng) | BE: TS, **NestJS + Express adapter** (✅ D9 12/07 — đổi từ Fastify vì tương thích), Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO · FE: React+Vite, MUI, Motion, Zustand, TanStack Query · Storage: MinIO · **Chỉ tiếng Việt, múi giờ UTC+7 thống nhất (✅ D2)** |
 | NFR-7 | **2 hình thức triển khai** (chốt 12/07) | (a) Docker compose trên server Internet (đủ PG+Redis+MinIO, multi-instance); (b) **portable trên Windows cá nhân KHÔNG Docker, mạng LAN, 1 máy** — hạ tầng qua abstraction layer (driver Redis/in-process, MinIO/filesystem), đang research queue + hạ tầng portable |
 
 ## 6. Tiêu chí thành công v1
@@ -114,7 +114,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 
 ## 7. Rủi ro & Phụ thuộc chính
 
-- NestJS Fastify × Socket.IO/Better-auth (spike Phase 1, fallback Express — D9).
+- ~~NestJS Fastify × Socket.IO/Better-auth~~ ✅ đã hoá giải: D9 chốt Express adapter (12/07) — không còn rủi ro tương thích.
 - Luật O26 có chi tiết chưa xác nhận (D8/D13) — mọi giá trị là config nên không chặn dev.
 - Bản quyền: nhạc hiệu (D10) VÀ **format/tên "Olympia" thuộc VTV** — tên sản phẩm nên trung tính, tên vòng thi là data trong preset, disclaimer không liên kết VTV (D7); license repo chốt trước commit đầu (D7b).
 - Dữ liệu cá nhân học sinh vị thành niên — xem FR-7 + DEFERED D14.

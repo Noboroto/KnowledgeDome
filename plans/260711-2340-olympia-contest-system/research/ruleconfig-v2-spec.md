@@ -1,6 +1,6 @@
 # RuleConfig v2 — Spec tổng quát hoá (round playlist)
 
-> **v2.1 — 12/07, sau red-team v2.** User đã chốt: KHÔNG cắt scope, toàn bộ tính năng trong 1 version. Vì vậy mọi lỗ hổng red-team chỉ ra được vá bằng thiết kế trong bản này. Các điểm cần user xác nhận đánh dấu 🟡 (chi tiết ở `plans/DEFERED.md` D17-D19).
+> **v2.1 — 12/07, sau red-team v2.** User đã chốt: KHÔNG cắt scope, toàn bộ tính năng trong 1 version. Vì vậy mọi lỗ hổng red-team chỉ ra được vá bằng thiết kế trong bản này. Các điểm cần user xác nhận đánh dấu 🟡 (chi tiết ở `DEFERED.md` cùng plan dir, D17-D19).
 > File này là **spec engine chính**; `rules-2026.md` giữ vai trò luật gốc O26 + edge-cases (§6 của file đó đã bị thay bởi file này).
 > Quyết định nền: teams config per-contest; bộ đề private = owner+ACL, password chỉ cho share-link; public set kèm đáp án theo setting per-set (default có); UI tối ưu 4 ghế, adaptive 1-12.
 
@@ -171,7 +171,7 @@ sound: { cues: Record<CueSlot, AudioAssetRef|null>, backgroundTracks: AudioAsset
 
 - **Mọi asset theme/sound đi qua CHUNG media pipeline phase-03** (presign + magic-bytes sniff + cấm SVG + giới hạn: ảnh ≤10MB, video hình hiệu ≤200MB, audio ≤20MB) — vá H-v2-9.
 - `colors`: Zod chỉ nhận **hex/rgb()/hsl() hợp lệ** (regex) — chặn CSS injection qua CSS variables (vá M-v2-6).
-- CueSlot matrix: mỗi round type × (intro | question-appear | countdown-loop | last-5s | buzz | correct | wrong | timeup | reveal | round-end) + global (match-intro, intermission, podium, hope-star, cnv-solved). **Fallback chain: slot → global default → silent** (vá L-v2-1); bộ SFX mặc định royalty-free phủ nhóm global + cue cơ bản, slot không gán rơi về fallback.
+- **CueSlot matrix v2 (cập nhật 12/07 theo `research/sound-cues.md` — map từ 36 cue của Athena + chương trình thật)**: mỗi round type × (intro | **player-select** | question-appear | **row-show** | **row-select** [VCNV] | countdown-loop | last-5s | buzz | correct | wrong | timeup | reveal | **packet-select** [VĐ] | **value-announce** [VĐ — map theo mức điểm `{value}.mp3`] | **hope-star** [VĐ] | **steal-chance** [VĐ] | cnv-solved | cnv-failed [VCNV] | round-end) + global (match-intro, intermission, podium, **result-display**, **ending**). Thuộc tính slot: `{ channel: 'background'|'foreground', loop, duckBackground }` (học 4 kênh phát của Athena). **Fallback chain: slot → global default → silent** — admin upload dần, chưa có file = im lặng, không lỗi (user chốt: admin tự upload, không cần bộ default cầu kỳ).
 - Soundboard: phát/dừng/next/volume/duck nhạc nền — **permission riêng `match.soundboard`** gán theo contest (ngoài control lock, co-host phụ trách được) — vá M-v2-5. Upload backgroundTrack hiện **disclaimer bản quyền** (nhất quán D10; ghi vào guide-admin) — vá M-v2-7.
 - Nhạc nền phát ở viewer/overlay; contestant mặc định tắt.
 

@@ -17,19 +17,20 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức **tuỳ biến ho
 |---|---|
 | `research/ruleconfig-v2-spec.md` | **Spec engine chính**: RuleConfig v2 — round playlist, 1-12 ghế + đội, mọi timer/điểm tuỳ biến, rút đề, sound slots, theming (12/07) |
 | `research/rules-2026.md` | Luật gốc O26 + edge-cases (nguồn cho preset `O26_DEFAULT`; D8 chờ user xác nhận) |
-| `research/tech-architecture.md` | Research kiến trúc: Fastify+Socket.IO issue, Better-auth, game state, buzzer, MinIO, import/export |
+| `research/tech-architecture.md` | Research kiến trúc: Better-auth, game state, buzzer, MinIO, import/export (§1 Fastify đã superseded — D9 chốt Express) |
+| `research/sound-cues.md` | **Cue map event-driven** từ 36 cue của Athena + chương trình thật (12/07 — D10) |
 | `research/athena-scout.md` | Bài học từ bản C#/WPF cũ (Athena) |
 | `research/ux-gaps.md` | Các khía cạnh UX/vận hành bị bỏ quên (sound cues, pause/undo, grace reconnect...) |
 | `research/red-team.md` | Findings red-team + trạng thái xử lý (C1-C3, H1-H10, M, L) |
 | `research/product-gaps.md` | Gap-analysis vòng 2: pháp lý/privacy, quy trình con người, vòng đời sản phẩm |
 | `research/queue-decision.md` | Queue + 2 deployment profile: BullMQ (compose) / in-process + pg-boss (portable), quy ước compose.yml/compose.prod.yml (12/07) |
 | `PRD.md` / `user-stories.md` | Yêu cầu sản phẩm + user stories theo epic (map về phase) |
-| `../DEFERED.md` | Các quyết định chờ user chốt (D1-D20; nhiều mục đã ✅) |
+| `DEFERED.md` | Các quyết định chờ user chốt (D1-D21; nhiều mục đã ✅) |
 | `../../public/` | Demo tĩnh mock data + animation (deliverable của giai đoạn planning, host Vercel được) |
 
 ## Stack (đã chốt, không đổi)
 
-- **Backend**: TypeScript, NestJS trên Fastify adapter, Zod, Prisma + PostgreSQL, Redis, Better-auth, Socket.IO
+- **Backend**: TypeScript, NestJS trên **Express adapter** (✅ D9 chốt 12/07 — đổi từ Fastify để tương thích Socket.IO gateway + Better-auth), Zod, Prisma + PostgreSQL, Redis, Better-auth, Socket.IO
 - **Frontend**: TypeScript, React + Vite, MUI, Motion for React, Zustand, TanStack Query, Socket.IO client, Zod
 - **Storage**: MinIO (S3-compatible) cho media đề
 - **Cấu trúc dự kiến khi code**: monorepo pnpm — `apps/api`, `apps/web`, `packages/shared` (Zod schemas + RuleConfig dùng chung)
@@ -44,7 +45,7 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức **tuỳ biến ho
                     └──────┬──────────────────────┬───────────┘
                      HTTP (TanStack Query)   Socket.IO (websocket-only)
                     ┌──────┴──────────────────────┴───────────┐
-                    │        apps/api (NestJS + Fastify)      │
+                    │        apps/api (NestJS + Express)      │
                     │  REST: auth, users, questions, contests │
                     │  WS Gateway: match rooms, buzzer, timer │
                     │  Game Engine: state machine per round   │
@@ -87,7 +88,7 @@ Ghi chú thứ tự: Phase 3-4 (kho đề) và Phase 5 (contest/room) có thể 
 
 | Rủi ro | Mức | Giảm thiểu |
 |---|---|---|
-| NestJS Fastify + Socket.IO incompatibility (nest#14953) | Cao | Spike ngay đầu Phase 1 (gồm cả Better-auth trên Fastify); fallback Express adapter chỉ đổi bootstrap (DEFERED D9) |
+| ~~NestJS Fastify + Socket.IO incompatibility~~ | ĐÃ HOÁ GIẢI | D9 chốt Express adapter (12/07) — gateway + Better-auth đều đường chính thống |
 | Engine stateful × multi-instance (race, timer đôi) | Cao | Single-writer per match qua Redis lease; failover restore từ snapshot (phase-06, red-team C1) |
 | Redis chết giữa trận live | Cao | AOF everysec + degraded mode auto-pause + khôi phục từ Postgres; chaos drill Phase 10 (red-team C3) |
 | Luật 2026 sai chi tiết (nguồn mâu thuẫn) | Trung | Mọi giá trị là RuleConfig; user confirm D8; sửa preset không sửa code |
@@ -101,4 +102,4 @@ Ghi chú thứ tự: Phase 3-4 (kho đề) và Phase 5 (contest/room) có thể 
 
 ## Open questions
 
-Xem `plans/DEFERED.md`. **Đã chốt:** D1 (1-12 ghế + đội), D3 (admin điều khiển + RBAC permission/CASL), D5 (viewer public theo mã phòng — không duyệt), D15-phần-MC (MC thấy đáp án), D18 (không cắt scope — 1 version đủ tính năng). **Còn chờ:** D2 (i18n), D4 (chấm miệng), D6 (giới hạn media), D7 (tên sản phẩm + bản quyền format + license — nên chốt trước commit code), D8 (mâu thuẫn luật O26), D9 (Fastify spike/fallback), D10 (nguồn âm thanh), D11 (quy mô viewer), D12 (preload thí sinh), D13 (edge-cases luật), D14 (retention dữ liệu học sinh), D15.1 (admin-duyệt-đề đủ chưa), D16 (UI practice solo), **D17 (4 ngữ nghĩa thi đội — cần trước Phase 6)**, D21 (dual-purpose). Mỗi mục có khuyến nghị tạm để không chặn tiến độ.
+Xem `DEFERED.md` (cùng thư mục). **Đã chốt:** D1 (1-12 ghế + đội), D2 (chỉ tiếng Việt + UTC+7), D3 (admin điều khiển + RBAC/CASL), D4 (admin chấm miệng, auto-match câu gõ), D5 (viewer public theo mã phòng), D9 (**Express adapter** — bỏ Fastify), D15-MC, D17.2 (last-wins), D18 (không cắt scope), D19 (portable HTTP, <10 viewer), D20 (skip rỗng + trim). **Còn chờ:** D6 (giới hạn media), **D7 (tên + bản quyền + license — trước commit code)**, **D8 (mâu thuẫn luật O26)**, D10 (cue map đang research — admin upload sau), D11, D12, D13, D14, D15.1, D16, **D17.1/.3/.4 (ngữ nghĩa thi đội — cần trước Phase 6)**, D21 (dual-purpose). Mỗi mục có khuyến nghị tạm để không chặn tiến độ.

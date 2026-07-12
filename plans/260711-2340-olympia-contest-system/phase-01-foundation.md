@@ -9,7 +9,7 @@ dependencies: []
 # Phase 1: Foundation & Infrastructure
 
 ## Overview
-Dựng monorepo, hạ tầng dev (Postgres/Redis/MinIO), bootstrap NestJS+Fastify và **spike xác minh Socket.IO chạy được trên Fastify adapter** — rủi ro kỹ thuật số 1 của dự án.
+Dựng monorepo, hạ tầng dev (Postgres/Redis/MinIO), bootstrap **NestJS + Express adapter** (✅ D9 user chốt 12/07 — bỏ Fastify để đảm bảo tương thích Socket.IO gateway + Better-auth; KHÔNG cần spike nữa).
 
 ## Requirements
 - Functional: monorepo chạy `pnpm dev` là lên đủ api + web; Socket.IO echo test hoạt động.
@@ -21,7 +21,7 @@ Dựng monorepo, hạ tầng dev (Postgres/Redis/MinIO), bootstrap NestJS+Fastif
 flowchart LR
   subgraph monorepo [pnpm workspace]
     shared[packages/shared<br/>Zod schemas, RuleConfig,<br/>socket event types]
-    api[apps/api<br/>NestJS + Fastify]
+    api[apps/api<br/>NestJS + Express]
     web[apps/web<br/>React + Vite]
     api --> shared
     web --> shared
@@ -36,7 +36,7 @@ flowchart LR
 
 ## Related Code Files
 - Create: `pnpm-workspace.yaml`, `package.json`, `tsconfig.base.json`, `.editorconfig`, `docker-compose.dev.yml`
-- Create: `apps/api/` (NestJS scaffold, FastifyAdapter, config module đọc env qua Zod)
+- Create: `apps/api/` (NestJS scaffold, Express adapter mặc định, config module đọc env qua Zod)
 - Create: `apps/web/` (Vite scaffold, MUI theme từ design tokens của `public/assets/tokens.css`)
 - Create: `packages/shared/` (Zod schemas, hằng số socket event names)
 - Create: `.github/workflows/ci.yml` (lint + typecheck + test)
@@ -48,15 +48,15 @@ flowchart LR
    - **Cấm API chỉ-có-trong-secure-context ở apps/web** (`crypto.randomUUID`, `navigator.clipboard`...) — portable chạy http LAN; thêm ESLint restrict (gap-sweep L-F7).
 1. Init pnpm workspace 3 package; tsconfig strict, path alias `@shared/*`.
 2. Compose theo quy ước user (12/07): **`compose.yml`** cho dev — postgres:16, redis:7, minio (+bucket init), api, web, **proxy nginx**, map TOÀN BỘ port service ra host **bind `127.0.0.1`** (tiện debug nhưng không mở ra LAN/Wi-Fi công cộng với default credentials — gap-sweep M-F3); **`compose.prod.yml`** — cùng services nhưng **chỉ expose 1 port của proxy** (80/443), còn lại internal network. Dev cũng đi qua proxy để đồng dạng prod (cùng domain/cookie).
-3. Scaffold NestJS với `FastifyAdapter`; module `ConfigModule` validate env bằng Zod; healthcheck `/healthz`.
-4. **SPIKE (timebox 1 ngày — DEFERED D9, mở rộng theo red-team H7)**: trên FastifyAdapter phải PASS đủ CẢ HAI: (a) Socket.IO qua custom `IoAdapter` trên `app.getHttpServer()` — connect + echo + room broadcast; (b) **Better-auth** mount handler + đăng nhập username/password + đọc session từ cookie. Fail bất kỳ cái nào → chuyển `ExpressAdapter` (chỉ đổi `main.ts` + dependency), ghi journal lý do.
+3. Scaffold NestJS với **Express adapter mặc định** (✅ D9 — không spike); module `ConfigModule` validate env bằng Zod; healthcheck `/healthz`.
+4. Smoke test tích hợp (thay spike cũ, nửa ngày): Socket.IO gateway chuẩn `@nestjs/platform-socket.io` connect + echo + room broadcast; Better-auth mount + login username/password + đọc session cookie — trên Express đều là đường chính thống, chỉ xác nhận wiring.
 5. Cài `@socket.io/redis-adapter` + verify broadcast giữa 2 instance api (chạy 2 port); thử `createShardedAdapter` (Redis 7) — không chạy được với Redis đang dùng thì fallback adapter thường (red-team L5).
 6. Scaffold Vite React app: router (`/login`, `/contestant`, `/viewer`, `/overlay`, `/admin`, `/questions`, `/mc`), MUI theme, Zustand store rỗng, socket client singleton (websocket-only transport).
 7. CI: pnpm install cache, lint (eslint+prettier), `tsc --noEmit`, vitest. ESLint rule cấm literal string tiếng Việt trong JSX (`react/jsx-no-literals` giới hạn ở apps/web) để giữ kỷ luật tách string ra `vi.ts` (DEFERED D2b, red-team L7).
 
 ## Success Criteria
 - [ ] `docker compose up` + `pnpm dev` → api :3000, web :5173 chạy.
-- [ ] Spike Socket.IO trên Fastify PASS (hoặc quyết định fallback được ghi lại) — client connect, join room, nhận broadcast qua Redis adapter với 2 instance.
+- [ ] Smoke test Socket.IO + Better-auth trên Express PASS — client connect, join room, nhận broadcast qua Redis adapter với 2 instance.
 - [ ] CI xanh trên PR đầu tiên.
 
 ## Risk Assessment

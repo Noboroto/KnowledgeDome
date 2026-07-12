@@ -2,7 +2,7 @@
 
 > Tổng hợp từ researcher (07/2026). Stack KHÔNG đổi: NestJS+Fastify, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO / React+Vite, MUI, Motion, Zustand, TanStack Query / MinIO.
 
-## 1. NestJS + Fastify + Socket.IO — ⚠️ RỦI RO LỚN NHẤT
+## 1. NestJS + Fastify + Socket.IO — ✅ SUPERSEDED (12/07): D9 chốt ĐỔI EXPRESS ADAPTER, mục này chỉ còn giá trị lịch sử
 
 - **Issue mở nestjs/nest#14953**: `@nestjs/platform-socket.io` không expose endpoint đúng khi dùng FastifyAdapter (tình trạng đến 2025-2026 vẫn mở).
 - Hướng xử lý (xem DEFERED D9): (a) custom `IoAdapter` gắn Socket.IO vào `http.Server` bên dưới Fastify — **khuyến nghị, cần spike Phase 1**; (b) fallback Express adapter; (c) tách socket ra port/process riêng.

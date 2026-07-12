@@ -1,8 +1,8 @@
 # KnowledgeDome — Olympia Contest System
 
-Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô hình Đường lên đỉnh Olympia). Planning tại `plans/260711-2340-olympia-contest-system/` (spec engine: `research/ruleconfig-v2-spec.md`); quyết định chờ chốt: `plans/DEFERED.md`; demo tĩnh: `public/`.
+Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô hình Đường lên đỉnh Olympia). Planning tại `plans/260711-2340-olympia-contest-system/` (spec engine: `research/ruleconfig-v2-spec.md`); quyết định chờ chốt: `plans/260711-2340-olympia-contest-system/DEFERED.md`; demo tĩnh: `public/`.
 
-Stack (đã chốt, không đổi): NestJS+Fastify, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO, @casl/ability · React+Vite, MUI, Motion for React, Zustand, TanStack Query · MinIO.
+Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO, @casl/ability · React+Vite, MUI, Motion for React, Zustand, TanStack Query · MinIO.
 
 ## UX — BẮT BUỘC
 
@@ -38,6 +38,8 @@ Stack (đã chốt, không đổi): NestJS+Fastify, Zod, Prisma+Postgres, Redis,
 - Server-authoritative tuyệt đối: timer/điểm/chuông tính ở server, client chỉ render; **server time là source of truth duy nhất**.
 - **Audit log MỌI thao tác, MỌI role** (user chốt 12/07): auth (login/logout/fail), CRUD kho đề/bộ đề, contest management, mọi event trong trận (đã có MatchEvent log), viewer join/kick, xuất/nhập, xem đáp án — bảng AuditLog chung append-only (actor, action, target, ts, ip) ngoài các log chuyên biệt.
 - **TRIM mọi input text ở CẢ frontend lẫn backend** (đề, đáp án, submission — tránh space đầu/cuối phá so khớp).
+- **Chỉ tiếng Việt** (không i18n); **múi giờ thống nhất UTC+7** — DB lưu UTC, mọi hiển thị/log/PDF format theo UTC+7, không có timezone setting per-user.
+- **Stack: NestJS + Express adapter** (✅ D9 12/07 — không dùng Fastify).
 - Mọi timer/điểm là RuleConfig — KHÔNG hard-code luật trong code/UI.
 - String UI tiếng Việt tách file constants (`vi.ts`), không hard-code trong JSX.
 - Commit theo Conventional Commits, KHÔNG AI attribution.
