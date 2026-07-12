@@ -68,11 +68,26 @@
   .bell.is-won { animation: flash-green var(--dur-slow) var(--ease-out); background: var(--green); color: #04240f; }
   .bell__hint { font-size: var(--fs-sm); font-weight: 600; opacity: .8; }
 
-  /* VCNV: chọn hàng ngang */
+  /* VCNV: chọn hàng ngang (grid tự dãn theo số hàng 4/8) */
   .rows-pick { display: none; grid-template-columns: repeat(4, 1fr); gap: var(--sp-2); }
   .rows-pick .btn { flex-direction: column; min-height: 64px; gap: 0; }
   .rows-pick .btn.is-picked { background: var(--purple); border-color: transparent; }
   .rows-pick .btn.is-opened { opacity: .35; text-decoration: line-through; }
+
+  /* Tăng tốc clue-buzz: dữ kiện mở dần */
+  .clue-list { display: none; gap: var(--sp-2); }
+  .clue-item {
+    display: flex; gap: var(--sp-3); align-items: baseline;
+    padding: var(--sp-2) var(--sp-3);
+    background: rgba(255,159,67,.08); border: 1px solid rgba(255,159,67,.3);
+    border-radius: var(--r-md); font-size: var(--fs-sm);
+    animation: slide-up var(--dur-med) var(--ease-out);
+  }
+  .clue-item__pts { font-weight: 900; color: var(--orange); white-space: nowrap; }
+  .clue-milestone {
+    text-align: center; font-size: var(--fs-sm); color: var(--text-2); font-weight: 700;
+  }
+  .clue-milestone strong { color: var(--orange); font-size: var(--fs-lg); }
 
   /* Về đích: chọn gói */
   .pkg-pick { display: none; gap: var(--sp-3); }
@@ -106,8 +121,9 @@
 </style>
 </head>
 <body>
-  <!-- Header mỏng: tên, phòng, điểm, kết nối -->
+  <!-- Header mỏng: back, tên, phòng, điểm, kết nối -->
   <header class="top">
+    <a class="nav-back" href="index.html" title="Quay lại (Esc) · Hub (H)">← Hub</a>
     <span class="avatar" id="avatar" style="background:#4d8dff">K</span>
     <div>
       <div class="top__name" id="cName">Nguyễn Minh Khang</div>
@@ -140,13 +156,14 @@
       <div class="timer__text" id="timerText">--</div>
     </div>
 
-    <!-- VCNV: chọn hàng ngang 1–4 -->
-    <section class="rows-pick" id="rowsPick" aria-label="Chọn hàng ngang">
-      <button class="btn" data-row="1">Hàng 1 <span class="kbd">1</span></button>
-      <button class="btn" data-row="2">Hàng 2 <span class="kbd">2</span></button>
-      <button class="btn" data-row="3">Hàng 3 <span class="kbd">3</span></button>
-      <button class="btn" data-row="4">Hàng 4 <span class="kbd">4</span></button>
-    </section>
+    <!-- VCNV: chọn hàng ngang (nút sinh động theo số hàng 4/8) -->
+    <section class="rows-pick" id="rowsPick" aria-label="Chọn hàng ngang"></section>
+
+    <!-- Tăng tốc clue-buzz: dữ kiện mở dần + mốc điểm hiện tại -->
+    <section class="clue-list" id="clueList" aria-label="Dữ kiện" aria-live="polite"></section>
+    <div class="clue-milestone" id="clueMilestone" hidden>
+      Bấm chuông bây giờ: <strong id="cluePts">+40</strong> điểm
+    </div>
 
     <!-- Về đích: chọn gói + NSHV -->
     <section class="pkg-pick row" id="pkgPick" aria-label="Chọn gói điểm về đích">
@@ -179,9 +196,12 @@
       <button class="btn btn--sm" data-state="CHO">Chờ</button>
       <button class="btn btn--sm" data-state="KD_RIENG">Khởi động riêng (5s/câu)</button>
       <button class="btn btn--sm" data-state="KD_CHUNG">Khởi động chung (chuông)</button>
-      <button class="btn btn--sm" data-state="VCNV">VCNV (15s, chọn hàng)</button>
-      <button class="btn btn--sm" data-state="TANG_TOC">Tăng tốc (gõ nhanh)</button>
+      <button class="btn btn--sm" data-state="VCNV">VCNV 4 hàng (15s)</button>
+      <button class="btn btn--sm" data-state="VCNV8">VCNV 8 hàng</button>
+      <button class="btn btn--sm" data-state="TANG_TOC">Tăng tốc ranked-speed</button>
+      <button class="btn btn--sm" data-state="TT_CLUE">Tăng tốc clue-buzz</button>
       <button class="btn btn--sm" data-state="VE_DICH">Về đích (chọn gói)</button>
+      <button class="btn btn--sm" data-state="CAU_PHU">Câu hỏi phụ (chuông)</button>
       <button class="btn btn--sm btn--danger" data-state="LOCKED">Bị khoá chuông</button>
       <hr style="border-color:rgba(255,255,255,.1)">
       <button class="btn btn--sm btn--success" id="demoCorrect">Mock: chấm ĐÚNG</button>
@@ -191,10 +211,11 @@
 
 <script src="assets/mock-data.js"></script>
 <script src="assets/engine.js"></script>
+<script src="assets/ui.js"></script>
 <script>
 (function () {
   "use strict";
-  var E = window.Engine, M = window.MOCK;
+  var E = window.Engine, M = window.MOCK, UI = window.UI;
   var me = M.contestants[0]; // demo: đóng vai thí sinh 1
   var $ = function (id) { return document.getElementById(id); };
 
@@ -252,28 +273,79 @@
   }
   $("bellBtn").addEventListener("click", doBuzz);
 
-  /* ---------- Gửi đáp án ---------- */
+  /* ---------- Gửi đáp án: loading 300-600ms → toast, chống double-submit ---------- */
   function submitAnswer() {
     var v = $("answerInput").value.trim();
-    if (!v) return;
+    if (!v) { UI.toast("Chưa nhập đáp án", "error"); return; }
+    if ($("submitBtn").disabled) return; // đang gửi — chặn double
     E.log(me.name + ' gửi đáp án: "' + v + '"');
-    $("answerInput").value = "";
-    $("submitBtn").classList.add("anim-flash-green");
-    setTimeout(function () { $("submitBtn").classList.remove("anim-flash-green"); }, 700);
+    UI.mockAsync({
+      btn: $("submitBtn"),
+      loading: "Đang gửi đáp án…",
+      success: "Đã gửi: “" + v + "”"
+    }).then(function () {
+      $("answerInput").value = "";
+      $("submitBtn").classList.add("anim-flash-green");
+      setTimeout(function () { $("submitBtn").classList.remove("anim-flash-green"); }, 700);
+    });
   }
   $("submitBtn").addEventListener("click", submitAnswer);
 
-  /* ---------- VCNV chọn hàng ---------- */
-  document.querySelectorAll("#rowsPick [data-row]").forEach(function (btn) {
-    btn.addEventListener("click", function () { pickRow(btn.dataset.row); });
-  });
+  /* ---------- VCNV chọn hàng (nút sinh động theo bộ 4/8 hàng) ---------- */
+  var vcnvSet = M.questions.vcnv; // bộ đang active
+  function buildRowButtons(set) {
+    vcnvSet = set;
+    var wrap = $("rowsPick");
+    wrap.innerHTML = "";
+    wrap.style.gridTemplateColumns = "repeat(" + Math.min(4, set.rows.length) + ", 1fr)";
+    set.rows.forEach(function (row, i) {
+      var b = document.createElement("button");
+      b.className = "btn";
+      b.dataset.row = i + 1;
+      b.innerHTML = "Hàng " + (i + 1) + ' <span class="kbd">' + (i + 1) + "</span>";
+      b.addEventListener("click", function () { pickRow(i + 1); });
+      wrap.appendChild(b);
+    });
+  }
   function pickRow(n) {
+    var row = vcnvSet.rows[n - 1];
+    if (!row) return;
     document.querySelectorAll("#rowsPick [data-row]").forEach(function (b) {
       b.classList.toggle("is-picked", b.dataset.row === String(n));
     });
-    var row = M.questions.vcnv.rows[n - 1];
-    setQuestion("Hàng ngang " + n + " (" + row.len + " chữ cái): " + row.text, false);
+    setQuestion("Hàng ngang " + n + " (" + row.answer.replace(/ /g, "").length + " chữ cái): " + row.text, false);
     E.startTimer(E.RULES.VCNV.rowTime);
+  }
+
+  /* ---------- Tăng tốc clue-buzz: dữ kiện mở dần + mốc điểm ---------- */
+  var clueTimer = null, clueRevealed = 0;
+  var clueQ = M.questions.tangTocClue[0];
+  function startClueBuzz() {
+    stopClueBuzz();
+    clueRevealed = 0;
+    $("clueList").innerHTML = "";
+    $("clueList").style.display = "grid";
+    $("clueMilestone").hidden = false;
+    revealClue(); // dữ kiện 1 ngay
+    clueTimer = setInterval(revealClue, 4000); // demo rút gọn 4s/dữ kiện
+  }
+  function revealClue() {
+    if (clueRevealed >= clueQ.clues.length) { clearInterval(clueTimer); return; }
+    var i = clueRevealed++;
+    var el = document.createElement("div");
+    el.className = "clue-item";
+    var pts = document.createElement("span");
+    pts.className = "clue-item__pts"; pts.textContent = "+" + clueQ.cluePoints[i];
+    var tx = document.createElement("span");
+    tx.textContent = "Dữ kiện " + (i + 1) + ": " + clueQ.clues[i];
+    el.appendChild(pts); el.appendChild(tx);
+    $("clueList").appendChild(el);
+    $("cluePts").textContent = "+" + clueQ.cluePoints[i];
+  }
+  function stopClueBuzz() {
+    clearInterval(clueTimer);
+    $("clueList").style.display = "none";
+    $("clueMilestone").hidden = true;
   }
 
   /* ---------- Về đích: chọn gói + NSHV ---------- */
@@ -292,7 +364,7 @@
     this.classList.toggle("is-active");
   });
 
-  /* ---------- Hotkeys ---------- */
+  /* ---------- Hotkeys (Esc ngoài ô nhập = back, xử lý ở ui.js) ---------- */
   document.addEventListener("keydown", function (e) {
     if (e.target === $("answerInput")) {
       if (e.key === "Enter") { e.preventDefault(); submitAnswer(); }
@@ -301,8 +373,7 @@
     }
     if (e.code === "Space") { e.preventDefault(); doBuzz(); }
     else if (e.key === "Enter") { e.preventDefault(); submitAnswer(); }
-    else if (e.key === "Escape") { $("answerInput").value = ""; }
-    else if (["1", "2", "3", "4"].indexOf(e.key) >= 0 && state === "VCNV") pickRow(+e.key);
+    else if (/^[1-8]$/.test(e.key) && (state === "VCNV" || state === "VCNV8")) pickRow(+e.key);
   });
 
   /* ---------- State machine trạng thái màn hình ---------- */
@@ -314,9 +385,13 @@
   function apply(s) {
     state = s;
     document.body.classList.toggle("is-locked-out", s === "LOCKED");
-    $("rowsPick").style.display = s === "VCNV" ? "grid" : "none";
+    var isVcnv = (s === "VCNV" || s === "VCNV8");
+    if (isVcnv) buildRowButtons(s === "VCNV8" ? M.questions.vcnv8 : M.questions.vcnv);
+    $("rowsPick").style.display = isVcnv ? "grid" : "none";
     $("pkgPick").style.display = s === "VE_DICH" ? "flex" : "none";
+    /* clue-buzz: chuông MỞ (khác ranked-speed) */
     $("bellBtn").disabled = (s === "KD_RIENG" || s === "TANG_TOC" || s === "LOCKED" || s === "CHO");
+    if (s === "TT_CLUE") startClueBuzz(); else stopClueBuzz();
     E.stopTimer();
     var badge = $("phaseBadge");
     var cfg = {
@@ -324,8 +399,11 @@
       KD_RIENG: ["KHỞI ĐỘNG — LƯỢT RIÊNG · +10", "badge--blue", M.questions.khoiDongRieng.c1[0].text, null, E.RULES.KHOI_DONG.riengTime],
       KD_CHUNG: ["KHỞI ĐỘNG — LƯỢT CHUNG · +10/−5", "badge--gold", M.questions.khoiDongChung[0].text, null, E.RULES.KHOI_DONG.chungTime],
       VCNV:     ["VƯỢT CHƯỚNG NGẠI VẬT · +10/hàng", "badge--purple", "Chọn hàng ngang (phím 1–4). Bấm chuông bất kỳ lúc nào để giải CNV!", null, 0],
-      TANG_TOC: ["TĂNG TỐC · 40/30/20/10", "badge--orange", M.questions.tangToc[0].text, true, M.questions.tangToc[0].time],
+      VCNV8:    ["VƯỢT CNV · 8 HÀNG NGANG", "badge--purple", "Biến thể 8 hàng ngang (phím 1–8). Bấm chuông bất kỳ lúc nào để giải CNV!", null, 0],
+      TANG_TOC: ["TĂNG TỐC · RANKED-SPEED 40/30/20/10", "badge--orange", M.questions.tangToc[0].text, true, M.questions.tangToc[0].time],
+      TT_CLUE:  ["TĂNG TỐC · CLUE-BUZZ 40/30/20/10", "badge--orange", "Dữ kiện mở dần — bấm chuông bất kỳ lúc nào. Mốc càng sớm điểm càng cao!", null, 0],
       VE_DICH:  ["VỀ ĐÍCH · gói 20/30", "badge--green", "Chọn gói điểm cho câu hỏi của bạn.", null, 0],
+      CAU_PHU:  ["CÂU HỎI PHỤ · 15s", "badge--gold", M.questions.tieBreak[0].text, null, E.RULES.TIE_BREAK.time],
       LOCKED:   ["CHUÔNG BỊ KHOÁ", "badge--red", "Bạn tạm thời không thể bấm chuông (sai CNV hoặc theo luật).", null, 0]
     }[s];
     badge.textContent = cfg[0];
@@ -347,7 +425,15 @@
   $("demoCorrect").addEventListener("click", function () { E.addScore(me.id, 10, "demo chấm đúng"); });
   $("demoWrong").addEventListener("click", function () { E.addScore(me.id, -5, "demo chấm sai"); });
 
-  apply("CHO");
+  /* ---------- Deep-link: ?round=khoidong|vcnv|tangtoc|vedich|cauphu (&format=clue) ---------- */
+  var ROUND_STATE = {
+    khoidong: "KD_CHUNG", vcnv: "VCNV", tangtoc: "TANG_TOC",
+    vedich: "VE_DICH", cauphu: "CAU_PHU"
+  };
+  var rq = UI.param("round");
+  var initial = ROUND_STATE[rq] || "CHO";
+  if (rq === "tangtoc" && UI.param("format") === "clue") initial = "TT_CLUE";
+  apply(initial);
 })();
 </script>
 </body>

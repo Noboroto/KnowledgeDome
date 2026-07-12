@@ -151,6 +151,70 @@ h1, h2, h3, h4 { line-height: 1.2; }
 .demo-panel.is-collapsed .demo-panel__body { display: none; }
 .demo-panel.is-collapsed { width: auto; }
 
+/* ---------- Toast: pattern loading → success/error (UI.toast trong ui.js) ---------- */
+.toast-stack {
+  position: fixed; top: var(--sp-4); right: var(--sp-4); z-index: var(--z-toast);
+  display: grid; gap: var(--sp-2);
+  width: var(--toast-w); max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--toast-bg); border: var(--border-2); border-radius: var(--r-md);
+  box-shadow: var(--shadow-2); font-size: var(--fs-sm); font-weight: 600;
+  pointer-events: auto;
+  animation: toast-in var(--dur-med) var(--ease-spring);
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+.toast.is-leaving { opacity: 0; transform: translateX(24px); }
+.toast__icon { flex-shrink: 0; font-size: var(--fs-md); line-height: 1; }
+.toast--success { border-color: var(--green-dim); }
+.toast--success .toast__icon { color: var(--green); }
+.toast--error { border-color: var(--red-dim); }
+.toast--error .toast__icon { color: var(--red); }
+.toast--info { border-color: rgba(77,141,255,.5); }
+@keyframes toast-in { from { opacity: 0; transform: translateX(36px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Spinner: hiện trạng thái async-mock ---------- */
+.spinner {
+  width: 18px; height: 18px; flex-shrink: 0; border-radius: var(--r-full);
+  border: 2px solid rgba(255,255,255,.25); border-top-color: var(--gold);
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+/* Nút đang chờ phản hồi: khoá double-submit */
+.btn.is-loading { pointer-events: none; opacity: .75; }
+
+/* ---------- Nút Back dùng chung (top-left mọi trang) ---------- */
+.nav-back {
+  display: inline-flex; align-items: center; gap: var(--sp-1);
+  flex-shrink: 0; z-index: var(--z-nav);
+  min-height: 36px; padding: 2px var(--sp-3);
+  border: var(--border-2); border-radius: var(--r-full);
+  background: rgba(0,0,0,.35); color: var(--text-2);
+  font-size: var(--fs-sm); font-weight: 700; cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.nav-back:hover { background: rgba(255,255,255,.1); color: var(--text-1); text-decoration: none; }
+
+/* ---------- Pagination (bảng dài → 10-12 dòng/trang, vừa 1 viewport) ---------- */
+.pager {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--sp-3); flex-wrap: wrap; padding-top: var(--sp-3);
+}
+.pager__pages { display: flex; gap: var(--sp-1); }
+.page-btn {
+  min-width: var(--page-btn); min-height: var(--page-btn);
+  border: var(--border-1); border-radius: var(--r-sm);
+  background: rgba(255,255,255,.05); color: var(--text-2);
+  font-weight: 700; font-size: var(--fs-sm); cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.page-btn:hover { background: rgba(255,255,255,.12); }
+.page-btn:disabled { opacity: .35; cursor: not-allowed; }
+.page-btn.is-current { background: var(--grad-gold); color: var(--text-on-gold); border-color: transparent; }
+
 /* ---------- Utility ---------- */
 .text-gold { color: var(--gold); } .text-red { color: var(--red); }
 .text-green { color: var(--green); } .text-dim { color: var(--text-3); }

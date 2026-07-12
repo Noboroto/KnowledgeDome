@@ -124,6 +124,14 @@
   }
   body.checker .help { display: block; }
   .help b { color: var(--gold); }
+  /* Nút back (overlay không dùng base.css → style cục bộ, chỉ hiện ngoài OBS) */
+  .nav-back {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 14px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.25); background: rgba(0,0,0,.4);
+    color: var(--text-2); font-size: 14px; font-weight: 700; text-decoration: none;
+  }
+  .nav-back:hover { background: rgba(255,255,255,.12); color: var(--text-1); }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition-duration: .01ms !important; }
@@ -133,10 +141,12 @@
 <body>
   <!-- Trợ giúp (chỉ hiện khi ?bg=checker) -->
   <div class="help">
+    <a class="nav-back" href="index.html" style="margin-bottom:8px" title="Quay lại (Esc) · Hub (H)">← Hub</a><br>
     <b>OBS Overlay demo — phím bật/tắt:</b><br>
     <b>1</b> Lower-third câu hỏi · <b>2</b> Đáp án · <b>3</b> Timer ring<br>
     <b>4</b> Score strip · <b>5</b> Banner vòng · <b>6</b> Badge NSHV<br>
-    <b>7</b> Buzz alert · <b>8</b> Chạy timer 15s · <b>9</b> Ẩn/hiện tất cả
+    <b>7</b> Buzz alert · <b>8</b> Chạy timer 15s · <b>9</b> Ẩn/hiện tất cả<br>
+    <b>Esc</b> quay lại · <b>H</b> về hub
   </div>
 
   <!-- 4. Banner vòng thi -->
@@ -179,9 +189,27 @@
   var $ = function (id) { return document.getElementById(id); };
 
   /* Nền caro khi mở ngoài OBS */
-  if (new URLSearchParams(location.search).get("bg") === "checker") {
-    document.body.classList.add("checker");
-  }
+  var params = new URLSearchParams(location.search);
+  if (params.get("bg") === "checker") document.body.classList.add("checker");
+
+  /* Deep-link ?round=… → đổi banner vòng thi */
+  var ROUND_BANNER = {
+    khoidong: "VÒNG 1 · KHỞI ĐỘNG",
+    vcnv:     "VÒNG 2 · VƯỢT CHƯỚNG NGẠI VẬT",
+    tangtoc:  "VÒNG 3 · TĂNG TỐC",
+    vedich:   "VÒNG 4 · VỀ ĐÍCH",
+    cauphu:   "CÂU HỎI PHỤ · TIE-BREAK"
+  };
+  var rb = ROUND_BANNER[params.get("round")];
+  if (rb) document.querySelector("#el5 .rb-inner").textContent = rb;
+
+  /* Esc = back, H = hub (overlay không nạp ui.js để giữ tối giản) */
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      if (document.referrer && history.length > 1) history.back();
+      else location.href = "index.html";
+    } else if (e.key === "h" || e.key === "H") location.href = "index.html";
+  });
 
   /* Dựng score strip từ mock */
   var demoScores = { c1: 155, c2: 120, c3: 85, c4: 100 };

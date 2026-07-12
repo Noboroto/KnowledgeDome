@@ -13,6 +13,72 @@ window.MOCK = {
     { id: "c4", name: "Phạm Ngọc Ánh",     school: "THPT Chuyên Lam Sơn", color: "#8c6cff", score: 0 }
   ],
 
+  /* ---------- 12 thí sinh (demo adaptive layout 4/8/12) ----------
+     4 người đầu = contestants ở trên; slice(0, n) để lấy số ghế active */
+  contestantsAll: [
+    { id: "c1",  name: "Nguyễn Minh Khang", school: "THPT Chuyên Lê Hồng Phong", color: "#4d8dff", score: 0 },
+    { id: "c2",  name: "Trần Thuỳ Dương",   school: "THPT Chuyên Hà Nội – Amsterdam", color: "#2ed573", score: 0 },
+    { id: "c3",  name: "Lê Hoàng Phúc",     school: "THPT Chuyên Quốc Học Huế", color: "#ff9f43", score: 0 },
+    { id: "c4",  name: "Phạm Ngọc Ánh",     school: "THPT Chuyên Lam Sơn", color: "#8c6cff", score: 0 },
+    { id: "c5",  name: "Đặng Quốc Huy",     school: "THPT Chuyên Trần Đại Nghĩa", color: "#4d8dff", score: 0 },
+    { id: "c6",  name: "Bùi Khánh Linh",    school: "THPT Chuyên Phan Bội Châu", color: "#2ed573", score: 0 },
+    { id: "c7",  name: "Võ Thanh Tùng",     school: "THPT Chuyên Lê Quý Đôn", color: "#ff9f43", score: 0 },
+    { id: "c8",  name: "Hồ Mai Phương",     school: "THPT Chuyên Nguyễn Trãi", color: "#8c6cff", score: 0 },
+    { id: "c9",  name: "Trịnh Đức Anh",     school: "THPT Chuyên Bắc Ninh", color: "#4d8dff", score: 0 },
+    { id: "c10", name: "Lý Thu Hà",         school: "THPT Chuyên Hùng Vương", color: "#2ed573", score: 0 },
+    { id: "c11", name: "Phan Gia Bảo",      school: "THPT Chuyên Thái Bình", color: "#ff9f43", score: 0 },
+    { id: "c12", name: "Ngô Diệu Anh",      school: "THPT Chuyên Vĩnh Phúc", color: "#8c6cff", score: 0 }
+  ],
+
+  /* ---------- Đội (chế độ team: 12 người → 4 đội × 3) ----------
+     scoringUnit=team: điểm cá nhân reduce về đội (Engine.teamScores) */
+  teams: [
+    { id: "t1", name: "Đội Sao Mai",    color: "#4d8dff", seatIds: ["c1", "c5", "c9"]  },
+    { id: "t2", name: "Đội Bình Minh",  color: "#2ed573", seatIds: ["c2", "c6", "c10"] },
+    { id: "t3", name: "Đội Rạng Đông",  color: "#ff9f43", seatIds: ["c3", "c7", "c11"] },
+    { id: "t4", name: "Đội Hừng Sáng",  color: "#8c6cff", seatIds: ["c4", "c8", "c12"] }
+  ],
+
+  /* ---------- Round playlist (spec v2: KHÔNG cứng 5 bước) ----------
+     Admin stepper render từ mảng này — thêm/bớt/lặp vòng tuỳ ý */
+  playlist: [
+    { id: "r1", type: "KHOI_DONG", label: "Khởi động",   note: "riêng 6 câu + chung 12 câu" },
+    { id: "r2", type: "VCNV",      label: "Vượt CNV",    note: "4-8 hàng + CNV 80/60/40/20" },
+    { id: "r3", type: "TANG_TOC",  label: "Tăng tốc",    note: "ranked-speed / clue-buzz" },
+    { id: "r4", type: "VE_DICH",   label: "Về đích",     note: "gói 20/30 · NSHV · cướp" },
+    { id: "r5", type: "TIE_BREAK", label: "Câu hỏi phụ", note: "hoà điểm · tối đa 3 câu" }
+  ],
+
+  /* ---------- Soundboard (mock — không phát audio thật) ---------- */
+  sound: {
+    backgroundTracks: [
+      { id: "bg1", name: "Nhạc nền chờ (lobby loop)",     duration: 154 },
+      { id: "bg2", name: "Nhạc hình hiệu vòng thi",       duration: 92  },
+      { id: "bg3", name: "Nhạc suy nghĩ (countdown bed)", duration: 121 }
+    ]
+  },
+
+  /* ---------- Taxonomy lĩnh vực (Field — spec v2 phase-03) ---------- */
+  fields: [
+    { id: "tu-nhien",   name: "Tự nhiên",  color: "blue"   },
+    { id: "xa-hoi",     name: "Xã hội",    color: "purple" },
+    { id: "van-hoa",    name: "Văn hoá – Nghệ thuật", color: "gold" },
+    { id: "the-thao",   name: "Thể thao",  color: "green"  },
+    { id: "tieng-anh",  name: "Tiếng Anh", color: "orange" },
+    { id: "hieu-biet",  name: "Hiểu biết chung", color: "red" }
+  ],
+
+  /* ---------- Bộ đề (QuestionSet — demo PRIVATE/PUBLIC + share-link) ---------- */
+  sets: [
+    { id: "s1", displayId: "SET-000012", name: "Bộ đề luyện tập tuần 42", count: 24,
+      visibility: "PRIVATE", everPublic: false, shareLink: null, owner: "Ban ra đề" },
+    { id: "s2", displayId: "SET-000015", name: "Đề thi thử Olympia cụm Hà Nội", count: 48,
+      visibility: "PRIVATE", everPublic: false, owner: "Cô Lan (GV Sử)",
+      shareLink: { token: "8f3kQz…Xp29", password: "olp-2026", ttl: "7 ngày", withAnswer: false } },
+    { id: "s3", displayId: "SET-000009", name: "Bộ đề mẫu công khai 2025", count: 36,
+      visibility: "PUBLIC", everPublic: true, shareLink: null, owner: "Ban ra đề" }
+  ],
+
   /* ---------- Viewer chờ duyệt ---------- */
   pendingViewers: [
     { id: "v1", name: "Hoàng Văn Nam", requestedAt: "20:01:12" },
@@ -76,16 +142,33 @@ window.MOCK = {
       { id: "kdc-12", text: "Trò chơi dân gian nào dùng 10 quân cờ và ô vuông vẽ trên đất?", answer: "Ô ăn quan", difficulty: "trung-binh", topics: ["Văn hoá"] }
     ],
 
-    /* VCNV: 4 hàng ngang + ô trung tâm, CNV = "TRƯỜNG SA" */
+    /* VCNV: 4 hàng ngang + ô trung tâm, CNV = "TRƯỜNG SA"
+       hintPos: vị trí ký tự trong đáp án hàng ngang THUỘC CNV (hintMap spec v2 §5) */
     vcnv: {
       obstacle: { answer: "TRƯỜNG SA", hint: "Quần đảo thiêng liêng của Tổ quốc", image: "5 miếng ghép ảnh vệ tinh quần đảo" },
       rows: [
-        { id: "vcnv-1", index: 1, len: 7, text: "Loại cây đặc trưng che bóng mát trên đảo, tên một loài... (7 chữ cái)", answer: "PHONG BA", difficulty: "trung-binh", topics: ["Địa lý"] },
-        { id: "vcnv-2", index: 2, len: 6, text: "Lực lượng ngày đêm canh giữ biển đảo (6 chữ cái)", answer: "HAI QUAN", difficulty: "de", topics: ["Xã hội"] },
-        { id: "vcnv-3", index: 3, len: 8, text: "Tỉnh quản lý hành chính quần đảo này (8 chữ cái)", answer: "KHANH HOA", difficulty: "trung-binh", topics: ["Địa lý"] },
-        { id: "vcnv-4", index: 4, len: 5, text: "Nguồn tài nguyên quý dưới đáy biển Đông (5 chữ cái)", answer: "DAU KHI", difficulty: "trung-binh", topics: ["Kinh tế"] }
+        { id: "vcnv-1", index: 1, len: 7, text: "Loại cây đặc trưng che bóng mát trên đảo, tên một loài... (7 chữ cái)", answer: "PHONG BA", hintPos: [3, 4, 7], difficulty: "trung-binh", topics: ["Địa lý"] },
+        { id: "vcnv-2", index: 2, len: 6, text: "Lực lượng ngày đêm canh giữ biển đảo (6 chữ cái)", answer: "HAI QUAN", hintPos: [1, 5, 7], difficulty: "de", topics: ["Xã hội"] },
+        { id: "vcnv-3", index: 3, len: 8, text: "Tỉnh quản lý hành chính quần đảo này (8 chữ cái)", answer: "KHANH HOA", hintPos: [2, 3, 7, 8], difficulty: "trung-binh", topics: ["Địa lý"] },
+        { id: "vcnv-4", index: 4, len: 5, text: "Nguồn tài nguyên quý dưới đáy biển Đông (5 chữ cái)", answer: "DAU KHI", hintPos: [1, 2], difficulty: "trung-binh", topics: ["Kinh tế"] }
       ],
       centerPiece: { id: "vcnv-5", index: 5, text: "Ô trung tâm — hình ảnh gợi ý chính", answer: "CỘT MỐC CHỦ QUYỀN" }
+    },
+
+    /* VCNV biến thể 8 hàng ngang (ObstacleSet.rowCount = 8, spec v2 §5) */
+    vcnv8: {
+      obstacle: { answer: "SÔNG HỒNG", hint: "Dòng sông gắn với nền văn minh lúa nước Bắc Bộ", image: "9 miếng ghép (8 + trung tâm)" },
+      rows: [
+        { id: "v8-1", index: 1, text: "Chất màu mỡ sông bồi đắp cho ruộng đồng", answer: "PHU SA",     hintPos: [1, 4] },
+        { id: "v8-2", index: 2, text: "Địa hình do sông tạo ra ở hạ lưu",         answer: "DONG BANG",  hintPos: [1, 2, 3, 8] },
+        { id: "v8-3", index: 3, text: "Tên cũ của Hà Nội thời Lý",                answer: "THANG LONG", hintPos: [4, 6, 7, 8, 9] },
+        { id: "v8-4", index: 4, text: "Thành phố ngã ba sông ở Phú Thọ",          answer: "VIET TRI",   hintPos: [2] },
+        { id: "v8-5", index: 5, text: "Công trình ngăn lũ dọc hai bờ sông",       answer: "DE DIEU",    hintPos: [] },
+        { id: "v8-6", index: 6, text: "Vùng đất bồi hình tam giác nơi cửa sông",  answer: "CHAU THO",   hintPos: [2, 7] },
+        { id: "v8-7", index: 7, text: "Hiện tượng nước dâng cao mùa mưa",         answer: "NUOC LU",    hintPos: [1, 2] },
+        { id: "v8-8", index: 8, text: "Cây cầu thép lịch sử bắc qua sông này",    answer: "LONG BIEN",  hintPos: [1, 2, 3] }
+      ],
+      centerPiece: { id: "v8-9", index: 9, text: "Ô trung tâm — hình ảnh gợi ý chính", answer: "BÃI GIỮA" }
     },
 
     /* Tăng tốc: 4 câu, độ khó tăng dần, thường có media */
@@ -94,6 +177,25 @@ window.MOCK = {
       { id: "tt-02", text: "Sắp xếp các sự kiện lịch sử theo thứ tự thời gian (video)", answer: "B-A-D-C", time: 20, difficulty: "trung-binh", topics: ["Lịch sử"], media: "video" },
       { id: "tt-03", text: "Quy luật dãy số: 2, 6, 12, 20, 30, ... Số tiếp theo?", answer: "42", time: 30, difficulty: "trung-binh", topics: ["Toán", "IQ"] },
       { id: "tt-04", text: "Đoạn video thí nghiệm: hiện tượng vật lý nào được mô tả?", answer: "Khúc xạ ánh sáng", time: 40, difficulty: "kho", topics: ["Vật lý"], media: "video" }
+    ],
+
+    /* Tăng tốc — format clue-buzz (spec v2 §6): 3-4 dữ kiện mở dần,
+       bấm chuông bất kỳ lúc nào; điểm theo MỐC dữ kiện đang mở 40/30/20/10 */
+    tangTocClue: [
+      { id: "ttc-01", answer: "TRÁI ĐẤT", cluePoints: [40, 30, 20, 10], clueInterval: 10, difficulty: "trung-binh", topics: ["Thiên văn"],
+        clues: [
+          "Hành tinh thứ ba tính từ Mặt Trời.",
+          "Khoảng 71% bề mặt được bao phủ bởi nước.",
+          "Có đúng một vệ tinh tự nhiên.",
+          "Nơi duy nhất được biết là có sự sống."
+        ] },
+      { id: "ttc-02", answer: "NGUYỄN DU", cluePoints: [40, 30, 20, 10], clueInterval: 10, difficulty: "trung-binh", topics: ["Văn học"],
+        clues: [
+          "Đại thi hào dân tộc, danh nhân văn hoá thế giới.",
+          "Quê Hà Tĩnh, sống cuối thế kỷ XVIII – đầu XIX.",
+          "Tác giả 'Văn tế thập loại chúng sinh'.",
+          "Nổi tiếng nhất với 'Truyện Kiều'."
+        ] }
     ],
 
     /* Về đích: pool câu 20 điểm và 30 điểm */
@@ -128,19 +230,34 @@ window.MOCK = {
   questionBank: [] // được build bên dưới
 };
 
-/* Build danh sách phẳng + metadata quản trị (người tạo, trạng thái duyệt) */
+/* Build danh sách phẳng + metadata quản trị (người tạo, trạng thái duyệt)
+   Spec v2 §9: thêm displayId (Q-xxxxxx), fieldId (lĩnh vực), wordCount (auto) */
 (function buildBank() {
   var q = window.MOCK.questions;
   var creators = ["Cô Lan (GV Sử)", "Thầy Tuấn (GV Lý)", "Ban ra đề", "Thầy Minh (GV Toán)"];
   var statuses = ["approved", "approved", "approved", "pending", "approved", "rejected"];
+  /* Map chủ đề → lĩnh vực (taxonomy Field) */
+  var TOPIC_FIELD = {
+    "Toán": "tu-nhien", "Vật lý": "tu-nhien", "Hoá học": "tu-nhien",
+    "Sinh học": "tu-nhien", "Thiên văn": "tu-nhien", "Tin học": "tu-nhien",
+    "Khoa học": "tu-nhien", "Môi trường": "tu-nhien",
+    "Địa lý": "xa-hoi", "Lịch sử": "xa-hoi", "Xã hội": "xa-hoi", "Kinh tế": "xa-hoi",
+    "Văn học": "van-hoa", "Văn hoá": "van-hoa", "Âm nhạc": "van-hoa",
+    "Thể thao": "the-thao", "Tiếng Anh": "tieng-anh",
+    "Kiến thức chung": "hieu-biet", "IQ": "hieu-biet"
+  };
   var all = [];
   var i = 0;
   function push(item, round) {
+    var topic = (item.topics || [])[0];
     all.push(Object.assign({}, item, {
       round: round,
       media: item.media || null,
       creator: creators[i % creators.length],
-      status: statuses[i % statuses.length]
+      status: statuses[i % statuses.length],
+      displayId: "Q-" + String(100101 + i).slice(-6).padStart(6, "0"),
+      fieldId: TOPIC_FIELD[topic] || "hieu-biet",
+      wordCount: item.text.trim().split(/\s+/).length
     }));
     i++;
   }
@@ -150,6 +267,9 @@ window.MOCK = {
   q.khoiDongChung.forEach(function (it) { push(it, "KHOI_DONG_CHUNG"); });
   q.vcnv.rows.forEach(function (it) { push(it, "VCNV"); });
   q.tangToc.forEach(function (it) { push(it, "TANG_TOC"); });
+  q.tangTocClue.forEach(function (it) {
+    push(Object.assign({ text: "[Clue-buzz] " + it.clues[0] + " (+" + (it.clues.length - 1) + " dữ kiện)" }, it), "TANG_TOC");
+  });
   q.veDich[20].forEach(function (it) { push(it, "VE_DICH_20"); });
   q.veDich[30].forEach(function (it) { push(it, "VE_DICH_30"); });
   q.tieBreak.forEach(function (it) { push(it, "TIE_BREAK"); });

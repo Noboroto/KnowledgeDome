@@ -20,8 +20,10 @@ window.Engine = (function () {
     },
     TANG_TOC: {
       soCau: 4, times: [10, 20, 30, 40],
-      /* điểm theo thứ hạng tốc độ trong số người ĐÚNG */
-      points: [40, 30, 20, 10]
+      /* ranked-speed: điểm theo thứ hạng tốc độ trong số người ĐÚNG */
+      points: [40, 30, 20, 10],
+      /* clue-buzz (spec v2 §6): điểm theo MỐC dữ kiện đang mở khi bấm chuông */
+      clueBuzz: { maxClues: 4, cluePoints: [40, 30, 20, 10], intervalSeconds: 10, wrongLocksOut: true }
     },
     VE_DICH: {
       soCau: 3, goi: [20, 30],
@@ -58,7 +60,8 @@ window.Engine = (function () {
     starUsed: {},              // { cid: true } — đã dùng Ngôi sao hy vọng
     log: []                    // audit log mock
   };
-  (window.MOCK ? window.MOCK.contestants : []).forEach(function (c) {
+  /* Khởi tạo điểm cho MỌI ghế đã khai báo (tối đa 12 — spec v2 §2) */
+  (window.MOCK ? (window.MOCK.contestantsAll || window.MOCK.contestants) : []).forEach(function (c) {
     state.scores[c.id] = 0;
   });
 
@@ -122,12 +125,26 @@ window.Engine = (function () {
     addScore(cid, delta, reason || "admin chỉnh tay");
   }
   function getContestant(cid) {
-    return (window.MOCK.contestants || []).find(function (c) { return c.id === cid; });
+    return (window.MOCK.contestantsAll || window.MOCK.contestants || [])
+      .find(function (c) { return c.id === cid; });
   }
-  function ranking() { // xếp hạng giảm dần theo điểm
-    return window.MOCK.contestants.slice().sort(function (a, b) {
+  function ranking(list) { // xếp hạng giảm dần theo điểm (list optional — mặc định 4 ghế)
+    return (list || window.MOCK.contestants).slice().sort(function (a, b) {
       return state.scores[b.id] - state.scores[a.id];
     });
+  }
+
+  /* Reduce điểm cá nhân → đội (scoringUnit=team, spec v2 §2)
+     Trả về mảng [{team, score, members:[{c, score}]}] sắp giảm dần */
+  function teamScores(activeIds) {
+    var teams = window.MOCK.teams || [];
+    return teams.map(function (t) {
+      var members = t.seatIds
+        .filter(function (id) { return !activeIds || activeIds.indexOf(id) >= 0; })
+        .map(function (id) { return { c: getContestant(id), score: state.scores[id] || 0 }; });
+      var total = members.reduce(function (s, m) { return s + m.score; }, 0);
+      return { team: t, score: total, members: members };
+    }).sort(function (a, b) { return b.score - a.score; });
   }
 
   /* ---------- Vòng thi / phase ---------- */
@@ -220,6 +237,25 @@ window.Engine = (function () {
     return out;
   }
 
+  /* Tăng tốc clue-buzz: bấm chuông khi đang mở `revealed` dữ kiện (1-based).
+     Đúng → điểm mốc cluePoints[revealed-1]; sai → khoá cá nhân (wrongLocksOut) */
+  function scoreClueBuzz(cid, revealed, correct) {
+    var cfg = RULES.TANG_TOC.clueBuzz;
+    var idx = Math.max(0, Math.min(revealed - 1, cfg.cluePoints.length - 1));
+    if (correct) {
+      var pts = cfg.cluePoints[idx];
+      addScore(cid, pts, "Tăng tốc clue-buzz (mốc dữ kiện " + revealed + ")");
+      emit("clue:solved", { cid: cid, revealed: revealed, points: pts });
+      clearBuzz();
+      return pts;
+    }
+    if (cfg.wrongLocksOut) lockContestant(cid, true); // khoá cá nhân (đội: teamLockout §2b)
+    emit("clue:wrong", { cid: cid, revealed: revealed });
+    log((getContestant(cid) || { name: cid }).name + " trả lời sai clue-buzz — bị khoá chuông câu này");
+    clearBuzz();
+    return 0;
+  }
+
   /* Về đích — thí sinh chính trả lời câu giá trị `value` (20|30), có thể kèm NSHV */
   function scoreVeDich(cid, value, correct, useStar) {
     var d;
@@ -257,6 +293,8 @@ window.Engine = (function () {
     setPhase: setPhase,
     buzz: buzz, clearBuzz: clearBuzz, lockBuzz: lockBuzz, lockContestant: lockContestant,
     addScore: addScore, setScore: setScore, ranking: ranking, getContestant: getContestant,
+    teamScores: teamScores,
+    scoreClueBuzz: scoreClueBuzz,
     scoreKhoiDongRieng: scoreKhoiDongRieng,
     scoreKhoiDongChung: scoreKhoiDongChung,
     scoreVcnvRow: scoreVcnvRow,

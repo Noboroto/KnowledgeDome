@@ -70,4 +70,16 @@
   /* ---------- Kích thước tối thiểu ---------- */
   --touch-min: 44px;      /* WCAG touch target */
   --timer-h: 14px;        /* timer bar thí sinh */
+
+  /* ---------- Z-index layers ---------- */
+  --z-nav: 95;            /* nút back / điều hướng */
+  --z-modal: 100;
+  --z-toast: 120;         /* toast luôn trên cùng */
+
+  /* ---------- Toast ---------- */
+  --toast-w: 320px;
+  --toast-bg: rgba(6, 11, 29, .95);
+
+  /* ---------- Pagination ---------- */
+  --page-btn: 36px;       /* nút số trang */
 }

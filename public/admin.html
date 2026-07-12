@@ -12,6 +12,8 @@
     display: grid; grid-template-columns: 280px 1fr 340px; gap: var(--sp-4);
     padding: var(--sp-4); max-width: 1600px; margin: 0 auto; align-items: start;
   }
+  .topbar { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--sp-3); }
+  .topbar h1 { font-size: var(--fs-lg); }
   @media (max-width: 1100px) { .layout { grid-template-columns: 1fr 1fr; } .col-right { grid-column: 1 / -1; } }
   @media (max-width: 760px)  { .layout { grid-template-columns: 1fr; } }
   .col { display: grid; gap: var(--sp-4); align-content: start; }
@@ -78,10 +80,38 @@
   }
   .log__item { padding: var(--sp-1) var(--sp-2); border-left: 2px solid var(--navy-500); background: rgba(255,255,255,.03); border-radius: 0 var(--r-sm) var(--r-sm) 0; animation: slide-up var(--dur-fast) var(--ease-out); }
   .log__item .t { color: var(--text-3); margin-right: var(--sp-2); }
+
+  /* ---------- Soundboard (mock) ---------- */
+  .snd-track { display: flex; align-items: baseline; gap: var(--sp-2); font-size: var(--fs-sm); }
+  .snd-track__name { font-weight: 700; }
+  .snd-track__time { margin-left: auto; color: var(--text-3); font-size: var(--fs-xs); font-family: var(--font-mono); }
+  .snd-progress { height: 6px; border-radius: var(--r-full); background: rgba(255,255,255,.08); overflow: hidden; margin: var(--sp-2) 0 var(--sp-3); }
+  .snd-progress > div { height: 100%; background: var(--grad-gold); transform-origin: left; transform: scaleX(0); }
+  .snd-controls { display: flex; align-items: center; gap: var(--sp-2); }
+  .snd-controls .btn { min-height: 36px; padding: 0 var(--sp-3); }
+  .snd-vol { flex: 1; accent-color: var(--gold); min-height: 24px; }
+
+  /* ---------- Bảng điểm adaptive (4 / 8-12 / đội) ---------- */
+  .score-grid.is-compact { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-1) var(--sp-3); }
+  .score-grid.is-compact .score-row { border-bottom: none; padding: var(--sp-1) 0; }
+  .score-grid.is-compact .score-row input { display: none; } /* compact: chỉ xem, sửa tay ở layout ≤4 */
+  .team-block { border: var(--border-1); border-radius: var(--r-md); padding: var(--sp-2) var(--sp-3); margin-bottom: var(--sp-2); }
+  .team-block__head { display: flex; align-items: center; gap: var(--sp-2); font-weight: 800; }
+  .team-block__score { margin-left: auto; font-size: var(--fs-xl); font-weight: 900; color: var(--gold); font-variant-numeric: tabular-nums; }
+  .team-block .score-row { padding: 2px 0; font-size: var(--fs-xs); }
+  .team-block .score-row input { width: 60px; min-height: 28px; }
+  .seat-switch .btn.is-on { background: var(--grad-gold); color: var(--text-on-gold); border-color: transparent; }
 </style>
 </head>
 <body>
 <div class="layout">
+  <!-- Top bar: back + tiêu đề -->
+  <header class="topbar">
+    <a class="nav-back" href="index.html" title="Quay lại (Esc) · Hub (H)">← Hub</a>
+    <h1>🎛️ Bàn điều khiển admin</h1>
+    <span class="text-dim" style="font-size:var(--fs-sm)">phòng <span class="mono text-gold" id="roomCodeTop"></span></span>
+  </header>
+
   <!-- ============ CỘT TRÁI ============ -->
   <div class="col">
     <section class="card">
@@ -91,8 +121,27 @@
     </section>
 
     <section class="card">
-      <h2 class="card__title">Vòng thi</h2>
+      <h2 class="card__title">Vòng thi <span class="text-dim" style="font-size:var(--fs-xs)">(playlist)</span></h2>
       <div class="stepper" id="stepper"></div>
+    </section>
+
+    <!-- Soundboard mock (spec v2 §10 — permission match.soundboard) -->
+    <section class="card">
+      <h2 class="card__title">🎵 Soundboard</h2>
+      <div class="snd-track">
+        <span class="snd-track__name" id="sndName">—</span>
+        <span class="snd-track__time" id="sndTime">0:00</span>
+      </div>
+      <div class="snd-progress"><div id="sndProgress"></div></div>
+      <div class="snd-controls">
+        <button class="btn" id="sndPlay" title="Phát / dừng nhạc nền">▶</button>
+        <button class="btn" id="sndNext" title="Bài tiếp theo">⏭</button>
+        <button class="btn" id="sndMute" title="Tắt / mở tiếng">🔊</button>
+        <input class="snd-vol" type="range" id="sndVol" min="0" max="100" value="70" aria-label="Âm lượng nhạc nền">
+      </div>
+      <p class="text-dim" style="font-size:var(--fs-xs);margin-top:var(--sp-2)">
+        Nhạc nền phát ở viewer/overlay — contestant mặc định tắt.
+      </p>
     </section>
 
     <section class="card">
@@ -154,7 +203,14 @@
   <div class="col col-right">
     <section class="card">
       <h2 class="card__title">Bảng điểm live <span class="text-dim" style="font-size:var(--fs-xs)">(sửa số → Enter để đặt tay)</span></h2>
-      <div id="scoreRows"></div>
+      <!-- Switcher adaptive: 4/8/12 thí sinh + chế độ đội -->
+      <div class="row seat-switch" id="seatSwitch" style="margin-bottom:var(--sp-3);gap:var(--sp-1)">
+        <button class="btn btn--sm" data-seats="4">4</button>
+        <button class="btn btn--sm" data-seats="8">8</button>
+        <button class="btn btn--sm" data-seats="12">12</button>
+        <button class="btn btn--sm" id="btnTeamMode" title="12 người → 4 đội × 3">👥 Đội</button>
+      </div>
+      <div class="score-grid" id="scoreRows"></div>
     </section>
 
     <section class="card">
@@ -166,21 +222,17 @@
 
 <script src="assets/mock-data.js"></script>
 <script src="assets/engine.js"></script>
+<script src="assets/ui.js"></script>
 <script>
 (function () {
   "use strict";
-  var E = window.Engine, M = window.MOCK;
+  var E = window.Engine, M = window.MOCK, UI = window.UI;
   var $ = function (id) { return document.getElementById(id); };
   $("roomCode").textContent = M.roomCode;
+  $("roomCodeTop").textContent = M.roomCode;
 
-  /* ---------- Stepper 5 vòng ---------- */
-  var rounds = [
-    { key: "KHOI_DONG", label: "Khởi động", note: "riêng 6 câu + chung 12 câu" },
-    { key: "VCNV", label: "Vượt CNV", note: "4 hàng + CNV 80/60/40/20" },
-    { key: "TANG_TOC", label: "Tăng tốc", note: "4 câu · 40/30/20/10" },
-    { key: "VE_DICH", label: "Về đích", note: "gói 20/30 · NSHV" },
-    { key: "TIE_BREAK", label: "Câu hỏi phụ", note: "hoà điểm · tối đa 3 câu" }
-  ];
+  /* ---------- Stepper render từ MOCK.playlist (spec v2: KHÔNG cứng 5 bước) ---------- */
+  var rounds = M.playlist;
   var activeRound = 0;
   function renderStepper() {
     var w = $("stepper"); w.innerHTML = "";
@@ -191,7 +243,8 @@
         "<span><strong>" + r.label + "</strong><br><small class='text-dim'>" + r.note + "</small></span>";
       b.addEventListener("click", function () {
         activeRound = i; renderStepper();
-        E.setPhase(r.key); qIndex = 0; renderQuestion();
+        E.setPhase(r.type); qIndex = 0; renderQuestion();
+        UI.toast("Chuyển vòng: " + r.label, "success");
       });
       w.appendChild(b);
     });
@@ -200,7 +253,7 @@
   /* ---------- Danh sách câu theo vòng (mock: gộp pool) ---------- */
   function poolForRound() {
     var q = M.questions;
-    switch (rounds[activeRound].key) {
+    switch (rounds[activeRound].type) {
       case "KHOI_DONG": return q.khoiDongRieng.c1.concat(q.khoiDongChung);
       case "VCNV": return q.vcnv.rows;
       case "TANG_TOC": return q.tangToc;
@@ -237,15 +290,23 @@
       var no = document.createElement("button");
       no.className = "btn btn--danger btn--sm"; no.textContent = "✗";
       no.title = "Từ chối";
-      ok.addEventListener("click", function () { remove(v, true); });
-      no.addEventListener("click", function () { remove(v, false); });
+      ok.addEventListener("click", function () { remove(v, true, ok, no); });
+      no.addEventListener("click", function () { remove(v, false, no, ok); });
       el.appendChild(ok); el.appendChild(no);
       w.appendChild(el);
     });
-    function remove(v, approved) {
-      pending = pending.filter(function (x) { return x !== v; });
-      E.log((approved ? "Duyệt" : "Từ chối") + " viewer: " + v.name);
-      renderViewers();
+    /* Duyệt/từ chối: loading 300-600ms → toast, khoá cả 2 nút chống double */
+    function remove(v, approved, btn, other) {
+      other.disabled = true;
+      UI.mockAsync({
+        btn: btn,
+        loading: (approved ? "Đang duyệt " : "Đang từ chối ") + v.name + "…",
+        success: (approved ? "Đã duyệt " : "Đã từ chối ") + v.name
+      }).then(function () {
+        pending = pending.filter(function (x) { return x !== v; });
+        E.log((approved ? "Duyệt" : "Từ chối") + " viewer: " + v.name);
+        renderViewers();
+      });
     }
   }
 
@@ -258,22 +319,37 @@
     $("judgeTarget").textContent = "chưa ai giữ chuông";
     $("judgeTarget").className = "text-dim";
   });
+  /* Chấm điểm: khoá cả 2 nút đến khi có phản hồi (chống double-submit) */
+  var judging = false;
   function judge(correct) {
+    if (judging) return;
+    judging = true;
     var cid = E.state.buzzWinner || M.contestants[0].id; // không ai giữ chuông → chấm TS1 (lượt riêng)
-    var key = rounds[activeRound].key;
-    if (key === "KHOI_DONG") {
-      E.state.buzzWinner ? E.scoreKhoiDongChung(cid, correct) : E.scoreKhoiDongRieng(cid, correct);
-    } else if (key === "VCNV") {
-      E.state.buzzWinner ? E.scoreVcnvObstacle(cid, correct) : (function () {
-        var r = {}; r[cid] = correct; E.scoreVcnvRow(r);
-      })();
-      E.clearBuzz();
-    } else if (key === "VE_DICH") {
-      E.scoreVeDich(cid, 20, correct, false);
-    } else {
-      E.addScore(cid, correct ? 10 : 0, key + " chấm tay");
-    }
-    flashBtn(correct ? "btnCorrect" : "btnWrong");
+    var name = (E.getContestant(cid) || {}).name || cid;
+    var btn = $(correct ? "btnCorrect" : "btnWrong");
+    var other = $(correct ? "btnWrong" : "btnCorrect");
+    other.disabled = true;
+    UI.mockAsync({
+      btn: btn,
+      loading: "Đang ghi kết quả…",
+      success: "Đã chấm " + (correct ? "ĐÚNG" : "SAI") + " cho " + name
+    }).then(function () {
+      other.disabled = false; judging = false;
+      var key = rounds[activeRound].type;
+      if (key === "KHOI_DONG") {
+        E.state.buzzWinner ? E.scoreKhoiDongChung(cid, correct) : E.scoreKhoiDongRieng(cid, correct);
+      } else if (key === "VCNV") {
+        E.state.buzzWinner ? E.scoreVcnvObstacle(cid, correct) : (function () {
+          var r = {}; r[cid] = correct; E.scoreVcnvRow(r);
+        })();
+        E.clearBuzz();
+      } else if (key === "VE_DICH") {
+        E.scoreVeDich(cid, 20, correct, false);
+      } else {
+        E.addScore(cid, correct ? 10 : 0, key + " chấm tay");
+      }
+      flashBtn(correct ? "btnCorrect" : "btnWrong");
+    });
   }
   function flashBtn(id) {
     $(id).classList.add("anim-flash-green");
@@ -308,9 +384,13 @@
     $("btnTimerToggle").innerHTML = '▶ Start <span class="kbd">S</span>';
   });
   $("btnSetTimer").addEventListener("click", function () {
-    E.startTimer(+$("manualTimer").value || 15); timerRunning = true;
-    $("btnTimerToggle").innerHTML = '⏸ Pause <span class="kbd">S</span>';
-    E.log("Admin đặt timer " + $("manualTimer").value + "s");
+    var s = +$("manualTimer").value || 15;
+    UI.mockAsync({ btn: $("btnSetTimer"), loading: "Đang đặt timer…", success: "Timer " + s + "s" })
+      .then(function () {
+        E.startTimer(s); timerRunning = true;
+        $("btnTimerToggle").innerHTML = '⏸ Pause <span class="kbd">S</span>';
+        E.log("Admin đặt timer " + s + "s");
+      });
   });
 
   /* ---------- Mock chuông ---------- */
@@ -323,30 +403,145 @@
     $("buzzMockRow").appendChild(b);
   });
 
-  /* ---------- Bảng điểm live + sửa tay ---------- */
-  var scoreEls = {};
-  M.contestants.forEach(function (c) {
+  /* ---------- Bảng điểm live adaptive (4 / 8-12 / đội) + sửa tay ---------- */
+  var seatCount = 4, teamMode = false;
+  var scoreEls = {};   // cid → { label, input? }
+  var teamLabels = {}; // teamId → label tổng đội
+  function activeC() { return M.contestantsAll.slice(0, seatCount); }
+  function activeIds() { return activeC().map(function (c) { return c.id; }); }
+
+  function makeScoreRow(c, small) {
     var el = document.createElement("div");
     el.className = "score-row";
-    el.innerHTML =
-      '<span class="avatar" style="background:' + c.color + ';width:32px;height:32px;font-size:var(--fs-sm)">' + c.name.trim().split(" ").pop()[0] + "</span>" +
-      '<div style="font-size:var(--fs-sm)"><strong>' + c.name + "</strong></div>" +
-      '<span class="score-row__score">0</span>';
+    var av = document.createElement("span");
+    av.className = "avatar";
+    av.style.cssText = "background:" + c.color + ";width:" + (small ? 24 : 32) + "px;height:" + (small ? 24 : 32) + "px;font-size:var(--fs-xs)";
+    av.textContent = c.name.trim().split(" ").pop()[0];
+    var nm = document.createElement("div");
+    nm.style.fontSize = "var(--fs-sm)";
+    var strong = document.createElement("strong"); strong.textContent = c.name;
+    nm.appendChild(strong);
+    var sc = document.createElement("span");
+    sc.className = "score-row__score"; sc.textContent = E.state.scores[c.id] || 0;
+    el.appendChild(av); el.appendChild(nm); el.appendChild(sc);
     var inp = document.createElement("input");
-    inp.className = "input mono"; inp.type = "number"; inp.value = "0";
+    inp.className = "input mono"; inp.type = "number"; inp.value = E.state.scores[c.id] || 0;
     inp.title = "Đặt điểm tay rồi Enter";
     inp.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") E.setScore(c.id, +inp.value || 0, "admin đặt điểm tay");
+      if (e.key === "Enter") {
+        E.setScore(c.id, +inp.value || 0, "admin đặt điểm tay");
+        UI.toast("Đặt điểm " + c.name + " = " + (+inp.value || 0), "success");
+      }
     });
     el.appendChild(inp);
-    $("scoreRows").appendChild(el);
-    scoreEls[c.id] = { label: el.querySelector(".score-row__score"), input: inp };
+    scoreEls[c.id] = { label: sc, input: inp };
+    return el;
+  }
+
+  function renderScores() {
+    var w = $("scoreRows");
+    w.innerHTML = ""; scoreEls = {}; teamLabels = {};
+    w.classList.toggle("is-compact", !teamMode && seatCount > 4);
+    if (teamMode) {
+      /* Chế độ đội: tổng đội TO + thành viên nhỏ (reduce từ engine) */
+      E.teamScores(activeIds()).forEach(function (ts) {
+        var block = document.createElement("div");
+        block.className = "team-block";
+        var head = document.createElement("div");
+        head.className = "team-block__head";
+        var dot = document.createElement("span");
+        dot.style.cssText = "width:10px;height:10px;border-radius:999px;background:" + ts.team.color;
+        var nm = document.createElement("span"); nm.textContent = ts.team.name;
+        var total = document.createElement("span");
+        total.className = "team-block__score"; total.textContent = ts.score;
+        head.appendChild(dot); head.appendChild(nm); head.appendChild(total);
+        block.appendChild(head);
+        ts.members.forEach(function (m) { block.appendChild(makeScoreRow(m.c, true)); });
+        w.appendChild(block);
+        teamLabels[ts.team.id] = total;
+      });
+      return;
+    }
+    activeC().forEach(function (c) { w.appendChild(makeScoreRow(c, seatCount > 4)); });
+  }
+
+  function refreshSeatSwitch() {
+    document.querySelectorAll("#seatSwitch [data-seats]").forEach(function (b) {
+      b.classList.toggle("is-on", +b.dataset.seats === seatCount && !teamMode);
+    });
+    $("btnTeamMode").classList.toggle("is-on", teamMode);
+  }
+  document.querySelectorAll("#seatSwitch [data-seats]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      seatCount = +b.dataset.seats; teamMode = false;
+      renderScores(); refreshSeatSwitch();
+      UI.toast("Bảng điểm: " + seatCount + " thí sinh", "success");
+    });
   });
+  $("btnTeamMode").addEventListener("click", function () {
+    teamMode = !teamMode;
+    if (teamMode) seatCount = 12; // demo: 4 đội × 3
+    renderScores(); refreshSeatSwitch();
+    UI.toast(teamMode ? "Chế độ đội: 4 đội × 3" : "Về chế độ cá nhân", "success");
+  });
+
   E.on("score:change", function (d) {
-    scoreEls[d.cid].label.textContent = d.score;
-    scoreEls[d.cid].input.value = d.score;
-    scoreEls[d.cid].label.classList.add("anim-pop-in");
-    setTimeout(function () { scoreEls[d.cid].label.classList.remove("anim-pop-in"); }, 400);
+    var se = scoreEls[d.cid]; if (!se) return;
+    se.label.textContent = d.score;
+    se.input.value = d.score;
+    se.label.classList.add("anim-pop-in");
+    setTimeout(function () { se.label.classList.remove("anim-pop-in"); }, 400);
+    if (teamMode) { // cập nhật tổng đội
+      E.teamScores(activeIds()).forEach(function (ts) {
+        if (teamLabels[ts.team.id]) teamLabels[ts.team.id].textContent = ts.score;
+      });
+    }
+  });
+
+  /* ---------- Soundboard mock ---------- */
+  var sndIdx = 0, sndPlaying = false, sndMuted = false, sndPos = 0, sndTimer = null;
+  var tracks = M.sound.backgroundTracks;
+  function fmtTime(s) { return Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0"); }
+  function renderSnd() {
+    var t = tracks[sndIdx];
+    $("sndName").textContent = t.name;
+    $("sndTime").textContent = fmtTime(sndPos) + " / " + fmtTime(t.duration);
+    $("sndProgress").style.transform = "scaleX(" + (sndPos / t.duration) + ")";
+    $("sndPlay").textContent = sndPlaying ? "⏸" : "▶";
+    $("sndMute").textContent = sndMuted ? "🔇" : "🔊";
+  }
+  function sndTick() {
+    sndPos += 1;
+    if (sndPos >= tracks[sndIdx].duration) { sndNext(); return; }
+    renderSnd();
+  }
+  function sndNext() {
+    sndIdx = (sndIdx + 1) % tracks.length; sndPos = 0;
+    renderSnd();
+    E.log("Soundboard: chuyển bài → " + tracks[sndIdx].name);
+  }
+  $("sndPlay").addEventListener("click", function () {
+    var btn = this;
+    UI.mockAsync({ btn: btn, delay: 300, success: sndPlaying ? "Đã dừng nhạc nền" : "Đang phát: " + tracks[sndIdx].name })
+      .then(function () {
+        sndPlaying = !sndPlaying;
+        clearInterval(sndTimer);
+        if (sndPlaying) sndTimer = setInterval(sndTick, 1000);
+        renderSnd();
+        E.log("Soundboard: " + (sndPlaying ? "phát" : "dừng") + " nhạc nền");
+      });
+  });
+  $("sndNext").addEventListener("click", function () {
+    UI.mockAsync({ btn: this, delay: 300, success: "Bài tiếp theo" }).then(sndNext);
+  });
+  $("sndMute").addEventListener("click", function () {
+    sndMuted = !sndMuted;
+    renderSnd();
+    UI.toast(sndMuted ? "Đã tắt tiếng nhạc nền" : "Đã mở tiếng", "success");
+  });
+  $("sndVol").addEventListener("change", function () {
+    UI.toast("Âm lượng nhạc nền: " + this.value + "%", "success");
+    E.log("Soundboard: volume " + this.value + "%");
   });
 
   /* ---------- Log ---------- */
@@ -369,8 +564,17 @@
     else if (e.key === "ArrowRight") { qIndex++; renderQuestion(); }
   });
 
+  /* ---------- Deep-link: ?round=khoidong|vcnv|tangtoc|vedich|cauphu ---------- */
+  var ROUND_TYPE = { khoidong: "KHOI_DONG", vcnv: "VCNV", tangtoc: "TANG_TOC", vedich: "VE_DICH", cauphu: "TIE_BREAK" };
+  var rq = ROUND_TYPE[UI.param("round")];
+  if (rq) {
+    var ri = rounds.findIndex(function (r) { return r.type === rq; });
+    if (ri >= 0) { activeRound = ri; E.setPhase(rq); }
+  }
+
   /* Init */
   renderStepper(); renderQuestion(); renderViewers();
+  renderScores(); refreshSeatSwitch(); renderSnd();
   E.log("Admin mở bàn điều khiển — phòng " + M.roomCode);
   /* Mock log chuông có sẵn cho sinh động */
   E.log("(mock) " + M.contestants[1].name + " bấm chuông lúc 00:00:01.245");

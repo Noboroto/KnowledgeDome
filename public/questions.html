@@ -8,10 +8,23 @@
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/base.css">
 <style>
+  /* Kho đề: bảng phân trang 10 dòng — header + toolbar + rows + pager
+     vừa 1 viewport 1440×900 (~844px usable) */
   .wrap { max-width: 1400px; margin: 0 auto; padding: var(--sp-4); display: grid; gap: var(--sp-4); }
   .toolbar { display: flex; gap: var(--sp-3); flex-wrap: wrap; align-items: center; }
   .toolbar .input, .toolbar .select { width: auto; min-width: 150px; }
   .toolbar .input--search { flex: 1; min-width: 220px; }
+
+  /* Tabs: Câu hỏi | Bộ đề */
+  .tabs { display: flex; gap: var(--sp-2); }
+  .tab-btn {
+    padding: var(--sp-2) var(--sp-4); min-height: var(--touch-min);
+    border: var(--border-1); border-radius: var(--r-md);
+    background: rgba(255,255,255,.04); color: var(--text-2);
+    font-weight: 800; cursor: pointer;
+    transition: all var(--dur-fast) var(--ease-out);
+  }
+  .tab-btn.is-active { background: var(--grad-gold); color: var(--text-on-gold); border-color: transparent; }
 
   /* Chip độ khó */
   .diff { padding: 2px 10px; border-radius: var(--r-full); font-size: var(--fs-xs); font-weight: 700; }
@@ -19,10 +32,14 @@
   .diff--trung-binh { background: rgba(255,159,67,.16); color: var(--orange); }
   .diff--kho { background: rgba(255,71,87,.16); color: var(--red); }
 
+  /* Chip lĩnh vực (Field) */
+  .field-chip { display: inline-block; padding: 1px 10px; border-radius: var(--r-full); font-size: var(--fs-xs); font-weight: 700; background: rgba(140,108,255,.15); color: var(--purple); white-space: nowrap; }
+
   .tag { display: inline-block; padding: 1px 8px; margin: 1px; border-radius: var(--r-full); font-size: var(--fs-xs); background: rgba(77,141,255,.14); color: var(--blue); }
-  .q-cell { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .q-cell { max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .table tbody tr { cursor: pointer; }
   .count-note { color: var(--text-3); font-size: var(--fs-sm); }
+  .mono-id { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--text-2); white-space: nowrap; }
 
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
   .form-grid .full { grid-column: 1 / -1; }
@@ -30,57 +47,102 @@
   @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
 
   .zip-tree { font-family: var(--font-mono); font-size: var(--fs-sm); background: rgba(0,0,0,.3); border-radius: var(--r-md); padding: var(--sp-4); line-height: 1.8; }
+
+  /* ---------- Bộ đề ---------- */
+  .set-actions { display: flex; gap: var(--sp-1); flex-wrap: wrap; }
+  .warn-box {
+    padding: var(--sp-3) var(--sp-4); border-radius: var(--r-md);
+    font-size: var(--fs-sm); font-weight: 600; line-height: 1.5;
+  }
+  .warn-box--amber { background: rgba(255,159,67,.12); border: 1px solid rgba(255,159,67,.45); color: var(--orange); }
+  .warn-box--red { background: rgba(255,71,87,.12); border: 1px solid var(--red-dim); color: var(--red); }
+  .share-link-row { display: flex; gap: var(--sp-2); margin: var(--sp-3) 0; }
+  .share-link-row .input { font-family: var(--font-mono); font-size: var(--fs-sm); }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="row" style="justify-content:space-between;flex-wrap:wrap">
-    <div>
-      <h1 style="font-size:var(--fs-xl)">🗂️ Kho đề <span class="badge badge--gold">DEMO</span></h1>
-      <p class="text-dim" style="font-size:var(--fs-sm)">Quản lý câu hỏi — admin &amp; người ra đề · phòng <span class="mono text-gold" id="roomCode"></span></p>
+    <div class="row">
+      <a class="nav-back" href="index.html" title="Quay lại (Esc) · Hub (H)">← Hub</a>
+      <div>
+        <h1 style="font-size:var(--fs-xl)">🗂️ Kho đề <span class="badge badge--gold">DEMO</span></h1>
+        <p class="text-dim" style="font-size:var(--fs-sm)">Quản lý câu hỏi &amp; bộ đề — admin, người ra đề · phòng <span class="mono text-gold" id="roomCode"></span></p>
+      </div>
     </div>
     <div class="row">
+      <div class="tabs" role="tablist">
+        <button class="tab-btn is-active" id="tabBtnQ" role="tab">Câu hỏi <span id="qTotal"></span></button>
+        <button class="tab-btn" id="tabBtnS" role="tab">Bộ đề <span id="sTotal"></span></button>
+      </div>
       <button class="btn" id="btnImport">📥 Import ZIP</button>
       <button class="btn" id="btnExport">📤 Export ZIP</button>
       <button class="btn btn--gold" id="btnNew">+ Câu hỏi mới <span class="kbd">N</span></button>
     </div>
   </header>
 
-  <!-- Filter + search -->
-  <section class="card toolbar">
-    <input class="input input--search" id="search" placeholder="Tìm nội dung / đáp án…  (phím /)">
-    <select class="select" id="fRound">
-      <option value="">Mọi vòng thi</option>
-      <option value="KHOI_DONG_RIENG">Khởi động — riêng</option>
-      <option value="KHOI_DONG_CHUNG">Khởi động — chung</option>
-      <option value="VCNV">Vượt CNV</option>
-      <option value="TANG_TOC">Tăng tốc</option>
-      <option value="VE_DICH_20">Về đích 20đ</option>
-      <option value="VE_DICH_30">Về đích 30đ</option>
-      <option value="TIE_BREAK">Câu hỏi phụ</option>
-    </select>
-    <select class="select" id="fDiff">
-      <option value="">Mọi độ khó</option>
-      <option value="de">Dễ</option>
-      <option value="trung-binh">Trung bình</option>
-      <option value="kho">Khó</option>
-    </select>
-    <select class="select" id="fTopic"><option value="">Mọi chủ đề</option></select>
-    <span class="count-note" id="countNote"></span>
-  </section>
+  <!-- ============ TAB 1: CÂU HỎI ============ -->
+  <div id="tabQuestions">
+    <!-- Filter + search -->
+    <section class="card toolbar" style="margin-bottom:var(--sp-4)">
+      <input class="input input--search" id="search" placeholder="Tìm nội dung / đáp án / mã câu…  (phím /)">
+      <select class="select" id="fRound">
+        <option value="">Mọi vòng thi</option>
+        <option value="KHOI_DONG">Khởi động (cả 2 lượt)</option>
+        <option value="KHOI_DONG_RIENG">Khởi động — riêng</option>
+        <option value="KHOI_DONG_CHUNG">Khởi động — chung</option>
+        <option value="VCNV">Vượt CNV</option>
+        <option value="TANG_TOC">Tăng tốc</option>
+        <option value="VE_DICH">Về đích (cả 2 gói)</option>
+        <option value="VE_DICH_20">Về đích 20đ</option>
+        <option value="VE_DICH_30">Về đích 30đ</option>
+        <option value="TIE_BREAK">Câu hỏi phụ</option>
+      </select>
+      <select class="select" id="fDiff">
+        <option value="">Mọi độ khó</option>
+        <option value="de">Dễ</option>
+        <option value="trung-binh">Trung bình</option>
+        <option value="kho">Khó</option>
+      </select>
+      <select class="select" id="fField"><option value="">Mọi lĩnh vực</option></select>
+      <span class="count-note" id="countNote"></span>
+    </section>
 
-  <!-- Bảng câu hỏi -->
-  <section class="card" style="overflow-x:auto">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Nội dung</th><th>Vòng thi</th><th>Độ khó</th><th>Chủ đề</th>
-          <th>Media</th><th>Người tạo</th><th>Trạng thái</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </section>
+    <!-- Bảng câu hỏi: 10 dòng/trang -->
+    <section class="card" style="overflow-x:auto">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th><th>Nội dung</th><th>Vòng thi</th><th>Lĩnh vực</th>
+            <th>Độ khó</th><th>Số từ</th><th>Media</th><th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <!-- Pagination: giữ bảng gọn 1 viewport -->
+      <nav class="pager" aria-label="Phân trang">
+        <span class="count-note" id="pageNote"></span>
+        <div class="pager__pages" id="pagerPages"></div>
+      </nav>
+    </section>
+  </div>
+
+  <!-- ============ TAB 2: BỘ ĐỀ ============ -->
+  <div id="tabSets" hidden>
+    <section class="card" style="overflow-x:auto">
+      <h2 class="card__title">Bộ đề (QuestionSet)</h2>
+      <p class="text-dim" style="font-size:var(--fs-sm);margin-bottom:var(--sp-3)">
+        PRIVATE = owner + ACL 3 mức (view / viewAnswer / export) · Share-link mặc định KHÔNG kèm đáp án ·
+        PUBLIC = một chiều, đóng dấu <code class="mono">everPublic</code> vĩnh viễn.
+      </p>
+      <table class="table">
+        <thead>
+          <tr><th>ID</th><th>Tên bộ đề</th><th>Số câu</th><th>Chủ sở hữu</th><th>Trạng thái</th><th>Hành động</th></tr>
+        </thead>
+        <tbody id="setsBody"></tbody>
+      </table>
+    </section>
+  </div>
 </div>
 
 <!-- Modal Import/Export -->
@@ -96,7 +158,7 @@
     <div class="zip-tree">
 de-thi-olympia.zip<br>
 ├── manifest.json&nbsp;&nbsp;&nbsp;<span class="text-dim"># metadata bộ đề, version, tác giả</span><br>
-├── questions.json&nbsp;&nbsp;<span class="text-dim"># mảng câu hỏi đủ field (round, difficulty, topics…)</span><br>
+├── questions.json&nbsp;&nbsp;<span class="text-dim"># mảng câu hỏi đủ field (round, field, clues…)</span><br>
 └── media/<br>
 &nbsp;&nbsp;&nbsp;&nbsp;├── tt-01.png&nbsp;&nbsp;&nbsp;<span class="text-dim"># ảnh câu tăng tốc</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;└── tt-02.mp4&nbsp;&nbsp;&nbsp;<span class="text-dim"># video câu tăng tốc</span>
@@ -145,6 +207,10 @@ de-thi-olympia.zip<br>
         </select>
       </div>
       <div>
+        <label for="eField">Lĩnh vực</label>
+        <select class="select" id="eField"></select>
+      </div>
+      <div>
         <label for="eTopics">Chủ đề (phẩy ngăn cách)</label>
         <input class="input" id="eTopics" placeholder="Toán, IQ">
       </div>
@@ -177,11 +243,62 @@ de-thi-olympia.zip<br>
   </div>
 </div>
 
+<!-- Modal share-link bộ đề -->
+<div class="modal-backdrop" id="shareModal">
+  <div class="modal">
+    <div class="modal__head">
+      <h2>🔗 Share-link bộ đề</h2>
+      <button class="btn btn--ghost btn--sm" data-close>✕</button>
+    </div>
+    <p style="margin-bottom:var(--sp-2)"><strong id="shareSetName">—</strong></p>
+    <label class="text-dim" style="font-size:var(--fs-xs)">Đường dẫn chia sẻ (token ≥128-bit, TTL 7 ngày, revoke được)</label>
+    <div class="share-link-row">
+      <input class="input grow" id="shareUrl" readonly>
+      <button class="btn" id="btnCopyLink">📋 Copy</button>
+    </div>
+    <label class="text-dim" style="font-size:var(--fs-xs)">Mật khẩu truy cập (rate-limit 5 lần/phút/IP)</label>
+    <div class="share-link-row">
+      <input class="input grow mono" id="sharePw" readonly>
+      <button class="btn" id="btnCopyPw">📋 Copy</button>
+    </div>
+    <div class="warn-box warn-box--amber">
+      ⚠ Share-link mặc định <strong>KHÔNG kèm đáp án</strong>. Bật kèm đáp án là hành động riêng,
+      có cảnh báo và bị audit — người nhận link chỉ xem được nội dung câu hỏi.
+    </div>
+    <div class="row" style="margin-top:var(--sp-4);justify-content:flex-end">
+      <button class="btn" data-close>Đóng</button>
+      <button class="btn btn--danger btn--sm" id="btnRevoke">Revoke link</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal xác nhận PUBLIC (một chiều) -->
+<div class="modal-backdrop" id="publicModal">
+  <div class="modal">
+    <div class="modal__head">
+      <h2>🌐 Public bộ đề?</h2>
+      <button class="btn btn--ghost btn--sm" data-close>✕</button>
+    </div>
+    <p style="margin-bottom:var(--sp-3)"><strong id="publicSetName">—</strong></p>
+    <div class="warn-box warn-box--red">
+      🛑 <strong>PUBLIC = công khai ĐÁP ÁN vĩnh viễn.</strong><br>
+      Bộ đề và MỌI câu hỏi bên trong sẽ bị đóng dấu <code class="mono">everPublic</code> một chiều —
+      un-public sau này KHÔNG gỡ được dấu (đáp án đã có thể bị tải về).
+      Các câu này sẽ bị pre-flight CHẶN khỏi mọi trận đấu.
+    </div>
+    <div class="row" style="margin-top:var(--sp-4);justify-content:flex-end">
+      <button class="btn" data-close>Huỷ</button>
+      <button class="btn btn--danger" id="btnConfirmPublic">Tôi hiểu — Public vĩnh viễn</button>
+    </div>
+  </div>
+</div>
+
 <script src="assets/mock-data.js"></script>
+<script src="assets/ui.js"></script>
 <script>
 (function () {
   "use strict";
-  var M = window.MOCK;
+  var M = window.MOCK, UI = window.UI;
   var $ = function (id) { return document.getElementById(id); };
   $("roomCode").textContent = M.roomCode;
 
@@ -202,50 +319,178 @@ de-thi-olympia.zip<br>
     rejected: ["Từ chối", "badge--red"]
   };
   var mediaIcons = { image: "🖼", video: "🎬", audio: "🔊" };
+  var fieldName = {};
+  M.fields.forEach(function (f) { fieldName[f.id] = f.name; });
 
-  /* Fill filter chủ đề từ dữ liệu */
-  var topics = {};
-  bank.forEach(function (q) { (q.topics || []).forEach(function (t) { topics[t] = 1; }); });
-  Object.keys(topics).sort().forEach(function (t) {
+  /* Fill filter + editor lĩnh vực */
+  M.fields.forEach(function (f) {
     var o = document.createElement("option");
-    o.value = t; o.textContent = t;
-    $("fTopic").appendChild(o);
+    o.value = f.id; o.textContent = f.name;
+    $("fField").appendChild(o);
+    $("eField").appendChild(o.cloneNode(true));
   });
 
-  /* ---------- Render bảng ---------- */
-  function render() {
+  /* ---------- Tabs ---------- */
+  function showTab(name) {
+    var isQ = name !== "sets";
+    $("tabQuestions").hidden = !isQ;
+    $("tabSets").hidden = isQ;
+    $("tabBtnQ").classList.toggle("is-active", isQ);
+    $("tabBtnS").classList.toggle("is-active", !isQ);
+  }
+  $("tabBtnQ").addEventListener("click", function () { showTab("questions"); });
+  $("tabBtnS").addEventListener("click", function () { showTab("sets"); });
+
+  /* ---------- Render bảng câu hỏi + pagination 10 dòng/trang ---------- */
+  var PAGE_SIZE = 10, page = 1;
+  function filtered() {
     var kw = $("search").value.toLowerCase();
-    var fr = $("fRound").value, fd = $("fDiff").value, ft = $("fTopic").value;
-    var rows = bank.filter(function (q) {
-      if (fr && q.round !== fr) return false;
+    var fr = $("fRound").value, fd = $("fDiff").value, ff = $("fField").value;
+    return bank.filter(function (q) {
+      if (fr && q.round.indexOf(fr) !== 0) return false; // prefix: KHOI_DONG khớp cả 2 lượt
       if (fd && q.difficulty !== fd) return false;
-      if (ft && (q.topics || []).indexOf(ft) < 0) return false;
-      if (kw && (q.text + " " + q.answer).toLowerCase().indexOf(kw) < 0) return false;
+      if (ff && q.fieldId !== ff) return false;
+      if (kw && (q.displayId + " " + q.text + " " + q.answer).toLowerCase().indexOf(kw) < 0) return false;
       return true;
     });
+  }
+  function render() {
+    var rows = filtered();
+    var pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    page = Math.max(1, Math.min(page, pages));
+    var slice = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
     $("countNote").textContent = rows.length + "/" + bank.length + " câu";
+    $("qTotal").textContent = "(" + bank.length + ")";
     var tb = $("tbody"); tb.innerHTML = "";
-    rows.forEach(function (q) {
+    slice.forEach(function (q) {
       var r = roundLabels[q.round] || [q.round, "badge"];
       var s = statusLabels[q.status] || [q.status, "badge"];
       var tr = document.createElement("tr");
       tr.innerHTML =
+        '<td class="mono-id">' + q.displayId + "</td>" +
         '<td class="q-cell" title="' + q.text.replace(/"/g, "&quot;") + '">' + q.text + "</td>" +
         '<td><span class="badge ' + r[1] + '">' + r[0] + "</span></td>" +
+        '<td><span class="field-chip">' + (fieldName[q.fieldId] || "—") + "</span></td>" +
         '<td><span class="diff diff--' + q.difficulty + '">' + diffLabels[q.difficulty] + "</span></td>" +
-        "<td>" + (q.topics || []).map(function (t) { return '<span class="tag">' + t + "</span>"; }).join("") + "</td>" +
+        '<td style="text-align:center" class="text-dim">' + q.wordCount + "</td>" +
         '<td style="text-align:center">' + (mediaIcons[q.media] || "—") + "</td>" +
-        '<td class="text-dim">' + q.creator + "</td>" +
         '<td><span class="badge ' + s[1] + '">' + s[0] + "</span></td>";
       tr.addEventListener("click", function () { openEditor(q); });
       tb.appendChild(tr);
     });
+    /* Pager */
+    $("pageNote").textContent = "Trang " + page + "/" + pages + " · " + PAGE_SIZE + " dòng/trang";
+    var pp = $("pagerPages"); pp.innerHTML = "";
+    function pageBtn(label, target, disabled, current) {
+      var b = document.createElement("button");
+      b.className = "page-btn" + (current ? " is-current" : "");
+      b.textContent = label; b.disabled = !!disabled;
+      b.addEventListener("click", function () { page = target; render(); });
+      pp.appendChild(b);
+    }
+    pageBtn("←", page - 1, page <= 1);
+    for (var p = 1; p <= pages; p++) pageBtn(p, p, false, p === page);
+    pageBtn("→", page + 1, page >= pages);
   }
-  ["search", "fRound", "fDiff", "fTopic"].forEach(function (id) {
-    $(id).addEventListener("input", render);
+  ["search", "fRound", "fDiff", "fField"].forEach(function (id) {
+    $(id).addEventListener("input", function () { page = 1; render(); });
   });
 
-  /* ---------- Modals ---------- */
+  /* ---------- Render bộ đề ---------- */
+  function renderSets() {
+    $("sTotal").textContent = "(" + M.sets.length + ")";
+    var tb = $("setsBody"); tb.innerHTML = "";
+    M.sets.forEach(function (s) {
+      var tr = document.createElement("tr");
+      tr.style.cursor = "default";
+      var badges = s.visibility === "PUBLIC"
+        ? '<span class="badge badge--green">PUBLIC</span>'
+        : '<span class="badge badge--blue">PRIVATE</span>';
+      if (s.everPublic) badges += ' <span class="badge badge--red" title="Đã từng public — đáp án có thể đã bị tải, bị chặn khỏi trận đấu">⚠ everPublic</span>';
+      if (s.shareLink) badges += ' <span class="badge badge--orange" title="Đang có share-link hiệu lực">🔗 link</span>';
+      tr.innerHTML =
+        '<td class="mono-id">' + s.displayId + "</td>" +
+        "<td><strong>" + s.name + "</strong></td>" +
+        '<td class="text-dim">' + s.count + "</td>" +
+        '<td class="text-dim">' + s.owner + "</td>" +
+        "<td>" + badges + "</td>";
+      var td = document.createElement("td");
+      var actions = document.createElement("div");
+      actions.className = "set-actions";
+      var bShare = document.createElement("button");
+      bShare.className = "btn btn--sm"; bShare.textContent = "🔗 Share-link";
+      bShare.addEventListener("click", function () { openShare(s, bShare); });
+      actions.appendChild(bShare);
+      if (s.visibility !== "PUBLIC") {
+        var bPub = document.createElement("button");
+        bPub.className = "btn btn--sm btn--danger"; bPub.textContent = "🌐 Public";
+        bPub.addEventListener("click", function () { openPublic(s); });
+        actions.appendChild(bPub);
+      }
+      td.appendChild(actions);
+      tr.appendChild(td);
+      tb.appendChild(tr);
+    });
+  }
+
+  /* ---------- Share-link modal ---------- */
+  var shareSet = null;
+  function openShare(s, btn) {
+    /* Chưa có link → mock tạo (loading → success) */
+    if (!s.shareLink) {
+      UI.mockAsync({ btn: btn, loading: "Đang tạo share-link…", success: "Đã tạo share-link" })
+        .then(function () {
+          s.shareLink = {
+            token: Math.random().toString(36).slice(2, 10) + "…" + Math.random().toString(36).slice(2, 6),
+            password: "olp-" + Math.floor(1000 + Math.random() * 9000),
+            ttl: "7 ngày", withAnswer: false
+          };
+          renderSets(); fillShare(s); openModal("shareModal");
+        });
+      return;
+    }
+    fillShare(s); openModal("shareModal");
+  }
+  function fillShare(s) {
+    shareSet = s;
+    $("shareSetName").textContent = s.displayId + " — " + s.name;
+    $("shareUrl").value = "https://olympia.app/s/" + s.shareLink.token + " (TTL " + s.shareLink.ttl + ")";
+    $("sharePw").value = s.shareLink.password;
+  }
+  function copyField(inputId, btn, label) {
+    var val = $(inputId).value;
+    var done = function () { UI.toast("Đã copy " + label, "success"); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(val).then(done, done); // demo: coi như thành công
+    } else done();
+  }
+  $("btnCopyLink").addEventListener("click", function () { copyField("shareUrl", this, "đường dẫn"); });
+  $("btnCopyPw").addEventListener("click", function () { copyField("sharePw", this, "mật khẩu"); });
+  $("btnRevoke").addEventListener("click", function () {
+    var btn = this;
+    UI.mockAsync({ btn: btn, loading: "Đang revoke…", success: "Đã revoke share-link" }).then(function () {
+      if (shareSet) shareSet.shareLink = null;
+      closeModals(); renderSets();
+    });
+  });
+
+  /* ---------- Public modal (một chiều, cảnh báo đỏ) ---------- */
+  var publicSet = null;
+  function openPublic(s) {
+    publicSet = s;
+    $("publicSetName").textContent = s.displayId + " — " + s.name + " (" + s.count + " câu)";
+    openModal("publicModal");
+  }
+  $("btnConfirmPublic").addEventListener("click", function () {
+    var btn = this;
+    UI.mockAsync({ btn: btn, loading: "Đang public bộ đề…", success: "Đã public — everPublic đóng dấu vĩnh viễn" })
+      .then(function () {
+        if (publicSet) { publicSet.visibility = "PUBLIC"; publicSet.everPublic = true; }
+        closeModals(); renderSets();
+      });
+  });
+
+  /* ---------- Modals chung ---------- */
   function openModal(id) { $(id).classList.add("is-open"); }
   function closeModals() {
     document.querySelectorAll(".modal-backdrop").forEach(function (m) { m.classList.remove("is-open"); });
@@ -268,18 +513,20 @@ de-thi-olympia.zip<br>
     openModal("zipModal");
   });
   $("zipAction").addEventListener("click", function () {
-    alert("Demo mock — chức năng ZIP sẽ có ở bản thật.");
+    UI.mockAsync({ btn: this, loading: "Đang xử lý ZIP…", success: "Xong (mock — bản thật xử lý file thật)" })
+      .then(closeModals);
   });
 
   /* ---------- Editor ---------- */
   var editing = null;
   function openEditor(q) {
     editing = q || null;
-    $("editTitle").textContent = q ? "Sửa câu hỏi " + q.id : "Câu hỏi mới";
+    $("editTitle").textContent = q ? "Sửa câu hỏi " + q.displayId : "Câu hỏi mới";
     $("eText").value = q ? q.text : "";
     $("eAnswer").value = q ? q.answer : "";
     $("eRound").value = q ? q.round : "KHOI_DONG_CHUNG";
     $("eDiff").value = q ? q.difficulty : "de";
+    $("eField").value = q ? q.fieldId : "hieu-biet";
     $("eTopics").value = q ? (q.topics || []).join(", ") : "";
     $("eMedia").value = q ? (q.media || "") : "";
     $("eStatus").value = q ? q.status : "pending";
@@ -289,36 +536,46 @@ de-thi-olympia.zip<br>
   $("btnNew").addEventListener("click", function () { openEditor(null); });
   $("btnSave").addEventListener("click", function () {
     if (!$("eText").value.trim() || !$("eAnswer").value.trim()) {
-      alert("Cần nhập nội dung và đáp án."); return;
+      UI.toast("Cần nhập nội dung và đáp án", "error"); return;
     }
-    var data = {
-      id: editing ? editing.id : "new-" + Date.now(),
-      text: $("eText").value.trim(),
-      answer: $("eAnswer").value.trim(),
-      round: $("eRound").value,
-      difficulty: $("eDiff").value,
-      topics: $("eTopics").value.split(",").map(function (s) { return s.trim(); }).filter(Boolean),
-      media: $("eMedia").value || null,
-      status: $("eStatus").value,
-      creator: $("eCreator").value
-    };
-    if (editing) Object.assign(editing, data);
-    else bank.unshift(data);
-    closeModals(); render();
+    var btn = this;
+    UI.mockAsync({ btn: btn, loading: "Đang lưu câu hỏi…", success: editing ? "Đã cập nhật câu hỏi" : "Đã tạo câu hỏi mới" })
+      .then(function () {
+        var text = $("eText").value.trim();
+        var data = {
+          id: editing ? editing.id : "new-" + Date.now(),
+          displayId: editing ? editing.displayId : "Q-" + String(Math.floor(100000 + Math.random() * 900000)),
+          text: text,
+          answer: $("eAnswer").value.trim(),
+          round: $("eRound").value,
+          difficulty: $("eDiff").value,
+          fieldId: $("eField").value,
+          wordCount: text.split(/\s+/).length,
+          topics: $("eTopics").value.split(",").map(function (s) { return s.trim(); }).filter(Boolean),
+          media: $("eMedia").value || null,
+          status: $("eStatus").value,
+          creator: $("eCreator").value
+        };
+        if (editing) Object.assign(editing, data);
+        else { bank.unshift(data); page = 1; }
+        closeModals(); render();
+      });
   });
 
-  /* ---------- Hotkeys ---------- */
+  /* ---------- Hotkeys (Esc back/đóng modal do ui.js xử lý) ---------- */
   document.addEventListener("keydown", function (e) {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") {
-      if (e.key === "Escape") closeModals();
-      return;
-    }
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") return;
     if (e.key === "/") { e.preventDefault(); $("search").focus(); }
     else if (e.key.toLowerCase() === "n") openEditor(null);
-    else if (e.key === "Escape") closeModals();
   });
 
-  render();
+  /* ---------- Deep-link: ?round=… preset filter · ?tab=sets ---------- */
+  var ROUND_FILTER = { khoidong: "KHOI_DONG", vcnv: "VCNV", tangtoc: "TANG_TOC", vedich: "VE_DICH", cauphu: "TIE_BREAK" };
+  var rf = ROUND_FILTER[UI.param("round")];
+  if (rf) $("fRound").value = rf;
+  if (UI.param("tab") === "sets") showTab("sets");
+
+  render(); renderSets();
 })();
 </script>
 </body>

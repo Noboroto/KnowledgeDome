@@ -8,107 +8,214 @@
 <link rel="stylesheet" href="assets/tokens.css">
 <link rel="stylesheet" href="assets/base.css">
 <style>
-  .hub { max-width: 1080px; margin: 0 auto; padding: var(--sp-7) var(--sp-4); }
-  .hub__hero { text-align: center; margin-bottom: var(--sp-7); }
+  /* Hub gọn 1 viewport 1440×900: hero mỏng + 2 chiều điều hướng */
+  .hub { max-width: 1180px; margin: 0 auto; padding: var(--sp-5) var(--sp-4) var(--sp-6); }
+  .hub__hero { text-align: center; margin-bottom: var(--sp-5); }
   .hub__logo {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 84px; height: 84px; border-radius: var(--r-full);
+    width: 64px; height: 64px; border-radius: var(--r-full);
     background: var(--grad-gold); color: var(--text-on-gold);
-    font-size: var(--fs-2xl); font-weight: 900;
-    box-shadow: var(--shadow-gold); margin-bottom: var(--sp-4);
+    font-size: var(--fs-xl); font-weight: 900;
+    box-shadow: var(--shadow-gold); margin-bottom: var(--sp-3);
     animation: pop-in var(--dur-slow) var(--ease-spring);
   }
   .hub__title {
-    font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 900;
+    font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 900;
     background: var(--grad-gold); -webkit-background-clip: text;
     background-clip: text; color: transparent;
   }
-  .hub__sub { color: var(--text-2); max-width: 640px; margin: var(--sp-3) auto 0; }
+  .hub__sub { color: var(--text-2); max-width: 720px; margin: var(--sp-2) auto 0; font-size: var(--fs-sm); }
   .hub__note {
-    display: inline-block; margin-top: var(--sp-4);
-    padding: var(--sp-2) var(--sp-4); border-radius: var(--r-full);
-    background: rgba(255,159,67,.14); color: var(--orange); font-size: var(--fs-sm);
+    display: inline-block; margin-top: var(--sp-3);
+    padding: var(--sp-1) var(--sp-4); border-radius: var(--r-full);
+    background: rgba(255,159,67,.14); color: var(--orange); font-size: var(--fs-xs);
   }
-  .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--sp-4); }
+  .section-title {
+    font-size: var(--fs-md); font-weight: 800; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--text-2); margin-bottom: var(--sp-3);
+  }
+  .section-title .badge { vertical-align: 2px; }
+
+  /* Chiều 1: theo ROLE */
+  .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--sp-3); margin-bottom: var(--sp-6); }
   .screen-card {
-    display: block; color: inherit; text-decoration: none;
+    display: block; color: inherit; text-decoration: none; padding: var(--sp-4);
     transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
   }
   .screen-card:hover { text-decoration: none; transform: translateY(-4px); box-shadow: var(--shadow-2); border-color: var(--gold-dim); }
-  .screen-card__icon { font-size: var(--fs-xl); margin-bottom: var(--sp-2); }
-  .screen-card__desc { color: var(--text-2); font-size: var(--fs-sm); margin: var(--sp-2) 0 var(--sp-3); min-height: 3em; }
-  .hotkeys { margin-top: var(--sp-7); }
+  .screen-card__icon { font-size: var(--fs-lg); margin-bottom: var(--sp-1); }
+  .screen-card .card__title { font-size: var(--fs-md); margin-bottom: var(--sp-1); }
+  .screen-card__desc { color: var(--text-2); font-size: var(--fs-xs); margin-bottom: var(--sp-2); }
+
+  /* Chiều 2: theo VÒNG THI — mỗi hàng deep-link vào từng role */
+  .rounds-table { width: 100%; border-collapse: collapse; }
+  .rounds-table td { padding: var(--sp-2) var(--sp-2); border-bottom: var(--border-1); vertical-align: middle; }
+  .rounds-table tr:last-child td { border-bottom: none; }
+  .round-name { font-weight: 800; white-space: nowrap; }
+  .round-name small { display: block; color: var(--text-3); font-weight: 500; }
+  .role-links { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
+  .role-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 12px; min-height: 32px; border-radius: var(--r-full);
+    border: var(--border-1); background: rgba(255,255,255,.05);
+    color: var(--text-2); font-size: var(--fs-xs); font-weight: 700;
+    transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  }
+  .role-link:hover { background: rgba(255,201,60,.14); color: var(--gold); text-decoration: none; }
+
+  .hotkeys { margin-top: var(--sp-5); }
+  .hotkeys summary { cursor: pointer; font-weight: 800; color: var(--gold); padding: var(--sp-2) 0; }
   .hotkeys .table td:first-child { white-space: nowrap; }
-  footer { text-align: center; margin-top: var(--sp-7); color: var(--text-3); font-size: var(--fs-sm); }
+  footer { text-align: center; margin-top: var(--sp-5); color: var(--text-3); font-size: var(--fs-sm); }
 </style>
 </head>
-<body>
+<body data-no-back>
 <main class="hub">
   <header class="hub__hero">
     <div class="hub__logo" aria-hidden="true">O</div>
     <h1 class="hub__title">Olympia Contest System</h1>
     <p class="hub__sub">
-      Hệ thống mô phỏng gameshow "Đường lên đỉnh Olympia" theo luật 2026 —
-      4 thí sinh, 4 vòng thi (Khởi động · Vượt chướng ngại vật · Tăng tốc · Về đích) + câu hỏi phụ.
+      Demo tĩnh mô phỏng gameshow theo spec v2 — playlist vòng thi linh hoạt, 1-12 thí sinh / chế độ đội,
+      tăng tốc 2 format, VCNV 4-8 hàng ngang.
     </p>
-    <span class="hub__note">⚠ Đây là bản DEMO tĩnh dùng mock data — không có server, dùng để duyệt design &amp; animation.</span>
+    <span class="hub__note">⚠ Bản DEMO mock data — không server, dùng duyệt design &amp; animation. Phím <span class="kbd">Esc</span> quay lại · <span class="kbd">H</span> về hub.</span>
   </header>
 
-  <section class="screens" aria-label="Các màn hình demo">
-    <a class="card screen-card" href="contestant.html">
-      <div class="screen-card__icon">🎮</div>
-      <h2 class="card__title">Màn thí sinh</h2>
-      <p class="screen-card__desc">Tối giản, phản hồi tức thì: câu hỏi, timer, ô đáp án, nút chuông lớn. Keyboard-only dùng được toàn bộ.</p>
-      <p><span class="kbd">Space</span> chuông · <span class="kbd">Enter</span> gửi · <span class="kbd">1–4</span> hàng ngang</p>
-    </a>
-    <a class="card screen-card" href="viewer.html">
-      <div class="screen-card__icon">📺</div>
-      <h2 class="card__title">Màn viewer / sân khấu</h2>
-      <p class="screen-card__desc">Bảng điểm animate, hiệu ứng đầy đủ mọi vòng thi, podium + confetti. Có kịch bản tự chạy.</p>
-      <p><span class="kbd">P</span> auto-play · <span class="kbd">→</span> bước tiếp</p>
-    </a>
-    <a class="card screen-card" href="overlay.html?bg=checker">
-      <div class="screen-card__icon">🎬</div>
-      <h2 class="card__title">OBS Overlay 1920×1080</h2>
-      <p class="screen-card__desc">Nền trong suốt cho Browser Source: lower-third, timer ring, score strip, banner vòng. Chỉ transform/opacity.</p>
-      <p><span class="kbd">1–9</span> bật/tắt từng phần tử</p>
-    </a>
-    <a class="card screen-card" href="admin.html">
-      <div class="screen-card__icon">🎛️</div>
-      <h2 class="card__title">Bàn điều khiển admin</h2>
-      <p class="screen-card__desc">Điều hướng vòng, chấm Đúng/Sai, chỉnh timer &amp; điểm tay, duyệt viewer, log sự kiện live.</p>
-      <p><span class="kbd">C</span> đúng · <span class="kbd">X</span> sai · <span class="kbd">S</span> start/pause timer</p>
-    </a>
-    <a class="card screen-card" href="questions.html">
-      <div class="screen-card__icon">🗂️</div>
-      <h2 class="card__title">Kho đề</h2>
-      <p class="screen-card__desc">Bảng câu hỏi đủ metadata: vòng, độ khó, chủ đề, media, trạng thái duyệt. Filter, search, import/export ZIP.</p>
-      <p><span class="kbd">/</span> focus tìm kiếm · <span class="kbd">N</span> câu hỏi mới</p>
-    </a>
+  <!-- ============ Chiều 1: theo ROLE ============ -->
+  <section aria-label="Điều hướng theo vai trò">
+    <h2 class="section-title">Theo vai trò</h2>
+    <div class="screens">
+      <a class="card screen-card" href="contestant.html">
+        <div class="screen-card__icon">🎮</div>
+        <h3 class="card__title">Thí sinh</h3>
+        <p class="screen-card__desc">Tối giản, phản hồi tức thì: câu hỏi, timer, chuông lớn.</p>
+        <p><span class="kbd">Space</span> chuông · <span class="kbd">Enter</span> gửi</p>
+      </a>
+      <a class="card screen-card" href="viewer.html">
+        <div class="screen-card__icon">📺</div>
+        <h3 class="card__title">Viewer / Sân khấu</h3>
+        <p class="screen-card__desc">Bảng điểm adaptive 4/8/12 + đội, animation đủ mọi vòng.</p>
+        <p><span class="kbd">P</span> auto-play · <span class="kbd">→</span> bước tiếp</p>
+      </a>
+      <a class="card screen-card" href="overlay.html?bg=checker">
+        <div class="screen-card__icon">🎬</div>
+        <h3 class="card__title">OBS Overlay</h3>
+        <p class="screen-card__desc">1920×1080 nền trong suốt, chỉ transform/opacity.</p>
+        <p><span class="kbd">1–9</span> bật/tắt phần tử</p>
+      </a>
+      <a class="card screen-card" href="admin.html">
+        <div class="screen-card__icon">🎛️</div>
+        <h3 class="card__title">Admin</h3>
+        <p class="screen-card__desc">Stepper playlist, chấm điểm, soundboard, duyệt viewer.</p>
+        <p><span class="kbd">C</span> đúng · <span class="kbd">X</span> sai · <span class="kbd">S</span> timer</p>
+      </a>
+      <a class="card screen-card" href="mc.html">
+        <div class="screen-card__icon">🎤</div>
+        <h3 class="card__title">MC</h3>
+        <p class="screen-card__desc">Chữ rất to, read-only: câu hỏi + đáp án + tóm tắt điểm.</p>
+        <p><span class="kbd">←</span>/<span class="kbd">→</span> chuyển câu</p>
+      </a>
+      <a class="card screen-card" href="questions.html">
+        <div class="screen-card__icon">🗂️</div>
+        <h3 class="card__title">Kho đề &amp; Bộ đề</h3>
+        <p class="screen-card__desc">Bảng câu hỏi phân trang + bộ đề PRIVATE/PUBLIC, share-link.</p>
+        <p><span class="kbd">/</span> tìm kiếm · <span class="kbd">N</span> câu mới</p>
+      </a>
+    </div>
   </section>
 
-  <section class="hotkeys card" aria-label="Bảng hotkey tổng hợp">
-    <h2 class="card__title">Bảng hotkey</h2>
+  <!-- ============ Chiều 2: theo VÒNG THI (deep-link mở đúng trạng thái) ============ -->
+  <section class="card" aria-label="Điều hướng theo vòng thi">
+    <h2 class="section-title">Theo vòng thi <span class="badge badge--gold">deep-link</span></h2>
+    <table class="rounds-table">
+      <tbody>
+        <tr>
+          <td class="round-name">🔵 Khởi động<small>riêng + chung, bấm chuông</small></td>
+          <td><div class="role-links">
+            <a class="role-link" href="contestant.html?round=khoidong">🎮 Thí sinh</a>
+            <a class="role-link" href="viewer.html?round=khoidong">📺 Viewer</a>
+            <a class="role-link" href="mc.html?round=khoidong">🎤 MC</a>
+            <a class="role-link" href="admin.html?round=khoidong">🎛 Admin</a>
+            <a class="role-link" href="overlay.html?bg=checker&round=khoidong">🎬 Overlay</a>
+            <a class="role-link" href="questions.html?round=khoidong">🗂 Đề</a>
+          </div></td>
+        </tr>
+        <tr>
+          <td class="round-name">🟣 Vượt CNV<small>4-8 hàng ngang + gợi ý ký tự</small></td>
+          <td><div class="role-links">
+            <a class="role-link" href="contestant.html?round=vcnv">🎮 Thí sinh</a>
+            <a class="role-link" href="viewer.html?round=vcnv">📺 Viewer</a>
+            <a class="role-link" href="mc.html?round=vcnv">🎤 MC</a>
+            <a class="role-link" href="admin.html?round=vcnv">🎛 Admin</a>
+            <a class="role-link" href="overlay.html?bg=checker&round=vcnv">🎬 Overlay</a>
+            <a class="role-link" href="questions.html?round=vcnv">🗂 Đề</a>
+          </div></td>
+        </tr>
+        <tr>
+          <td class="round-name">🟠 Tăng tốc<small>ranked-speed ↔ clue-buzz</small></td>
+          <td><div class="role-links">
+            <a class="role-link" href="contestant.html?round=tangtoc">🎮 Thí sinh</a>
+            <a class="role-link" href="contestant.html?round=tangtoc&format=clue">🎮 Clue-buzz</a>
+            <a class="role-link" href="viewer.html?round=tangtoc">📺 Viewer</a>
+            <a class="role-link" href="mc.html?round=tangtoc">🎤 MC</a>
+            <a class="role-link" href="admin.html?round=tangtoc">🎛 Admin</a>
+            <a class="role-link" href="overlay.html?bg=checker&round=tangtoc">🎬 Overlay</a>
+            <a class="role-link" href="questions.html?round=tangtoc">🗂 Đề</a>
+          </div></td>
+        </tr>
+        <tr>
+          <td class="round-name">🟢 Về đích<small>gói điểm · NSHV · cướp quyền</small></td>
+          <td><div class="role-links">
+            <a class="role-link" href="contestant.html?round=vedich">🎮 Thí sinh</a>
+            <a class="role-link" href="viewer.html?round=vedich">📺 Viewer</a>
+            <a class="role-link" href="mc.html?round=vedich">🎤 MC</a>
+            <a class="role-link" href="admin.html?round=vedich">🎛 Admin</a>
+            <a class="role-link" href="overlay.html?bg=checker&round=vedich">🎬 Overlay</a>
+            <a class="role-link" href="questions.html?round=vedich">🗂 Đề</a>
+          </div></td>
+        </tr>
+        <tr>
+          <td class="round-name">🟡 Câu hỏi phụ<small>tie-break, chuông 15s</small></td>
+          <td><div class="role-links">
+            <a class="role-link" href="contestant.html?round=cauphu">🎮 Thí sinh</a>
+            <a class="role-link" href="viewer.html?round=cauphu">📺 Viewer</a>
+            <a class="role-link" href="mc.html?round=cauphu">🎤 MC</a>
+            <a class="role-link" href="admin.html?round=cauphu">🎛 Admin</a>
+            <a class="role-link" href="overlay.html?bg=checker&round=cauphu">🎬 Overlay</a>
+            <a class="role-link" href="questions.html?round=cauphu">🗂 Đề</a>
+          </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Hotkey tổng hợp: gập lại để hub gọn 1 viewport -->
+  <details class="hotkeys card">
+    <summary>⌨ Bảng hotkey tổng hợp</summary>
     <table class="table">
       <thead><tr><th>Màn</th><th>Phím</th><th>Chức năng</th></tr></thead>
       <tbody>
+        <tr><td rowspan="2">Mọi trang</td><td><span class="kbd">Esc</span></td><td>Quay lại (đóng modal trước nếu có)</td></tr>
+        <tr><td><span class="kbd">H</span></td><td>Về hub</td></tr>
         <tr><td rowspan="4">Thí sinh</td><td><span class="kbd">Space</span></td><td>Bấm chuông giành quyền</td></tr>
         <tr><td><span class="kbd">Enter</span></td><td>Gửi đáp án</td></tr>
-        <tr><td><span class="kbd">1</span>–<span class="kbd">4</span></td><td>Chọn hàng ngang VCNV</td></tr>
-        <tr><td><span class="kbd">Esc</span></td><td>Xoá ô nhập</td></tr>
+        <tr><td><span class="kbd">1</span>–<span class="kbd">8</span></td><td>Chọn hàng ngang VCNV</td></tr>
+        <tr><td><span class="kbd">Esc</span> (trong ô nhập)</td><td>Xoá ô nhập</td></tr>
         <tr><td rowspan="2">Viewer</td><td><span class="kbd">P</span></td><td>Chạy kịch bản tự động</td></tr>
         <tr><td><span class="kbd">→</span></td><td>Bước kế tiếp (step-by-step)</td></tr>
         <tr><td>Overlay</td><td><span class="kbd">1</span>–<span class="kbd">9</span></td><td>Bật / tắt từng phần tử overlay</td></tr>
         <tr><td rowspan="3">Admin</td><td><span class="kbd">C</span> / <span class="kbd">X</span></td><td>Chấm Đúng / Sai</td></tr>
         <tr><td><span class="kbd">S</span></td><td>Start / pause timer</td></tr>
         <tr><td><span class="kbd">←</span> / <span class="kbd">→</span></td><td>Câu trước / câu sau</td></tr>
+        <tr><td>MC</td><td><span class="kbd">←</span> / <span class="kbd">→</span></td><td>Câu trước / câu sau</td></tr>
         <tr><td rowspan="2">Kho đề</td><td><span class="kbd">/</span></td><td>Focus ô tìm kiếm</td></tr>
         <tr><td><span class="kbd">N</span></td><td>Mở editor câu hỏi mới</td></tr>
       </tbody>
     </table>
-  </section>
+  </details>
 
   <footer>Demo tĩnh — vanilla HTML/CSS/JS · sửa design tại <code class="mono">assets/tokens.css</code></footer>
 </main>
+<script src="assets/ui.js"></script>
 </body>
 </html>
