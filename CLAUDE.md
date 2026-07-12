@@ -59,5 +59,6 @@ Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, 
 - **Media thí sinh preload MÃ HOÁ qua service worker** (D12b): key phát đúng lúc reveal theo server time; fallback reveal-only khi SW không khả dụng. Viewer/overlay preload URL thường.
 - **Sound**: engine emit `sound-cue {slot}`; admin tự upload file per slot (slot trống = silent, không có bộ SFX default); client pre-download toàn bộ SFX khi vào phòng.
 - Giới hạn media (D6, env config): ảnh ≤10MB, video ≤200MB, audio ≤20MB.
+- **Font: "Be Vietnam Pro"** + fallback font hệ thống hỗ trợ tiếng Việt (stack chuẩn trong `public/assets/tokens.css` `--font-sans`); app thật SELF-HOST woff2 trong bundle (portable LAN offline — không dùng CDN), demo dùng Google Fonts.
 - String UI tiếng Việt tách file constants (`vi.ts`), không hard-code trong JSX.
 - Commit theo Conventional Commits, KHÔNG AI attribution.
