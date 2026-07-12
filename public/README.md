@@ -109,17 +109,17 @@ Mọi style đều tham chiếu CSS variables trong `assets/tokens.css` — sử
 `prefers-reduced-motion: reduce` tự tắt animation trang trí (khai báo trong `base.css`).
 Overlay chỉ animate `transform`/`opacity` để mượt trong OBS Browser Source.
 
-## Luật tính điểm trong engine (default 2026 + v2)
+## Luật tính điểm trong engine (✅ sync 12/07 theo D8 — Fandom "Luật chơi/Olympia 26")
 
 | Vòng | Điểm |
 |---|---|
-| Khởi động riêng (6 câu, 5s) | đúng +10, sai 0 |
-| Khởi động chung (12 câu, chuông, 5s) | đúng +10, sai **−5**, câu đó không mở lại chuông |
+| Khởi động riêng (6 câu, **3s**) | đúng +10, sai 0 |
+| Khởi động chung (12 câu, chuông, **3s**) | đúng +10, sai **−5**, câu đó không mở lại chuông |
 | VCNV hàng ngang (15s) | +10/người đúng, mỗi hàng đúng mở 1 miếng ghép |
-| VCNV giải CNV | đúng: 80/60/40/20 theo số hàng đã mở; sai: **bị loại** (theo đơn vị điểm) |
-| Tăng tốc ranked-speed | 40/30/20/10 theo tốc độ trong số người đúng |
+| VCNV giải CNV | đúng: **60/50/40/30** theo bấm trong hàng 1/2/3/4, sau gợi ý cuối (trung tâm +10) = **20**; sai: **bị loại** (theo đơn vị điểm) |
+| Tăng tốc ranked-speed (**20/20/30/30s**) | 40/30/20/10 theo tốc độ trong số người đúng; đồng thời gian → cùng mức |
 | Tăng tốc clue-buzz | 40/30/20/10 theo **mốc dữ kiện** đang mở khi bấm chuông; sai khoá chuông |
-| Về đích (gói 20/30) | đúng +giá trị; NSHV đúng ×2, sai −giá trị; cướp đúng +giá trị, sai −½ |
+| Về đích (gói 20/30) | đúng +giá trị; NSHV đúng ×2, sai −giá trị; cướp đúng **+giá trị LẤY TỪ người trả lời sai (transfer)**, sai −½ |
 | Câu hỏi phụ | không cộng điểm trận, tối đa 3 câu, 15s |
 | Chế độ đội | buzz/nhập đáp án cá nhân → `Engine.teamScores()` reduce về đội |
 

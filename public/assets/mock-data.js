@@ -43,7 +43,7 @@ window.MOCK = {
      Admin stepper render từ mảng này — thêm/bớt/lặp vòng tuỳ ý */
   playlist: [
     { id: "r1", type: "KHOI_DONG", label: "Khởi động",   note: "riêng 6 câu + chung 12 câu" },
-    { id: "r2", type: "VCNV",      label: "Vượt CNV",    note: "4-8 hàng + CNV 80/60/40/20" },
+    { id: "r2", type: "VCNV",      label: "Vượt CNV",    note: "4-8 hàng + CNV 60/50/40/30 (trung tâm 20)" },
     { id: "r3", type: "TANG_TOC",  label: "Tăng tốc",    note: "ranked-speed / clue-buzz" },
     { id: "r4", type: "VE_DICH",   label: "Về đích",     note: "gói 20/30 · NSHV · cướp" },
     { id: "r5", type: "TIE_BREAK", label: "Câu hỏi phụ", note: "hoà điểm · tối đa 3 câu" }
@@ -173,10 +173,10 @@ window.MOCK = {
 
     /* Tăng tốc: 4 câu, độ khó tăng dần, thường có media */
     tangToc: [
-      { id: "tt-01", text: "Có bao nhiêu hình tam giác trong hình vẽ? (ảnh)", answer: "12", time: 10, difficulty: "de", topics: ["IQ"], media: "image" },
+      { id: "tt-01", text: "Có bao nhiêu hình tam giác trong hình vẽ? (ảnh)", answer: "12", time: 20, difficulty: "de", topics: ["IQ"], media: "image" },
       { id: "tt-02", text: "Sắp xếp các sự kiện lịch sử theo thứ tự thời gian (video)", answer: "B-A-D-C", time: 20, difficulty: "trung-binh", topics: ["Lịch sử"], media: "video" },
       { id: "tt-03", text: "Quy luật dãy số: 2, 6, 12, 20, 30, ... Số tiếp theo?", answer: "42", time: 30, difficulty: "trung-binh", topics: ["Toán", "IQ"] },
-      { id: "tt-04", text: "Đoạn video thí nghiệm: hiện tượng vật lý nào được mô tả?", answer: "Khúc xạ ánh sáng", time: 40, difficulty: "kho", topics: ["Vật lý"], media: "video" }
+      { id: "tt-04", text: "Đoạn video thí nghiệm: hiện tượng vật lý nào được mô tả?", answer: "Khúc xạ ánh sáng", time: 30, difficulty: "kho", topics: ["Vật lý"], media: "video" }
     ],
 
     /* Tăng tốc — format clue-buzz (spec v2 §6): 3-4 dữ kiện mở dần,

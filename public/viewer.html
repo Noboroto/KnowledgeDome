@@ -955,7 +955,7 @@
   var steps = [
     // --- Khởi động ---
     ["Khởi động riêng: câu hỏi trượt vào", function () {
-      setRound("VÒNG 1 · KHỞI ĐỘNG — LƯỢT RIÊNG", C[0].name + " · 6 câu · 5s/câu · +10");
+      setRound("VÒNG 1 · KHỞI ĐỘNG — LƯỢT RIÊNG", C[0].name + " · 6 câu · 3s/câu · +10");
       showView("viewQuestion");
       showQuestion(M.questions.khoiDongRieng.c1[0].text);
       E.startTimer(E.RULES.KHOI_DONG.riengTime);
@@ -963,7 +963,7 @@
     ["KD riêng: trả lời đúng +10", function () { E.stopTimer(); E.scoreKhoiDongRieng(C[0].id, true); }],
     ["KD riêng: câu 2 + đúng", function () {
       showQuestion(M.questions.khoiDongRieng.c1[1].text);
-      E.startTimer(5);
+      E.startTimer(E.RULES.KHOI_DONG.riengTime);
       setTimeout(function () { E.stopTimer(); E.scoreKhoiDongRieng(C[0].id, true); }, 1600);
     }],
     ["Khởi động chung: câu hỏi + mở chuông", function () {
@@ -982,7 +982,7 @@
     }],
     // --- VCNV ---
     ["VCNV: dựng lưới ô chữ", function () {
-      setRound("VÒNG 2 · VƯỢT CHƯỚNG NGẠI VẬT", "4 hàng ngang · 15s/hàng · +10 · giải CNV 80/60/40/20");
+      setRound("VÒNG 2 · VƯỢT CHƯỚNG NGẠI VẬT", "4 hàng ngang · 15s/hàng · +10 · giải CNV 60/50/40/30");
       buildVcnv(); showView("viewVcnv");
     }],
     ["Hàng 1: 15s suy nghĩ", function () { E.startTimer(15); }],

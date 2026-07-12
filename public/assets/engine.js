@@ -8,19 +8,22 @@ window.Engine = (function () {
   "use strict";
 
   /* ---------- RULES: default theo luật 2026 (admin config được) ---------- */
+  /* ✅ Sync 12/07 theo D8 — source of truth: Fandom "Luật chơi/Olympia 26" */
   var RULES = {
     KHOI_DONG: {
-      riengSoCau: 6, riengTime: 5, riengDung: 10, riengSai: 0,
-      chungSoCau: 12, chungTime: 5, chungDung: 10, chungSai: -5
+      riengSoCau: 6, riengTime: 3, riengDung: 10, riengSai: 0,
+      chungSoCau: 12, chungTime: 3, chungDung: 10, chungSai: -5
     },
     VCNV: {
       soHangNgang: 4, rowTime: 15, rowDung: 10,
-      /* điểm CNV theo số hàng ngang ĐÃ MỞ khi bấm: 0-1 → 80, 2 → 60, 3 → 40, 4+ → 20 */
-      cnvPoints: [80, 80, 60, 40, 20]
+      /* điểm CNV theo thời điểm bấm (Fandom): trong hàng 1 → 60, hàng 2 → 50, hàng 3 → 40, hàng 4 → 30, sau gợi ý cuối (ô trung tâm) → 20; index = số hàng ĐÃ mở khi bấm */
+      cnvPoints: [60, 50, 40, 30, 20],
+      /* ô trung tâm: câu hỏi gợi ý cuối, đúng +10 (Fandom) */
+      centerDung: 10
     },
     TANG_TOC: {
-      soCau: 4, times: [10, 20, 30, 40],
-      /* ranked-speed: điểm theo thứ hạng tốc độ trong số người ĐÚNG */
+      soCau: 4, times: [20, 20, 30, 30],
+      /* ranked-speed: điểm theo thứ hạng tốc độ trong số người ĐÚNG; đồng thời gian → cùng mức */
       points: [40, 30, 20, 10],
       /* clue-buzz (spec v2 §6): điểm theo MỐC dữ kiện đang mở khi bấm chuông */
       clueBuzz: { maxClues: 4, cluePoints: [40, 30, 20, 10], intervalSeconds: 10, wrongLocksOut: true }
@@ -28,8 +31,10 @@ window.Engine = (function () {
     VE_DICH: {
       soCau: 3, goi: [20, 30],
       timeMap: { 20: 15, 30: 20 },
-      cuopTime: 5
-      /* NSHV: đúng ×2 giá trị, sai −giá trị. Cướp: đúng +giá trị, sai −½ giá trị */
+      cuopTime: 5,
+      /* Fandom O26: cướp đúng = LẤY điểm TỪ người trả lời sai (transfer); cướp sai = −½ giá trị câu.
+         NSHV: đúng ×2 giá trị, sai −giá trị (kể cả có người cướp hay không). */
+      stealMode: "transfer"
     },
     TIE_BREAK: { time: 15, maxCau: 3 }
   };
@@ -57,6 +62,7 @@ window.Engine = (function () {
     buzzLocked: false,         // khoá chuông toàn cục
     lockedOut: {},             // { cid: true } — bị loại (VCNV sai CNV / khoá cá nhân)
     vcnvOpened: 0,             // số hàng ngang đã mở
+    stealFrom: null,           // cid người trả lời sai về đích — nguồn điểm khi bị cướp (transfer)
     starUsed: {},              // { cid: true } — đã dùng Ngôi sao hy vọng
     log: []                    // audit log mock
   };
@@ -268,15 +274,22 @@ window.Engine = (function () {
     }
     if (d) addScore(cid, d, "Về đích" + (useStar ? " (NSHV)" : ""));
     emit("answer:judged", { cid: cid, correct: correct, round: "VE_DICH", delta: d, star: !!useStar });
-    if (!correct && !useStar) emit("vedich:steal-open", { value: value });
-    if (!correct && useStar) emit("vedich:steal-open", { value: value }); // sai vẫn mở cướp
+    if (!correct) {
+      state.stealFrom = cid; // người trả lời sai — nguồn điểm khi cướp thành công (transfer, Fandom)
+      emit("vedich:steal-open", { value: value }); // sai vẫn mở cướp (kể cả NSHV)
+    }
     return d;
   }
 
-  /* Về đích — cướp quyền: đúng +giá trị, sai −½ giá trị */
+  /* Về đích — cướp quyền (Fandom O26, stealMode transfer):
+     đúng → +giá trị cho người cướp, −giá trị TỪ người trả lời sai; sai → −½ giá trị */
   function scoreCuop(cid, value, correct) {
     var d = correct ? value : -value / 2;
     addScore(cid, d, "Cướp quyền về đích");
+    if (correct && RULES.VE_DICH.stealMode === "transfer" && state.stealFrom && state.stealFrom !== cid) {
+      addScore(state.stealFrom, -value, "Bị cướp điểm về đích");
+    }
+    state.stealFrom = null;
     emit("vedich:steal-result", { cid: cid, correct: correct, delta: d });
     clearBuzz();
     return d;
