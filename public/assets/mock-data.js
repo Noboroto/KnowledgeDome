@@ -231,7 +231,9 @@ window.MOCK = {
 };
 
 /* Build danh sách phẳng + metadata quản trị (người tạo, trạng thái duyệt)
-   Spec v2 §9: thêm displayId (Q-xxxxxx), fieldId (lĩnh vực), wordCount (auto) */
+   ✅ D24 12/07: displayId = <POOL 2 ký tự>-<4 HEX đầu UUID>-<4 HEX cuối UUID> uppercase —
+   KV (chung Khởi động + Về đích + câu phụ), TT (tăng tốc), CN (bộ đề VCNV, hàng ngang -Rn);
+   demo derive hex giả lập ổn định từ item id; fieldId, wordCount (auto) */
 (function buildBank() {
   var q = window.MOCK.questions;
   var creators = ["Cô Lan (GV Sử)", "Thầy Tuấn (GV Lý)", "Ban ra đề", "Thầy Minh (GV Toán)"];
@@ -248,14 +250,29 @@ window.MOCK = {
   };
   var all = [];
   var i = 0;
-  function push(item, round) {
+  // round → pool: KHOI_DONG + VE_DICH + TIE_BREAK dùng chung KV; TANG_TOC → TT; VCNV → CN
+  function poolOf(round) {
+    if (round === "TANG_TOC") return "TT";
+    if (round === "VCNV") return "CN";
+    return "KV";
+  }
+  /* 4 hex uppercase giả lập UUID, deterministic từ string (demo — app thật lấy từ UUID) */
+  function h4(s, salt) {
+    var h = 5381 + (salt || 0);
+    for (var k = 0; k < s.length; k++) h = ((h << 5) + h + s.charCodeAt(k)) >>> 0;
+    return ("0000" + (h % 65536).toString(16).toUpperCase()).slice(-4);
+  }
+  function makeId(pool, key) { return pool + "-" + h4(key, 7) + "-" + h4(key, 131); }
+  function push(item, round, idOverride) {
     var topic = (item.topics || [])[0];
+    var pool = poolOf(round);
     all.push(Object.assign({}, item, {
       round: round,
+      pool: pool,
       media: item.media || null,
       creator: creators[i % creators.length],
       status: statuses[i % statuses.length],
-      displayId: "Q-" + String(100101 + i).slice(-6).padStart(6, "0"),
+      displayId: idOverride || makeId(pool, item.id || String(i)),
       fieldId: TOPIC_FIELD[topic] || "hieu-biet",
       wordCount: item.text.trim().split(/\s+/).length
     }));
@@ -265,7 +282,9 @@ window.MOCK = {
     q.khoiDongRieng[cid].forEach(function (it) { push(it, "KHOI_DONG_RIENG"); });
   });
   q.khoiDongChung.forEach(function (it) { push(it, "KHOI_DONG_CHUNG"); });
-  q.vcnv.rows.forEach(function (it) { push(it, "VCNV"); });
+  /* Bộ đề VCNV: 1 Id cấp SET, hàng ngang là item con <setId>-Rn */
+  var cnSetId = makeId("CN", "vcnv-set-demo");
+  q.vcnv.rows.forEach(function (it, r) { push(it, "VCNV", cnSetId + "-R" + (r + 1)); });
   q.tangToc.forEach(function (it) { push(it, "TANG_TOC"); });
   q.tangTocClue.forEach(function (it) {
     push(Object.assign({ text: "[Clue-buzz] " + it.clues[0] + " (+" + (it.clues.length - 1) + " dữ kiện)" }, it), "TANG_TOC");

@@ -544,7 +544,11 @@ de-thi-olympia.zip<br>
         var text = $("eText").value.trim();
         var data = {
           id: editing ? editing.id : "new-" + Date.now(),
-          displayId: editing ? editing.displayId : "Q-" + String(Math.floor(100000 + Math.random() * 900000)),
+          // ✅ D24: <POOL>-<4 hex đầu UUID>-<4 hex cuối UUID> — KHOI_DONG/VE_DICH/TIE_BREAK → KV, TANG_TOC → TT, VCNV → CN
+          displayId: editing ? editing.displayId :
+            (($("eRound").value === "TANG_TOC" ? "TT" : $("eRound").value === "VCNV" ? "CN" : "KV") +
+             "-" + Math.floor(Math.random() * 65536).toString(16).toUpperCase().padStart(4, "0") +
+             "-" + Math.floor(Math.random() * 65536).toString(16).toUpperCase().padStart(4, "0")),
           text: text,
           answer: $("eAnswer").value.trim(),
           round: $("eRound").value,

@@ -2,6 +2,10 @@
    tokens.css — Design tokens Olympia Contest System (demo)
    MỌI style trong demo tham chiếu biến ở đây → sửa design 1 chỗ.
    ============================================================ */
+/* ✅ D25: Be Vietnam Pro (Vietnamese subset). Demo dùng Google Fonts CDN;
+   app thật self-host woff2 trong bundle (portable LAN offline — phase-01). */
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap");
+
 :root {
   /* ---------- Màu nền sân khấu ---------- */
   --navy-950: #060b1d;
@@ -34,8 +38,10 @@
   --text-2: #aab4d4;             /* phụ */
   --text-3: #6b7699;             /* mờ */
   --text-on-gold: #241a00;
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial,
-               "Helvetica Neue", sans-serif; /* hỗ trợ tiếng Việt sẵn */
+  /* ✅ D25 12/07: Be Vietnam Pro + fallback font hệ thống hỗ trợ tiếng Việt (Windows: Segoe UI/Arial/Tahoma; macOS: SF Pro/Helvetica Neue) */
+  --font-sans: "Be Vietnam Pro", "Segoe UI Variable", "Segoe UI",
+               -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+               Roboto, Arial, Tahoma, sans-serif;
   --font-mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
 
   /* Cỡ chữ */
