@@ -49,7 +49,7 @@ Permission catalog (hằng số trong `packages/shared`, nhóm theo module): `us
 ## Implementation Steps
 1. Prisma schema User/Session/Account theo Better-auth + bảng `Role`, `Permission`, `UserRole`, `RolePermission` (như ERD); seed permission catalog + 4 role mặc định (`system: true` không xoá được); `displayName`, `disabled`.
 1b. UI + API admin quản lý role: tạo role mới từ danh sách permission, gán nhiều role cho 1 user.
-2. Cấu hình Better-auth: username plugin, Argon2id, cookie `HttpOnly; SameSite=Lax; Secure`(prod). Session theo role: thí sinh **24h** (máy trường học dùng chung — red-team L4), admin/setter 7 ngày; admin có nút "logout mọi phiên thí sinh" sau trận.
+2. Cấu hình Better-auth: username plugin, Argon2id, cookie `HttpOnly; SameSite=Lax`; `Secure` bật ở profile compose (HTTPS). **Profile portable chạy http LAN** (gap-sweep H-F1): `Secure` off theo `INFRA_PROFILE`, **api serve luôn web static cùng origin** (fastify-static) để khỏi vỡ cookie cross-origin, Better-auth `baseURL`/`trustedOrigins` đọc từ IP LAN máy lúc start (in ra console + QR). 🟡 DEFERED D19 nếu user muốn HTTPS LAN (self-signed) thay vì http. Session theo role: thí sinh **24h**, admin/setter 7 ngày; admin có nút "logout mọi phiên thí sinh" sau trận.
 3. Rate limit đăng nhập: Redis sliding window 5 lần/phút/username.
 4. REST admin: `POST/GET/PATCH /users` (tạo user + role, reset password, disable). Admin ĐẦU TIÊN qua CLI `pnpm create-admin` bắt nhập password mạnh ngay lúc chạy — **cấm default credentials** kiểu admin/admin (gap 3.3).
 5. WS auth middleware dùng chung cho mọi namespace; reject nếu session invalid (trừ namespace viewer-guest).

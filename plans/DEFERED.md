@@ -269,5 +269,26 @@ Red-team v2 đề xuất đẩy teams / clue-buzz / VCNV 5-8 hàng / rút đề 
 - Phase 6 là critical path DÀI HƠN đáng kể — milestone nội bộ đã chia lại (6a: orchestrator-skeleton + reducer + buzzer + khởi động cơ bản để mở khoá Phase 7/8; 6b: toàn bộ round engines + biến thể).
 - Trade-off bạn chấp nhận: thời gian đến bản chạy được đầu tiên dài hơn; UAT phải phủ thêm preset TEAM_12 và các biến thể.
 
+## D19. Profile portable (Windows LAN không Docker) — 2 quyết định
+
+**Bối cảnh:** Bạn chốt có bản portable chạy LAN. Gap-sweep cuối chỉ ra 2 điểm cần bạn quyết:
+
+**D19.1 — HTTP hay HTTPS trên LAN?**
+- **Vấn đề:** cookie `Secure` (chuẩn bảo mật của bản compose) không hoạt động trên `http://192.168.x.x`.
+| Phương án | Ưu | Nhược |
+|---|---|---|
+| (a) HTTP thuần, tắt `Secure` theo profile, api serve luôn web static cùng origin | Zero-config cho giáo viên — chạy `start.bat` là xong | Traffic LAN không mã hoá (chấp nhận được trong phòng thi kín) |
+| (b) HTTPS self-signed | Mã hoá + Secure cookie giữ nguyên | MỌI thiết bị thí sinh/viewer phải bấm qua cảnh báo "not secure" hoặc cài cert — ma sát lớn ngày thi |
+**→ Đề xuất (a)** — mối đe doạ thực tế trên LAN phòng thi kín rất thấp, ma sát của (b) thì chắc chắn xảy ra với hàng chục thiết bị.
+
+**D19.2 — Target tải cho portable?** Máy Windows cá nhân + Wi-Fi AP trường nghẹt ở ~50-100 client. **Đề xuất: 12 thí sinh + ~75 viewer LAN** (viewer đông hơn thì xem qua projector/OBS chiếu). Bạn cho con số bạn muốn để load test Phase 10 đo đúng.
+
+## D20. Last-wins tăng tốc — 1 chi tiết cần xác nhận
+
+**D20.1 — Submission RỖNG (thí sinh xoá hết rồi Enter) xử lý sao?**
+- (a) **Bỏ qua, giữ bản trước** (đề xuất — tránh mất điểm oan do lỡ tay xoá; muốn "rút đáp án" thì không có khái niệm đó trong luật Olympia)
+- (b) Rỗng = rút đáp án (bản trước bị huỷ)
+Đã ghi default (a) vào spec §6; các chi tiết khác (dedup nội dung y hệt không reset timestamp, chấm trên bản cuối sau TIME_UP) là fix kỹ thuật không cần hỏi.
+
 ---
 <!-- Claude sẽ thêm mục mới bên dưới trong quá trình planning -->

@@ -19,7 +19,7 @@ Kho câu hỏi bảo mật cao: schema Prisma với metadata + versioning, CRUD 
 - **Tra cứu kho đề** theo: displayId, lĩnh vực, người thực hiện, đáp án (search theo đáp án chỉ cho người có `question.viewAnswer`) + các filter metadata cũ.
 
 ## Requirements
-- Functional: CRUD câu hỏi theo 5 loại vòng (KHOI_DONG, VCNV, VCNV_ROW, TANG_TOC, VE_DICH, TIE_BREAK); metadata: độ khó (1-5), chủ đề (tags), lớp/kiến thức, ghi chú; đính kèm ảnh/video/audio; trạng thái DRAFT→ACTIVE→ARCHIVED; versioning khi sửa câu ACTIVE.
+- Functional: CRUD câu hỏi theo 6 loại (KHOI_DONG, VCNV, VCNV_ROW, TANG_TOC, VE_DICH, TIE_BREAK — ERD rút gọn ở dưới thiếu VCNV_ROW, schema thật đủ 6); metadata: độ khó (1-5), chủ đề (tags), lớp/kiến thức, ghi chú; đính kèm ảnh/video/audio; trạng thái DRAFT→ACTIVE→ARCHIVED; versioning khi sửa câu ACTIVE.
 - Non-functional: đáp án chỉ trả về cho ADMIN (và SETTER với câu mình tạo); mọi truy cập đáp án ghi audit; media giới hạn dung lượng (DEFERED D6).
 
 ## Architecture

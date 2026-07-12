@@ -102,13 +102,18 @@ TangTocConfig = {
   // LAST-WINS (user chốt 12/07): nhận MỌI submission đến server-timeout, KHÔNG khoá sau khi gửi;
   // đáp án tính điểm = BẢN CUỐI CÙNG per đơn vị điểm; ranking theo server-received timestamp của bản cuối.
   // Server time là source of truth duy nhất — submission tới sau server-timeout bị loại bất kể client hiển thị gì.
+  // Chi tiết last-wins (gap-sweep H-F4):
+  //  - Submission NỘI DUNG Y HỆT bản trước (per seat) → KHÔNG cập nhật timestamp (double-Enter vô tình không làm tụt hạng).
+  //  - Submission RỖNG → bỏ qua, giữ bản trước 🟡 D20.1 (user xác nhận; alternative: rỗng = rút đáp án).
+  //  - Sửa đúng→sai sát giờ: đúng tinh thần last-wins — UI luôn hiện rõ "bản sẽ được tính" của mình.
+  //  - Chấm (auto-match + admin confirm) chỉ chạy trên BẢN CUỐI sau TIME_UP; admin channel realtime collapse per-seat-latest (không spam mỗi lần gửi lại).
   rankPoints?: number[],       // length == số đơn vị điểm ĐÃ KHAI BÁO; runtime prefix (§1.4)
   tieRule?: 'share-high' | 'microsecond',
   // clue-buzz ("3-4 dữ kiện"): dữ kiện mở dần, bấm chuông bất kỳ lúc nào
   maxClues?: 3 | 4,
   cluePoints?: number[],       // Zod: length == maxClues; câu ít dữ kiện hơn dùng PREFIX (vá H-v2-5)
   clueIntervalSeconds?: number,
-  wrongLocksOut: boolean,      // khoá cá nhân; teamLockout=true → khoá cả đội (§2b)
+  wrongLocksOut: boolean,      // khoá khi sai; teamLockout (§2b) CHỈ có nghĩa khi wrongLocksOut=true (Zod refine chặn tổ hợp vô nghĩa — gap-sweep M-F8)
   defaultTimeSeconds: number,  // fallback khi câu không có timeSeconds
 }
 ```

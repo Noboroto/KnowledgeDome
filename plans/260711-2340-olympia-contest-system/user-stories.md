@@ -107,5 +107,5 @@
 ## Ngoài phạm vi v1 (đã ghi nhận, không cam kết)
 
 - Giải đấu nhiều trận / bracket / season leaderboard (P3).
-- Practice mode solo cho thí sinh tự luyện (P2 — đang chờ gap-analysis bổ sung).
+- Practice mode solo cho thí sinh tự luyện (P3 — DEFERED D16; nền tảng bộ đề public đã có).
 - Speech-to-text tự chấm; stream video trực tiếp từ hệ thống; đa ngôn ngữ.

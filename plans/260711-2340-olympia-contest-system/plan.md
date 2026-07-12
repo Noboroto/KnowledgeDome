@@ -24,7 +24,7 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức **tuỳ biến ho
 | `research/product-gaps.md` | Gap-analysis vòng 2: pháp lý/privacy, quy trình con người, vòng đời sản phẩm |
 | `research/queue-decision.md` | Queue + 2 deployment profile: BullMQ (compose) / in-process + pg-boss (portable), quy ước compose.yml/compose.prod.yml (12/07) |
 | `PRD.md` / `user-stories.md` | Yêu cầu sản phẩm + user stories theo epic (map về phase) |
-| `../DEFERED.md` | Các quyết định chờ user chốt (D1-D9) |
+| `../DEFERED.md` | Các quyết định chờ user chốt (D1-D20; nhiều mục đã ✅) |
 | `../../public/` | Demo tĩnh mock data + animation (deliverable của giai đoạn planning, host Vercel được) |
 
 ## Stack (đã chốt, không đổi)

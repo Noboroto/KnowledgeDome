@@ -1,3 +1,5 @@
+﻿> ⚠️ **REFERENCE ONLY — KHÔNG COPY CODE**: file này do researcher sinh, code mẫu SAI STACK (TypeORM thay vì Prisma, transports có polling, cors '*', client tự gửi buzzTime, retry-drop event) — vi phạm các invariant server-authoritative/persist-trước-broadcast của plan. Chỉ đọc lấy ý tưởng kiến trúc; hiện thực theo phase files + ruleconfig-v2-spec.md.
+
 # Portable Profile Implementation Guide
 
 **Target:** Windows LAN single-instance gameshow system (no Docker, no Redis)  
@@ -762,18 +764,18 @@ describe('GameEventQueue', () => {
 
 ```
 C:\gameshow-portable\
-├── app\                          # NestJS app
-│   ├── dist\
-│   ├── src\
-│   ├── package.json
-│   └── .env
-├── postgres\                      # Portable Postgres
-│   ├── bin\
-│   └── data\
-├── storage\                       # Local file storage
-├── exports\                       # Exported match results
-├── run.bat                        # Start script
-└── README.md
+â”œâ”€â”€ app\                          # NestJS app
+â”‚   â”œâ”€â”€ dist\
+â”‚   â”œâ”€â”€ src\
+â”‚   â”œâ”€â”€ package.json
+â”‚   â””â”€â”€ .env
+â”œâ”€â”€ postgres\                      # Portable Postgres
+â”‚   â”œâ”€â”€ bin\
+â”‚   â””â”€â”€ data\
+â”œâ”€â”€ storage\                       # Local file storage
+â”œâ”€â”€ exports\                       # Exported match results
+â”œâ”€â”€ run.bat                        # Start script
+â””â”€â”€ README.md
 ```
 
 **`run.bat` Startup Script:**
@@ -821,4 +823,5 @@ pause
 | **WebSocket** | Socket.IO (no Redis adapter) | Single instance; direct routing |
 | **File Storage** | Filesystem adapter | No MinIO needed; cheap VPS disk |
 | **Admin Dashboard** | pg-boss UI (optional) | Lightweight; Postgres native |
+
 

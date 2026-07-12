@@ -32,17 +32,18 @@ Giao diện thí sinh: tối giản, phản hồi tức thì, dùng được ho�
 1. Dựng matchStore + socket binding + state-sync/reconnect banner ("đang kết nối lại...").
 2. Layout khung + TimerBar + ScoreStrip + BuzzButton (optimistic) theo demo.
 3. Round views theo thứ tự engine; VCNV có bàn phím chọn hàng ngang + ô nhập đáp án đếm ký tự.
-4. Hotkeys + focus management (auto-focus ô đáp án khi được quyền trả lời); test keyboard-only đi trọn một trận.
+4. Hotkeys + focus management (auto-focus ô đáp án khi được quyền trả lời); test keyboard-only cho mọi thao tác trừ chuông (chuông chỉ click chuột).
 5. Sound cues + setting tắt/bật âm lượng.
 6. Fullscreen request khi vào trận + log `visibilitychange` gửi server (soft anti-cheat).
 7. E2E (Playwright): mô phỏng trận với 4 browser context.
 
 ## Success Criteria
-- [ ] Đi trọn 1 trận chỉ bằng bàn phím, không cần chuột.
+- [ ] Đi trọn 1 trận bằng bàn phím cho MỌI thao tác TRỪ chuông (chuông = click chuột theo quyết định 12/07; trade-off accessibility đã ghi nhận ở PRD NFR-5).
 - [ ] Buzz phản hồi thị giác < 50ms cục bộ; kết quả server hiển thị rõ thắng/thua chuông.
 - [ ] Rớt mạng 30s giữa câu → banner reconnect → tự khôi phục đúng trạng thái.
 - [ ] Lighthouse performance ≥ 90 cho route contestant.
 
 ## Risk Assessment
 - Autoplay audio bị browser chặn → unlock audio context qua nút "Sẵn sàng" ở lobby.
-- Hotkey xung đột khi đang gõ đáp án → scope hotkey theo trạng thái (Space chỉ là chuông khi không focus input).
+- Hotkey xung đột khi đang gõ đáp án → scope hotkey theo trạng thái; chuông KHÔNG có hotkey (chỉ click chuột — quyết định 12/07). **Trong trận Esc chỉ xoá input, tắt Esc=back** — browser dành Esc thoát fullscreen, tránh văng fullscreen + ghi oan log anti-cheat (gap-sweep M-F6); anti-cheat phân biệt fullscreen-exit-do-Esc.
+- Touchpad laptop trường (tap debounce, palm-rejection) làm chuông kém nhạy so với chuột rời → runbook ngày thi: **chuột rời đồng nhất cho mọi thí sinh**; lobby tech-check đo cả click latency (gap-sweep M-F9).

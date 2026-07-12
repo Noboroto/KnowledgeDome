@@ -31,7 +31,7 @@ Bàn điều khiển trận cho admin: điều khiển vòng thi/câu hỏi/time
 
 ## Implementation Steps
 1. Khung 3 cột + RoundStepper + trạng thái match (LOBBY/LIVE/PAUSED...) + **control lock**: hiển thị ai đang cầm quyền điều khiển, nút "Take control" (người còn lại read-only — red-team H1).
-2. JudgingPanel: câu hỏi + media preview + đáp án + nút Đúng/Sai/hotkey + kết quả auto-match chờ confirm.
+2. JudgingPanel: câu hỏi + media preview + đáp án + nút Đúng/Sai/hotkey + kết quả auto-match chờ confirm. Riêng tăng tốc ranked-speed: **TangTocJudgingGrid** — sau TIME_UP hiện grid N bản-cuối (per đơn vị điểm) với kết quả auto-match, admin confirm/override hàng loạt; realtime trước TIME_UP chỉ hiện bản mới nhất per seat (collapse — gap-sweep H-F4d).
 3. TimerControl (start/pause/+10s/−10s/reset, đổi duration câu hiện tại) + ScoreAdjustDialog (delta + reason bắt buộc) + Undo (chọn event trong log).
 4. ViewerQueue realtime approve/reject (một-nhấp) + đếm viewer đang xem. **Duyệt viewer nằm NGOÀI control lock** — co-host duyệt viewer song song trong khi host chính chấm điểm (1 người ôm hết là single point of failure con người; runbook khuyến nghị crew ≥2: host chấm + kỹ thuật OBS/viewer — gap 2.4).
 5. PreflightChecklist (kết quả validate đề theo spec v2 §12 + tech-check mọi thí sinh) — nút Start chỉ mở khi đủ điều kiện (force-start có confirm 2 bước; riêng everPublic-block force cần confirm 2 bước + audit).

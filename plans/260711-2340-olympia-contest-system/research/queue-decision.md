@@ -31,16 +31,17 @@ Portable: thay Q bằng in-process FIFO, W cùng process, broadcast trực tiế
 
 ## Pitfalls phải nhớ (đưa vào phase-06 test)
 
-1. BullMQ ordering vỡ nếu concurrency>1 → test 100+ event tuần tự giữ đúng thứ tự.
+1. BullMQ ordering vỡ nếu concurrency>1 → test 100+ event tuần tự giữ đúng thứ tự. **Lưu ý: "group" là tính năng BullMQ Pro trả phí** — OSS dùng queue-per-match + worker khởi tạo động khi claim lease; match FINISHED → `queue.obliterate()` + tháo worker + release lease (không leak Redis keys); Bull Board đăng ký/gỡ queue động (gap-sweep M-F1).
 2. pg-boss polling mặc định 2-5s → bật LISTEN/NOTIFY cho job cần phản hồi nhanh.
 3. Lease failover: heartbeat renewal + worker mới claim queue khi owner chết (chaos drill Phase 10 đã có).
 4. Portable 1 instance: không Redis adapter — không được code đường tắt bypass abstraction.
 
 ## Quy ước compose (user chốt 12/07)
 
-- **`compose.yml`** — DEV: map TOÀN BỘ port ra host (pg 5432, redis 6379, minio 9000/9001, api, web, proxy) để debug tự do.
+- **`compose.yml`** — DEV: luồng chính vẫn đi qua proxy (đồng dạng prod), **NHƯNG đồng thời map TOÀN BỘ port từng service ra host** (pg 5432, redis 6379, minio 9000/9001, api 3000, web 5173, proxy 80) để test/debug trực tiếp từng service không cần qua proxy.
 - **`compose.prod.yml`** — SERVER: **chỉ expose đúng 1 port của reverse proxy** (80/443); mọi service khác chỉ nằm trong network nội bộ.
-- **Cả hai file đều có reverse proxy nginx** (user chốt; TLS ở prod qua certbot; dev cũng đi qua proxy để môi trường đồng dạng: cùng domain/cookie/path như prod; nginx config chú ý `proxy_read_timeout` + `Upgrade`/`Connection` headers cho WebSocket).
+- **Cả hai file đều có reverse proxy nginx** (user chốt; TLS ở prod qua certbot; dev cũng đi qua proxy để môi trường đồng dạng: cùng domain/cookie/path như prod; nginx config chú ý `proxy_read_timeout` + `Upgrade`/`Connection` headers cho WebSocket). **Không cần sticky session** — websocket-only + Redis adapter + QueueDriver forward là đủ, đừng thêm `ip_hash` thừa; hệ quả websocket-only: không có polling fallback sau proxy khắt khe (đã là quyết định có chủ đích).
+- Port service ở compose.yml dev bind `127.0.0.1` (không mở default-credential ra LAN — gap-sweep M-F3).
 
 ## Nguồn chính
 

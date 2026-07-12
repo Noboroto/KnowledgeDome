@@ -1,5 +1,18 @@
 # Red-team review — findings & trạng thái xử lý
 
+## VÒNG 3 (12/07) — gap-sweep cuối sau các quyết định mới (portable, last-wins, chuông chuột, queue, nginx)
+
+21 findings (5 HIGH, 9 MEDIUM, 7 LOW) — tất cả đã xử lý vào plan cùng ngày:
+- **H-F1** portable http phá auth Secure cookie → phase-02: Secure theo profile, api serve web static cùng origin, baseURL từ IP LAN; 🟡 D19.1.
+- **H-F2** StorageDriver định nghĩa theo presigned là sai móng → phase-01 step 0: contract trừu tượng getUploadTarget/getReadUrl (HMAC-signed + Range/stream cho filesystem).
+- **H-F3** "keyboard-only trọn trận" mâu thuẫn chuông-chuột → phase-07 SC + steps sửa; trade-off accessibility ghi nhận.
+- **H-F4** last-wins 4 điểm chết (dedup identical, empty, sửa sát giờ, chấm bản nào) → spec §6 chi tiết + phase-08 TangTocJudgingGrid; 🟡 D20.1.
+- **H-F5** phase-10 không có SC portable → thêm SC riêng (kill-restore, start.bat prisma migrate + firewall + QR, backup 1-click, load target LAN 🟡 D19.2).
+- **M-F1..M-F9**: BullMQ group là bản Pro → queue-per-match + obliterate cleanup; pass quy ước "Redis X = StateDriver"; compose dev bind 127.0.0.1; xoá xác chết "Space=chuông" ở phase-07 risk; Esc conflict fullscreen → in-match Esc chỉ xoá input; banner REFERENCE-ONLY cho research/queue/portable-profile-guide.md; Zod refine teamLockout×wrongLocksOut; runbook chuột rời đồng nhất.
+- **L-F1..L-F7**: D1-D18 ref, P3 practice, 6 loại câu, dashboard sau auth, no-sticky-session note, cấm secure-context API ở web, CLAUDE.md ngoại lệ khoá-theo-luật.
+
+Kết luận vòng 3: plan đủ điều kiện chạy `/ck:cook` Phase 1 — riêng interface `StorageDriver`/auth portable cần D19 trả lời trước khi viết code interface (không chặn scaffold/spike).
+
 ## VÒNG 2 (12/07) — review phần mở rộng RuleConfig v2
 
 User chốt **không cắt scope (1 version đủ tính năng — DEFERED D18)** nên mọi finding được vá bằng thiết kế trong `ruleconfig-v2-spec.md` v2.1:
