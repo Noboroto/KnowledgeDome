@@ -76,7 +76,9 @@ flowchart LR
 
 **→ Đề xuất: (a).** Đây cũng chính là cách chương trình thật làm. Phase 8 thiết kế JudgingPanel có hotkey `C`/`X` để admin chấm nhanh không mỏi.
 
-## D5. Viewer có cần account không?
+## D5. Viewer có cần account không? ✅ SUPERSEDED (12/07)
+
+> **User chốt lại 12/07:** viewer + overlay PUBLIC theo mã phòng — không account, không duyệt, thay thế cả 3 phương án dưới (giữ làm tham khảo). Kiểm soát = rate-limit + khoá cổng + kick.
 
 **Bối cảnh:** Yêu cầu gốc: viewer connect thẳng vào room bằng mã 6 số, admin duyệt vào. Câu hỏi: viewer có phải đăng nhập (admin phải tạo account cho từng khán giả?) hay là khách vãng lai.
 
@@ -291,6 +293,14 @@ Red-team v2 đề xuất đẩy teams / clue-buzz / VCNV 5-8 hàng / rút đề 
 
 **D20.1 — Submission RỖNG ✅ ĐÃ CHỐT (12/07): (a) SKIP — bỏ qua, giữ bản trước.**
 Kèm quyết định đi cùng của user: **TRIM toàn bộ** nội dung đề + đáp án + acceptedAnswers (bỏ space đầu/cuối) — áp cả lúc LƯU vào kho (phase-03) lẫn lúc SO KHỚP (answer-matcher phase-06); submission chỉ toàn whitespace sau trim = rỗng = skip. Dedup nội-dung-y-hệt so sánh SAU trim.
+
+## D21. Dual-purpose (luyện tập + contest) — 3 điểm cần bạn xác nhận
+
+**Bối cảnh:** Bạn chốt hệ thống có 2 mục đích ngang hàng. Plan đã thêm `matchPurpose: official|practice` (spec §13 — bảng khác biệt policy giữa 2 loại). 3 điểm chờ:
+
+1. **D21.1 — Retention dữ liệu practice**: CLB luyện hàng tuần → event log + audit phình nhanh, vẫn là PII học sinh nhưng giá trị lưu thấp. Đề xuất: practice match tự xoá/anonymize sau **3 tháng** (config), official theo D14 (12 tháng).
+2. **D21.2 — Contestant tự tạo practice match?** v1 đề xuất: chỉ người có `contest.create` (admin gán role "trainer" qua RBAC sẵn có — 0 công). Contestant tự tạo từ đề public = gộp với D16 (UI solo), vẫn để P3. Bạn muốn đưa lên v1 không?
+3. **D21.3 — Practice không ghi ngược thống kê kho đề, không vào podium/kết quả chính thức, PDF watermark "LUYỆN TẬP" không QR** — xác nhận đây là default đúng ý.
 
 ---
 <!-- Claude sẽ thêm mục mới bên dưới trong quá trình planning -->

@@ -175,9 +175,11 @@ sound: { cues: Record<CueSlot, AudioAssetRef|null>, backgroundTracks: AudioAsset
 - Soundboard: phát/dừng/next/volume/duck nhạc nền — **permission riêng `match.soundboard`** gán theo contest (ngoài control lock, co-host phụ trách được) — vá M-v2-5. Upload backgroundTrack hiện **disclaimer bản quyền** (nhất quán D10; ghi vào guide-admin) — vá M-v2-7.
 - Nhạc nền phát ở viewer/overlay; contestant mặc định tắt.
 
-## 11. MC view
+## 11. MC view & phạm vi đáp án
 
-Route `/mc` (permission `match.viewAnswer` theo contest): câu hỏi chữ rất to + đáp án + tóm tắt bảng điểm/kết quả vòng. Read-only. Đáp án rời server tới đúng 2 kênh: admin + MC (authenticated + audit).
+Route `/mc` (permission `match.viewAnswer` theo contest): câu hỏi chữ rất to + đáp án + tóm tắt bảng điểm/kết quả vòng. Read-only.
+
+**Phạm vi đáp án (user chốt 12/07, tinh chỉnh cùng ngày):** mặc định đáp án rời server tới đúng 2 kênh — **admin + MC** (authenticated + audit); viewer/thí sinh/overlay KHÔNG nhận/hiển thị đáp án (công bố = MC đọc miệng, các màn chỉ hiện Đúng/Sai + điểm). **Ngoại lệ có kiểm soát:** `revealAnswerAfterJudge: boolean` (per-MATCH — thuộc bundle matchPurpose §13; official default TẮT, practice default BẬT) — bật cho trận LUYỆN TẬP thì server mới đẩy đáp án xuống viewer/thí sinh/overlay SAU khi chấm xong câu đó. Zero-trust: khi config tắt, payload 3 kênh này không được chứa field đáp án (bộ test chống rò kiểm cả 2 trạng thái config).
 
 ## 12. Zod validation & pre-flight (tổng hợp)
 
@@ -188,3 +190,22 @@ Route `/mc` (permission `match.viewAnswer` theo contest): câu hỏi chữ rất
 - Teams: mỗi team ≥1 seat; representative đã chỉ định cho mọi round cần nó; warning lệch quân số.
 - everPublic hard-block (§9). CONFIG_PATCH re-preflight (§3).
 - Preset immutable versioned (`O26_DEFAULT@1`); match snapshot config lúc start (H9 giữ nguyên).
+
+## 13. matchPurpose — mục đích kép: official vs practice (user chốt 12/07)
+
+`Match.matchPurpose: 'official' | 'practice'` — chọn lúc TẠO match, immutable sau start, default `official`. Purpose KHÔNG phải mode engine riêng — engine/luật/điểm y hệt; purpose chỉ điều khiển policy pre-flight, bundle default, và cách dữ liệu sau trận được đối xử.
+
+| Khía cạnh | `official` | `practice` |
+|---|---|---|
+| everPublic pre-flight (§9) | **hard-block** (force = confirm 2 bước + audit) | cho phép, badge thông tin "đề public" |
+| Pre-flight thiếu câu/reserve/media/tech-check | block | warning, vẫn start được (trừ lỗi cấu trúc Zod) |
+| `revealAnswerAfterJudge` (per-MATCH, không phải per-contest) | default **OFF**; bật = cảnh báo + confirm 2 bước + audit (đáp án sẽ lên mọi màn có mã phòng) | default **ON**, tắt được |
+| Lobby/tech-check | bắt buộc | optional + nút **Rematch** (giữ seats + room code, về LOBBY rút gọn) |
+| Anti-cheat (fullscreen, visibilitychange log) | on | off |
+| Stats ghi ngược kho đề + kết quả/podium contest + PDF QR-verify | có | không (PDF watermark "LUYỆN TẬP", không QR; 🟡 D21.3) |
+| Audit + event log | full | full, tag `matchPurpose` (retention riêng 🟡 D21.1) |
+| Viewer public, zero-trust read-only, server-authoritative, TRIM, last-wins, preload reveal-only | **giống hệt nhau — không nhánh code** | |
+
+- Footgun cần cảnh báo (P12): match dùng câu CHƯA everPublic + bật reveal + cổng viewer mở → đáp án lộ cho ai có mã phòng. UI cảnh báo "khuyến nghị khoá cổng viewer"; KHÔNG đóng dấu everPublic (tương đương MC đọc miệng).
+- Room code scope (P13): room code thuộc **contest đang mở** — match FINISHED không giết mã nếu contest còn match khác; mã chết khi contest đóng.
+- Hợp nhất 3 khái niệm practice: rehearsal = practice match trong contest thật; practice solo (D16) = contest cá nhân + practice match 1 ghế (UI tự phục vụ vẫn P3); "sandbox không ghi điểm" (ux-gaps) hiểu là "không vào kết quả/thống kê chính thức".

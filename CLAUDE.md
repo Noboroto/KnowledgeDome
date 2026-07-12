@@ -17,16 +17,27 @@ Stack (đã chốt, không đổi): NestJS+Fastify, Zod, Prisma+Postgres, Redis,
 - **Viewport-Conscious Balanced Layout**: Design chủ đích theo kích thước màn hình. Giữ **nội dung chính của mỗi page/tab trong 1 viewport** (tham chiếu: laptop **1440×900**, ~844px usable dưới top-bar 56px) — không thứ gì quan trọng phải scroll mới thấy — nhưng **không được nhồi nhét**: giữ breathing room và whitespace dễ đọc. Cân bằng cả hai chiều hỏng:
   - **Không ép scroll** — nếu phần tử quan trọng nằm dưới fold, sửa layout (bỏ page header trùng breadcrumb; nén hàng stat-card "hero" thành metric strip mỏng; form 2 cột compact thay vì card xếp dọc từng field). **Bảng dài ưu tiên pagination** với page size theo viewport (~10-12 dòng) để header + toolbar + rows + pager vừa 1 màn **không scroll trang** — đây là cách sửa chính; table body scroll nội bộ + sticky header + pager ghim là fallback khi ranh giới trang bất tiện (vd ma trận cố định). Chỉ giữ scroll cả trang khi không còn cách hợp lý, và phải giải thích được.
   - **Không phí không gian / không quá đặc** — không để mảng trống lớn hoặc info giá trị thấp chiếm chỗ đẹp; cũng không nén chặt đến rối. Ưu tiên info quan trọng với **role hiện tại**.
-  - **Dashboard**: bố cục theo **Z / F reading model**; đưa info liên quan nhất của từng role lên trước (admin → điều khiển trận + hàng chờ duyệt; setter → câu hỏi của mình + trạng thái duyệt; thí sinh → trạng thái thi + điểm; viewer → sân khấu + bảng điểm).
+  - **Dashboard**: bố cục theo **Z / F reading model**; đưa info liên quan nhất của từng role lên trước (admin → điều khiển trận + hàng chờ duyệt ĐỀ (DRAFT→ACTIVE); setter → câu hỏi của mình + trạng thái duyệt; thí sinh → trạng thái thi + điểm; viewer → sân khấu + bảng điểm).
 
 ## Điều hướng (demo `public/` và app)
 
 - Mọi màn có nút **Back** rõ ràng về màn trước/menu; `Esc` = back (đóng modal trước nếu đang mở), `H` = về hub/menu chính. *Ngoại lệ màn thi đấu của thí sinh: Esc CHỈ xoá ô nhập, không back (browser dùng Esc thoát fullscreen — tránh văng fullscreen giữa trận).*
 
+## Nguyên tắc code — BẮT BUỘC toàn repo
+
+- **DRY**: không lặp logic/hằng số/schema — Zod schemas, RuleConfig, permission catalog, socket event contracts đều ở `packages/shared` dùng chung FE+BE; validation viết MỘT lần (Zod) chạy cả hai đầu; component/hook/util lặp ≥2 lần phải trích xuất.
+- **Zero-trust security**: KHÔNG BAO GIỜ tin client — mọi request/socket event đều verify auth + permission (CASL) ở server bất kể client là ai, đã join room gì, UI có ẩn nút hay không; viewer/overlay là public nhưng server vẫn enforce read-only (drop mọi event ghi từ namespace này); mọi input validate lại ở server (validate FE chỉ là UX); **đáp án chỉ rời server tới admin + MC (authenticated + audit); viewer/thí sinh/overlay không hiển thị đáp án — TRỪ khi contest bật `revealAnswerAfterJudge` (config per-match theo matchPurpose: official default TẮT, practice default BẬT, dùng cho luyện tập: chỉ đẩy đáp án SAU khi chấm xong)**; timer/điểm/chuông chỉ tính ở server.
+
+## Mô hình truy cập (chốt 12/07)
+
+- **Public (chỉ cần MÃ PHÒNG 6 số, không account, không duyệt)**: màn viewer + overlay OBS (frame stream) — read-only tuyệt đối, có rate-limit + nút "khoá cổng" của admin.
+- **Cần AUTH (username+password + permission)**: thí sinh, MC, admin/setter — mọi giao diện có thể gửi event hoặc thấy đáp án.
+
 ## Quy ước khác
 
-- Server-authoritative tuyệt đối: timer/điểm/chuông tính ở server, client chỉ render (xem spec).
-- Đáp án không rời server ngoài kênh admin + MC (authenticated, audit).
+- Server-authoritative tuyệt đối: timer/điểm/chuông tính ở server, client chỉ render; **server time là source of truth duy nhất**.
+- **Audit log MỌI thao tác, MỌI role** (user chốt 12/07): auth (login/logout/fail), CRUD kho đề/bộ đề, contest management, mọi event trong trận (đã có MatchEvent log), viewer join/kick, xuất/nhập, xem đáp án — bảng AuditLog chung append-only (actor, action, target, ts, ip) ngoài các log chuyên biệt.
+- **TRIM mọi input text ở CẢ frontend lẫn backend** (đề, đáp án, submission — tránh space đầu/cuối phá so khớp).
 - Mọi timer/điểm là RuleConfig — KHÔNG hard-code luật trong code/UI.
 - String UI tiếng Việt tách file constants (`vi.ts`), không hard-code trong JSX.
 - Commit theo Conventional Commits, KHÔNG AI attribution.

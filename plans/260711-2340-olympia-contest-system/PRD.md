@@ -16,6 +16,7 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 ## 2. Mục tiêu & Không-mục-tiêu
 
 ### Mục tiêu (v1)
+0. **Mục tiêu kép ngang hàng (chốt 12/07)**: (a) tổ chức contest chính thức; (b) luyện tập/rehearsal — cùng một engine, phân biệt bằng `matchPurpose` per-match (spec §13).
 1. **Nền tảng gameshow tuỳ biến** (mở rộng 12/07 — spec: `research/ruleconfig-v2-spec.md`): round playlist tuỳ ý (số vòng/loại/thứ tự không cứng), 1-12 thí sinh hoặc gộp đội (buzz cá nhân, điểm về đội), mọi timer/điểm/phổ điểm/số câu là config, thời gian là thuộc tính từng câu; luật O26 chuẩn là preset mặc định `O26_DEFAULT@1`. Biến thể vòng: khởi động 4 kiểu lượt + rút đề ngẫu nhiên theo lĩnh vực; VCNV 4-8 hàng ± gợi ý ký tự; tăng tốc ranked-speed / clue-buzz (3-4 dữ kiện); về đích gói preset / custom-build.
 2. Kho đề tập trung, bảo mật cao (đáp án không bao giờ tới client trước công bố), metadata đầy đủ, import/export được.
 3. Thi đấu realtime công bằng: chuông xếp hạng theo server-timestamp, timer server-authoritative, chống gian lận mức hợp lý.
@@ -33,12 +34,12 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 
 | Role | Là ai | Quyền chính |
 |---|---|---|
-| **Admin** | BTC/kỹ thuật | Tạo user, tạo contest, gán đề & thí sinh, điều khiển trận (hoặc gán quyền host theo contest — D3b), chấm điểm, chỉnh timer/điểm, duyệt viewer, xem toàn kho đề |
+| **Admin** | BTC/kỹ thuật | Tạo user, tạo contest, gán đề & thí sinh, điều khiển trận (hoặc gán quyền host theo contest — D3b), chấm điểm, chỉnh timer/điểm, khoá cổng/kick viewer, xem toàn kho đề |
 | **Người ra đề (Setter)** | Giáo viên/ban đề | CRUD câu hỏi của mình trong kho, upload media, import/export phần đề mình phụ trách |
 | **Thí sinh (Contestant)** | Học sinh thi đấu | Đăng nhập **chỉ bằng username+password**, vào phòng bằng mã 6 số, thi đấu (chuông/gõ đáp án) |
-| **Viewer** | Khán giả | **Guest** (D5): mã phòng 6 số + nickname → chờ admin duyệt → xem read-only |
+| **Viewer** | Khán giả | nhập mã 6 số → xem NGAY (public, không duyệt — ✅ 12/07); read-only |
 | **MC** (permission theo contest) | Người dẫn chương trình | Màn `/mc` read-only: câu hỏi + đáp án + tóm tắt kết quả — không điều khiển |
-| *(OBS Overlay)* | Máy stream | Bootstrap token do admin phát; read-only tuyệt đối |
+| *(OBS Overlay)* | Máy stream | Vào bằng mã phòng như viewer (không token — ✅ 12/07); read-only tuyệt đối |
 
 ## 4. Yêu cầu chức năng (FR)
 
@@ -52,14 +53,15 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 - FR-2.2 Mỗi câu: `displayId` tra cứu, lĩnh vực (taxonomy `Field` quản lý được), wordCount (auto), nội dung, đáp án + acceptedAnswers, giải thích, người thực hiện, ghi chú, media; thuộc tính riêng theo loại: `timeSeconds` (TT/VĐ), `value` (VĐ), `clues[]` (TT clue-buzz); metadata cũ (độ khó, tags) giữ nguyên.
 - FR-2.2b **Bộ đề (QuestionSet)**: `displayId`; PRIVATE (owner+ACL; share-link password+TTL revoke được) / PUBLIC (xem/tải tự do, kèm đáp án theo setting per-set default có, cảnh báo trước khi public, chặn public khi gắn contest chưa diễn); item = reference câu kho theo ID hoặc nhập tay (checkbox lưu vào kho); tra cứu theo ID/lĩnh vực/người thực hiện/đáp án (đáp án cần quyền).
 - FR-2.3 Media ảnh/video/audio lưu MinIO, truy cập qua presigned URL TTL ngắn; giới hạn dung lượng (D6).
-- FR-2.4 **Bảo mật**: đáp án chỉ trong DTO của admin/setter-owner; audit log mọi truy cập đáp án/sửa/xuất.
+- FR-2.4 **Bảo mật**: đáp án chỉ trong DTO của admin/setter-owner; audit log mọi truy cập đáp án/sửa/xuất. (trong trận: + kênh MC FR-5.5; + ngoại lệ revealAnswerAfterJudge NFR-4)
 - FR-2.5 Import/export: **Excel theo template quy ước là format chính** (nhập/xuất bộ đề, roundtrip); ZIP bundle cho trường hợp kèm media; mapping cột linh hoạt cho file tự do.
 
 ### FR-3 Contest & Phòng thi
 - FR-3.1 Admin tạo contest bằng **contest builder**: dựng round playlist (thêm/xoá/sắp xếp vòng, config từng vòng theo RuleConfig v2, chọn preset rồi tuỳ biến), setup **1-12 ghế** ± gộp đội (scoringUnit, individualTurnMode all-members/representative), theme (màu/logo/ảnh/video hình hiệu), sound (cue slots + nhạc nền), gán bộ đề (snapshot).
 - FR-3.2 Mã phòng 6 số random, không reuse 24h; pre-flight validate đề đủ số câu + media trước khi start.
 - FR-3.3 Lobby/tech-check: thí sinh thử chuông (hiện ping ms), thử âm thanh, báo sẵn sàng.
-- FR-3.4 Viewer join guest → hàng chờ → admin duyệt; rate-limit + nút khoá cổng viewer.
+- FR-3.4 **Viewer + overlay OBS PUBLIC theo mã phòng** (user chốt 12/07 — không account, không duyệt): có mã 6 số là xem; read-only enforced server-side (zero-trust); kiểm soát = rate-limit IP + nút khoá cổng + kick. Thí sinh/MC/admin luôn cần auth.
+- FR-3.4b Monitor kết nối trong trận (permission `contest.control`): thí sinh theo ghế 1,2,3... (online/offline, ping); viewer/MC chỉ số lượng.
 - FR-3.5 Reconnect grace 120s giữ ghế + state-sync; rớt quá grace xử lý theo `dropoutPolicy`.
 
 ### FR-4 Thi đấu (Game Engine) — spec: `research/ruleconfig-v2-spec.md`; luật gốc + edge-cases: `research/rules-2026.md` §7
@@ -97,7 +99,8 @@ Các trường học/CLB muốn tổ chức thi đấu theo format Đường lê
 | NFR-1 | Độ trễ realtime | p95 event < 200ms (LAN) / < 500ms (Internet); buzzer công bằng theo server-ts |
 | NFR-2 | Quy mô | ≤500 viewer/contest, ≤2 contest song song (D11a); kiến trúc scale ngang sẵn (Redis adapter, single-writer lease) |
 | NFR-3 | Tin cậy | Kill instance/Redis giữa trận → trận phục hồi, không mất event đã công bố; soak 2h không leak |
-| NFR-4 | Bảo mật | Không rò đáp án qua bất kỳ API/socket nào (test tự động); HttpOnly cookie; presigned URL TTL; audit log; magic-bytes sniffing upload |
+| NFR-4 | Bảo mật (zero-trust — chốt 12/07) | Không rò đáp án qua bất kỳ API/socket nào (test tự động; viewer/thí sinh/overlay không hiển thị đáp án — chỉ admin+MC; **ngoại lệ: contest bật `revealAnswerAfterJudge` [default TẮT] cho luyện tập → đáp án đẩy xuống SAU khi chấm**); mọi event verify permission server-side; HttpOnly cookie; URL media có TTL; magic-bytes sniffing upload |
+| NFR-4b | **Audit MỌI thao tác, MỌI role** (chốt 12/07) | AuditLog chung append-only (actor, action, target, ts, IP): auth, CRUD đề/bộ đề/contest, event trong trận, viewer join/kick, import/export, xem đáp án |
 | NFR-5 | Accessibility | WCAG AA contrast; `prefers-reduced-motion`; viewer chỉnh cỡ chữ |
 | NFR-6 | Stack (ràng buộc cứng) | BE: TS, NestJS+Fastify, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO · FE: React+Vite, MUI, Motion, Zustand, TanStack Query · Storage: MinIO |
 | NFR-7 | **2 hình thức triển khai** (chốt 12/07) | (a) Docker compose trên server Internet (đủ PG+Redis+MinIO, multi-instance); (b) **portable trên Windows cá nhân KHÔNG Docker, mạng LAN, 1 máy** — hạ tầng qua abstraction layer (driver Redis/in-process, MinIO/filesystem), đang research queue + hạ tầng portable |

@@ -17,7 +17,7 @@
 
 ## P2 (nên có, có thể dời v1.1)
 
-- Practice/rehearsal mode (sandbox không ghi điểm, dùng config thật) — Phase 8.
+- Practice match (matchPurpose='practice' — không vào kết quả/thống kê chính thức) — đã nâng lên v1 — Phase 8.
 - Fullscreen enforcement mềm + log rời tab (`visibilitychange`) cho thí sinh; 1 phiên đăng nhập duy nhất — Phase 7.
 - MC cue/script hiển thị cho admin theo vòng — Phase 8.
 - Skip câu lỗi / thay câu dự phòng giữa trận — Phase 6/8 (đưa lên P1 phần skip).

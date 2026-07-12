@@ -36,6 +36,7 @@ Giao diện thí sinh: tối giản, phản hồi tức thì, dùng được ho�
 5. Sound cues + setting tắt/bật âm lượng.
 6. Fullscreen request khi vào trận + log `visibilitychange` gửi server (soft anti-cheat).
 7. E2E (Playwright): mô phỏng trận với 4 browser context.
+8. Hiển thị đáp án sau chấm khi match bật revealAnswerAfterJudge (practice — spec §13); anti-cheat (fullscreen/visibilitychange) chỉ chạy khi matchPurpose=official.
 
 ## Success Criteria
 - [ ] Đi trọn 1 trận bằng bàn phím cho MỌI thao tác TRỪ chuông (chuông = click chuột theo quyết định 12/07; trade-off accessibility đã ghi nhận ở PRD NFR-5).

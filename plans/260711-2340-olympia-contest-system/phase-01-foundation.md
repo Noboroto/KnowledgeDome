@@ -51,7 +51,7 @@ flowchart LR
 3. Scaffold NestJS với `FastifyAdapter`; module `ConfigModule` validate env bằng Zod; healthcheck `/healthz`.
 4. **SPIKE (timebox 1 ngày — DEFERED D9, mở rộng theo red-team H7)**: trên FastifyAdapter phải PASS đủ CẢ HAI: (a) Socket.IO qua custom `IoAdapter` trên `app.getHttpServer()` — connect + echo + room broadcast; (b) **Better-auth** mount handler + đăng nhập username/password + đọc session từ cookie. Fail bất kỳ cái nào → chuyển `ExpressAdapter` (chỉ đổi `main.ts` + dependency), ghi journal lý do.
 5. Cài `@socket.io/redis-adapter` + verify broadcast giữa 2 instance api (chạy 2 port); thử `createShardedAdapter` (Redis 7) — không chạy được với Redis đang dùng thì fallback adapter thường (red-team L5).
-6. Scaffold Vite React app: router (`/login`, `/contestant`, `/viewer`, `/overlay`, `/admin`, `/questions`), MUI theme, Zustand store rỗng, socket client singleton (websocket-only transport).
+6. Scaffold Vite React app: router (`/login`, `/contestant`, `/viewer`, `/overlay`, `/admin`, `/questions`, `/mc`), MUI theme, Zustand store rỗng, socket client singleton (websocket-only transport).
 7. CI: pnpm install cache, lint (eslint+prettier), `tsc --noEmit`, vitest. ESLint rule cấm literal string tiếng Việt trong JSX (`react/jsx-no-literals` giới hạn ở apps/web) để giữ kỷ luật tách string ra `vi.ts` (DEFERED D2b, red-team L7).
 
 ## Success Criteria

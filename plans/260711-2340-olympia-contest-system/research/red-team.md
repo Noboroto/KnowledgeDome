@@ -48,7 +48,7 @@ User chốt **không cắt scope (1 version đủ tính năng — DEFERED D18)**
 | H3 | Luật VCNV thiếu: cả 4 bị loại, người bị loại có được trả lời hàng ngang?, chuông giữa timer hàng ngang | ✅ rules-2026.md thêm mục edge-cases; 🟡 DEFERED D13 |
 | H4 | Tie-break chỉ viết cho 2 người hòa; hòa 3-4, hòa nhiều vị trí chưa định nghĩa | ✅ rules-2026.md edge-cases (function per nhóm hòa); 🟡 D13 |
 | H5 | NSHV/cướp tương tác với skip/substitute/undo chưa định nghĩa; undo cần domain semantics | ✅ phase-06: giới hạn undo = event chấm gần nhất chưa build-upon, còn lại SCORE_ADJUST; rules edge-cases |
-| H6 | Overlay token JWT dài hạn trong URL → lộ qua screenshot/scene collection | ✅ phase-05: token bootstrap ngắn hạn đổi lấy ticket + revoke/re-issue |
+| H6 | Overlay token JWT dài hạn trong URL → lộ qua screenshot/scene collection | ✅ superseded 12/07: không còn token — overlay public theo mã phòng (phase-05) |
 | H7 | Spike Phase 1 thiếu Better-auth trên Fastify | ✅ phase-01 step 4 mở rộng |
 | H8 | Thứ tự persist event vs apply/broadcast chưa định nghĩa → crash mất event đã công bố | ✅ phase-06: append PG synchronous → apply → broadcast; kill-test assert |
 | H9 | RuleConfig sửa được giữa trận LIVE → điểm không tái lập | ✅ phase-05/06: snapshot RuleConfig lúc start, sau đó chỉ qua event `CONFIG_PATCH` versioned |

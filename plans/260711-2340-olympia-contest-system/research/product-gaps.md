@@ -18,7 +18,7 @@
 | 2.1 | Ai duyệt đề DRAFT→ACTIVE? Trùng đề giữa setters? | P1/P2 | ✅ v1: chỉ admin activate (phase-03); dedup fuzzy cảnh báo = P2; 🟡 D15 nếu cần role reviewer riêng |
 | 2.2 | Màn hình MC riêng (đọc câu hỏi, chữ to, không phải bàn admin) | P2 | ✅ route `/mc` read-only (phase-09); 🟡 D15: MC thấy đáp án trước công bố không |
 | 2.3 | Thay thí sinh phút chót / xác minh danh tính | P2 | ✅ reassign seat trước match start có audit (phase-05); danh tính = quy trình offline (runbook) |
-| 2.4 | Nhân sự tối thiểu ngày thi — admin 1 người quá tải | P1 | ✅ tách "duyệt viewer" khỏi control lock để co-host làm song song (phase-08); runbook crew ≥2; UAT đo tải 1 người |
+| 2.4 | Nhân sự tối thiểu ngày thi — admin 1 người quá tải | P1 | ✅ tách ViewerPanel (kick/khoá cổng) khỏi control lock để co-host làm song song (phase-08); runbook crew ≥2; UAT đo tải 1 người |
 
 ## Vòng đời sản phẩm
 

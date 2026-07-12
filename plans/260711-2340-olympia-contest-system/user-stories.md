@@ -20,7 +20,7 @@
 | US-2.1 | Là **setter**, tôi muốn tạo câu hỏi đúng loại vòng thi (khởi động/VCNV/tăng tốc/về đích/câu phụ) kèm đáp án và các đáp án chấp nhận được | Form theo loại vòng (VCNV set = ảnh + CNV + 4 hàng ngang có số chữ; về đích có mức 20/30); validate Zod | 3 |
 | US-2.2 | Là **setter**, tôi muốn gắn metadata (độ khó 1-5, chủ đề, lớp/kiến thức) để lọc và cân bằng đề | Filter/search theo mọi metadata; chip hiển thị như demo `public/questions.html` | 3 |
 | US-2.3 | Là **setter**, tôi muốn đính kèm ảnh/video/audio cho câu hỏi | Upload có progress + preview; chặn file sai loại/quá dung lượng (D6); media hỏng báo ngay lúc upload | 3 |
-| US-2.4 | Là **admin**, tôi muốn đáp án không bao giờ lộ cho người không có quyền để bảo mật đề tuyệt đối | Mọi API/socket cho thí sinh/viewer không chứa field đáp án (test tự động); audit log khi admin xem đáp án | 3, 10 |
+| US-2.4 | Là **admin**, tôi muốn đáp án không bao giờ lộ cho người không có quyền để bảo mật đề tuyệt đối | Mọi API/socket cho thí sinh/viewer không chứa field đáp án (test tự động); audit log khi admin xem đáp án; trừ khi revealAnswerAfterJudge bật và câu đã chấm — test phủ cả 2 trạng thái | 3, 10 |
 | US-2.5 | Là **setter**, tôi muốn sửa câu hỏi đã ACTIVE mà không phá trận đã dùng nó | Sửa tạo version mới; trận cũ giữ snapshot | 3, 5 |
 | US-2.6 | Là **admin/setter**, tôi muốn export bộ đề ra file và import lại được để chia sẻ/backup | ZIP bundle roundtrip không mất dữ liệu; import báo lỗi từng dòng + preview trước khi ghi; import Excel với mapping cột | 4 |
 
@@ -33,8 +33,9 @@
 | US-3.3 | Là **admin**, tôi muốn hệ thống phát mã phòng 6 số để thí sinh/viewer vào đúng phòng | Mã unique, không reuse 24h, hiện to trên bàn điều khiển | 5 |
 | US-3.4 | Là **admin**, tôi muốn pre-flight check trước khi start để không "chết trên sân khấu" | Chặn start khi: đề thiếu câu theo RuleConfig, media hỏng, thí sinh chưa tech-check (force-start có confirm 2 bước) | 5, 8 |
 | US-3.5 | Là **thí sinh**, tôi muốn lobby có thử chuông/âm thanh/đo ping để yên tâm trước giờ thi | Bấm thử chuông thấy round-trip ms; trạng thái sẵn sàng hiện cho admin | 5 |
-| US-3.6 | Là **viewer**, tôi muốn vào xem chỉ với mã phòng + nickname, không cần tài khoản | Guest join → hàng chờ → admin duyệt mới thấy nội dung; bị từ chối thì disconnect | 5 |
-| US-3.7 | Là **admin**, tôi muốn duyệt/từ chối viewer và khoá cổng viewer khi cần | Queue realtime 1-nhấp; rate-limit join; nút khoá cổng | 5, 8 |
+| US-3.6 | Là **viewer**, tôi muốn vào xem NGAY chỉ với mã phòng, không tài khoản, không chờ duyệt (✅ chốt 12/07) | Nhập mã 6 số → xem luôn; read-only enforced server-side; rate-limit IP | 5 |
+| US-3.7 | Là **admin**, tôi muốn khoá cổng viewer và kick viewer khi cần | Nút khoá cổng chặn join mới; kick 1-nhấp; đếm viewer online | 5, 8 |
+| US-3.8 | Là **admin/host**, tôi muốn thấy trạng thái kết nối từng máy trong trận (✅ chốt 12/07) | Thí sinh theo ghế 1,2,3... (online/offline, ping ms); viewer/MC chỉ số lượng; cảnh báo khi thí sinh rớt | 5, 8 |
 
 ## Epic 4 — Điều khiển trận đấu (Admin — luồng chính, như Athena)
 
@@ -66,7 +67,7 @@
 | US-6.1 | Là **viewer**, tôi muốn xem trận với animation sân khấu đẹp, mượt, ít thao tác | 60fps máy phổ thông; animation-queue tuần tự, skip-to-latest khi tụt; đủ hiệu ứng mọi vòng như demo `public/viewer.html` | 9 |
 | US-6.2 | Là **viewer**, tôi muốn chỉnh cỡ chữ/giảm animation để xem thoải mái từ xa/trên mobile | Settings cỡ chữ, reduced-motion, âm lượng; contrast AA | 9 |
 | US-6.3 | Là **người dựng stream**, tôi muốn thêm overlay câu hỏi/điểm vào OBS đè lên khung quay thí sinh | Browser Source 1920×1080 nền trong suốt; <50% CPU 1 core; phần tử bật/tắt từ admin | 9 |
-| US-6.4 | Là **người dựng stream**, tôi muốn URL overlay không trở thành lỗ hổng nếu lộ trên hình | Bootstrap token 1 lần, revoke/re-issue được, chết khi trận kết thúc | 5 |
+| US-6.4 | Là **người dựng stream**, tôi muốn URL overlay chỉ chứa mã phòng, hết hiệu lực khi contest đóng | Không token dài hạn; lộ mã trên hình → admin khoá cổng/kick; khoá cổng chặn kết nối mới ngay | 5 |
 | US-6.5 | Là **viewer/overlay**, tôi tuyệt đối không gửi được lệnh gì lên trận | Namespace read-only, server drop mọi event từ đây (test) | 5, 9 |
 
 ## Epic 7 — Sau trận & Vận hành
@@ -92,6 +93,8 @@
 | US-8.8 | Là **admin**, tôi muốn đổi theme trận: màu đồ hoạ, logo, ảnh thí sinh, video hình hiệu | Theme editor map design tokens; asset MinIO; viewer/overlay/MC áp theme; video phát ở intro/INTERMISSION | 8, 9 |
 | US-8.9 | Là **admin**, tôi muốn gán nhạc cho TỪNG thành phần (cue slot × loại vòng) và có playlist nhạc nền điều khiển bằng soundboard | Sound editor per-slot; soundboard phát/dừng/next/volume/duck, ngoài control lock; contestant mặc định tắt nhạc nền | 8, 9 |
 | US-8.10 | Là **MC**, tôi muốn màn riêng chữ rất to hiện câu hỏi + đáp án + tóm tắt kết quả để dẫn chương trình | Route `/mc` read-only; permission match.viewAnswer theo contest; audit log | 9 |
+| US-8.11 | Là **admin/trainer**, tôi muốn tạo practice match (matchPurpose='practice') và Rematch nhanh để CLB luyện tập hàng tuần | Purpose chọn lúc tạo, immutable sau start; practice pre-flight = warning (vẫn start được); reveal default ON; nút Rematch giữ seats + room code | 5, 6, 8 |
+| US-8.12 | Là **admin**, tôi muốn bật revealAnswerAfterJudge ở match official khi thật sự cần (có kiểm soát) | Cảnh báo + confirm 2 bước + audit; đáp án chỉ đẩy xuống SAU khi chấm | 6, 8 |
 
 ## Epic 9 — Bộ đề (bổ sung 12/07)
 

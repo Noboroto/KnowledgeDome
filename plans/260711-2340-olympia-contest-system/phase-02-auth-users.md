@@ -27,10 +27,10 @@ erDiagram
   Permission ||--o{ RolePermission : ""
   User { string id PK  string username  string passwordHash }
   Role { string id PK  string name "ADMIN|SETTER|CONTESTANT|... seed + tạo thêm"  bool system "role seed không xoá được" }
-  Permission { string key PK "user.manage, contest.create, contest.control, question.create, question.viewAnswer, viewer.approve, ..." }
+  Permission { string key PK "user.manage, contest.create, contest.control, question.create, question.viewAnswer, contest.viewerGate, ..." }
 ```
 
-Permission catalog (hằng số trong `packages/shared`, nhóm theo module): `user.*`, `question.*` (create/update/viewAnswer/export/import), `contest.*` (create/control/adjustScore/approveViewer), `system.*`. Seed 4 role mặc định: ADMIN (toàn bộ), SETTER (question.* của mình), CONTESTANT (thi đấu), VIEWER (guest — không phải account, ticket riêng).
+Permission catalog (hằng số trong `packages/shared`, nhóm theo module): `user.*`, `question.*` (create/update/viewAnswer/export/import), `contest.*` (create/control/adjustScore/viewerGate/soundboard), `match.viewAnswer`, `system.*`. Seed 4 role mặc định: ADMIN (toàn bộ), SETTER (question.* của mình), CONTESTANT (thi đấu), VIEWER (guest — không phải account, ticket riêng).
 
 - Better-auth qua `@thallesp/nestjs-better-auth` (pin version), **bọc sau interface `AuthService` nội bộ** để cô lập rủi ro package cộng đồng.
 - Better-auth `username` plugin; tắt đăng ký tự do — chỉ admin tạo account.

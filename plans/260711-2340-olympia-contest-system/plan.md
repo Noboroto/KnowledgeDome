@@ -40,7 +40,7 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức **tuỳ biến ho
                     ┌─────────────────────────────────────────┐
                     │              apps/web (React)           │
                     │  /contestant  /viewer  /overlay  /admin │
-                    │  /questions   (route theo role)         │
+                    │  /questions  /mc  (route theo role)     │
                     └──────┬──────────────────────┬───────────┘
                      HTTP (TanStack Query)   Socket.IO (websocket-only)
                     ┌──────┴──────────────────────┴───────────┐
@@ -59,7 +59,7 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức **tuỳ biến ho
 Nguyên tắc xương sống (rút từ nghiên cứu + bài học Athena):
 
 1. **Server-authoritative tuyệt đối**: timer, thứ tự bấm chuông (server timestamp), điểm số đều tính ở server; client chỉ gửi intent và render.
-2. **Đáp án không bao giờ rời server** trước lúc công bố; media qua presigned URL TTL ngắn; audit log truy cập đề.
+2. **Đáp án chỉ rời server tới admin + MC** (authenticated + audit); ngoại lệ revealAnswerAfterJudge (per-match, default tắt ở official) đẩy xuống SAU khi chấm; media qua presigned URL TTL ngắn; audit log truy cập đề.
 3. **RuleConfig JSON (Zod-validated)** — mọi timer/điểm là config per-contest với preset "O26 chuẩn"; không hard-code như Athena.
 4. **Event-sourced match log**: mọi sự kiện trận (chuông, đáp án, chấm điểm, chỉnh tay) được append vào log → undo/sửa điểm có dấu vết, phân xử khiếu nại, replay.
 5. **Snapshot đề vào trận**: gán đề là copy tại thời điểm gán; sửa kho đề không phá trận.
@@ -101,4 +101,4 @@ Ghi chú thứ tự: Phase 3-4 (kho đề) và Phase 5 (contest/room) có thể 
 
 ## Open questions
 
-Xem `plans/DEFERED.md`. **Đã chốt:** D1 (1-12 ghế + đội), D3 (admin điều khiển + RBAC permission/CASL), D15-phần-MC (MC thấy đáp án), D18 (không cắt scope — 1 version đủ tính năng). **Còn chờ:** D2 (i18n), D4 (chấm miệng), D5 (viewer guest), D6 (giới hạn media), D7 (tên sản phẩm + bản quyền format + license — nên chốt trước commit code), D8 (mâu thuẫn luật O26), D9 (Fastify spike/fallback), D10 (nguồn âm thanh), D11 (quy mô viewer), D12 (preload thí sinh), D13 (edge-cases luật), D14 (retention dữ liệu học sinh), D15.1 (admin-duyệt-đề đủ chưa), D16 (UI practice solo), **D17 (4 ngữ nghĩa thi đội — cần trước Phase 6)**. Mỗi mục có khuyến nghị tạm để không chặn tiến độ.
+Xem `plans/DEFERED.md`. **Đã chốt:** D1 (1-12 ghế + đội), D3 (admin điều khiển + RBAC permission/CASL), D5 (viewer public theo mã phòng — không duyệt), D15-phần-MC (MC thấy đáp án), D18 (không cắt scope — 1 version đủ tính năng). **Còn chờ:** D2 (i18n), D4 (chấm miệng), D6 (giới hạn media), D7 (tên sản phẩm + bản quyền format + license — nên chốt trước commit code), D8 (mâu thuẫn luật O26), D9 (Fastify spike/fallback), D10 (nguồn âm thanh), D11 (quy mô viewer), D12 (preload thí sinh), D13 (edge-cases luật), D14 (retention dữ liệu học sinh), D15.1 (admin-duyệt-đề đủ chưa), D16 (UI practice solo), **D17 (4 ngữ nghĩa thi đội — cần trước Phase 6)**, D21 (dual-purpose). Mỗi mục có khuyến nghị tạm để không chặn tiến độ.

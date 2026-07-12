@@ -12,7 +12,7 @@ dependencies: [6]
 Màn viewer "sân khấu" với animation đầy đủ nhưng không lag, và trang overlay OBS 1920×1080 nền trong suốt cho livestream. Port design + animation từ `public/viewer.html` và `public/overlay.html`.
 
 ## Requirements
-- Functional: viewer join qua room code + duyệt (Phase 5); hiển thị mọi loại vòng trong playlist với animation (bảng điểm count-up, VCNV lật ô + mở miếng ghép, tăng tốc lane, về đích NSHV/cướp, podium + confetti); overlay OBS: lower-third câu hỏi, timer ring, score strip, banner vòng, badge NSHV, điều khiển hiển thị phần tử từ admin; sound đồng bộ theo sound-cue.
+- Functional: viewer/overlay join public qua room code — không duyệt (Phase 5, user chốt 12/07); hiển thị mọi loại vòng trong playlist với animation (bảng điểm count-up, VCNV lật ô + mở miếng ghép, tăng tốc lane, về đích NSHV/cướp, podium + confetti); overlay OBS: lower-third câu hỏi, timer ring, score strip, banner vòng, badge NSHV, điều khiển hiển thị phần tử từ admin; sound đồng bộ theo sound-cue.
 - Non-functional: 60fps trên máy phổ thông (chỉ transform/opacity, GPU-friendly); `prefers-reduced-motion`; viewer chỉnh cỡ chữ + contrast AA; overlay chạy trong OBS Browser Source < 50% CPU; read-only tuyệt đối.
 
 ## Architecture
@@ -21,12 +21,12 @@ Màn viewer "sân khấu" với animation đầy đủ nhưng không lag, và tr
 flowchart LR
   ENG[Engine events<br/>Socket.IO /viewer namespace] --> VQ[Animation queue<br/>client-side]
   VQ --> VU[viewer route<br/>Motion for React]
-  ENG --> OV[overlay route<br/>?token=... bg trong suốt]
+  ENG --> OV[overlay route<br/>?code=482913 bg trong suốt]
   ADM[Admin toggle<br/>overlay elements] --> OV
 ```
 
 - **Animation queue**: event server đến dồn dập → hàng đợi tuần tự hoá animation (điểm cộng xong mới chạy hiệu ứng tiếp theo), skip-to-latest khi tụt hậu > N event (viewer không bao giờ chặn engine — engine không chờ animation).
-- Overlay: route riêng không MUI layout (bundle tối thiểu), token auth (Phase 5), query `?elements=` + admin toggle runtime; hint checkerboard khi mở ngoài OBS.
+- Overlay: route riêng không MUI layout (bundle tối thiểu), join public bằng room code (Phase 5), query `?elements=` + admin toggle runtime; hint checkerboard khi mở ngoài OBS.
 - Motion for React cho hiệu ứng phức hợp; hiệu ứng lặp thuần CSS.
 
 ## Related Code Files
@@ -52,6 +52,7 @@ flowchart LR
 - **Theme per contest**: CSS variables override từ theme config (màu), logo/banner/ảnh thí sinh/video hình hiệu từ MinIO; INTERMISSION phát video hình hiệu; viewer/overlay/MC đều áp theme.
 - **Adaptive layout theo số đơn vị điểm (đã chốt)**: ≤4 giữ layout sân khấu đầy đủ như demo; 5-12 chuyển grid/list gọn (vẫn count-up + delta animation); hiển thị theo ĐỘI khi scoringUnit=team (điểm đội to, thành viên nhỏ).
 - **Tăng tốc clue-buzz**: UI mở dần 3-4 dữ kiện + hiệu ứng chuông giành quyền; **background music** phát ở viewer/overlay theo soundboard admin (duck khi cue).
+- Viewer/overlay render đáp án sau chấm KHI match bật revealAnswerAfterJudge (default tắt ở official).
 
 ## Success Criteria
 - [ ] Viewer dùng được trên điện thoại Android tầm trung (≥360px, không vỡ layout, animation không giật quá 30fps).
