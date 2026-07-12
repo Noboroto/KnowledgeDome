@@ -48,7 +48,7 @@ Output Directory = `.` (toàn bộ là static asset).
 ## 4 UX rules áp toàn demo
 
 1. **Visibility of System Status** — mọi thao tác async-mock (gửi đáp án, chấm điểm, lưu câu hỏi,
-   duyệt viewer, share-link, public bộ đề…) giả lập delay 300-600ms và hiện spinner/toast loading.
+   kick viewer, share-link, public bộ đề…) giả lập delay 300-600ms và hiện spinner/toast loading.
 2. **Immediate Feedback** — UI phản hồi ≤100ms (`--dur-instant`); toast success/error sau MỖI action
    (pattern loading → success/error trong `assets/ui.js`).
 3. **Không chặn gửi lại (rule chống double-submit ĐÃ BỎ theo yêu cầu chủ dự án)** — nút chỉ hiện

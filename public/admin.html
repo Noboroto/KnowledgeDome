@@ -144,8 +144,10 @@
       </p>
     </section>
 
+    <!-- Viewer PUBLIC theo mã phòng (không duyệt — chốt 12/07): admin chỉ đếm / kick / khoá cổng -->
     <section class="card">
-      <h2 class="card__title">Viewer chờ duyệt <span class="badge badge--orange" id="pendingCount">0</span></h2>
+      <h2 class="card__title">Viewer đang xem <span class="badge badge--blue" id="viewerCount">0</span></h2>
+      <button class="btn btn--sm" id="gateBtn" style="width:100%;margin-bottom:var(--sp-2)">🔓 Cổng viewer: MỞ</button>
       <div id="viewerList"></div>
     </section>
   </div>
@@ -273,41 +275,38 @@
   $("btnPrev").addEventListener("click", function () { qIndex--; renderQuestion(); });
   $("btnNext").addEventListener("click", function () { qIndex++; renderQuestion(); });
 
-  /* ---------- Duyệt viewer ---------- */
-  var pending = M.pendingViewers.slice();
+  /* ---------- ViewerPanel: viewer public theo mã phòng — đếm / kick / khoá cổng ---------- */
+  var viewers = M.pendingViewers.slice(); // mock: dùng lại danh sách cũ làm "đang xem"
+  var gateOpen = true;
+  $("gateBtn").addEventListener("click", function () {
+    gateOpen = !gateOpen;
+    this.textContent = gateOpen ? "🔓 Cổng viewer: MỞ" : "🔒 Cổng viewer: KHOÁ (chặn join mới)";
+    this.classList.toggle("btn--danger", !gateOpen);
+    UI.toast(gateOpen ? "Đã mở cổng viewer" : "Đã khoá cổng — viewer mới không vào được", "success");
+    E.log(gateOpen ? "Mở cổng viewer" : "Khoá cổng viewer");
+  });
   function renderViewers() {
     var w = $("viewerList"); w.innerHTML = "";
-    $("pendingCount").textContent = pending.length;
-    if (!pending.length) { w.innerHTML = '<p class="text-dim" style="font-size:var(--fs-sm)">Không có yêu cầu chờ.</p>'; return; }
-    pending.forEach(function (v) {
+    $("viewerCount").textContent = viewers.length;
+    if (!viewers.length) { w.innerHTML = '<p class="text-dim" style="font-size:var(--fs-sm)">Chưa có viewer.</p>'; return; }
+    viewers.forEach(function (v) {
       var el = document.createElement("div");
       el.className = "viewer-item";
       el.innerHTML = '<div class="grow"><strong style="font-size:var(--fs-sm)">' + v.name + "</strong>" +
-        '<div class="text-dim" style="font-size:var(--fs-xs)">yêu cầu lúc ' + v.requestedAt + "</div></div>";
-      var ok = document.createElement("button");
-      ok.className = "btn btn--success btn--sm"; ok.textContent = "✓";
-      ok.title = "Duyệt";
-      var no = document.createElement("button");
-      no.className = "btn btn--danger btn--sm"; no.textContent = "✗";
-      no.title = "Từ chối";
-      ok.addEventListener("click", function () { remove(v, true, ok, no); });
-      no.addEventListener("click", function () { remove(v, false, no, ok); });
-      el.appendChild(ok); el.appendChild(no);
+        '<div class="text-dim" style="font-size:var(--fs-xs)">vào lúc ' + v.requestedAt + "</div></div>";
+      var kick = document.createElement("button");
+      kick.className = "btn btn--danger btn--sm"; kick.textContent = "Kick";
+      kick.addEventListener("click", function () {
+        UI.mockAsync({ btn: kick, loading: "Đang kick " + v.name + "…", success: "Đã kick " + v.name })
+          .then(function () {
+            viewers = viewers.filter(function (x) { return x !== v; });
+            E.log("Kick viewer: " + v.name);
+            renderViewers();
+          });
+      });
+      el.appendChild(kick);
       w.appendChild(el);
     });
-    /* Duyệt/từ chối: loading 300-600ms → toast, khoá cả 2 nút chống double */
-    function remove(v, approved, btn, other) {
-      other.disabled = true;
-      UI.mockAsync({
-        btn: btn,
-        loading: (approved ? "Đang duyệt " : "Đang từ chối ") + v.name + "…",
-        success: (approved ? "Đã duyệt " : "Đã từ chối ") + v.name
-      }).then(function () {
-        pending = pending.filter(function (x) { return x !== v; });
-        E.log((approved ? "Duyệt" : "Từ chối") + " viewer: " + v.name);
-        renderViewers();
-      });
-    }
   }
 
   /* ---------- Chấm điểm ---------- */

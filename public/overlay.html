@@ -143,7 +143,7 @@
   <div class="help">
     <a class="nav-back" href="index.html" style="margin-bottom:8px" title="Quay lại (Esc) · Hub (H)">← Hub</a><br>
     <b>OBS Overlay demo — phím bật/tắt:</b><br>
-    <b>1</b> Lower-third câu hỏi · <b>2</b> Đáp án · <b>3</b> Timer ring<br>
+    <b>1</b> Lower-third câu hỏi · <b>2</b> Đáp án (config luyện tập) · <b>3</b> Timer ring<br>
     <b>4</b> Score strip · <b>5</b> Banner vòng · <b>6</b> Badge NSHV<br>
     <b>7</b> Buzz alert · <b>8</b> Chạy timer 15s · <b>9</b> Ẩn/hiện tất cả<br>
     <b>Esc</b> quay lại · <b>H</b> về hub
@@ -171,10 +171,10 @@
     <div class="ba-inner">🔔 Trần Thuỳ Dương<small>giành quyền trả lời</small></div>
   </div>
 
-  <!-- 1+2. Lower-third -->
+  <!-- 1. Lower-third. Đáp án (el2) CHỈ hiện khi contest bật revealAnswerAfterJudge (default TẮT — dùng luyện tập) -->
   <div class="ov lower-third" id="el1">
     <div class="lt-q" id="ltQ">Tỉnh nào của Việt Nam quản lý hành chính quần đảo Trường Sa?</div>
-    <div class="lt-a is-hidden-a" id="el2">Đáp án: KHÁNH HOÀ</div>
+    <div class="lt-a is-hidden-a" id="el2">Đáp án: KHÁNH HOÀ <small style="opacity:.6">(chỉ hiện khi contest bật revealAnswerAfterJudge — default tắt)</small></div>
   </div>
 
   <!-- 3. Score strip -->
@@ -236,7 +236,7 @@
   /* Phím 1–9 bật/tắt từng phần tử */
   var toggles = {
     "1": function () { $("el1").classList.toggle("is-hidden"); },
-    "2": function () { $("el2").classList.toggle("is-hidden-a"); },
+    "2": function () { $("el2").classList.toggle("is-hidden-a"); }, // đáp án — chỉ khi contest bật revealAnswerAfterJudge (default tắt)
     "3": function () { $("el3").classList.toggle("is-hidden"); },
     "4": function () { $("el4").classList.toggle("is-hidden"); },
     "5": function () { $("el5").classList.toggle("is-hidden"); },
