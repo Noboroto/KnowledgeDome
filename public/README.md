@@ -38,7 +38,7 @@ Output Directory = `.` (toàn bộ là static asset).
 | `overlay.html` | OBS Browser Source 1920×1080 nền trong suốt (`?bg=checker` xem ngoài OBS, `?round=…` đổi banner) |
 | `admin.html` | Bàn điều khiển: stepper render từ **playlist** (mock-data), chấm điểm chống double-submit, **soundboard** mock, bảng điểm adaptive |
 | `mc.html` | **MỚI** — màn MC read-only: câu hỏi chữ RẤT to + khung đáp án "chỉ MC/admin thấy" + tóm tắt điểm |
-| `questions.html` | Kho đề: 2 tab **Câu hỏi** (pagination 10 dòng, cột displayId/lĩnh vực/số từ) và **Bộ đề** (PRIVATE/PUBLIC, share-link, cảnh báo everPublic) |
+| `questions.html` | Kho đề: 2 tab **Câu hỏi** (pagination 10 dòng; **KHÔNG chia theo vòng thi — 3 pool KV/TT/CN, mức điểm + thời gian là metadata riêng từng câu — D24**) và **Bộ đề** (PRIVATE/PUBLIC, share-link, cảnh báo everPublic) |
 | `assets/tokens.css` | **Design tokens** — màu, font, spacing, radius, shadow, duration/easing, z-index, toast, pagination |
 | `assets/base.css` | Reset + component chung (button, card, badge, modal, table, **toast, spinner, nav-back, pager**) |
 | `assets/ui.js` | **MỚI** — `window.UI`: toast (loading → success/error), `mockAsync` (delay 300-600ms + khoá nút), hotkey Esc/H, query param |
@@ -73,7 +73,7 @@ Giá trị: `khoidong` · `vcnv` · `tangtoc` · `vedich` · `cauphu`
 | `viewer.html` | Nhảy tới bước setup vòng đó trong kịch bản (câu phụ dựng view riêng) |
 | `mc.html` / `admin.html` | Chọn đúng vòng trong playlist |
 | `overlay.html` | Đổi banner vòng thi |
-| `questions.html` | Preset filter vòng thi (`?tab=sets` mở tab Bộ đề) |
+| `questions.html` | Map sang preset filter **pool** (kho đề không chia theo vòng — `vedich` → KV + "có mức điểm"; `?tab=sets` mở tab Bộ đề) |
 
 ## Demo tính năng spec v2
 

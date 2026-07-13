@@ -86,17 +86,19 @@
     <!-- Filter + search -->
     <section class="card toolbar" style="margin-bottom:var(--sp-4)">
       <input class="input input--search" id="search" placeholder="Tìm nội dung / đáp án / mã câu…  (phím /)">
-      <select class="select" id="fRound">
-        <option value="">Mọi vòng thi</option>
-        <option value="KHOI_DONG">Khởi động (cả 2 lượt)</option>
-        <option value="KHOI_DONG_RIENG">Khởi động — riêng</option>
-        <option value="KHOI_DONG_CHUNG">Khởi động — chung</option>
-        <option value="VCNV">Vượt CNV</option>
-        <option value="TANG_TOC">Tăng tốc</option>
-        <option value="VE_DICH">Về đích (cả 2 gói)</option>
-        <option value="VE_DICH_20">Về đích 20đ</option>
-        <option value="VE_DICH_30">Về đích 30đ</option>
-        <option value="TIE_BREAK">Câu hỏi phụ</option>
+      <!-- ✅ D24: câu hỏi KHÔNG chia theo vòng thi — 3 pool; mức điểm là metadata lọc riêng -->
+      <select class="select" id="fPool">
+        <option value="">Mọi loại (pool)</option>
+        <option value="KV">KV — Khởi động · Về đích · Câu phụ</option>
+        <option value="TT">TT — Tăng tốc</option>
+        <option value="CN">CN — Vượt CNV</option>
+      </select>
+      <select class="select" id="fValue">
+        <option value="">Mọi mức điểm</option>
+        <option value="co">Có mức điểm (đủ ĐK Về đích)</option>
+        <option value="20">20 điểm</option>
+        <option value="30">30 điểm</option>
+        <option value="none">Chưa gán điểm</option>
       </select>
       <select class="select" id="fDiff">
         <option value="">Mọi độ khó</option>
@@ -113,7 +115,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>ID</th><th>Nội dung</th><th>Vòng thi</th><th>Lĩnh vực</th>
+            <th>ID</th><th>Nội dung</th><th>Pool</th><th>Điểm · Giây</th><th>Lĩnh vực</th>
             <th>Độ khó</th><th>Số từ</th><th>Media</th><th>Trạng thái</th>
           </tr>
         </thead>
@@ -187,16 +189,24 @@ de-thi-olympia.zip<br>
         <input class="input" id="eAnswer">
       </div>
       <div>
-        <label for="eRound">Vòng thi</label>
-        <select class="select" id="eRound">
-          <option value="KHOI_DONG_RIENG">Khởi động — riêng</option>
-          <option value="KHOI_DONG_CHUNG">Khởi động — chung</option>
-          <option value="VCNV">Vượt CNV</option>
-          <option value="TANG_TOC">Tăng tốc</option>
-          <option value="VE_DICH_20">Về đích 20đ</option>
-          <option value="VE_DICH_30">Về đích 30đ</option>
-          <option value="TIE_BREAK">Câu hỏi phụ</option>
+        <label for="ePool">Loại câu hỏi (pool — D24)</label>
+        <select class="select" id="ePool">
+          <option value="KV">KV — Khởi động · Về đích · Câu phụ</option>
+          <option value="TT">TT — Tăng tốc</option>
+          <option value="CN">CN — Vượt CNV (hàng ngang)</option>
         </select>
+      </div>
+      <div>
+        <label for="eValue">Mức điểm (metadata riêng)</label>
+        <select class="select" id="eValue">
+          <option value="">Chưa gán — Khởi động dùng tự do</option>
+          <option value="20">20 điểm (đủ ĐK Về đích)</option>
+          <option value="30">30 điểm (đủ ĐK Về đích)</option>
+        </select>
+      </div>
+      <div>
+        <label for="eTime">Thời gian (giây, theo TỪNG câu)</label>
+        <input class="input" id="eTime" type="number" min="5" max="120" placeholder="Trống = default RuleConfig">
       </div>
       <div>
         <label for="eDiff">Độ khó</label>
@@ -303,14 +313,11 @@ de-thi-olympia.zip<br>
   $("roomCode").textContent = M.roomCode;
 
   var bank = M.questionBank.slice();
-  var roundLabels = {
-    KHOI_DONG_RIENG: ["Khởi động · riêng", "badge--blue"],
-    KHOI_DONG_CHUNG: ["Khởi động · chung", "badge--blue"],
-    VCNV: ["Vượt CNV", "badge--purple"],
-    TANG_TOC: ["Tăng tốc", "badge--orange"],
-    VE_DICH_20: ["Về đích 20đ", "badge--green"],
-    VE_DICH_30: ["Về đích 30đ", "badge--green"],
-    TIE_BREAK: ["Câu phụ", "badge--gold"]
+  /* ✅ D24: 3 pool — KHÔNG chia câu hỏi theo vòng thi; điểm/thời gian là metadata riêng */
+  var poolLabels = {
+    KV: ["KV · KĐ + VĐ + Câu phụ", "badge--blue"],
+    TT: ["TT · Tăng tốc", "badge--orange"],
+    CN: ["CN · Vượt CNV", "badge--purple"]
   };
   var diffLabels = { de: "Dễ", "trung-binh": "Trung bình", kho: "Khó" };
   var statusLabels = {
@@ -345,9 +352,12 @@ de-thi-olympia.zip<br>
   var PAGE_SIZE = 10, page = 1;
   function filtered() {
     var kw = $("search").value.toLowerCase();
-    var fr = $("fRound").value, fd = $("fDiff").value, ff = $("fField").value;
+    var fp = $("fPool").value, fv = $("fValue").value, fd = $("fDiff").value, ff = $("fField").value;
     return bank.filter(function (q) {
-      if (fr && q.round.indexOf(fr) !== 0) return false; // prefix: KHOI_DONG khớp cả 2 lượt
+      if (fp && q.pool !== fp) return false;
+      if (fv === "co" && q.value == null) return false;          // đủ điều kiện Về đích
+      if (fv === "none" && q.value != null) return false;
+      if ((fv === "20" || fv === "30") && q.value !== +fv) return false;
       if (fd && q.difficulty !== fd) return false;
       if (ff && q.fieldId !== ff) return false;
       if (kw && (q.displayId + " " + q.text + " " + q.answer).toLowerCase().indexOf(kw) < 0) return false;
@@ -363,13 +373,15 @@ de-thi-olympia.zip<br>
     $("qTotal").textContent = "(" + bank.length + ")";
     var tb = $("tbody"); tb.innerHTML = "";
     slice.forEach(function (q) {
-      var r = roundLabels[q.round] || [q.round, "badge"];
+      var r = poolLabels[q.pool] || [q.pool, "badge"];
       var s = statusLabels[q.status] || [q.status, "badge"];
+      var vt = (q.value != null ? q.value + "đ" : "—") + (q.timeSeconds != null ? " · " + q.timeSeconds + "s" : "");
       var tr = document.createElement("tr");
       tr.innerHTML =
         '<td class="mono-id">' + q.displayId + "</td>" +
         '<td class="q-cell" title="' + q.text.replace(/"/g, "&quot;") + '">' + q.text + "</td>" +
         '<td><span class="badge ' + r[1] + '">' + r[0] + "</span></td>" +
+        '<td style="text-align:center;white-space:nowrap" class="text-dim">' + vt + "</td>" +
         '<td><span class="field-chip">' + (fieldName[q.fieldId] || "—") + "</span></td>" +
         '<td><span class="diff diff--' + q.difficulty + '">' + diffLabels[q.difficulty] + "</span></td>" +
         '<td style="text-align:center" class="text-dim">' + q.wordCount + "</td>" +
@@ -392,7 +404,7 @@ de-thi-olympia.zip<br>
     for (var p = 1; p <= pages; p++) pageBtn(p, p, false, p === page);
     pageBtn("→", page + 1, page >= pages);
   }
-  ["search", "fRound", "fDiff", "fField"].forEach(function (id) {
+  ["search", "fPool", "fValue", "fDiff", "fField"].forEach(function (id) {
     $(id).addEventListener("input", function () { page = 1; render(); });
   });
 
@@ -519,12 +531,22 @@ de-thi-olympia.zip<br>
 
   /* ---------- Editor ---------- */
   var editing = null;
+  /* Mức điểm chỉ có nghĩa với pool KV (điều kiện dùng ở Về đích) — TT/CN khoá field */
+  function syncValueField() {
+    var isKV = $("ePool").value === "KV";
+    $("eValue").disabled = !isKV;
+    if (!isKV) $("eValue").value = "";
+  }
+  $("ePool").addEventListener("change", syncValueField);
   function openEditor(q) {
     editing = q || null;
     $("editTitle").textContent = q ? "Sửa câu hỏi " + q.displayId : "Câu hỏi mới";
     $("eText").value = q ? q.text : "";
     $("eAnswer").value = q ? q.answer : "";
-    $("eRound").value = q ? q.round : "KHOI_DONG_CHUNG";
+    $("ePool").value = q ? q.pool : "KV";
+    $("eValue").value = q && q.value != null ? String(q.value) : "";
+    $("eTime").value = q && q.timeSeconds != null ? q.timeSeconds : "";
+    syncValueField();
     $("eDiff").value = q ? q.difficulty : "de";
     $("eField").value = q ? q.fieldId : "hieu-biet";
     $("eTopics").value = q ? (q.topics || []).join(", ") : "";
@@ -542,16 +564,19 @@ de-thi-olympia.zip<br>
     UI.mockAsync({ btn: btn, loading: "Đang lưu câu hỏi…", success: editing ? "Đã cập nhật câu hỏi" : "Đã tạo câu hỏi mới" })
       .then(function () {
         var text = $("eText").value.trim();
+        var pool = $("ePool").value;
         var data = {
           id: editing ? editing.id : "new-" + Date.now(),
-          // ✅ D24: <POOL>-<4 hex đầu UUID>-<4 hex cuối UUID> — KHOI_DONG/VE_DICH/TIE_BREAK → KV, TANG_TOC → TT, VCNV → CN
+          // ✅ D24: <POOL>-<4 hex đầu UUID>-<4 hex cuối UUID> — pool chọn trực tiếp, không suy từ vòng thi
           displayId: editing ? editing.displayId :
-            (($("eRound").value === "TANG_TOC" ? "TT" : $("eRound").value === "VCNV" ? "CN" : "KV") +
+            (pool +
              "-" + Math.floor(Math.random() * 65536).toString(16).toUpperCase().padStart(4, "0") +
              "-" + Math.floor(Math.random() * 65536).toString(16).toUpperCase().padStart(4, "0")),
           text: text,
           answer: $("eAnswer").value.trim(),
-          round: $("eRound").value,
+          pool: pool,
+          value: pool === "KV" && $("eValue").value ? +$("eValue").value : null,
+          timeSeconds: $("eTime").value ? +$("eTime").value : null,
           difficulty: $("eDiff").value,
           fieldId: $("eField").value,
           wordCount: text.split(/\s+/).length,
@@ -573,10 +598,17 @@ de-thi-olympia.zip<br>
     else if (e.key.toLowerCase() === "n") openEditor(null);
   });
 
-  /* ---------- Deep-link: ?round=… preset filter · ?tab=sets ---------- */
-  var ROUND_FILTER = { khoidong: "KHOI_DONG", vcnv: "VCNV", tangtoc: "TANG_TOC", vedich: "VE_DICH", cauphu: "TIE_BREAK" };
+  /* ---------- Deep-link: ?round=… preset filter · ?tab=sets ----------
+     Kho đề không chia theo vòng (D24) — deep-link vòng chỉ map sang pool (+ điều kiện điểm với Về đích) */
+  var ROUND_FILTER = {
+    khoidong: { pool: "KV" },
+    vcnv: { pool: "CN" },
+    tangtoc: { pool: "TT" },
+    vedich: { pool: "KV", value: "co" },
+    cauphu: { pool: "KV" }
+  };
   var rf = ROUND_FILTER[UI.param("round")];
-  if (rf) $("fRound").value = rf;
+  if (rf) { $("fPool").value = rf.pool; if (rf.value) $("fValue").value = rf.value; }
   if (UI.param("tab") === "sets") showTab("sets");
 
   render(); renderSets();

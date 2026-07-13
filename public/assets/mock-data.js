@@ -231,8 +231,12 @@ window.MOCK = {
 };
 
 /* Build danh sách phẳng + metadata quản trị (người tạo, trạng thái duyệt)
-   ✅ D24 12/07: displayId = <POOL 2 ký tự>-<4 HEX đầu UUID>-<4 HEX cuối UUID> uppercase —
-   KV (chung Khởi động + Về đích + câu phụ), TT (tăng tốc), CN (bộ đề VCNV, hàng ngang -Rn);
+   ✅ D24 12/07: câu hỏi trong kho KHÔNG chia theo vòng thi — taxonomy 3 POOL:
+   KV (chung Khởi động + Về đích + câu phụ — dùng được ở Về đích khi value ∈ valueChoices),
+   TT (tăng tốc), CN (bộ đề VCNV, hàng ngang -Rn).
+   Mức điểm (value) + thời gian (timeSeconds) là METADATA riêng TỪNG CÂU, không phải loại câu
+   (cùng 20đ có thể câu 15s và câu 40s — điểm độc lập thời gian).
+   displayId = <POOL 2 ký tự>-<4 HEX đầu UUID>-<4 HEX cuối UUID> uppercase —
    demo derive hex giả lập ổn định từ item id; fieldId, wordCount (auto) */
 (function buildBank() {
   var q = window.MOCK.questions;
@@ -250,12 +254,6 @@ window.MOCK = {
   };
   var all = [];
   var i = 0;
-  // round → pool: KHOI_DONG + VE_DICH + TIE_BREAK dùng chung KV; TANG_TOC → TT; VCNV → CN
-  function poolOf(round) {
-    if (round === "TANG_TOC") return "TT";
-    if (round === "VCNV") return "CN";
-    return "KV";
-  }
   /* 4 hex uppercase giả lập UUID, deterministic từ string (demo — app thật lấy từ UUID) */
   function h4(s, salt) {
     var h = 5381 + (salt || 0);
@@ -263,34 +261,38 @@ window.MOCK = {
     return ("0000" + (h % 65536).toString(16).toUpperCase()).slice(-4);
   }
   function makeId(pool, key) { return pool + "-" + h4(key, 7) + "-" + h4(key, 131); }
-  function push(item, round, idOverride) {
+  function push(item, pool, extra) {
+    extra = extra || {};
     var topic = (item.topics || [])[0];
-    var pool = poolOf(round);
     all.push(Object.assign({}, item, {
-      round: round,
       pool: pool,
+      value: extra.value != null ? extra.value : null,           // mức điểm — metadata riêng (điều kiện dùng ở Về đích)
+      timeSeconds: extra.timeSeconds != null ? extra.timeSeconds : null, // thời gian TỪNG câu — độc lập với value
       media: item.media || null,
       creator: creators[i % creators.length],
       status: statuses[i % statuses.length],
-      displayId: idOverride || makeId(pool, item.id || String(i)),
+      displayId: extra.idOverride || makeId(pool, item.id || String(i)),
       fieldId: TOPIC_FIELD[topic] || "hieu-biet",
       wordCount: item.text.trim().split(/\s+/).length
     }));
     i++;
   }
+  /* Khởi động (cả 2 lượt của trận rút chung 1 pool KV, không gán value) */
   Object.keys(q.khoiDongRieng).forEach(function (cid) {
-    q.khoiDongRieng[cid].forEach(function (it) { push(it, "KHOI_DONG_RIENG"); });
+    q.khoiDongRieng[cid].forEach(function (it) { push(it, "KV"); });
   });
-  q.khoiDongChung.forEach(function (it) { push(it, "KHOI_DONG_CHUNG"); });
+  q.khoiDongChung.forEach(function (it) { push(it, "KV"); });
   /* Bộ đề VCNV: 1 Id cấp SET, hàng ngang là item con <setId>-Rn */
   var cnSetId = makeId("CN", "vcnv-set-demo");
-  q.vcnv.rows.forEach(function (it, r) { push(it, "VCNV", cnSetId + "-R" + (r + 1)); });
-  q.tangToc.forEach(function (it) { push(it, "TANG_TOC"); });
+  q.vcnv.rows.forEach(function (it, r) { push(it, "CN", { idOverride: cnSetId + "-R" + (r + 1) }); });
+  q.tangToc.forEach(function (it) { push(it, "TT", { timeSeconds: 30 }); });
   q.tangTocClue.forEach(function (it) {
-    push(Object.assign({ text: "[Clue-buzz] " + it.clues[0] + " (+" + (it.clues.length - 1) + " dữ kiện)" }, it), "TANG_TOC");
+    push(Object.assign({ text: "[Clue-buzz] " + it.clues[0] + " (+" + (it.clues.length - 1) + " dữ kiện)" }, it), "TT", { timeSeconds: 40 });
   });
-  q.veDich[20].forEach(function (it) { push(it, "VE_DICH_20"); });
-  q.veDich[30].forEach(function (it) { push(it, "VE_DICH_30"); });
-  q.tieBreak.forEach(function (it) { push(it, "TIE_BREAK"); });
+  /* Câu KV có value = đủ điều kiện Về đích; cùng mức điểm nhưng timeSeconds khác nhau (điểm độc lập thời gian) */
+  q.veDich[20].forEach(function (it, k) { push(it, "KV", { value: 20, timeSeconds: k % 3 === 2 ? 40 : 15 }); });
+  q.veDich[30].forEach(function (it, k) { push(it, "KV", { value: 30, timeSeconds: k % 3 === 2 ? 60 : 20 }); });
+  /* Câu phụ (tie-break) rút từ pool KV — không phải loại riêng (D24) */
+  q.tieBreak.forEach(function (it) { push(it, "KV"); });
   window.MOCK.questionBank = all;
 })();
