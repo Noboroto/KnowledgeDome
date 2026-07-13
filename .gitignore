@@ -16,3 +16,4 @@ obj
 .obsidian/
 .code-review-graph/
 .claude/
+/.playwright-mcp
