@@ -304,6 +304,12 @@ Kèm quyết định đi cùng của user: **TRIM toàn bộ** nội dung đề 
 >
 > **Format Id (user chốt lại 12/07):** `<POOL 2 ký tự><4 HEX ĐẦU của UUID><4 HEX CUỐI của UUID>` — uppercase, derive từ chính UUID của câu (vd UUID `a1b2c3d4-…-e5f67890` → `KV-A1B2-7890`; hàng ngang VCNV: `CN-A1B2-7890-R1..R8`). Deterministic từ UUID nên không cần sequence; unique index trên displayId — đụng độ (hiếm, 8 hex) thì regenerate UUID lúc tạo. Immutable, dùng ở picker/import-export/tra cứu/log.
 
+**Bổ sung 13/07 (user chốt — kho đề KHÔNG chia theo vòng thi):**
+
+> 1. **Không có `KHOI_DONG_RIENG`/`KHOI_DONG_CHUNG` ở cấp CÂU HỎI** — riêng/chung là cấu trúc LƯỢT của trận (engine phase), không phải thuộc tính câu; format chuẩn Olympia chỉ có "Khởi động". Câu Khởi động nằm chung pool `KV`, lượt riêng/chung của trận rút từ cùng pool.
+> 2. **Tách MỨC ĐIỂM ra khỏi loại câu hỏi** — không tồn tại loại `VE_DICH_20`/`VE_DICH_30`; `value` là **metadata riêng** trên câu KV (null = chưa gán, Khởi động dùng tự do; có value ∈ valueChoices = đủ điều kiện Về đích). `timeSeconds` cũng là metadata từng câu, độc lập với value (cùng 20đ có thể 15s và 40s).
+> 3. **Hệ quả UI kho đề** (đã áp vào demo `public/questions.html` + `mock-data.js` 13/07): filter/editor/bảng dùng **pool (KV/TT/CN) + mức điểm + thời gian** thay cột "Vòng thi"; deep-link `?round=` chỉ map sang pool (+ filter "có mức điểm" cho Về đích). Trang kho đề app thật (phase-03 bước 7, phase-08 QuestionPicker) port theo mô hình này.
+
 ## D25. Typography ✅ ĐÃ CHỐT (12/07): BE VIETNAM PRO + FALLBACK HỆ THỐNG
 
 > **User chốt:** font chữ toàn hệ thống = **Be Vietnam Pro**, fallback các font hệ thống hỗ trợ tiếng Việt sẵn trên Windows/macOS. Font stack chuẩn (đã áp vào `public/assets/tokens.css` `--font-sans`):

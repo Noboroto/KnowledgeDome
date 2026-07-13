@@ -11,12 +11,18 @@ dependencies: [2]
 ## Overview
 Kho câu hỏi bảo mật cao: schema Prisma với metadata + versioning, CRUD cho SETTER/ADMIN, media lên MinIO qua presigned URL, đáp án không bao giờ xuống client ngoài luồng admin/MC, audit log đầy đủ. **Mở rộng 12/07 (xem `research/ruleconfig-v2-spec.md` §8):** bộ đề (QuestionSet) là thực thể hạng nhất với visibility public/private + share-link, taxonomy lĩnh vực, tra cứu đa chiều.
 
+## Bổ sung 13/07 — Kho đề KHÔNG chia theo vòng thi (user chốt, chi tiết DEFERED D24)
+
+- Câu hỏi trong kho **không có thuộc tính vòng thi**; taxonomy duy nhất là 3 pool `KV`/`TT`/`CN` (D24). Khởi động KHÔNG tách riêng/chung ở cấp câu — riêng/chung là cấu trúc lượt của TRẬN.
+- **Mức điểm (`value`) tách hoàn toàn khỏi loại câu** — không có loại `VE_DICH_20/30`; `value` là metadata riêng của câu KV (null = Khởi động dùng tự do; value ∈ valueChoices = đủ điều kiện Về đích). `timeSeconds` là metadata từng câu, độc lập với value.
+- UI kho đề (bước 7) + QuestionPicker (phase-08): filter theo pool + mức điểm + thời gian, KHÔNG có cột/filter "Vòng thi" membership cứng; facet "vòng" nếu có chỉ là alias map sang pool + điều kiện value. Mẫu chuẩn: demo `public/questions.html` (đã cập nhật 13/07).
+
 ## Bổ sung 12/07 — QuestionSet & taxonomy
 
 - **Question thêm fields**: `displayId` **theo LOẠI POOL (✅ D24 12/07): format `<POOL 2 ký tự>-<4 HEX đầu UUID>-<4 HEX cuối UUID>` uppercase, derive từ UUID của câu** — `KV-XXXX-YYYY` (pool chung Khởi động + Về đích — dùng lẫn khi thoả điều kiện điểm; câu phụ rút từ đây), `TT-XXXX-YYYY` (tăng tốc), `CN-XXXX-YYYY` (bộ đề VCNV trọn, hàng ngang = `-R1..R8`) — unique index (đụng độ hiếm → regenerate UUID lúc tạo), immutable; `fieldId` (FK → bảng `Field` — nhãn lĩnh vực do admin/setter tạo/quản lý), `wordCount` (auto-compute từ content khi save), `explanation` (giải thích đáp án), `note`, `timeSeconds?` (thuộc tính thời gian từng câu), `value?` (mức điểm — điều kiện để câu KV dùng được ở về đích: value ∈ valueChoices config), `clues[]?` (3-4 dữ kiện cho tăng tốc format clue-buzz).
 - **QuestionSet (bộ đề)** — mô hình đầy đủ theo **spec v2 §9 (đã vá red-team C-v2-1/C-v2-3)**: `displayId`, name, `visibility: PRIVATE|PUBLIC`, `everPublic` (cờ một chiều trên cả Set lẫn Question); PRIVATE = owner + **ACL 3 mức view/viewAnswer/export**; share-link = token ≥128-bit + password (rate-limit 5 lần/phút/IP+link) + TTL + revoke, **mặc định KHÔNG kèm đáp án**, audit theo token+IP; PUBLIC = xem/tải tự do kèm đáp án theo setting per-set (default có, cảnh báo) và đóng dấu everPublic vĩnh viễn; **pre-flight mọi match hard-block câu everPublic/đang-public** (kiểm ở đơn vị CÂU, cả chiều gán set public vào contest).
 - **SetItem**: reference câu kho theo displayId HOẶC câu nhập tay inline (thuộc set); câu nhập tay có checkbox "lưu vào kho đề".
-- **Tra cứu kho đề** theo: displayId, lĩnh vực, người thực hiện, đáp án (search theo đáp án chỉ cho người có `question.viewAnswer`) + các filter metadata cũ. **Full-text search (✅ D22): Postgres FTS (`tsvector` trên content+explanation+tags, config `simple` + unaccent cho tiếng Việt, GIN index) + filter (loại vòng/lĩnh vực/mức điểm/độ khó/tags/người thực hiện/trạng thái) + sort (mới nhất/mức điểm/độ khó/lần dùng gần nhất/tần suất dùng — 2 sort sau đọc từ stats phase-10)** — đây là backend cho QuestionPicker của contest builder (phase-08, người tạo contest bắt buộc chọn đề trước khi start).
+- **Tra cứu kho đề** theo: displayId, lĩnh vực, người thực hiện, đáp án (search theo đáp án chỉ cho người có `question.viewAnswer`) + các filter metadata cũ. **Full-text search (✅ D22): Postgres FTS (`tsvector` trên content+explanation+tags, config `simple` + unaccent cho tiếng Việt, GIN index) + filter (pool KV/TT/CN — không phải vòng thi, xem "Bổ sung 13/07"/lĩnh vực/mức điểm/độ khó/tags/người thực hiện/trạng thái) + sort (mới nhất/mức điểm/độ khó/lần dùng gần nhất/tần suất dùng — 2 sort sau đọc từ stats phase-10)** — đây là backend cho QuestionPicker của contest builder (phase-08, người tạo contest bắt buộc chọn đề trước khi start).
 
 ## Requirements
 - Functional: CRUD câu hỏi theo **3 POOL (✅ D24 12/07 — thay 6 loại-theo-vòng cũ): `KV` (chung Khởi động + Về đích + câu phụ; dùng cho về đích khi `value` thoả valueChoices), `TT` (tăng tốc), `CN` (bộ đề VCNV trọn + hàng ngang con)**; metadata: độ khó (1-5), chủ đề (tags), lớp/kiến thức, ghi chú; đính kèm ảnh/video/audio; trạng thái DRAFT→ACTIVE→ARCHIVED — **activate gate bằng permission `question.review` (✅ D15.1 12/07: seed role REVIEWER, admin mặc định có; reviewer xem đáp án câu đang duyệt, audit log)**; versioning khi sửa câu ACTIVE.
@@ -84,7 +90,7 @@ Ghi chú thiết kế:
 5. MinIO presign PUT/GET + policy dung lượng. Khi confirm upload: server **sniff magic bytes** đối chiếu MIME khai báo (MIME trên presign là self-declared — red-team M4); **cấm SVG** (stored XSS qua Content-Disposition inline); antivirus scan là P3.
 5b. Seed script tạo **fixture question bank** đủ pre-flight 1 trận (24+12 khởi động, 1 VCNV set, 4 tăng tốc, 12 về đích, 3 câu phụ + media mẫu) — dùng cho E2E các phase 6-10 và demo dev (red-team M7).
 6. Audit log interceptor: VIEW_ANSWER (khi admin mở đáp án), CREATE/UPDATE/EXPORT/DELETE.
-7. FE trang kho đề: DataGrid (MUI) filter vòng/độ khó/topic/search, editor modal, upload media có progress, preview.
+7. FE trang kho đề: DataGrid (MUI) filter pool (KV/TT/CN) + mức điểm + độ khó/topic/search (KHÔNG filter theo vòng thi — "Bổ sung 13/07"), editor modal (pool + value/timeSeconds metadata), upload media có progress, preview.
 
 ## Success Criteria
 - [ ] SETTER tạo đủ 3 pool (KV có/không value, TT ranked-speed + clue-buzz, CN set hoàn chỉnh), kèm media; displayId đúng format D24.
