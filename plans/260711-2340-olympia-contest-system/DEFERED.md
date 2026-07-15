@@ -321,5 +321,36 @@ Kèm quyết định đi cùng của user: **TRIM toàn bộ** nội dung đề 
 >
 > **Triển khai:** app thật **SELF-HOST woff2** (Vietnamese + Latin subset, weights 400-900) trong bundle `apps/web` — KHÔNG phụ thuộc Google Fonts CDN vì profile portable chạy LAN offline (phase-01 setup, phase-10 kiểm tra offline). Demo `public/` dùng Google Fonts CDN (host Vercel có internet). `font-display: swap`.
 
+## D26. Danh sách USER THAM GIA trong contest bundle (roster) 🟡 CHỜ CHỐT (mở 15/07)
+
+> **Yêu cầu user (15/07):** admin có thể tạo contest + settings + **danh sách user tham gia** trên bản Internet rồi xuất ra và import vào bản local.
+
+**Bối cảnh & lý do phải hỏi:** D23 hiện xuất/nhập contest.json (RuleConfig + playlist + theme/sound + seats khung) + đề + media, **nhưng KHÔNG mang account thí sinh**. Bản Internet (compose) và bản portable (LAN) là **2 database ĐỘC LẬP** — user Better-auth (username + passwordHash) tạo bên Internet không tồn tại bên portable; `ContestSeat.userId` trỏ tới User. Nếu bundle không mang roster, import vào portable xong **không thí sinh nào đăng nhập được** — phải tạo tay lại toàn bộ account + gán ghế, mất phần lớn giá trị "trọn gói". Điểm nhạy cảm: `passwordHash` là "vương miện" hệ auth (zero-trust) — đưa vào ZIP đi USB là bề mặt crack offline; username có thể ĐỤNG account đã có trên portable.
+
+**Phương án xử lý PASSWORD khi import roster:**
+
+| Phương án | Ưu | Nhược |
+|---|---|---|
+| (a) Regenerate password ngẫu nhiên lúc import + xuất **phiếu tài khoản** (PDF bảng in) cho admin phát tay | An toàn nhất (hash không rời hệ Internet); khớp thực tế LAN (phát slip cho học sinh ngày thi); admin kiểm soát | Thí sinh không dùng lại mật khẩu cũ; phải in/phát phiếu |
+| (b) Mang theo `passwordHash` (Argon2id chuyển thẳng — cùng thuật toán 2 bản) | Thí sinh dùng LẠI mật khẩu cũ; zero thao tác | Hash rời hệ → crack offline nếu bundle lộ; buộc bundle AES |
+| (c) Chỉ mang username + seat profile, tạo account rỗng chờ set pass | Không mang secret | Vẫn phải đặt lại pass thủ công từng người |
+
+**→ Đề xuất: cách xử lý mật khẩu là SETTING admin chọn lúc export** (không ép default cứng — user chốt 15/07): dropdown/radio 2 lựa chọn — **(a) "Tạo mật khẩu mới + xuất phiếu tài khoản"** (khuyến nghị, an toàn hơn) và **(b) "Giữ mật khẩu hiện tại"** (mang Argon2id hash — tiện, thí sinh dùng lại pass cũ). UI nêu rõ trade-off cạnh mỗi lựa chọn; lựa chọn ghi vào manifest để import biết cách dựng. Kèm: **merge policy** khi username trùng (link account sẵn có / tạo mới có hậu tố / huỷ); **roles đi kèm** (seed role có sẵn 2 bản; role CUSTOM tạo trên Internet phải export định nghĩa để portable dựng lại); **seat profile** (tên/trường/lớp — thuộc contest, phase-05 1b) đi cùng contest.json; CHỈ export user ĐƯỢC GÁN vào contest (thí sinh + MC/host), không dump toàn bộ user. Audit `EXPORT_ROSTER`/`IMPORT_ROSTER`. PII học sinh rời hệ → cảnh báo consent (product-gaps §privacy) + khuyến nghị xoá bundle sau trận. Hệ quả plan: phase-04 bundle thêm roster, contest.json nhúng **RuleConfig đã resolve** (không chỉ preset id — tránh drift khi portable thiếu row preset).
+
+**Bổ sung 15/07 (user chốt): THÔNG TIN USER LUÔN MÃ HOÁ THÀNH FILE BINARY.** Roster KHÔNG để plaintext `roster.json` mà là **`roster.bin`** — luôn mã hoá bất kể có mang hash hay không (PII học sinh cũng là dữ liệu nhạy cảm). Sơ đồ crypto: admin đặt **passphrase** lúc export → **Argon2id** (tái dùng lib mật khẩu Phase 2) dẫn xuất key 256-bit → **AES-256-GCM** (authenticated encryption: bảo mật + chống sửa). Container binary: `magic | version | KDF(salt, params) | nonce | ciphertext | authTag`; KEY/passphrase KHÔNG nằm trong bundle (truyền qua kênh khác), manifest chỉ chứa salt/params. Import: **nếu bundle có roster → người import BẮT BUỘC nhập mật khẩu (chính passphrase đặt ở khâu export)** → giải mã → verify authTag (sai pass / bytes bị sửa → từ chối, không import nửa vời); bundle không roster thì không cần mật khẩu. Vì roster đã luôn mã hoá, setting (b) "giữ mật khẩu" nằm trong lớp mã hoá roster; (a) vẫn khuyến nghị để giảm thiệt hại cả khi lộ passphrase, nhưng để admin QUYẾT ở form export. Yêu cầu passphrase đủ mạnh lúc export (điểm yếu nhất của sơ đồ).
+
+**Các setting export roster (form UI):** (1) **có kèm roster không** (bật/tắt export user info); (2) **cách xử lý mật khẩu** (a tạo mới / b giữ nguyên); (3) **passphrase mã hoá** `roster.bin` (+ xác nhận độ mạnh). Setting (2) mặc định (a) nhưng đổi được — user chốt là để settings, không cứng.
+
+## D27. Chiều NGƯỢC: kết quả/stats portable → central sau trận 🟡 CHỜ CHỐT (mở 15/07)
+
+**Bối cảnh:** D23/D26 mô tả luồng MỘT chiều (compose → portable). Nhưng trận chạy trên portable (ngày thi) mới sinh ra **kết quả**: điểm chung cuộc, MatchEvent log (event-sourced), thống kê câu hỏi (%đúng/thời gian TB — phase-10 step 4 ghi ngược kho đề), PDF. Không có đường mang kết quả **về central** thì: (1) stats câu hỏi chỉ tích luỹ trên portable rồi mất khi xoá; (2) không tổng hợp lịch sử thi nhiều trận/mùa ở một nơi.
+
+| Phương án | Ưu | Nhược |
+|---|---|---|
+| (a) **Result bundle** export từ portable (results.json + stats-delta.json + PDF) → import vào central, merge theo `matchId`/`displayId` | Khép kín roundtrip; central tổng hợp lịch sử; stats-writeback đúng thiết kế | Thêm 1 luồng import (nhưng tái dùng hạ tầng D23) |
+| (b) Không đồng bộ ngược — central chỉ giữ config, kết quả sống trên portable | Đơn giản hơn | Mất tổng hợp lịch sử + stats không về kho trung tâm |
+
+**→ Đề xuất: (a)** — tái dùng format bundle + manifest + checksum của D23; idempotent theo `matchId` (import 2 lần không nhân đôi stats). Có thể ship như phase-10 P2 nếu gấp, nhưng schema chuẩn bị từ đầu. Hệ quả plan: phase-04 thêm `olympia-result-export.zip` (đã mô tả), phase-10 nối stats-writeback qua luồng này.
+
 ---
 <!-- Claude sẽ thêm mục mới bên dưới trong quá trình planning -->
