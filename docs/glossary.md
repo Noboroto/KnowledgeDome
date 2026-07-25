@@ -1,7 +1,7 @@
 # Glossary — Thuật ngữ nghiệp vụ Olympia Contest System
 
 > **Ngày lập**: 2026-07-25
-> **Nguồn rà soát**: `docs/source/fandom-olympia-26-luat-choi.md` (F26, nguyên văn luật gốc) · `docs/game-rules-inventory.md` · `docs/reviews/game-rules-review.md` (GRR-137→GRR-171) · `docs/reviews/game-rules-decisions.md` (Đ-1→Đ-29, tên chuẩn đã chốt)
+> **Nguồn rà soát**: `docs/source/fandom-olympia-26-luat-choi.md` (F26, nguyên văn luật gốc) · `docs/game-rules-inventory.md` · `docs/reviews/game-rules-review.md` (GRR-137→GRR-171) · `docs/reviews/game-rules-decisions.md` (Đ-1→Đ-35, tên chuẩn đã chốt)
 >
 > **Nguyên tắc**: KHÔNG tự sáng tạo định nghĩa. Mọi định nghĩa dẫn file + heading nguồn. Từ nào tài liệu chưa nói đủ ⇒ `NEEDS CLARIFICATION`; từ nào được dùng với nhiều nghĩa ⇒ `CONFLICT`. Từ nào **không tồn tại** trong miền này ⇒ ghi ở [Phụ lục A](#phụ-lục-a--thuật-ngữ-được-yêu-cầu-nhưng-không-tồn-tại-trong-miền), KHÔNG bịa định nghĩa để lấp chỗ.
 
@@ -9,13 +9,13 @@
 
 | Status | Số mục | Nghĩa |
 |---|---|---|
-| `CONFIRMED` | 30 | Tài liệu định nghĩa đủ và nhất quán |
-| `NEEDS CLARIFICATION` | 21 | Từ có được dùng nhưng định nghĩa chưa đủ để viết spec |
+| `CONFIRMED` | 31 | Tài liệu định nghĩa đủ và nhất quán |
+| `NEEDS CLARIFICATION` | 20 | Từ có được dùng nhưng định nghĩa chưa đủ để viết spec |
 | `CONFLICT` | 9 | Cùng một từ mang **nhiều nghĩa khác nhau** trong tài liệu |
 
 **9 mục `CONFLICT` — đọc trước khi viết bất kỳ spec nào**: TERM-013 `game` · TERM-016 `lượt / turn` · TERM-017 `phase` · TERM-022 `state` · TERM-027 `event điểm` · TERM-038 `cancelled` · TERM-044 `result` · TERM-048 `draw` · TERM-055 `visibility / everPublic`.
 
-> **Tỉ lệ `CONFIRMED` 30/60 không phải lỗi kiểm kê** — phần lớn mục `NEEDS CLARIFICATION` là thuật ngữ **có định nghĩa cốt lõi rõ ràng** nhưng còn một nhánh chưa chốt (thường là một mã U-x hoặc GRR-x đã ghi nhận). Trường Definition của các mục đó vẫn dùng được; chỉ nhánh nêu ở Status là chưa.
+> **Tỉ lệ `CONFIRMED` 31/60 không phải lỗi kiểm kê** — phần lớn mục `NEEDS CLARIFICATION` là thuật ngữ **có định nghĩa cốt lõi rõ ràng** nhưng còn một nhánh chưa chốt (thường là một mã U-x hoặc GRR-x đã ghi nhận). Trường Definition của các mục đó vẫn dùng được; chỉ nhánh nêu ở Status là chưa.
 
 ---
 
@@ -233,7 +233,7 @@
 - **Allowed values**: (P1) 1→8 cho Câu hỏi phụ · (P2) 1→12.
 - **Unit**: —
 - **Terms dễ nhầm**: cả hai đều đánh số bắt đầu từ 1 ⇒ "phase 2" là hai thứ khác nhau tuỳ ngữ cảnh.
-- **Related rules**: Đ-9, GRR-165.
+- **Related rules**: Đ-9, Đ-21.
 - **Source**: `game-rules-decisions.md` §9.5 `[Đ-9]` (P1) · `CLAUDE.md` §Lộ trình version (P2).
 - **Status**: `CONFLICT`
 
@@ -361,7 +361,7 @@
 - **Allowed values**: —
 - **Unit**: điểm.
 - **Terms dễ nhầm**: E1 có chiều **thí sinh**, E2 **không có** ⇒ không tồn tại một khoá dedup dùng chung cho cả hai; đổi phán quyết một người ở Tăng tốc rơi vào vùng chưa định nghĩa.
-- **Related rules**: R-TT-01, R-GEN-03, R-GEN-07, GRR-147.
+- **Related rules**: R-TT-01, R-GEN-03, R-GEN-07, Đ-18.
 - **Source**: `game-rules-decisions.md` §3.3 (E1), §3.4 `[Đ-5.3.1]` (E2) · `docs/reviews/game-rules-review.md` GRR-147.
 - **Status**: `CONFLICT`
 
@@ -413,7 +413,7 @@
 - **Allowed values**: các vòng có chuông: Khởi động lượt chung · VCNV ("Mở chướng ngại vật") · Về đích (cướp quyền) · Câu hỏi phụ.
 - **Unit**: —
 - **Terms dễ nhầm**: **Nút "Mở chướng ngại vật" ĐƯỢC XẾP LÀ CHUÔNG** ⇒ cũng chỉ nhận click chuột · **Nút gửi đáp án** không phải chuông, có hotkey Enter.
-- **Related rules**: R-GEN-01, R-KD-03, Đ-4.3, GRR-138, GRR-140.
+- **Related rules**: R-GEN-01, R-KD-03, Đ-4.3, Đ-23, Đ-24.
 - **Source**: `CLAUDE.md` §UX BẮT BUỘC · `game-rules-inventory.md` §R-GEN-01 · `game-rules-decisions.md` §5.3.
 - **Status**: `CONFIRMED`
 
@@ -424,8 +424,8 @@
 - **Actor / entity liên quan**: Thí sinh, Admin, Server.
 - **Allowed values**: chặn (VCNV) · không chặn (Khởi động lượt chung, Về đích) · không chặn nhưng xử lý sau khi hết 15 giây (Câu hỏi phụ).
 - **Unit**: —
-- **Terms dễ nhầm**: **"Không chặn" ≠ "không ghi nhận"** — queue vẫn ghi thứ tự để admin can thiệp khi có sự cố.
-- **Related rules**: Đ-7, Đ-7.a, Đ-7.b, Đ-7.2, GRR-140, GRR-144.
+- **Terms dễ nhầm**: **"Không chặn" ≠ "không ghi nhận"** — queue vẫn ghi thứ tự để admin can thiệp khi có sự cố · **dialog xác nhận của thí sinh** (chỉ có ở chọn hàng ngang mode nhập liệu, `Đ-36`) nằm **TRƯỚC** hàng đợi và **không thay thế** bước admin duyệt Yes/No.
+- **Related rules**: Đ-7, Đ-7.a, Đ-7.b, Đ-7.2, Đ-24, Đ-27, Đ-36, GRR-144.
 - **Source**: `game-rules-decisions.md` §5.1, §5.2 · `CLAUDE.md` §UX BẮT BUỘC.
 - **Status**: `CONFIRMED`
 
@@ -453,15 +453,15 @@
 - **Source**: `game-rules-decisions.md` §8.1, §8.2.
 - **Status**: `CONFIRMED` — hai nhánh từng treo đã chốt: nút start timer **tự khoá sau lần bấm đầu** (`Đ-20`), và hai thao tác tạo mốc **tách rời theo thứ tự cố định** (`Đ-26`).
 
-## TERM-035 — Phán quyết Đúng/Sai
+## TERM-035 — Phán quyết của admin
 
-- **Definition**: hành vi **admin bấm Đúng hoặc Sai** để chốt kết quả một câu. **Máy KHÔNG tự chấm**: hệ thống chỉ (1) hiển thị đáp án thí sinh cạnh đáp án đúng, (2) **highlight ký tự khác** như gợi ý. Ở trận `official`, **`autoJudge` không tồn tại** dưới bất kỳ hình thức nào.
+- **Definition**: hành vi **admin bấm** để chốt kết quả một câu. **Máy KHÔNG tự chấm**: hệ thống chỉ (1) hiển thị đáp án thí sinh cạnh đáp án đúng, (2) **highlight ký tự khác** như gợi ý. Ở trận `official`, **`autoJudge` không tồn tại** dưới bất kỳ hình thức nào.
 - **Alternative names**: chấm · chấm điểm · judge · hotkey C/X.
 - **Actor / entity liên quan**: Admin, Server, MC (quyết bằng lời).
-- **Allowed values**: `Đúng` · `Sai`.
+- **Allowed values**: `Đúng` · `Sai` · **`Huỷ kết quả`**. Phán quyết **KHÔNG phải lúc nào cũng nhị phân**: chỉ nhị phân `Đúng`/`Sai` khi `Sai` trừ **0 điểm**; ở vòng mà `Sai` kéo theo hình phạt điểm, và ở câu chỉ có bản gửi quá hạn, có thêm lựa chọn thứ ba `Huỷ kết quả` (`Đ-34`, `Đ-32`).
 - **Unit**: —
 - **Terms dễ nhầm**: **Normalize / so khớp** (TERM-052 liên quan) — kết quả so khớp là **đầu vào của gợi ý**, KHÔNG phải phán quyết · **`autoJudge`** chỉ tồn tại ở `practice`.
-- **Related rules**: R-GEN-03, Đ-1, K-16, GRR-148, GRR-161, GRR-162.
+- **Related rules**: R-GEN-03, Đ-1, Đ-17, Đ-34, Đ-35, K-16.
 - **Source**: `game-rules-inventory.md` §R-GEN-03 · `game-rules-decisions.md` §3.1.
 - **Status**: `CONFIRMED`
 
@@ -473,7 +473,7 @@
 - **Allowed values**: —
 - **Unit**: —
 - **Terms dễ nhầm**: **KHÔNG phải "loser"** (TERM-046) — người bị loại khỏi VCNV vẫn thi tiếp Tăng tốc và Về đích, vẫn có thể thắng trận · **Mất quyền trả lời** (TERM-037) là hình phạt khác, theo **câu**, chỉ ở Câu hỏi phụ.
-- **Related rules**: R-VCNV-04, R-TEAM-03, U-24, GRR-146.
+- **Related rules**: R-VCNV-04, R-TEAM-03, U-24, Đ-16.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Vượt chướng ngại vật · `game-rules-inventory.md` §R-VCNV-04.
 - **Status**: `NEEDS CLARIFICATION` — còn **U-24**: người bị loại có giữ điểm hàng ngang đã kiếm không. Nhánh *"sự kiện đến từ ghế đã bị loại"* đã đóng bởi `Đ-16` (máy thí sinh không hiển thị gì, bấm không phản hồi).
 
@@ -501,7 +501,7 @@
 - **Allowed values**: —
 - **Unit**: —
 - **Terms dễ nhầm**: **"Reset" KHÔNG có nghĩa xoá** — reset điểm = revert (TERM-029) · C1 hoàn được **điểm** nhưng không hoàn được **đề đã lộ**.
-- **Related rules**: Đ-5.1, Đ-5.2, Đ-5.2d, Đ-5.2f, U-19, GRR-160, GRR-161.
+- **Related rules**: Đ-5.1, Đ-5.2, Đ-5.2d, Đ-5.2f, Đ-16, U-19, GRR-160.
 - **Source**: `game-rules-decisions.md` §6.3 · `game-rules-inventory.md` §R-VD-05 (U-19).
 - **Status**: `CONFLICT`
 
@@ -543,7 +543,7 @@
 - **Terms dễ nhầm**: **`stealMode: 'add'`** (cộng không trừ người sai) là option hợp lệ của hệ thống nhưng **KHÔNG được dùng cho preset O26** (K-12) · **Ghi nhận đáp án ngược nhau**: người thi chính tính **bản cuối**, người cướp chỉ tính **bản đầu tiên**.
 - **Related rules**: R-VD-05, K-12, U-5, U-8, GRR-150, GRR-151, GRR-152.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích · `game-rules-inventory.md` §R-VD-05.
-- **Status**: `NEEDS CLARIFICATION` — GRR-150 (tín hiệu đến trước khi cửa sổ mở), GRR-152 (giá trị câu có NSHV cho vế người cướp), U-5 (số người cướp khi ghế ≠ 4).
+- **Status**: `NEEDS CLARIFICATION` — còn **GRR-150** (tín hiệu đến trước khi cửa sổ cướp mở) và **GRR-152** (câu có Ngôi sao hy vọng: người cướp ăn giá trị gốc hay đã nhân đôi). Riêng U-5 (số người cướp khi ghế ≠ 4) là `[v1.5]`, ngoài phạm vi luật v1.
 
 ## TERM-042 — Ngôi sao hy vọng (NSHV)
 
@@ -565,7 +565,7 @@
 - **Allowed values**: 40/30/20/10 cho 4 đơn vị điểm; độ phân giải "đồng thời gian" = **ms** (server-received).
 - **Unit**: điểm · ms.
 - **Terms dễ nhầm**: thứ hạng chỉ tính trên **tập người được admin chấm ĐÚNG**, không phải trên toàn bộ người gửi · `W26` dùng độ phân giải **2 chữ số thập phân** — **đã bị loại** (K-8).
-- **Related rules**: R-TT-01, R-TT-02, R-TT-03, K-8, U-2, GRR-147, GRR-148.
+- **Related rules**: R-TT-01, R-TT-02, R-TT-03, K-8, Đ-18, Đ-35. Thang điểm cho >4 ghế: `[v1.5]` (U-2).
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Tăng tốc · `game-rules-inventory.md` §R-TT-01, §8A K-8.
 - **Status**: `CONFIRMED` cho 4 ghế · thang cho ≠4 ghế chưa có (U-2).
 
@@ -642,8 +642,8 @@
 - **Actor / entity liên quan**: Server, Timer, mọi vòng.
 - **Allowed values**: Khởi động 3s · VCNV hàng ngang 15s · VCNV sau gợi ý cuối 15s · Tăng tốc 20/20/30/30s · Về đích 15s (câu 20đ) / 20s (câu 30đ) · cửa sổ cướp 5s · Câu hỏi phụ 15s.
 - **Unit**: giây (cấu hình) · ms (`remainingMs`).
-- **Terms dễ nhầm**: **Ngưỡng N của auto-pause** (chưa có default — U-12) và **reconnect grace 120s** cũng là mốc thời gian nhưng **không phải timeout của câu** · **Biên** t = đúng mốc là trong hay ngoài — GRR-002.
-- **Related rules**: R-GEN-05, R-TT-03, R-GEN-08, R-GEN-09, GRR-166, GRR-169.
+- **Terms dễ nhầm**: **reconnect grace 120s** cũng là mốc thời gian nhưng **không phải timeout của câu** (auto-pause đã bị bãi bỏ — `Đ-21`) · **Biên** t = đúng mốc **đã chốt là TRONG** (biên đóng, `Đ-27`/`Đ-28`), không còn là câu hỏi mở.
+- **Related rules**: R-GEN-05, R-TT-03, R-GEN-09, Đ-21, Đ-28.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` (mọi heading vòng) · `game-rules-inventory.md` §R-GEN-05.
 - **Status**: `CONFIRMED`
 
@@ -657,7 +657,7 @@
 - **Terms dễ nhầm**: rớt mạng **đúng lượt riêng** thì engine pause + admin quyết, **ghi đè** grace (D13.4).
 - **Related rules**: R-GEN-09, U-13, GRR-169.
 - **Source**: `game-rules-inventory.md` §R-GEN-09.
-- **Status**: `NEEDS CLARIFICATION` — U-13 (tập giá trị `dropoutPolicy`) và GRR-169 (submission tới đúng biên grace).
+- **Status**: `NEEDS CLARIFICATION` — còn **U-13** (tập giá trị `dropoutPolicy`) và **GRR-169** (số phận các submission đã nhận của ghế bị xử dropout). Riêng **biên** `t = 120.000s` đã đóng: biên **đóng**, vẫn trong grace (`Đ-28`).
 
 ---
 
@@ -680,8 +680,8 @@
 - **Definition**: thời gian suy nghĩ, là **metadata của TỪNG CÂU HỎI** — cùng mức 20đ có thể câu 15s và câu 40s. Hệ thống chọn câu theo **MỨC ĐIỂM**, thời gian lấy **theo câu**; preset chỉ đặt default (`defaultTimeByValue`).
 - **Alternative names**: thời gian suy nghĩ · thời gian câu.
 - **Actor / entity liên quan**: Câu hỏi, Setter, Timer.
-- **Unit**: giây.
 - **Allowed values**: per-question override **thắng** default của preset.
+- **Unit**: giây.
 - **Terms dễ nhầm**: nguồn ngoài **gắn chặt thời gian với mức điểm** (20đ→15s, 30đ→20s) — repo tổng quát hoá vượt nguồn, đây là **chủ đích** · Athena cũ suy `time = value/2 + 5` — **đã bãi bỏ**.
 - **Related rules**: R-GEN-02, K-15, GRR-149.
 - **Source**: `game-rules-inventory.md` §R-GEN-02 · `CLAUDE.md` §Luật chơi & đề thi.
@@ -695,9 +695,9 @@
 - **Allowed values**: —
 - **Unit**: câu.
 - **Terms dễ nhầm**: **Kho đề toàn hệ thống** ≠ **pool đã gán cho contest** ≠ **pool còn lại sau no-repeat**.
-- **Related rules**: R-KD-07, R-GEN-06, R-VD-07, U-9, U-10.
+- **Related rules**: R-KD-07, R-GEN-06, R-VD-07, Đ-30, Đ-31.
 - **Source**: `game-rules-inventory.md` §R-KD-07, §R-GEN-06 · `CLAUDE.md` §Luật chơi & đề thi.
-- **Status**: `NEEDS CLARIFICATION` — U-9 (pool cạn **giữa trận** do skip nhiều) và U-10 (pool câu phụ cạn giữa tie-break) chưa có xử lý.
+- **Status**: `CONFIRMED` — U-9 và U-10 đã đóng bởi `Đ-31`: kho đề kiểm tại **cửa vào từng vòng**, thiếu thì không mở được vòng đó ⇒ không tồn tại cạn giữa vòng.
 
 ## TERM-054 — `usedInContest` · No-repeat
 
@@ -746,8 +746,8 @@
 - **Actor / entity liên quan**: Thí sinh, Miếng ghép, Admin.
 - **Allowed values**: O26 = **4 hàng**; `SPEC` cho `rowCount: 4..8` (ngoài luật O26).
 - **Unit**: hàng · giây · điểm.
-- **Terms dễ nhầm**: **"hàng ngang được MỞ" ≠ "miếng ghép được MỞ"** — nguồn dùng hai chủ ngữ khác nhau; đây là chìa khoá đọc `[GRR-013]` · **Lượt CHỌN hàng ngang** (theo vị trí, tối đa 1 lượt/người) khác **việc TRẢ LỜI hàng ngang** (cả sân cùng trả lời).
-- **Related rules**: R-VCNV-01, R-VCNV-03, `[GRR-013]`, U-4, U-37.
+- **Terms dễ nhầm**: **"hàng ngang được MỞ" ≠ "miếng ghép được MỞ"** — nguồn dùng hai chủ ngữ khác nhau; đây là chìa khoá đọc `[GRR-013]` · **Lượt CHỌN hàng ngang** (theo vị trí, tối đa 1 lượt/người) khác **việc TRẢ LỜI hàng ngang** (cả sân cùng trả lời) · **chủ thể CHỌN đổi theo mode** (`Đ-36`: sân khấu → chỉ admin; nhập liệu → chỉ thí sinh), còn **việc TRẢ LỜI thì luôn gõ máy** bất kể mode (`Đ-4.2`).
+- **Related rules**: R-VCNV-01, R-VCNV-03, `[GRR-013]`, Đ-4.2, Đ-36, U-4, U-37.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Vượt chướng ngại vật · `game-rules-decisions.md` §9.2.
 - **Status**: `NEEDS CLARIFICATION` — U-37 (ngưỡng số thí sinh đúng để mở miếng ghép) chưa chốt.
 

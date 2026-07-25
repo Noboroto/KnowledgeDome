@@ -31,8 +31,8 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 
 | Status | Nghĩa | Số rule |
 |---|---|---|
-| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **14** |
-| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **22** |
+| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **15** |
+| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **21** |
 | `CONFLICT` | Hai nguồn cùng áp dụng nhưng cho outcome khác nhau; **tài liệu này không phân xử** | **1** |
 
 > **Vì sao phần lớn rule vẫn `NEEDS CLARIFICATION`**: bốn loại khiếm khuyết `IDEMPOTENCY` · `CONCURRENCY` · `INVALID_TRANSITION` · `ORDER_DEPENDENT` chưa từng được rà cho tới lượt review thứ 3, nên hầu hết rule còn ít nhất một nhánh treo ở các mục **Evaluation order**, **Idempotency** hoặc **Concurrency**. Phần **Conditions**, **Decision table** hàng happy path và **Boundaries** của các rule đó vẫn dùng được để viết spec.
@@ -41,14 +41,24 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 
 Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn nhất:
 
-- **GR-001** — Khởi động lượt riêng: chấm câu (`CONFIRMED`)
-- **GR-002** — Khởi động lượt riêng: hết thời gian suy nghĩ (`CONFIRMED`)
-- **GR-003** — Khởi động lượt chung: giành quyền bằng chuông (`CONFIRMED`)
-- **GR-004** — Khởi động lượt chung: chấm câu và hình phạt (`CONFIRMED`)
-- **GR-018** — Về đích: trả lời câu của mình (`CONFIRMED`)
-- **GR-022** — Câu hỏi phụ: điều kiện kích hoạt (`CONFIRMED`)
-- **GR-027** — Chuẩn hoá và highlight đáp án (`CONFIRMED`)
-- **GR-037** — Phạm vi hiển thị đáp án (`CONFLICT`, nhưng là mâu thuẫn **đã được khoanh vùng rõ**: K-4, per-contest hay per-match)
+| Mã | Tên | Status |
+|---|---|---|
+| GR-001 | Khởi động lượt riêng: chấm câu | `CONFIRMED` |
+| GR-002 | Khởi động lượt riêng: hết thời gian suy nghĩ | `CONFIRMED` |
+| GR-003 | Khởi động lượt chung: giành quyền bằng chuông | `CONFIRMED` |
+| GR-004 | Khởi động lượt chung: chấm câu và hình phạt | `CONFIRMED` |
+| GR-005 | Khởi động lượt chung: cửa sổ chuông rỗng | `CONFIRMED` |
+| GR-006 | Khởi động: ghi nhận đáp án | `CONFIRMED` |
+| GR-013 | Tăng tốc: xếp hạng tốc độ | `CONFIRMED` |
+| GR-015 | Tăng tốc: ghi nhận bản cuối | `CONFIRMED` |
+| GR-018 | Về đích: trả lời câu của mình | `CONFIRMED` |
+| GR-022 | Câu hỏi phụ: điều kiện kích hoạt | `CONFIRMED` |
+| GR-023 | Câu hỏi phụ: thể thức ba câu | `CONFIRMED` |
+| GR-027 | Chuẩn hoá và highlight đáp án | `CONFIRMED` |
+| GR-028 | Điểm là hàm của event log | `CONFIRMED` |
+| GR-033 | Mốc thời gian do admin bấm | `CONFIRMED` |
+| GR-034 | Chuông chỉ nhận click chuột | `CONFIRMED` |
+| GR-037 | Phạm vi hiển thị đáp án | `CONFLICT` |
 
 ## Nguyên tắc nền áp cho MỌI rule
 
@@ -74,7 +84,7 @@ Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn
 | Đối tượng | Đồng hồ làm gì |
 |---|---|
 | **Thí sinh** | **Khoá / mở khoá thao tác**: ngoài cửa sổ thì nút không hiển thị và không phản hồi |
-| **Admin** | **KHÔNG khoá gì cả** — hết giờ vẫn bấm Đúng/Sai được. Ngoại lệ duy nhất: **nút start timer tự khoá sau lần bấm đầu** để chống bấm trùng |
+| **Admin** | **KHÔNG khoá** — hết giờ vẫn bấm chấm được. **Hai ngoại lệ**: nút **start timer** tự khoá sau lần bấm đầu (chống bấm trùng), và ở vòng thí sinh **gõ đáp án** thì nút **chấm** khoá tới khi hết giờ (điểm 22) |
 
 > Hệ quả: mốc thời gian của luật (3s, 15s, 20s…) là **ràng buộc đối với thí sinh** và là **mốc tham chiếu đối với người điều khiển**. "Trong hạn hay quá hạn" ở phía phán quyết là đánh giá của MC và admin, hệ thống không phân xử.
 
@@ -82,7 +92,23 @@ Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn
 
 > Nếu sự cố xảy ra **giữa lúc một cửa sổ có ràng buộc thời gian đang mở** (Tăng tốc, cướp quyền Về đích) thì thí sinh mất thời gian thật. Van thoát là cơ chế đã có sẵn: admin **bỏ hoặc chạy lại vòng** (`Đ-5.1`) — lưu ý câu đã dùng **không** trả lại kho đề.
 
-12. **Một câu chỉ đi qua ĐÚNG MỘT phán quyết** — sau khi admin bấm Đúng hoặc Sai, **nút chấm bị khoá** và **nút "Câu kế tiếp" hiện lên**. Không có bấm nhầm, không có bấm lại, không có đổi phán quyết tại chỗ. Muốn sửa một phán quyết đã chốt thì đi qua hoàn nguyên event log (GR-028) hoặc điều chỉnh thủ công (GR-029).
+12. **Một câu chỉ đi qua ĐÚNG MỘT phán quyết** — sau khi admin bấm, **nút chấm bị khoá** và **nút "Câu kế tiếp" hiện lên**. Không có bấm nhầm, không có bấm lại, không có đổi phán quyết tại chỗ. Muốn sửa một phán quyết đã chốt thì đi qua hoàn nguyên event log (GR-028) hoặc điều chỉnh thủ công (GR-029).
+
+> **Phán quyết KHÔNG phải lúc nào cũng nhị phân.** Tiêu chí: **chỉ nhị phân khi "Sai" trừ 0 điểm.** Chỗ nào "Sai" kéo theo hình phạt thì phải có lựa chọn thứ ba **"Huỷ kết quả"** — nếu không, admin bị ép chọn giữa cho điểm và phạt, trong khi tình huống có thể không đáng cả hai.
+
+| Vòng / pha | "Sai" trừ bao nhiêu | Lựa chọn của admin |
+|---|---|---|
+| Khởi động — lượt riêng | **0** | Đúng / Sai |
+| VCNV — hàng ngang | **0** | Đúng / Sai |
+| Tăng tốc | **0** | Đúng / Sai |
+| Về đích — người thi chính | **0** (chỉ mở cửa sổ cướp) | Đúng / Sai |
+| Câu hỏi phụ | **0** | Đúng / Sai |
+| **Khởi động — lượt chung** | **−5** | Đúng / Sai / **Huỷ kết quả** |
+| **Về đích — người cướp quyền** | **−½ giá trị câu** | Đúng / Sai / **Huỷ kết quả** |
+| **Về đích — câu có Ngôi sao hy vọng** | **−giá trị câu** | Đúng / Sai / **Huỷ kết quả** |
+
+> Ngoài ra, **"Huỷ kết quả" luôn có mặt** khi câu **chỉ có bản gửi quá hạn** (điểm 21), kể cả ở vòng mà Sai trừ 0.
+> Dù hai hay ba lựa chọn, vẫn là **một** phán quyết cho một câu — điểm 12 không đổi.
 
 13. **Phán quyết là điều kiện để chuyển câu** — nút "Câu kế tiếp" **chỉ xuất hiện sau khi đã chấm** (chính là cơ chế của điểm 12) ⇒ không tồn tại trạng thái "vòng đã đóng mà còn câu chưa chấm" ở các vòng hỏi tuần tự.
 
@@ -101,7 +127,7 @@ Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn
 16. **Nút chuông tự khoá ngay khi bấm** — frontend khoá **trong cùng thao tác đó, trước khi gửi tín hiệu** ⇒ một ghế chỉ phát được **một** tín hiệu chuông cho một câu. Khoá gắn với **một câu**; sang câu mới thì mở lại.
 
 > Đây là **khoá-theo-luật-chơi**, không phải chống double-submit — `CLAUDE.md` §UX cho phép tường minh (*"chuông bị khoá khi sai, NSHV đã dùng, không tới lượt"*).
-> Áp cho **mọi nút được xếp là chuông**, gồm cả nút **"Mở chướng ngại vật"** (`Đ-4.3`). **Không** áp cho thao tác **chọn hàng ngang** — đó không phải chuông.
+> Áp cho **mọi nút được xếp là chuông**, gồm cả nút **"Mở chướng ngại vật"** (`Đ-4.3`). **Không** áp cho thao tác **chọn hàng ngang** — đó không phải chuông; chọn hàng ngang có cơ chế riêng ở **điểm 23**.
 > Server vẫn phải bỏ qua tín hiệu trùng nếu nhận được (`CLAUDE.md` §Zero-trust).
 
 17. **"Hiển thị câu hỏi" và "start timer" là HAI thao tác riêng, thứ tự cố định** — hiển thị trước, start timer sau. Không gộp, không đảo.
@@ -138,6 +164,51 @@ Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn
 > ⇒ **"Kho đề cạn giữa vòng" KHÔNG TỒN TẠI.** Nhu cầu của một vòng là con số cố định (điểm 19) và đã được kiểm đủ tại cửa vào; câu bị bỏ qua vẫn nằm trong con số đó. Chạy lại một vòng cũng phải qua đúng cửa đó.
 > **Đây là chỗ chặn cứng thứ ba**, ngoài hai ngưỡng số người của `Đ-15.3` — và nó **ghi đè tiền lệ Athena** (bản cũ chỉ *cảnh báo* khi thiếu đề, không chặn). Lý do vẫn nằm trong tiêu chí cũ: một vòng không đủ câu thì **không chạy trọn được**, tức là vòng đó không còn nghĩa.
 
+21. **LUÔN ghi nhận đáp án CUỐI CÙNG** — nút gửi **không bị khoá sau khi gửi**; thí sinh sửa và gửi lại bao nhiêu lần cũng được. Cửa duy nhất đóng lại là **hết giờ**.
+
+| Nút | Sau khi bấm | Vì sao khác nhau |
+|---|---|---|
+| **Chuông** | **Tự khoá** (điểm 16) | Giành quyền là hành vi **một lần, không rút lại** |
+| **Gửi đáp án** | **KHÔNG khoá** | Đáp án là thứ **sửa được**; chỉ đồng hồ mới đóng cửa |
+| **Chọn hàng ngang** | **Dialog rồi khoá tạm** (điểm 23) | Một lần, không rút lại — **nhưng không đua tốc độ** |
+
+> Đừng áp nhầm điểm 16 sang nút gửi — hai nút có ngữ nghĩa ngược nhau.
+> **Bản rỗng không phải một đáp án**: bỏ qua, giữ bản hợp lệ trước đó (`Đ-20.1`) — nên gửi rỗng không xoá được bài đã làm.
+> Phát biểu *"nếu không thay đổi thì ghi nhận đáp án đầu tiên"* của luật gốc **không phải ngoại lệ**: gửi một lần thì bản đầu chính là bản cuối.
+
+**Khi có bản gửi quá hạn, hệ thống GIỮ CẢ HAI và để admin phán quyết:**
+
+| Tình huống | Hệ thống làm gì | Admin chọn |
+|---|---|---|
+| Có bản **hợp lệ**, còn gửi thêm bản **quá hạn** | Giữ **cả hai**, bản quá hạn tô **đỏ** | **Đúng / Sai** |
+| **Chỉ có** bản quá hạn (không gửi gì trong hạn) | Giữ bản quá hạn, tô **đỏ** | **Đúng / Sai / HUỶ KẾT QUẢ** |
+
+> **"Huỷ kết quả" là outcome THỨ BA**, chỉ có ở tình huống thứ hai. Nó khác *Sai*: ở lượt chung *Sai* kéo theo **−5**, còn huỷ thì câu **không sinh điểm gì**.
+> Bản quá hạn **không tự ghi đè** bản hợp lệ — "ghi nhận bản cuối" chỉ áp trong **các bản hợp lệ**.
+
+22. **Phán quyết của admin là QUYẾT ĐỊNH CUỐI CÙNG — chấm xong thì khoá nút gửi.** Không còn bản nào tới sau để lật kết quả.
+
+Để phán quyết không bao giờ rơi vào giữa lúc thí sinh còn đang sửa, luồng tách theo **kênh trả lời của vòng**:
+
+| Kênh trả lời | Nút gửi của thí sinh | Nút chấm của admin |
+|---|---|---|
+| **Nói** — mode sân khấu | **Không tồn tại** | Bấm được **bất cứ lúc nào** |
+| **Gõ** — mode nhập liệu, và các vòng **luôn gõ máy** | Sống tới khi hết giờ | **Khoá tới khi hết giờ** |
+
+> **VCNV hàng ngang** (`Đ-4.2`) và **Tăng tốc** (`Đ-4.b`) luôn gõ máy **bất kể mode contest**, nên hai vòng này luôn theo nhánh dưới.
+> Đây là **ngoại lệ thứ hai** của điểm 10 (*"đồng hồ không khoá thao tác của admin"*) — ngoại lệ thứ nhất là nút start timer.
+
+23. **Chọn hàng ngang có MỘT đường vào cho mỗi mode** — không mode nào có hai. Đây là thao tác duy nhất trong game **không bị ép thời gian**, nên cũng là chỗ duy nhất có dialog ở phía thí sinh.
+
+| Mode | Ai chọn hàng ngang | Thí sinh click nhiều lần |
+|---|---|---|
+| **Sân khấu** | **Chỉ ADMIN** — máy thí sinh không có nút chọn | **KHÔNG TỒN TẠI** (không có nút thì không có tín hiệu) |
+| **Nhập liệu** | **Chỉ THÍ SINH** — admin **không** chọn thay | **Dialog xác nhận**, xác nhận xong **khoá nút chọn** |
+
+> **Ngoại lệ tường minh của `CLAUDE.md` §UX** (*"dialog xác nhận không bao giờ ở phía thí sinh"*). Tiêu chí gốc của rule đó là **tốc độ**; chọn hàng ngang không đua tốc độ nên tiêu chí không áp. Mọi thao tác đua tốc độ (chuông, "Mở chướng ngại vật", gửi đáp án) vẫn **tuyệt đối không có dialog**.
+> **Khoá là TẠM**: admin bấm **No** thì nút **mở lại** — bắt buộc bởi `Đ-7` (*"từ chối ⇒ thí sinh không mất lượt"*). Khoá chỉ trở thành vĩnh viễn cho câu đó khi admin bấm **Yes**.
+> **Hai lớp xác nhận không thừa nhau**: dialog của thí sinh chống **bấm nhầm**; admin duyệt Yes/No là **phán quyết**. Hàng đợi vẫn **chặn** ở VCNV trong cả hai mode (điểm 4).
+
 ## Mục lục
 
 ### Vòng Khởi động
@@ -149,7 +220,7 @@ Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn
 | GR-003 | Khởi động lượt chung: giành quyền bằng chuông | **CONFIRMED** |
 | GR-004 | Khởi động lượt chung: chấm câu và hình phạt | **CONFIRMED** |
 | GR-005 | Khởi động lượt chung: cửa sổ chuông rỗng | **CONFIRMED** |
-| GR-006 | Khởi động: ghi nhận đáp án | NEEDS CLARIFICATION |
+| GR-006 | Khởi động: ghi nhận đáp án | **CONFIRMED** |
 
 ### Vòng Vượt chướng ngại vật
 
@@ -194,7 +265,7 @@ Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn
 
 | Mã | Tên | Status |
 |---|---|---|
-| GR-026 | Phán quyết Đúng/Sai của admin | NEEDS CLARIFICATION |
+| GR-026 | Phán quyết của admin | NEEDS CLARIFICATION |
 | GR-027 | Chuẩn hoá và highlight đáp án | **CONFIRMED** |
 | GR-028 | Điểm là hàm của event log | **CONFIRMED** |
 | GR-029 | Điều chỉnh điểm thủ công | NEEDS CLARIFICATION |
@@ -329,7 +400,7 @@ Không còn điều kiện nào phải kiểm: sau khi admin bấm Đúng hoặc
 | Nguồn | Heading | Discovered rule ID |
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | §Khởi động, đoạn 2 | — |
-| `docs/game-rules-inventory.md` | §R-KD-01 | R-KD-01, U-1 |
+| `docs/game-rules-inventory.md` | §R-KD-01 | R-KD-01 |
 | `docs/reviews/game-rules-decisions.md` | §3.1 Đ-1 · §3.3 · §8.1 Đ-6 · §9.1 | Đ-1, Đ-6 |
 | `docs/reviews/game-rules-review.md` | — | — |
 | `docs/reviews/game-rules-review-old.md` | GRR-002 | — |
@@ -440,7 +511,7 @@ Không có xung đột: đồng hồ hết giờ không sinh kết quả và **k
 | Nguồn | Heading | Discovered rule ID |
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | §Khởi động, đoạn 2 | — |
-| `docs/game-rules-inventory.md` | §R-KD-01 | R-KD-01, U-1 |
+| `docs/game-rules-inventory.md` | §R-KD-01 | R-KD-01 |
 | `docs/reviews/game-rules-decisions.md` | §9.1 (không trả lời ở lượt riêng xử như trả lời sai) | Đ-6 |
 | `docs/reviews/game-rules-review-old.md` | GRR-002, GRR-006 | — |
 | `docs/reviews/game-rules-review.md` | — | — |
@@ -567,7 +638,7 @@ Quy tắc *"cùng thời gian thì cùng mức điểm"* của Tăng tốc **kh�
 | Nguồn | Heading | Discovered rule ID |
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | §Khởi động, đoạn 3-5 | — |
-| `docs/game-rules-inventory.md` | §R-KD-03, §R-GEN-01 | R-KD-03, U-1, K-3 |
+| `docs/game-rules-inventory.md` | §R-KD-03, §R-GEN-01 | R-KD-03, K-3 |
 | `docs/reviews/game-rules-decisions.md` | §5.1 Đ-7 · §5.2 Đ-7.2 · §8.1 Đ-6 · §9.1 | Đ-7, Đ-7.2 |
 | `docs/reviews/game-rules-review-old.md` | GRR-002, GRR-005, GRR-007 | — |
 | `docs/reviews/game-rules-review.md` | — | — |
@@ -620,9 +691,10 @@ Admin bấm Đúng hoặc Sai cho thí sinh đã giành quyền; hoặc hết 3 
 |---|---|---|---|---|
 | C1 — happy path | Người giành quyền trả lời, admin bấm Đúng | **+10** | Sinh event điểm | — |
 | C2 — trả lời sai | Admin bấm Sai | **−5** | Sinh event điểm âm | — |
-| C3 — bấm chuông rồi im lặng | Giành quyền nhưng không đưa ra đáp án; admin bấm Sai | **−5** | Sinh event điểm âm | — |
-| C4 — boundary: điểm xuống âm | Thí sinh đang có 0 điểm và bị −5 | Điểm thành **−5**; **không có sàn** | Sinh event điểm âm | — |
-| C5 — sau khi người giành quyền trả lời sai | Câu đã chấm Sai | **KHÔNG mở lại chuông** — câu kết thúc, chuyển sang câu mới | **Xoá hàng đợi đang hoạt động** của câu vừa xong; **gỡ khoá chuông** cho mọi ghế để sẵn sàng câu mới | — |
+| C3 — huỷ kết quả | Admin bấm **Huỷ kết quả** | **0** — câu không sinh điểm cho ai; **không** áp hình phạt −5 | Sinh event điểm giá trị 0; câu đã chấm | — |
+| C4 — bấm chuông rồi im lặng | Giành quyền nhưng không đưa ra đáp án; admin bấm Sai | **−5** | Sinh event điểm âm | — |
+| C5 — boundary: điểm xuống âm | Thí sinh đang có 0 điểm và bị −5 | Điểm thành **−5**; **không có sàn** | Sinh event điểm âm | — |
+| C6 — sau khi người giành quyền trả lời sai | Câu đã chấm Sai | **KHÔNG mở lại chuông** — câu kết thúc, chuyển sang câu mới | **Xoá hàng đợi đang hoạt động** của câu vừa xong; **gỡ khoá chuông** cho mọi ghế để sẵn sàng câu mới | — |
 
 ### Outcomes
 
@@ -799,7 +871,7 @@ Tín hiệu và sự kiện hết cửa sổ **cùng mốc** ⇒ tín hiệu th�
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 
@@ -807,7 +879,7 @@ Xác định bản đáp án nào của thí sinh được ghi nhận khi thí s
 
 ### Actors
 
-Thí sinh · Server (ghi nhận) · Admin (mốc công bố đáp án) · MC.
+Thí sinh · Server (ghi nhận) · Admin (bấm mốc công bố đáp án) · MC (công bố bằng lời trên sân khấu).
 
 ### Related states
 
@@ -815,7 +887,7 @@ Thí sinh · Server (ghi nhận) · Admin (mốc công bố đáp án) · MC.
 
 ### Trigger
 
-Thí sinh gửi hoặc gửi lại đáp án trước mốc công bố đáp án.
+Thí sinh gửi hoặc gửi lại đáp án trước mốc cắt (admin bấm công bố đáp án).
 
 ### Preconditions
 
@@ -825,32 +897,33 @@ Thí sinh gửi hoặc gửi lại đáp án trước mốc công bố đáp án
 ### Inputs
 
 - Các bản đáp án đã gửi của thí sinh, kèm server timestamp.
-- Mốc cắt: thời điểm **MC công bố đáp án**.
+- Mốc cắt: **thời điểm admin bấm** — ánh xạ của mốc *"MC công bố đáp án"* (`Đ-6`).
 
 ### Conditions
 
-- Thí sinh **được** thay đổi đáp án liên tục trước mốc công bố.
-- **Có thay đổi**: ghi nhận bản **CUỐI CÙNG**.
-- **Không thay đổi**: ghi nhận bản **ĐẦU TIÊN**.
+- Thí sinh **được** thay đổi đáp án liên tục; **nút gửi KHÔNG bị khoá sau khi gửi**, chỉ đóng khi hết giờ.
+- **Luôn ghi nhận bản CUỐI CÙNG.** Phát biểu *"nếu không thay đổi thì ghi nhận đáp án đầu tiên"* của luật gốc không phải ngoại lệ — gửi một lần thì bản đầu **chính là** bản cuối.
+- **Bản rỗng** (chỉ khoảng trắng sau khi cắt) **không phải một đáp án**: bỏ qua, giữ bản hợp lệ trước đó (`Đ-20.1`).
 - Mọi đáp án đều được cắt khoảng trắng đầu cuối trước khi so sánh.
 
 ### Decision table
 
 | Case | Conditions | Expected outcome | State change | Error |
 |---|---|---|---|---|
-| C1 — happy path: gửi một lần | Thí sinh gửi đúng một bản trước mốc cắt | Ghi nhận bản **đầu tiên** | Lưu bản được ghi nhận | — |
+| C1 — happy path: gửi một lần | Thí sinh gửi đúng một bản trong hạn | Ghi nhận bản đó — nó vừa là bản đầu vừa là bản cuối | Lưu bản được ghi nhận | — |
 | C2 — happy path: gửi nhiều lần | Gửi nhiều bản khác nhau trước mốc cắt | Ghi nhận bản **cuối cùng** | Bản trước bị thay thế trong kết quả; lịch sử giữ nguyên | — |
 | C3 — boundary: bản cuối đến đúng mốc cắt | Server timestamp trùng mốc công bố | **Được ghi nhận** — biên **đóng**, submission đúng mốc vẫn tính | Cập nhật bản được ghi nhận | — |
-| C4 — reject: gửi sau mốc cắt | Bản đến sau khi MC đã công bố đáp án | Không được ghi nhận | Bản vẫn nằm trong lịch sử | — |
-| C5 — repeated action: gửi lại nội dung y hệt | Bản mới trùng bản trước sau khi cắt khoảng trắng | NEEDS CLARIFICATION — quy tắc "nội dung y hệt thì không cập nhật mốc thời gian" chỉ được phát biểu cho vòng Tăng tốc; nguồn không nói có áp cho Khởi động không | Không xác định | — |
-| C6 — bản gửi rỗng | Nội dung chỉ gồm khoảng trắng | NEEDS CLARIFICATION — quy tắc bỏ qua bản rỗng chỉ được phát biểu cho Tăng tốc | Không xác định | — |
-| C7 — hệ thống không biết mốc cắt | MC công bố đáp án trên sân khấu | NEEDS CLARIFICATION — `game-rules-inventory.md` U-1: hệ thống không quan sát được mốc này; ba mốc của MC chưa được ánh xạ đầy đủ thành thao tác bấm | Không xác định | — |
+| C4 — có bản hợp lệ, bản sau quá hạn | Bản đầu trong hạn, bản sửa đến sau mốc cắt | **GIỮ CẢ HAI**; bản quá hạn tô **đỏ**. Admin nhìn cả hai rồi quyết **Đúng / Sai** | Cả hai bản hiển thị trên màn admin; bản quá hạn không tự thay bản hợp lệ | — |
+| C5 — chỉ có bản quá hạn | Thí sinh không gửi gì trong hạn, chỉ gửi sau mốc cắt | Bản quá hạn tô **đỏ**; admin quyết **Đúng / Sai / HUỶ KẾT QUẢ** | Ghi bản quá hạn vào lịch sử; kết quả câu theo phán quyết của admin | — |
+| C6 — repeated action: gửi lại nội dung y hệt | Bản mới trùng bản trước sau khi cắt khoảng trắng | Vẫn là **bản cuối** được ghi nhận; nội dung không đổi nên kết quả chấm không đổi. Quy tắc *"nội dung y hệt thì không cập nhật mốc thời gian"* chỉ có ý nghĩa ở vòng **xếp hạng theo tốc độ**; Khởi động không xếp theo thời gian nên không áp | Cập nhật bản được ghi nhận | — |
+| C7 — bản gửi rỗng | Nội dung chỉ gồm khoảng trắng sau khi cắt | **Bỏ qua** — giữ bản hợp lệ trước đó (`Đ-20.1`). Bản rỗng không phải một đáp án nên không ghi đè bản đã có | Bản được ghi nhận không đổi | — |
+| C8 — mốc cắt được xác định thế nào | MC công bố đáp án trên sân khấu | **Admin bấm** — hệ thống không cần quan sát sân khấu. Mốc *"MC công bố đáp án"* ánh xạ thành **một thao tác bấm của admin**, đúng nguyên tắc `Đ-6` | Mốc cắt được ghi bằng server timestamp của lần bấm đó | — |
 
 ### Outcomes
 
 - **Có thay đổi**: bản cuối cùng là bản được chấm.
 - **Không thay đổi**: bản đầu tiên là bản được chấm.
-- **Đến sau mốc cắt**: không được chấm.
+- **Đến sau mốc cắt**: không tự thay bản hợp lệ, nhưng **vẫn giữ và hiển thị** cho admin quyết.
 
 ### State changes
 
@@ -867,7 +940,7 @@ Không có lỗi nghiệp vụ được định nghĩa.
 
 ### Evaluation order
 
-NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) kiểm tra bản đến trước hay sau mốc cắt, (b) kiểm tra nội dung có khác bản trước không, (c) cập nhật bản được ghi nhận.
+Chỉ còn **hai** bước, thứ tự cố định: (a) bản đến **trong hạn** không (biên đóng, `Đ-28`) → (b) nếu có và **khác rỗng**, nó thành bản được ghi nhận. Không cần so nội dung với bản trước: luôn lấy bản cuối.
 
 ### Boundaries
 
@@ -878,29 +951,40 @@ NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) kiểm
 | Trong khoảng | 2 bản trở lên | Ghi nhận bản cuối cùng |
 | Bằng max | — | Nguồn **không** đặt giới hạn số lần gửi |
 | Lớn hơn max | — | Không tồn tại giới hạn |
-| Biên thời gian | Bản đến đúng mốc cắt | **Được ghi nhận** (biên đóng). Riêng *thời điểm nào là mốc cắt* vẫn chưa xác định — xem C8 |
+| Biên thời gian | Bản đến đúng mốc cắt | **Được ghi nhận** (biên đóng, `Đ-28`). Mốc cắt là **thời điểm admin bấm**, ghi bằng server timestamp |
 
 ### Idempotency
 
-NEEDS CLARIFICATION — gửi lại nội dung **y hệt** ở vòng Khởi động chưa có quy định. Quy tắc "nội dung y hệt thì không cập nhật mốc thời gian" chỉ tồn tại cho vòng Tăng tốc; nguồn không nói có dùng chung không. Khác biệt này đáng kể vì Khởi động dùng quy tắc *bản đầu khi không đổi*, còn Tăng tốc luôn dùng bản cuối.
+Gửi lại là **hành vi bình thường, không bị chặn** — nút gửi không khoá sau khi gửi. Mỗi lần gửi hợp lệ đều thay bản được ghi nhận; **bản cuối thắng**, gửi bao nhiêu lần cũng vậy. Nội dung y hệt thì kết quả chấm không đổi.
 
 ### Concurrency
 
-NEEDS CLARIFICATION — nguồn không quy định điều gì xảy ra khi một bản gửi và mốc công bố đáp án đến cùng thời điểm, hoặc khi admin phán quyết trong lúc thí sinh còn đang gửi lại.
+Bản gửi **đúng mốc cắt** vẫn được ghi nhận (biên đóng, `Đ-28`).
+
+**Không xảy ra** — cách xử lý tách theo **kênh trả lời của vòng**:
+
+| Kênh trả lời | Nút gửi của thí sinh | Nút chấm của admin |
+|---|---|---|
+| **Nói** (mode sân khấu) | **Không tồn tại** — thí sinh đọc đáp án | Bấm được **bất cứ lúc nào** |
+| **Gõ** (mode nhập liệu, và mọi vòng luôn gõ máy) | Sống tới khi hết giờ | **Khoá tới khi hết giờ** |
+
+Hai nhánh đều triệt tiêu tranh chấp: nhánh trên không có bản gửi nào để đổi, nhánh dưới thì admin chỉ chấm sau khi cửa nhận đáp án đã đóng.
+
+**Và phán quyết của admin là quyết định cuối cùng**: bấm chấm xong thì **nút gửi khoá lại** — không còn bản nào tới sau để lật kết quả.
 
 ### Examples
 
 - **Hợp lệ**: thí sinh gửi "Hà Nội", rồi sửa thành "Huế" trước khi công bố ⇒ ghi nhận **"Huế"**.
 - **Hợp lệ**: thí sinh gửi "Hà Nội" một lần rồi không đụng nữa ⇒ ghi nhận **"Hà Nội"** (bản đầu, cũng là bản cuối).
-- **Không hợp lệ**: bản gửi đến sau khi MC đã công bố đáp án được đem chấm ⇒ trái luật ghi nhận.
-- **Boundary**: bản sửa cuối cùng đến đúng khoảnh khắc MC công bố ⇒ chưa có quy định.
+- **Không hợp lệ**: bản gửi sau mốc cắt **tự động** thay bản hợp lệ ⇒ sai; nó chỉ được giữ lại tô đỏ để admin quyết.
+- **Boundary**: bản sửa cuối cùng đến đúng khoảnh khắc admin bấm công bố ⇒ **vẫn được ghi nhận** (biên đóng, `Đ-28`).
 
 ### Source traceability
 
 | Nguồn | Heading | Discovered rule ID |
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | §Khởi động, đoạn cuối | — |
-| `docs/game-rules-inventory.md` | §R-KD-06, §R-TT-03 | R-KD-06, U-1 |
+| `docs/game-rules-inventory.md` | §R-KD-06, §R-TT-03 | R-KD-06 |
 | `docs/reviews/game-rules-decisions.md` | §4 (hai mode trả lời) · §8.1 | Đ-4, Đ-6 |
 | `CLAUDE.md` | §Quy ước khác (TRIM mọi input text) | — |
 | `docs/glossary.md` | TERM-020 | — |
@@ -927,7 +1011,7 @@ Thí sinh (phát tín hiệu chọn) · Admin (xác nhận hoặc từ chối) �
 
 ### Trigger
 
-Một tín hiệu chọn hàng ngang được phát — bởi thí sinh click, hoặc bởi admin click thay.
+Một tín hiệu chọn hàng ngang được phát. **Chủ thể phát tín hiệu phụ thuộc mode** (`Đ-36`): mode **sân khấu** thì chỉ **admin** click; mode **nhập liệu** thì chỉ **thí sinh** click, admin **không** chọn thay.
 
 ### Preconditions
 
@@ -949,17 +1033,20 @@ Một tín hiệu chọn hàng ngang được phát — bởi thí sinh click, h
 - Trong trường hợp đó, nếu thí sinh ở vị trí cuối cùng đã hoàn thành lượt chọn mà **vẫn còn hàng ngang chưa được chọn**, lượt chọn **quay trở lại thí sinh ở vị trí số 1**. Đây là ngoại lệ tường minh, chỉ áp khi đã có người bị loại — không mâu thuẫn với *"tối đa 1 lượt"*.
 - Ở VCNV, hàng đợi tín hiệu **CHẶN**: tín hiệu chỉ có hiệu lực khi admin xác nhận.
 - Admin **từ chối** một tín hiệu thì tín hiệu kế tiếp lên, và **thí sinh không mất lượt**.
+- **Một đường vào cho mỗi mode** (`Đ-36`): sân khấu → chỉ admin click; nhập liệu → chỉ thí sinh click.
+- Ở mode **nhập liệu**, thao tác chọn của thí sinh đi qua **dialog xác nhận trên máy thí sinh**; xác nhận xong thì **nút chọn khoá**. Khoá **mở lại** nếu admin bấm No.
 
 ### Decision table
 
 | Case | Conditions | Expected outcome | State change | Error |
 |---|---|---|---|---|
 | C1 — happy path | Thí sinh đúng lượt chọn một hàng ngang chưa mở; admin xác nhận | Hàng ngang đó được đưa ra | Đánh dấu lượt chọn của thí sinh đã dùng; hàng ngang chuyển sang đang hỏi | — |
-| C2 — admin từ chối | Admin bấm No cho tín hiệu | Tín hiệu kế tiếp trong hàng đợi lên; **thí sinh không mất lượt** | NEEDS CLARIFICATION — `game-rules-review.md` GRR-143: chưa nói hàng ngang đã bị đánh dấu đã hỏi chưa, câu đã bị rút khỏi kho chưa, đồng hồ đã chạy chưa | — |
+| C2 — admin từ chối | Admin bấm No cho tín hiệu | Tín hiệu kế tiếp trong hàng đợi lên; **thí sinh không mất lượt** · ở mode nhập liệu, **nút chọn của thí sinh mở lại** (`Đ-36`) | NEEDS CLARIFICATION — `game-rules-review.md` GRR-143: chưa nói hàng ngang đã bị đánh dấu đã hỏi chưa, câu đã bị rút khỏi kho chưa, đồng hồ đã chạy chưa | — |
 | C3 — người đang tới lượt đã bị loại | Thí sinh bị loại trước khi dùng lượt chọn | Lượt dồn cho **vị trí tiếp theo** | Cập nhật người đang tới lượt | — |
 | C4 — boundary: hết vòng vị trí mà còn hàng chưa chọn | Vị trí cuối đã chọn xong, vẫn còn hàng ngang | Lượt **quay lại vị trí số 1** | Cập nhật người đang tới lượt | — |
 | C5 — chọn hàng ngang đã mở | Thao tác trỏ vào hàng ngang đã được chọn | **KHÔNG TỒN TẠI** — hàng ngang đã mở không còn là mục tiêu chọn được; máy thí sinh **không hiển thị nó như lựa chọn** và bấm **không phản hồi** (`Đ-16`) | Không đổi | — |
-| C6 — repeated action: cùng thí sinh click chọn nhiều lần | Thí sinh click chọn hàng ngang nhiều lần | NEEDS CLARIFICATION — quyết định "nút chuông tự khoá khi bấm" **không** áp cho thao tác chọn hàng ngang (không phải chuông); chưa nói các click sau được gộp hay vào hàng đợi riêng | Mọi tín hiệu được ghi | — |
+| C6a — repeated action, mode **sân khấu** | Thí sinh click chọn hàng ngang nhiều lần | **KHÔNG TỒN TẠI** — máy thí sinh **không có nút chọn** ở mode này; chọn hàng ngang do admin (`Đ-36`) | Không đổi | — |
+| C6b — repeated action, mode **nhập liệu** | Thí sinh click chọn hàng ngang nhiều lần | Click đầu mở **dialog xác nhận**; xác nhận xong **khoá nút chọn** ⇒ **đúng một tín hiệu** rời máy thí sinh cho một lượt chọn (`Đ-36`) | Nút chọn của ghế đó chuyển sang khoá; khoá **mở lại** nếu admin bấm No | — |
 | C7 — invalid state: tín hiệu từ thí sinh sai lượt | Thí sinh chưa tới lượt phát tín hiệu chọn | Tín hiệu vào hàng đợi; admin quyết định — hệ thống **cảnh báo**, không chặn cứng | Ghi tín hiệu | — |
 | C8 — số thí sinh nhiều hơn số hàng ngang | Ví dụ 12 thí sinh, 4 hàng ngang | **NGOÀI PHẠM VI v1** `[v1.5]` — v1 đặc tả cho **đúng 4 thí sinh** (§2), mà 4 thí sinh / 4 hàng ngang thì *"tối đa 1 lượt"* vừa đủ. Luật cho 1-12 người thuộc v1.5 (`game-rules-inventory.md` U-4) | — | — |
 | C9 — hai loại tín hiệu chờ cùng lúc | Một tín hiệu chọn hàng ngang và một tín hiệu "Mở chướng ngại vật" cùng nằm trong hàng đợi | NEEDS CLARIFICATION — `game-rules-review.md` GRR-144: chưa nói hàng đợi xử lý thuần theo thứ tự tới hay ưu tiên theo loại | Không xác định | — |
@@ -1005,7 +1092,16 @@ NEEDS CLARIFICATION — nguồn không quy định thứ tự kiểm tra giữa:
 
 Nút **"Mở chướng ngại vật"** là chuông ⇒ **tự khoá ngay khi bấm**, không có tín hiệu trùng.
 
-NEEDS CLARIFICATION — thao tác **chọn hàng ngang** không phải chuông nên không được quyết định đó phủ: chưa nói nhiều click của **cùng một thí sinh cho cùng một hàng ngang** được gộp hay giữ riêng. Thao tác xác nhận của admin bấm hai lần cũng chưa được quy định.
+Thao tác **chọn hàng ngang** không phải chuông nên đi theo cơ chế riêng (`Đ-36`), và cơ chế đó khiến tín hiệu trùng **không sinh ra được** ở cả hai mode:
+
+| Mode | Vì sao không có tín hiệu trùng |
+|---|---|
+| **Sân khấu** | Máy thí sinh **không có nút chọn** |
+| **Nhập liệu** | Dialog xác nhận + **khoá nút** sau khi xác nhận ⇒ đúng một tín hiệu cho một lượt chọn |
+
+> Khoá ở đây nằm tại **giao diện**. Theo `CLAUDE.md` §Zero-trust, server vẫn phải bỏ qua tín hiệu chọn trùng nếu nhận được.
+
+NEEDS CLARIFICATION — **thao tác xác nhận của admin** bấm hai lần vẫn chưa được quy định.
 
 ### Concurrency
 
@@ -1013,9 +1109,10 @@ NEEDS CLARIFICATION — `game-rules-review.md` GRR-144: thứ tự xử lý gi�
 
 ### Examples
 
-- **Hợp lệ**: thí sinh vị trí 1 click chọn hàng ngang số 3; admin bấm Yes ⇒ hàng ngang 3 được đưa ra.
-- **Không hợp lệ**: hệ thống tự động mở hàng ngang khi thí sinh click mà không cần admin xác nhận ⇒ trái quy tắc hàng đợi chặn ở VCNV.
+- **Hợp lệ**: mode nhập liệu — thí sinh vị trí 1 click hàng ngang số 3, dialog hiện, thí sinh xác nhận ⇒ nút chọn khoá, tín hiệu vào hàng đợi; admin bấm Yes ⇒ hàng ngang 3 được đưa ra.
+- **Không hợp lệ**: hệ thống tự động mở hàng ngang khi thí sinh xác nhận dialog mà không cần admin duyệt ⇒ trái quy tắc hàng đợi chặn ở VCNV. Dialog của thí sinh **không thay thế** phán quyết của admin.
 - **Boundary**: thí sinh vị trí 4 vừa dùng xong lượt, còn 1 hàng ngang chưa chọn vì thí sinh vị trí 2 đã bị loại trước đó ⇒ lượt quay lại **vị trí số 1**.
+- **Ngoại lệ khoá**: thí sinh xác nhận dialog ⇒ nút khoá; admin bấm **No** ⇒ nút **mở lại**, thí sinh chọn hàng khác, **không mất lượt**.
 
 ### Source traceability
 
@@ -1023,7 +1120,7 @@ NEEDS CLARIFICATION — `game-rules-review.md` GRR-144: thứ tự xử lý gi�
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | §Vượt chướng ngại vật, đoạn 3 | — |
 | `docs/game-rules-inventory.md` | §R-VCNV-03 | R-VCNV-03, U-4 |
-| `docs/reviews/game-rules-decisions.md` | §5.1 Đ-7 · §5.2 Đ-7.2 · §5.4 Đ-4.2 · §6.2 | Đ-7, Đ-7.2, Đ-4.2 |
+| `docs/reviews/game-rules-decisions.md` | §5.1 Đ-7 · §5.2 Đ-7.2 · §5.4 Đ-4.2 · §6.2 · §11.21 Đ-36 | Đ-7, Đ-7.2, Đ-4.2, Đ-36 |
 | `docs/reviews/game-rules-review-old.md` | GRR-016 | — |
 | `docs/reviews/game-rules-review.md` | GRR-143, GRR-144 | — |
 | `docs/glossary.md` | TERM-002, TERM-032, TERM-057 | — |
@@ -1081,7 +1178,7 @@ Admin **bấm hiển thị đáp án** sau khi hết thời gian suy nghĩ, rồ
 | C4 — boundary: cần bao nhiêu người đúng để mở | Đúng 1 trong 4 người trả lời đúng | NEEDS CLARIFICATION — `game-rules-inventory.md` U-37: nguồn chỉ nói *"trả lời đúng → mở"*, không nêu ngưỡng số người; biến thể *"ít nhất 1 thí sinh"* của nguồn khác đã bị loại theo K-5 | Không xác định | — |
 | C5 — repeated action: admin bấm mở miếng ghép hai lần | Miếng ghép đã mở, admin bấm mở lần nữa | NEEDS CLARIFICATION — nguồn không nói thao tác mở là vô hiệu khi đã mở | Không xác định | — |
 | C6 — invalid state: đáp án từ thí sinh đã bị loại | Người đã bị loại vẫn thao tác trên máy | Ô nhập **không hiển thị**, thao tác **không phản hồi** ⇒ không gửi được đáp án nào | Không đổi | — |
-| C7 — đáp án đến sau khi hết 15 giây | Bản gửi đến sau mốc hết giờ | **Mặc định KHÔNG tính**; hệ thống chỉ đánh dấu, **không chặn cứng** — admin tự quyết có chấm hay không | Bản vào **lịch sử trên màn admin**, đánh dấu **đỏ**; hiển thị ra ngoài và chấm điểm đều **do admin bấm** | — |
+| C7 — đáp án đến sau khi hết 15 giây | Bản gửi đến sau mốc hết giờ | **GIỮ CẢ BẢN HỢP LỆ LẪN BẢN QUÁ HẠN**, bản quá hạn tô **đỏ**. Admin quyết **Đúng / Sai**; nếu **chỉ có** bản quá hạn thì có thêm lựa chọn **HUỶ KẾT QUẢ** | Cả hai bản hiển thị trên màn admin; hiển thị ra ngoài và chấm điểm đều **do admin bấm** | — |
 | C8 — boundary: đáp án đến đúng mốc 15 giây | Server timestamp trùng mốc | **Được chấm** — biên **đóng** | Bản được ghi nhận như bản hợp lệ | — |
 | C9 — có người bấm "Mở chướng ngại vật" giữa chừng | Tín hiệu CNV đến trong lúc đồng hồ 15 giây đang chạy | **Ghi nhận ngay**; đồng hồ **vẫn chạy bình thường**; **đáp án chuẩn của chương trình** và **bài làm của các thí sinh khác** đều **chưa hiển thị** cho tới khi admin bấm hiển thị | Ghi tín hiệu vào hàng đợi; đồng hồ không đổi | — |
 | C10 — chính tả sai lệch nhỏ | Đáp án khác đáp án chuẩn ở dấu câu | Máy **chỉ** highlight ký tự khác; **admin tự đánh giá** và bấm Đúng/Sai | Sinh event theo phán quyết của admin | — |
@@ -1866,7 +1963,8 @@ Thí sinh gửi lần 1 → sửa (gửi lần 2) → … → gửi lần N. Adm
 | C2 | TS gửi "Hà Nội" lúc 100ms, rồi "Hanoi" lúc 150ms, sau cùng "Hà Nội khác" lúc 200ms | **Bản cuối = "Hà Nội khác"** (khác bản 100ms). Timestamp = 200ms (cập nhật vì nội dung mới) | Server lưu `lastSubmission = "Hà Nội khác" @ 200ms` | — |
 | C3 | TS gửi "Hà Nội" lúc 100ms, sau "   " (3 space, rỗng sau trim) lúc 150ms | **Bản cuối = "Hà Nội"** (bản 150ms bị SKIP vì rỗng). Timestamp = 100ms | Server lưu `lastSubmission = "Hà Nội" @ 100ms` · event lần 150ms **không được ghi nhận** | — |
 | C4 | TS gửi rỗng lúc 100ms, sau "Hà Nội" lúc 150ms | **Bản cuối = "Hà Nội"** (bản 100ms bị SKIP, bản 150ms là đầu tiên hợp lệ). Timestamp = 150ms | Server lưu `lastSubmission = "Hà Nội" @ 150ms` · bỏ qua bản rỗng 100ms | — |
-| C5 | TS quá timeout (ví dụ 35s khi timer 30s) vẫn gửi lúc +35s | **Mặc định** dùng bản cuối hợp lệ trước deadline; bản quá hạn **không tham gia xếp hạng**. Admin **vẫn có thể quyết định chấm** bản đó — hệ thống không chặn | Giữ bản hợp lệ cuối; bản quá hạn vào **lịch sử trên màn admin**, đánh dấu **đỏ**; hiển thị và chấm đều **do admin bấm** | — |
+| C5 | Có bản hợp lệ trước deadline, còn gửi thêm sau deadline | **GIỮ CẢ HAI**: bản hợp lệ cuối dùng cho xếp hạng, bản quá hạn tô **đỏ** để admin đối chiếu và quyết **Đúng / Sai** | Cả hai hiển thị trên màn admin; hiển thị ra ngoài và chấm đều **do admin bấm** | — |
+| C6 | Chỉ gửi **sau** deadline, không có bản hợp lệ nào | Bản quá hạn tô **đỏ**; admin quyết **Đúng / Sai / HUỶ KẾT QUẢ**. Nếu công nhận thì **cả bảng xếp hạng của câu tính lại** (`Đ-5.3.1`) | Ghi vào lịch sử; kết quả câu theo phán quyết của admin | — |
 
 ### Outcomes
 - **Bản cuối được chấm**: nếu admin chấm Đúng → người nhận điểm (xem GR-013 GR-014)
@@ -1885,7 +1983,8 @@ Thí sinh gửi lần 1 → sửa (gửi lần 2) → … → gửi lần N. Adm
 - Điểm từ câu trước không ảnh hưởng
 
 ### Error outcomes
-- **Submission quá deadline**: loại, không ghi nhận (C5)
+- **Submission quá deadline**: không tự tính, nhưng **vẫn giữ và hiển thị** để admin quyết (C5, C6)
+- **Nút chấm khoá tới khi hết giờ** (Tăng tốc luôn gõ máy) ⇒ admin không thể chấm khi thí sinh còn đang sửa; chấm xong thì **nút gửi khoá** (`Đ-35`)
 - **Toàn bộ submission rỗng trong câu**: không có bản nào để chấm ⇒ admin bấm **Sai** — *không trả lời* và *trả lời sai* là cùng một thao tác (`Đ-19`).
 
 ### Evaluation order
@@ -2219,7 +2318,7 @@ TS chịu trách nhiệm trả lời câu được draw; timer bắt đầu (th�
 ### Boundaries
 - **Value = 0**: không hợp lệ (config chỉ 20/30)
 - **Value ∈ {20, 30}**: hợp lệ (chỉ O26)
-- **Value ∉ {20, 30}** (ví dụ 50): không hỗ trợ v1 (U-1 — chưa định nghĩa)
+- **Value ∉ {20, 30}** (ví dụ 50): ngoài preset `O26_DEFAULT@1`; admin cấu hình được nhưng không thuộc luật 2026 (K-2)
 - **timeSeconds = 0**: không hợp lệ (UI chặn, pre-flight chặn)
 
 ### Idempotency
@@ -2402,7 +2501,7 @@ Admin bấm "Sai" cho người thi chính (hoặc timeout tự động) → **m�
 | Case | Conditions | Expected outcome | State change | Error |
 |---|---|---|---|---|
 | C1 | Câu 20đ, TS[i] sai "London", 3 người bấm @ 100/150/200ms → TS[j] @ 100ms đúng "Paris" | TS[i] −20, TS[j] +20 (transfer) | EventLog: SCORE_ADJUST TS[i]−20, TS[j]+20 | — |
-| C2 | Câu 30đ, TS[i] sai, TS[j] @ 100ms cướp **sai** "Moscow" | TS[j] −15 (nửa 30) | EventLog: SCORE_ADJUST TS[j]−15 · TS[i] vẫn −30 (không hoàn lại) | — |
+| C2 | Câu 30đ, TS[i] sai, TS[j] @ 100ms cướp **sai** "Moscow" | TS[j] −15 (nửa 30); admin có thể chọn **Huỷ kết quả** thay vì Sai để không áp hình phạt | EventLog: SCORE_ADJUST TS[j]−15 · TS[i] vẫn −30 (không hoàn lại) | — |
 | C3 | Câu 20đ, TS[i] sai, **không ai bấm trong 5s** | TS[i] −20 (vẫn trừ), không ai +20 | EventLog: SCORE_ADJUST TS[i]−20 | — |
 | C4 | Câu 20đ, TS[i] sai, TS[j] gửi 3 bản: "Paris" @ 100ms, "London" @ 150ms, "Berlin" @ 200ms | TS[j] chấm dựa trên **bản ĐẦU "Paris"** (khác GR-015) | Admin so khớp "Paris" để chấm | — |
 | C5 | Câu 20đ, TS[i] sai + NSHV sai (−20 từ NSHV, hình phạt thay thế transfer) → TS[j] cướp đúng | TS[i] −20 (từ NSHV, thay thế −20 transfer + người cướp lấy được) → TS[j] +0 hoặc +20? | **NEEDS CLARIFICATION** (U-8) — số học khi NSHV × transfer chưa định | Conflict GR-021 × GR-020 |
@@ -2843,7 +2942,7 @@ Thí sinh bấm chuông trong khoảng thời gian MC đang đọc câu hỏi (t
 - **Kết quả câu khác không ảnh hưởng** — mỗi câu độc lập
 
 ### Error outcomes
-- Không rõ "hiệu lệnh MC" (U-1): System coi start-timer của admin = hiệu lệnh (Đ-6.1)
+- "Hiệu lệnh MC" = **admin bấm start timer** (`Đ-6.1`) — hệ thống không quan sát sân khấu
 - Admin bấm start-timer nhầm lúc thí sinh vẫn đọc: không outcome (timestamp quyết định)
 - Cơ chế gỡ cấm: chỉ hoạt động **trước khi trả lời** (Đ-6.4)
 
@@ -2983,7 +3082,7 @@ Kết thúc câu hỏi thứ 3 của tie-break, không có thí sinh nào trả 
 
 ---
 
-## GR-026 — Phán quyết Đúng/Sai của admin
+## GR-026 — Phán quyết của admin
 
 ### Status
 
@@ -4147,7 +4246,7 @@ Tất cả timeout, thứ tự chuông, thứ hạng tốc độ, và mốc th�
 **Timeout và tín hiệu tới cùng ms** — **biên ĐÓNG**, tín hiệu thắng:
 - Tín hiệu hoặc submission ở t = 3.000s, timeout cũng ở t = 3.000s ⇒ **tính là hợp lệ**.
 - Áp cho **cả hai loại**: tín hiệu giành quyền trả lời và submission đáp án.
-- Chỉ khi timestamp **vượt quá** mốc mới **mặc định không tính** — bản đó vẫn vào **lịch sử trên màn admin**, đánh dấu **đỏ**. **Hiển thị ra ngoài** và **chấm điểm** đều là **thao tác bấm của admin**; hệ thống chỉ đánh dấu, không chặn cứng.
+- Chỉ khi timestamp **vượt quá** mốc mới **mặc định không tính** — bản đó vẫn được **giữ và hiển thị** trên màn admin, tô **đỏ**, **cạnh bản hợp lệ** (nếu có). **Hiển thị ra ngoài** và **chấm điểm** đều là thao tác bấm của admin; hệ thống chỉ đánh dấu, không chặn cứng.
 
 ### Examples
 
@@ -4155,7 +4254,7 @@ Tất cả timeout, thứ tự chuông, thứ hạng tốc độ, và mốc th�
 - Câu Khởi động lượt riêng: `timeSeconds = 3s`
 - Admin start timer lúc server t=10.000s → `endsAt = 10.003s`
 - t=10.002s: Thí sinh A gửi đáp án → hợp lệ
-- t=10.004s: Thí sinh B gửi đáp án → **quá hạn**, bỏ qua
+- t=10.004s: Thí sinh B gửi đáp án → **quá hạn**, giữ lại và tô đỏ cho admin quyết
 
 **Ví dụ 2 — Tăng tốc: Cùng ms**:
 - Câu 1 (20s): A gửi t=8.500s (đúng), B gửi t=8.500s (đúng)
@@ -4172,7 +4271,7 @@ Tất cả timeout, thứ tự chuông, thứ hạng tốc độ, và mốc th�
 
 **Ví dụ 5 — Boundary ms**:
 - Khoa timeout = t=10.000s đến t=10.003s (3s = 3000ms)
-- t=10.003s trong khi mốc là 10.000s → **quá mốc**: mặc định không tính, vào lịch sử đánh dấu đỏ, admin quyết có chấm hay không (`Đ-28`).
+- t=10.003s trong khi mốc là 10.000s → **quá mốc**: mặc định không tính, giữ lại và tô đỏ cạnh bản hợp lệ, admin quyết (`Đ-28`, `Đ-32`).
 
 ### Source traceability
 - `CLAUDE.md` §UX BẮT BUỘC — Server time là source of truth duy nhất

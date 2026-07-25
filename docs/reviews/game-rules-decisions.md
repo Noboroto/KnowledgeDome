@@ -10,7 +10,7 @@
 > **Nguồn luật gốc**: `docs/source/fandom-olympia-26-luat-choi.md` (snapshot 2026-07-23).
 > **Điều khiển hệ thống** (quyền, UI, audit, quy trình) KHÔNG nằm ở đây — xem `docs/product-discovery.md` §6 C-11 → C-16 và S-1 → S-15.
 >
-> **Ngày chốt**: 2026-07-24 và 2026-07-25 (đợt sau: Đ-16 → Đ-31, xem §11).
+> **Ngày chốt**: 2026-07-24 và 2026-07-25 (đợt sau: Đ-16 → Đ-35, xem §11).
 
 ---
 
@@ -459,7 +459,7 @@ Cả hai đều thể hiện bằng **admin bấm Sai**. Hệ thống **không p
 | Đối tượng | Đồng hồ làm gì |
 |---|---|
 | **Thí sinh** | **Khoá / mở khoá thao tác** — ngoài cửa sổ thì nút không hiển thị, bấm không phản hồi |
-| **Admin** | **KHÔNG khoá gì**. Ngoại lệ duy nhất: **nút start timer tự khoá sau lần bấm đầu** để chống bấm trùng |
+| **Admin** | **KHÔNG khoá**. **Hai ngoại lệ**: nút **start timer** tự khoá sau lần bấm đầu; và ở vòng thí sinh **gõ đáp án** thì nút **chấm** khoá tới khi hết giờ (`Đ-35`) |
 
 ⇒ Mốc thời gian của luật là **ràng buộc với thí sinh**, **mốc tham chiếu** với người điều khiển. "Trong hạn hay quá hạn" ở phía phán quyết là đánh giá của MC và admin.
 
@@ -678,6 +678,124 @@ Mẫu chung đã được chốt lặp lại cho bốn nút, nay phát biểu th
 
 **Phạm vi chặn là VÒNG, không phải TRẬN**: trận vẫn chạy các vòng còn đủ đề. Admin thấy được thiếu bao nhiêu câu để bổ sung rồi mở lại.
 
+### 11.17 Luôn ghi nhận đáp án cuối cùng `[Đ-32]`
+
+> **Nút gửi KHÔNG bị khoá sau khi gửi.** Thí sinh sửa và gửi lại bao nhiêu lần cũng được; **bản cuối cùng** là bản được ghi nhận. Cửa duy nhất đóng lại là **hết giờ**.
+
+**Hai loại nút, hai chế độ ngược nhau** — đây là chỗ dễ áp nhầm nhất:
+
+| Nút | Sau khi bấm | Vì sao |
+|---|---|---|
+| **Chuông** | **Tự khoá** (`Đ-24`) | Giành quyền là hành vi **một lần, không rút lại** |
+| **Gửi đáp án** | **KHÔNG khoá** | Đáp án là thứ **sửa được**; chỉ đồng hồ đóng cửa |
+
+**Không mâu thuẫn luật gốc.** `F26` viết *"đáp án cuối cùng sẽ được ghi nhận. Nếu không thay đổi, chương trình sẽ ghi nhận đáp án đầu tiên."* Vế sau **không phải ngoại lệ** — gửi một lần thì bản đầu chính là bản cuối. Quyết định này chỉ phát biểu tổng quát điều luật gốc đã nói.
+
+**Giữ nguyên `Đ-20.1`**: bản rỗng (chỉ khoảng trắng sau khi cắt) **không phải một đáp án** ⇒ bỏ qua, giữ bản hợp lệ trước đó. Gửi rỗng **không xoá được** bài đã làm.
+
+**Bản gửi QUÁ HẠN: giữ cả hai, admin phán quyết**
+
+*"Ghi nhận bản cuối"* chỉ áp trong **các bản hợp lệ**. Bản quá hạn **không tự ghi đè** bản hợp lệ:
+
+| Tình huống | Hệ thống làm gì | Lựa chọn của admin |
+|---|---|---|
+| Có bản **hợp lệ**, còn gửi thêm bản **quá hạn** | Giữ **CẢ HAI**; bản quá hạn tô **ĐỎ** | **Đúng / Sai** |
+| **Chỉ có** bản quá hạn (không gửi gì trong hạn) | Giữ bản quá hạn, tô **ĐỎ** | **Đúng / Sai / HUỶ KẾT QUẢ** |
+
+> **`Huỷ kết quả` là outcome THỨ BA của thao tác chấm**, và chỉ tồn tại ở tình huống thứ hai. Nó **khác `Sai`**: ở Khởi động lượt chung `Sai` kéo theo **−5 điểm**, còn huỷ thì câu **không sinh điểm nào**. Đây là lần đầu tài liệu có một phán quyết không thuộc cặp Đúng/Sai — mọi chỗ mô tả thao tác chấm như nhị phân cần đọc lại theo mục này.
+
+⇒ Làm rõ `Đ-28`: *"mặc định không tính, đánh dấu đỏ, admin quyết"* nay nói cụ thể **admin thấy gì** (cả hai bản, cạnh nhau) và **chọn được gì** (hai hay ba lựa chọn tuỳ tình huống).
+
+**Quy tắc *"nội dung y hệt thì không cập nhật mốc thời gian"*** chỉ có ý nghĩa ở vòng **xếp hạng theo tốc độ** (Tăng tốc), nơi timestamp quyết định thứ hạng. Vòng không xếp theo thời gian thì không cần áp.
+
+⇒ Nhất quán với `CLAUDE.md` §UX (*"KHÔNG chặn gửi lại; server nhận bản cuối cùng trước timeout"*) và với `Đ-20` (đồng hồ là thứ duy nhất khoá thao tác của thí sinh).
+
+### 11.18 Mốc "MC công bố đáp án" là một thao tác bấm của admin `[Đ-33]`
+
+> Hệ thống **không cần quan sát sân khấu**. Mốc cắt của việc ghi nhận đáp án được xác định bằng **thời điểm admin bấm**, ghi bằng server timestamp.
+
+Đây là mảnh cuối của `Đ-6` (*"mọi mốc thời gian mà luật gốc mô tả bằng hành vi của MC đều ánh xạ thành MỘT thao tác bấm của admin"*). `Đ-26` đã ánh xạ hai mốc đầu; mốc thứ ba nay khép lại:
+
+| Mốc trong luật gốc | Thao tác hệ thống |
+|---|---|
+| *"MC đọc xong câu hỏi"* | Admin bấm **start timer** (`Đ-6`) |
+| *"câu hỏi được đọc lên hoặc hiện lên màn hình"* | Admin bấm **hiển thị câu hỏi** (`Đ-26`) |
+| *"MC công bố đáp án"* | Admin bấm **công bố đáp án** |
+
+⇒ Đóng `game-rules-inventory.md` **U-1** — cả ba mốc của MC nay đều có thao tác bấm tương ứng.
+
+### 11.19 Phán quyết chỉ nhị phân khi "Sai" trừ 0 điểm `[Đ-34]`
+
+> **Tiêu chí**: chỗ nào `Sai` kéo theo **hình phạt điểm** thì thao tác chấm phải có **ba** lựa chọn — **Đúng / Sai / Huỷ kết quả**.
+
+| Vòng / pha | `Sai` trừ | Lựa chọn |
+|---|---|---|
+| Khởi động lượt riêng · VCNV hàng ngang · Tăng tốc · Về đích (người thi chính) · Câu hỏi phụ | **0** | Đúng / Sai |
+| **Khởi động lượt chung** | **−5** | Đúng / Sai / **Huỷ** |
+| **Về đích — người cướp quyền** | **−½ giá trị câu** | Đúng / Sai / **Huỷ** |
+| **Về đích — câu có Ngôi sao hy vọng** | **−giá trị câu** | Đúng / Sai / **Huỷ** |
+
+**Vì sao cần lựa chọn thứ ba**: ở những chỗ có hình phạt, cặp Đúng/Sai ép admin chọn giữa **cho điểm** và **phạt** — trong khi tình huống thực tế có thể không đáng cả hai (sự cố thiết bị, MC đọc nhầm, tranh cãi chưa ngã ngũ). `Huỷ kết quả` cho câu **không sinh điểm nào**, khác `Sai` ở chỗ không áp hình phạt.
+
+**Ngoài ra** `Huỷ kết quả` **luôn có mặt** khi câu chỉ có bản gửi quá hạn (`Đ-32`), kể cả ở vòng mà `Sai` trừ 0.
+
+⇒ Mở rộng `Đ-17`: một câu vẫn chỉ đi qua **một** phán quyết, nhưng tập lựa chọn là **hai hoặc ba** tuỳ ngữ cảnh. Mọi mô tả *"hai nút Đúng/Sai"* trong tài liệu cần đọc lại theo mục này.
+
+### 11.20 Phán quyết của admin là quyết định cuối cùng `[Đ-35]`
+
+> **Chấm xong thì KHOÁ NÚT GỬI.** Không còn bản nào tới sau để lật kết quả.
+
+Để phán quyết không bao giờ rơi vào giữa lúc thí sinh còn đang sửa, luồng **tách theo kênh trả lời của vòng**:
+
+| Kênh trả lời | Nút gửi của thí sinh | Nút chấm của admin |
+|---|---|---|
+| **Nói** — mode sân khấu | **Không tồn tại** (thí sinh đọc đáp án) | Bấm được **bất cứ lúc nào** |
+| **Gõ** — mode nhập liệu, và các vòng **luôn gõ máy** | Sống tới khi hết giờ | **KHOÁ tới khi hết giờ** |
+
+Hai nhánh đều triệt tiêu tranh chấp: nhánh trên **không có bản gửi nào** để đổi; nhánh dưới thì admin **chỉ chấm sau khi cửa nhận đáp án đã đóng**.
+
+**Áp cho vòng nào**: `Đ-4.2` (VCNV hàng ngang) và `Đ-4.b` (Tăng tốc) chốt hai vòng này **luôn gõ máy bất kể mode contest** ⇒ chúng **luôn** theo nhánh dưới. Khởi động, Về đích và Câu hỏi phụ đi theo mode của contest (`Đ-4.a2`).
+
+**⚠ Sửa `Đ-20`**: quyết định đó nói *"đồng hồ KHÔNG khoá gì cả với admin — ngoại lệ duy nhất là nút start timer"*. Nay có **ngoại lệ thứ hai**: ở vòng thí sinh gõ đáp án, **nút chấm khoá tới khi hết giờ**. Câu "ngoại lệ duy nhất" trong `Đ-20` đã lỗi thời.
+
+⇒ Đóng nhánh cuối của GR-006 và đóng `game-rules-review.md` **GRR-148** (*"thao tác chấm ở Tăng tốc có bị khoá tới khi server-timeout không?"* — **có**).
+
+---
+
+### 11.21 Chọn hàng ngang: một đường vào mỗi mode, dedup bằng dialog phía thí sinh `[Đ-36]`
+
+> **Thí sinh click chọn hàng ngang nhiều lần** — xử lý **tách theo mode**, không phải một quy tắc chung.
+
+| Mode | Ai chọn hàng ngang | Thí sinh click nhiều lần |
+|---|---|---|
+| **Sân khấu** | **Chỉ ADMIN.** Máy thí sinh **không có** nút chọn | **KHÔNG TỒN TẠI** — không có nút thì không có tín hiệu |
+| **Nhập liệu** | **Chỉ THÍ SINH.** **Admin KHÔNG chọn thay** | **Dialog xác nhận** ở phía thí sinh, xác nhận xong thì **khoá nút chọn** |
+
+**Vì sao chỗ này được phép có dialog ở phía thí sinh**: thao tác chọn hàng ngang là thao tác **một chiều, hậu quả nặng, KHÔNG bị ép thời gian** — đúng tiêu chí "queue chặn" đã ghi ở `CLAUDE.md` §UX, và ngược hẳn với chuông (đua tốc độ, cửa sổ chặt). Không có gì để đua thì có chỗ cho một lớp xác nhận.
+
+**⚠ Sửa `CLAUDE.md` §UX — hai câu tuyệt đối cũ đã lỗi thời:**
+
+| Câu cũ | Nay thành |
+|---|---|
+| *"Dialog xác nhận **CHỈ** đặt ở phía ADMIN, **KHÔNG BAO GIỜ** ở phía thí sinh"* | Vẫn đúng cho **mọi thao tác đua tốc độ**; **ngoại lệ duy nhất** là **chọn hàng ngang ở mode nhập liệu** |
+| *"Chọn hàng ngang: **hai đường vào** (thí sinh click **hoặc** admin click)"* | **Một đường vào cho mỗi mode** — không mode nào có hai. Tình huống "hai đường vào tranh nhau" biến mất |
+
+**⚠ Làm mịn `Đ-4.2`**: quyết định đó chốt "hai đường vào"; nay hai đường **không cùng tồn tại**, mà phân theo mode.
+
+**Khoá nút là TẠM, không vĩnh viễn** — hệ quả cưỡng bức bởi `Đ-7` (*"admin từ chối ⇒ thí sinh KHÔNG mất lượt"*): nếu khoá vĩnh viễn thì thí sinh bị từ chối không chọn lại được, tức là mất lượt. Vậy:
+
+| Mốc | Nút chọn của thí sinh |
+|---|---|
+| Thí sinh xác nhận dialog | **Khoá** — chống click lặp trong lúc chờ admin duyệt |
+| Admin bấm **Yes** | Khoá **giữ nguyên** — lượt chọn đã dùng |
+| Admin bấm **No** | **MỞ LẠI** — thí sinh chọn lại được, không mất lượt |
+
+**Hai lớp xác nhận không thừa nhau**: dialog phía thí sinh chống **bấm nhầm**; admin duyệt Yes/No là **phán quyết** (`Đ-7`). Queue chặn ở VCNV giữ nguyên ở cả hai mode.
+
+⇒ Đóng nhánh idempotency của GR-007 (thao tác chọn hàng ngang trước nay nằm ngoài phạm vi `Đ-24` vì không phải chuông).
+
+**Còn treo**: ở mode nhập liệu, nút chọn có hiện trên máy thí sinh **chưa tới lượt** không? `Đ-16` (invalid state → máy thí sinh không hiển thị gì) đẩy về "không hiện"; còn nhánh "tín hiệu sai lượt vào hàng đợi, cảnh báo không chặn cứng" (`Đ-5`) giả định tín hiệu tới được server. Chưa quyết ⇒ GR-007 C7 giữ nguyên.
+
 ---
 
 ## 12. Bảng tra mã quyết định
@@ -738,3 +856,8 @@ Mẫu chung đã được chốt lặp lại cho bốn nút, nay phát biểu th
 | **Đ-29** | Nút thao tác một chiều tự tắt sau khi bấm | §11.14 |
 | **Đ-30** | Luật cho bao nhiêu câu thì đúng bấy nhiêu; không có câu thứ N+1 | §11.15 |
 | **Đ-31** | Kho đề kiểm tại cửa vào từng vòng; thiếu thì không mở vòng đó | §11.16 |
+| **Đ-32** | Luôn ghi nhận đáp án cuối cùng; nút gửi không khoá sau khi gửi | §11.17 |
+| **Đ-33** | Mốc "MC công bố đáp án" là một thao tác bấm của admin | §11.18 |
+| **Đ-34** | Phán quyết chỉ nhị phân khi "Sai" trừ 0 điểm; có phạt thì thêm "Huỷ kết quả" | §11.19 |
+| **Đ-35** | Phán quyết của admin là quyết định cuối cùng; nút chấm khoá tới hết giờ ở vòng gõ máy | §11.20 |
+| **Đ-36** | Chọn hàng ngang: một đường vào mỗi mode; mode nhập liệu dedup bằng dialog phía thí sinh + khoá tạm | §11.21 |
