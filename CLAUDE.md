@@ -82,8 +82,8 @@ Nguyên tắc nền: **máy độc quyền SỰ KIỆN, người độc quyền 
 
 - **Mode sân khấu (MẶC ĐỊNH, và là mode LUẬT được đặc tả theo)**: thí sinh **đọc** đáp án, máy chỉ dùng để **giành quyền trả lời**.
 - **Mode nhập liệu**: thí sinh gõ đáp án.
-- Áp cho **Khởi động, Về đích, Câu hỏi phụ**. **VCNV và Tăng tốc LUÔN gõ máy** — ở VCNV mode chỉ đổi cách **chọn hàng ngang** (sân khấu → admin điều khiển; nhập liệu → thí sinh click hoặc admin), và thí sinh dùng máy để chọn **"Mở chướng ngại vật"**.
-- Chọn hàng ngang: hai đường vào (thí sinh click *hoặc* admin click), đều qua **hàng đợi** + admin xác nhận Yes/No. **KHÔNG drop tín hiệu.**
+- Áp cho **Khởi động, Về đích, Câu hỏi phụ**. **VCNV và Tăng tốc LUÔN gõ máy** — ở VCNV mode chỉ đổi cách **chọn hàng ngang** (sân khấu → admin điều khiển; nhập liệu → thí sinh click), và thí sinh dùng máy để chọn **"Mở chướng ngại vật"**.
+- **Chọn hàng ngang: MỘT đường vào cho mỗi mode** (✅ D36 chốt 25/07 — thay cho "hai đường vào"): sân khấu → **chỉ admin** click, máy thí sinh không có nút chọn; nhập liệu → **chỉ thí sinh** click, **admin không chọn thay**. Cả hai đều qua **hàng đợi** + admin xác nhận Yes/No. **KHÔNG drop tín hiệu.**
 - **Điểm được phép ÂM**, không có sàn.
 
 ## UX — BẮT BUỘC
@@ -94,8 +94,9 @@ Nguyên tắc nền: **máy độc quyền SỰ KIỆN, người độc quyền 
 - **Immediate Feedback**: Phản hồi người dùng ngay lập tức (≤100ms cho UI, ≤1s cho kết quả đầu tiên). Toast/message thành công hoặc thất bại phải xuất hiện sau mỗi action. Luồng async theo pattern `loading → success/error` (MUI: `Snackbar`/`Alert`; demo tĩnh: toast component chung).
 - **KHÔNG chặn gửi lại (rule chống double-submit đã bị chủ dự án gỡ bỏ)**: nút action chỉ hiện trạng thái loading, KHÔNG disable; người dùng gửi lại được — server nhận **bản cuối cùng** trước timeout. Dedup/idempotency là việc của SERVER (event log), không phải của UI. *Ngoại lệ: khoá-theo-LUẬT-CHƠI (chuông bị khoá khi sai, NSHV đã dùng, không tới lượt) vẫn disable bình thường — đó là trạng thái game, không phải chống double-submit.*
 - **Nút bấm chuông CHỈ nhận click chuột** — không gán hotkey cho chuông (tránh bấm nhầm khi gõ đáp án); các hotkey khác (Enter gửi, 1-8 chọn hàng...) giữ nguyên. **Nút "Mở chướng ngại vật" (VCNV) được xếp là CHUÔNG** ⇒ cũng chỉ nhận click chuột.
-- **Dialog xác nhận CHỈ đặt ở phía ADMIN, KHÔNG BAO GIỜ ở phía thí sinh** (✅ chốt 24/07). Đây là **ngoại lệ có chủ đích** của rule "không chặn gửi lại" ở trên: nó chống bấm nhầm hành động không thu hồi được, không phải chống double-submit.
-  - **Phía thí sinh: tức thời, không dialog, không rút lại** — *"thí sinh cần tốc độ, và tự chịu trách nhiệm sai lầm của mình"*.
+- **Dialog xác nhận đặt ở phía ADMIN; phía thí sinh CHỈ có ở thao tác KHÔNG đua tốc độ** (✅ chốt 24/07, sửa 25/07 theo D36). Đây là **ngoại lệ có chủ đích** của rule "không chặn gửi lại" ở trên: nó chống bấm nhầm hành động không thu hồi được, không phải chống double-submit.
+  - **Phía thí sinh: tức thời, không dialog, không rút lại** — *"thí sinh cần tốc độ, và tự chịu trách nhiệm sai lầm của mình"*. Áp cho **mọi thao tác đua tốc độ**: chuông, "Mở chướng ngại vật", gửi đáp án.
+  - **NGOẠI LỆ DUY NHẤT — chọn hàng ngang ở mode nhập liệu** (D36): thao tác **một chiều, hậu quả nặng, KHÔNG bị ép thời gian** ⇒ có **dialog xác nhận trên máy thí sinh**, xác nhận xong thì **khoá nút chọn**. Khoá là **TẠM**: admin bấm No ⇒ **mở lại** (bắt buộc bởi rule "reject ⇒ thí sinh không mất lượt"). Dialog này **không thay thế** bước admin duyệt Yes/No — hai lớp khác mục đích: dialog chống bấm nhầm, admin duyệt là phán quyết.
   - **Phía admin: mọi thao tác không hoàn tác được đều qua dialog Yes/No** — mở đáp án/ô chữ, xác nhận chọn hàng ngang, **và xác nhận nút "Mở chướng ngại vật" của thí sinh**.
   - **Mọi tín hiệu của thí sinh đều vào HÀNG ĐỢI theo thứ tự tới** (server timestamp). **KHÔNG có cơ chế drop.** **Hàng đợi đang hoạt động** reset sau mỗi VÒNG rồi tái sử dụng — nhưng **LỊCH SỬ tín hiệu KHÔNG BAO GIỜ XOÁ** (append-only), để admin xem lại và **gỡ lệnh cấm** khi cần. Queue **chỉ CHẶN ở VCNV**:
     - **VCNV** (chọn hàng ngang, "Mở chướng ngại vật") — queue **chặn**: admin duyệt lần lượt, xác nhận mới có hiệu lực. Reject ⇒ tín hiệu kế tiếp lên, **thí sinh KHÔNG mất lượt**. Đây là chỗ sửa lỗi bấm nhầm của thí sinh — admin bấm No, không phải bắt thí sinh xác nhận.
