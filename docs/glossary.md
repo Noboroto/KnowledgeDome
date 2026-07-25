@@ -1,7 +1,7 @@
 # Glossary — Thuật ngữ nghiệp vụ Olympia Contest System
 
 > **Ngày lập**: 2026-07-25
-> **Nguồn rà soát**: `docs/source/fandom-olympia-26-luat-choi.md` (F26, nguyên văn luật gốc) · `docs/game-rules-inventory.md` · `docs/reviews/game-rules-review.md` (GRR-137→GRR-171) · `docs/reviews/game-rules-decisions.md` (Đ-1→Đ-15, tên chuẩn đã chốt)
+> **Nguồn rà soát**: `docs/source/fandom-olympia-26-luat-choi.md` (F26, nguyên văn luật gốc) · `docs/game-rules-inventory.md` · `docs/reviews/game-rules-review.md` (GRR-137→GRR-171) · `docs/reviews/game-rules-decisions.md` (Đ-1→Đ-29, tên chuẩn đã chốt)
 >
 > **Nguyên tắc**: KHÔNG tự sáng tạo định nghĩa. Mọi định nghĩa dẫn file + heading nguồn. Từ nào tài liệu chưa nói đủ ⇒ `NEEDS CLARIFICATION`; từ nào được dùng với nhiều nghĩa ⇒ `CONFLICT`. Từ nào **không tồn tại** trong miền này ⇒ ghi ở [Phụ lục A](#phụ-lục-a--thuật-ngữ-được-yêu-cầu-nhưng-không-tồn-tại-trong-miền), KHÔNG bịa định nghĩa để lấp chỗ.
 
@@ -9,13 +9,13 @@
 
 | Status | Số mục | Nghĩa |
 |---|---|---|
-| `CONFIRMED` | 28 | Tài liệu định nghĩa đủ và nhất quán |
-| `NEEDS CLARIFICATION` | 22 | Từ có được dùng nhưng định nghĩa chưa đủ để viết spec |
-| `CONFLICT` | 10 | Cùng một từ mang **nhiều nghĩa khác nhau** trong tài liệu |
+| `CONFIRMED` | 30 | Tài liệu định nghĩa đủ và nhất quán |
+| `NEEDS CLARIFICATION` | 21 | Từ có được dùng nhưng định nghĩa chưa đủ để viết spec |
+| `CONFLICT` | 9 | Cùng một từ mang **nhiều nghĩa khác nhau** trong tài liệu |
 
-**10 mục `CONFLICT` — đọc trước khi viết bất kỳ spec nào**: TERM-006 `host` · TERM-013 `game` · TERM-016 `lượt / turn` · TERM-017 `phase` · TERM-022 `state` · TERM-027 `event điểm` · TERM-038 `cancelled` · TERM-044 `result` · TERM-048 `draw` · TERM-055 `visibility / everPublic`.
+**9 mục `CONFLICT` — đọc trước khi viết bất kỳ spec nào**: TERM-013 `game` · TERM-016 `lượt / turn` · TERM-017 `phase` · TERM-022 `state` · TERM-027 `event điểm` · TERM-038 `cancelled` · TERM-044 `result` · TERM-048 `draw` · TERM-055 `visibility / everPublic`.
 
-> **Tỉ lệ `CONFIRMED` 28/60 không phải lỗi kiểm kê** — phần lớn mục `NEEDS CLARIFICATION` là thuật ngữ **có định nghĩa cốt lõi rõ ràng** nhưng còn một nhánh chưa chốt (thường là một mã U-x hoặc GR-x đã ghi nhận). Trường Definition của các mục đó vẫn dùng được; chỉ nhánh nêu ở Status là chưa.
+> **Tỉ lệ `CONFIRMED` 30/60 không phải lỗi kiểm kê** — phần lớn mục `NEEDS CLARIFICATION` là thuật ngữ **có định nghĩa cốt lõi rõ ràng** nhưng còn một nhánh chưa chốt (thường là một mã U-x hoặc GRR-x đã ghi nhận). Trường Definition của các mục đó vẫn dùng được; chỉ nhánh nêu ở Status là chưa.
 
 ---
 
@@ -81,19 +81,17 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Khởi động, §Câu hỏi phụ · `game-rules-decisions.md` §1.1.
 - **Status**: `CONFIRMED`
 
-## TERM-006 — Host `⚠ CONFLICT`
+## TERM-006 — Host
 
-- **Definition**: từ này mang **hai nghĩa loại trừ nhau** trong tài liệu:
-  - **(H1) Người dẫn chương trình = MC** — nghĩa của luật gốc (*"hiệu lệnh của người dẫn chương trình"*).
-  - **(H2) Admin** — nghĩa trong tên config `autoPauseOnHostDisconnect`: "host disconnect" ở đây là **admin mất kết nối**, không phải MC.
-- **Alternative names**: (H1) MC, người dẫn chương trình · (H2) admin, người điều khiển trận.
-- **Actor / entity liên quan**: MC, Admin, R-GEN-08.
+- **Definition**: **người dẫn chương trình = MC** — nghĩa duy nhất còn hiệu lực, lấy từ luật gốc (*"hiệu lệnh của người dẫn chương trình"*).
+- **Alternative names**: MC · người dẫn chương trình.
+- **Actor / entity liên quan**: MC (TERM-005).
 - **Allowed values**: —
 - **Unit**: —
-- **Terms dễ nhầm**: chính hai nghĩa của nó. MC **không có quyền ghi**; admin là bên duy nhất bấm được ⇒ hiểu nhầm H1↔H2 sẽ gán quyền sai cho `/mc`.
-- **Related rules**: R-GEN-08, Đ-6.1, GRR-165.
-- **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Câu hỏi phụ (H1) · `game-rules-inventory.md` §R-GEN-08 (H2).
-- **Status**: `CONFLICT`
+- **Terms dễ nhầm**: từng có **nghĩa thứ hai trái ngược** — "host" = **admin** — nhưng nó chỉ tồn tại ở đúng một chỗ: tên cấu hình `autoPauseOnHostDisconnect`. `Đ-21` đã **bãi bỏ toàn bộ cơ chế tự động tạm dừng** và `R-GEN-08`, nên nghĩa đó không còn chỗ bám. Nếu gặp lại tên cấu hình này ở tài liệu cũ: đó là **admin**, và cấu hình đó nay không tồn tại.
+- **Related rules**: Đ-6.1, Đ-21.
+- **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Câu hỏi phụ · `game-rules-decisions.md` §11.6 `Đ-21`.
+- **Status**: `CONFIRMED`
 
 ## TERM-007 — Setter
 
@@ -450,10 +448,10 @@
 - **Actor / entity liên quan**: Admin, MC, Server time, Timer.
 - **Allowed values**: —
 - **Unit**: —
-- **Terms dễ nhầm**: **"Bấm hiển thị câu hỏi" và "bấm start timer" là HAI thao tác khác nhau** — thứ tự và khoảng cách giữa chúng quyết định độ dài cửa sổ chuông (GRR-139).
-- **Related rules**: Đ-6, Đ-6.1, Đ-6.3, `[GRR-005]`, `[GRR-048]`, GRR-137, GRR-139.
+- **Terms dễ nhầm**: **"Bấm hiển thị câu hỏi" và "bấm start timer" là HAI thao tác khác nhau**, thứ tự **cố định** (hiển thị trước) — khoảng giữa hai mốc chính là lúc MC đọc, và là phần đầu của cửa sổ chuông (`Đ-26`).
+- **Related rules**: Đ-6, Đ-6.1, Đ-6.3, Đ-20, Đ-26, `[GRR-005]`, `[GRR-048]`.
 - **Source**: `game-rules-decisions.md` §8.1, §8.2.
-- **Status**: `NEEDS CLARIFICATION` — GRR-137 (bấm hai lần) và GRR-139 (thứ tự hai thao tác) chưa có quy định.
+- **Status**: `CONFIRMED` — hai nhánh từng treo đã chốt: nút start timer **tự khoá sau lần bấm đầu** (`Đ-20`), và hai thao tác tạo mốc **tách rời theo thứ tự cố định** (`Đ-26`).
 
 ## TERM-035 — Phán quyết Đúng/Sai
 
@@ -477,7 +475,7 @@
 - **Terms dễ nhầm**: **KHÔNG phải "loser"** (TERM-046) — người bị loại khỏi VCNV vẫn thi tiếp Tăng tốc và Về đích, vẫn có thể thắng trận · **Mất quyền trả lời** (TERM-037) là hình phạt khác, theo **câu**, chỉ ở Câu hỏi phụ.
 - **Related rules**: R-VCNV-04, R-TEAM-03, U-24, GRR-146.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Vượt chướng ngại vật · `game-rules-inventory.md` §R-VCNV-04.
-- **Status**: `NEEDS CLARIFICATION` — U-24 (người bị loại có giữ điểm hàng ngang đã kiếm không) và GRR-146 (sự kiện đến từ ghế đã bị loại xử lý ra sao) chưa chốt.
+- **Status**: `NEEDS CLARIFICATION` — còn **U-24**: người bị loại có giữ điểm hàng ngang đã kiếm không. Nhánh *"sự kiện đến từ ghế đã bị loại"* đã đóng bởi `Đ-16` (máy thí sinh không hiển thị gì, bấm không phản hồi).
 
 ## TERM-037 — Mất quyền trả lời · Lệnh cấm
 
@@ -713,7 +711,7 @@
 - **Source**: `game-rules-inventory.md` §R-GEN-06 · `game-rules-decisions.md` §6.3.
 - **Status**: `NEEDS CLARIFICATION` — U-30.
 
-## TERM-055 — `everPublic`
+## TERM-055 — `everPublic` `⚠ CONFLICT`
 
 - **Definition**: cờ **một chiều** đánh dấu câu đã từng nằm trong bộ đề public. Câu `everPublic=true` ⇒ pre-flight **hard-block** mọi match; force cần confirm 2 bước + audit. Kiểm ở đơn vị **CÂU**, mỗi **match**. Ngoại lệ: match `practice` cho phép, gắn badge "đề public".
 - **Alternative names**: đề đã công khai · cờ chống rò đề.
@@ -809,9 +807,9 @@
 |---|---|---|---|
 | player | Thí sinh | TERM-001 | `CONFIRMED` |
 | user | *(chưa có entity)* | TERM-009 | `NEEDS CLARIFICATION` |
-| host | MC **hoặc** Admin — tuỳ ngữ cảnh | TERM-006 | `CONFLICT` |
+| host | MC (người dẫn chương trình) | TERM-006 | `CONFIRMED` |
 | dealer | *(không tồn tại)* | Phụ lục A | — |
-| administrator | Admin | TERM-004 | `NEEDS CLARIFICATION` |
+| administrator | Admin | TERM-004 | `CONFIRMED` |
 | game | Match **hoặc** sản phẩm/luật chơi | TERM-013 | `CONFLICT` |
 | match | Match · Trận | TERM-012 | `CONFIRMED` |
 | session | *(chưa có định nghĩa)* | TERM-014 | `NEEDS CLARIFICATION` |
