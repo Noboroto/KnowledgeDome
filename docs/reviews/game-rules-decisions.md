@@ -10,7 +10,7 @@
 > **Nguồn luật gốc**: `docs/source/fandom-olympia-26-luat-choi.md` (snapshot 2026-07-23).
 > **Điều khiển hệ thống** (quyền, UI, audit, quy trình) KHÔNG nằm ở đây — xem `docs/product-discovery.md` §6 C-11 → C-16 và S-1 → S-15.
 >
-> **Ngày chốt**: 2026-07-24 và 2026-07-25 (đợt sau: Đ-16 → Đ-21, xem §11).
+> **Ngày chốt**: 2026-07-24 và 2026-07-25 (đợt sau: Đ-16 → Đ-31, xem §11).
 
 ---
 
@@ -57,6 +57,8 @@
 > Hệ thống **chỉ chặn cứng** ở ngưỡng **bất khả thi vật lý** — khi vòng/pha đó không còn nghĩa. **Mọi lệch luật khác chỉ CẢNH BÁO.**
 
 *Đối chiếu bản cũ `Athena-Intelligent-Olympia`: toàn bộ server chỉ có **một** chỗ chặn cứng (`ExtraPlayerPicker`: `CountPlayer < 2`); thiếu đề chỉ là cảnh báo.*
+
+> **Cập nhật 2026-07-25**: `Đ-31` thêm **một ngưỡng chặn cứng thứ ba** — thiếu đề thì không mở được vòng. Đây là chỗ **ghi đè tiền lệ Athena**, xem §11.16.
 
 ### 1.4 Chống bấm nhầm: chỉ ở phía ADMIN
 
@@ -504,6 +506,178 @@ Vế 3 là điều kiện để hai vế đầu an toàn, và phải ẩn **cả
 
 **Khác biệt cần biết**: Athena còn **tự khoá ô nhập hàng ngang của chính người vừa bấm CNV**. Quyết định này **chưa nói** tới điểm đó — xem `product-discovery.md` §C-17 S-19.
 
+### 11.8 Hai tín hiệu cùng mốc thời gian: hàng đợi tự quyết định `[Đ-23]`
+
+Khi hai ghế khác nhau có **cùng server timestamp** ở vòng mà quyền trả lời **không chia được** (Khởi động lượt chung, cướp quyền Về đích, Câu hỏi phụ):
+
+> **Cứ ngẫu nhiên — hàng đợi tự quyết định thứ tự.** Không ưu tiên theo số ghế, vị trí, hay bất kỳ tiêu chí nào khác.
+
+**Điều kiện giữ cho quyết định này an toàn**: thứ tự mà hàng đợi chọn **phải được ghi lại**. Điều kiện đó đã có sẵn ở `Đ-7` (hàng đợi ghi theo thứ tự tới, lịch sử không bao giờ xoá).
+
+⇒ Ngẫu nhiên **lúc nhận**, nhưng **tất định khi dựng lại**: replay event log đọc đúng thứ tự đã lưu và ra lại kết quả cũ. `Đ-5.3` (*"điểm là hàm của event log"*) **không bị phá** — đây chính là mối lo mà `game-rules-review.md` GRR-138 nêu, nay đã được khoá lại.
+
+**Không áp cho vòng xếp hạng.** Ở Tăng tốc, **điểm chia được** nên cùng thời gian thì **cùng mức điểm** (K-8) — không cần và không được phân thứ tự ngẫu nhiên ở đó.
+
+⇒ Đóng `game-rules-review.md` GRR-138.
+
+### 11.9 Nút chuông tự khoá ngay khi bấm `[Đ-24]`
+
+**Frontend khoá nút chuông ngay trong lần bấm đầu — trong cùng thao tác đó, TRƯỚC khi gửi tín hiệu.**
+
+⇒ Một ghế chỉ phát được **một** tín hiệu chuông cho một câu. Hàng đợi không bao giờ nhận tín hiệu chuông trùng. Khoá gắn với **một CÂU**; sang câu mới thì mở lại.
+
+**Không mâu thuẫn `CLAUDE.md` §UX** (*"KHÔNG chặn gửi lại, nút action không disable"*): quy tắc đó nhắm chống double-submit, còn đây là **khoá-theo-LUẬT-CHƠI** — chính `CLAUDE.md` nêu ngoại lệ tường minh *"chuông bị khoá khi sai, NSHV đã dùng, không tới lượt"*. Đã phát tín hiệu thì quyền đã được định đoạt, đúng là trạng thái game.
+
+**Phạm vi**: mọi nút được xếp là **chuông**, gồm cả **"Mở chướng ngại vật"** (`Đ-4.3`). **KHÔNG** áp cho thao tác **chọn hàng ngang** — đó không phải chuông, và vẫn còn để mở.
+
+**Tiền lệ `Athena-Intelligent-Olympia`** — cùng cách làm ở cả ba vòng có chuông, khoá đồng bộ ngay trong handler trước lệnh gửi:
+
+| Nơi | Dòng |
+|---|---|
+| `AICtrlLib/ExtraUI.cs` `Answer_Click` (Câu hỏi phụ) | 238 |
+| `AICtrlLib/ObstacleUI.cs` `Obstacle_Click` (VCNV) | 515 |
+| `AICtrlLib/FinishUI.cs` (Về đích) | 395, 551 |
+
+⇒ Đóng `game-rules-review.md` GRR-140.
+
+### 11.10 Tín hiệu đến sau khi đã có người giành quyền: ghi nhận nhưng TRƠ `[Đ-25]`
+
+Ở vòng hàng đợi **không chặn** (Khởi động lượt chung, cướp quyền Về đích), khi đã có người giành quyền mà người khác vẫn bấm:
+
+> **Chỉ đưa vào hàng đợi, để admin có căn cứ xử lý.** Không tự động trao quyền, không mở lại chuông, không sinh hệ quả điểm.
+
+Tín hiệu là **bằng chứng**, không phải hành động. Người bấm đầu giữ nguyên quyền trả lời.
+
+Đúng vai mà `Đ-7.2` đã đặt cho hàng đợi ở các vòng không chặn: *"queue chỉ là lưới an toàn cho sự cố"* — nay nói rõ lưới đó dùng để làm gì.
+
+**Không tự phân xử tranh cãi cũ**: quy tắc *"câu không mở lại chuông cho người khác"* chỉ có trong tài liệu repo, nguồn gốc `F26` im lặng (`game-rules-inventory.md` §R-KD-03). Quyết định này **không** biến nó thành ràng buộc cưỡng chế — hệ thống chỉ không **tự động** mở lại; còn admin có trao quyền cho người kế tiếp hay không vẫn là phán quyết của người, đúng nguyên tắc advisory (`Đ-5`).
+
+**Hệ quả phụ**: mục *Evaluation order* của GR-003 khép lại — ba điều kiện (cửa sổ đã đóng · ghế không còn quyền · đã có người giành quyền) nay cho outcome độc lập, không xung đột, nên kiểm theo thứ tự nào cũng ra cùng kết quả.
+
+### 11.11 "Hiển thị câu hỏi" và "start timer" là hai thao tác riêng `[Đ-26]`
+
+**Hai nút tách rời, thứ tự cố định**: hiển thị câu hỏi **trước**, start timer **sau**. Không gộp, không đảo.
+
+| Mốc | Mở / đóng cái gì |
+|---|---|
+| **Admin bấm hiển thị câu hỏi** | Đưa câu lên màn thí sinh và viewer · **mở cửa sổ chuông** · **đóng** cửa sổ đặt Ngôi sao hy vọng (`game-rules-review-old.md` GRR-048) |
+| **Admin bấm start timer** | Mốc *"MC đọc xong"* (`Đ-6`) · bắt đầu đếm thời gian suy nghĩ |
+
+Khoảng **giữa hai mốc** chính là lúc MC đọc — đúng quãng mà `F26` cho phép bấm chuông ở Khởi động lượt chung, và là cách hiện thực `game-rules-review-old.md` GRR-005 (*"cửa sổ chuông = thời gian MC đọc + 3 giây"*).
+
+**Hệ quả**: *"bấm chuông trước khi câu được đưa ra"* **không tồn tại** — trước mốc thứ nhất, màn thí sinh chưa có gì và chuông chưa sống (`Đ-16`). Biên dưới của cửa sổ chuông nay xác định: **mốc admin bấm hiển thị**.
+
+**Tiền lệ `Athena-Intelligent-Olympia`**: hai thao tác luôn tách rời —
+
+| Vòng | Hiển thị câu | Bắt đầu đếm giờ |
+|---|---|---|
+| VCNV | `AIServer/Obstacle.cs` `Row_Click` (hiện số ký tự rồi nội dung câu) | `StartTime_Click` |
+| Câu hỏi phụ | `AICtrlLib/ExtraUI.cs` lệnh `question` (bật nút chuông, State = Pausing) | lệnh `start` (State = OnTime) |
+
+*Lưu ý khi đọc Athena*: vòng Khởi động của bản cũ là format 60 giây mỗi thí sinh, **không có chuông** (đã bãi bỏ theo K-15) — nên tiền lệ lấy từ hai vòng trên, không lấy từ `StartUI.cs`.
+
+⇒ Đóng `game-rules-review.md` GRR-139.
+
+### 11.12 Chấm xong là kết thúc câu; xoá hàng đợi và gỡ khoá chuông `[Đ-27]`
+
+Sau khi người giành quyền bị chấm **Sai** ở Khởi động lượt chung:
+
+> **KHÔNG mở lại chuông cho người khác.** Câu kết thúc, chuyển sang câu mới. Khi câu đóng: **xoá hàng đợi đang hoạt động** và **gỡ khoá chuông** cho mọi ghế.
+
+**Phân xử một tranh cãi cũ**: quy tắc *"câu không mở lại chuông cho người khác"* trước nay **chỉ có trong tài liệu repo** (`game-rules-inventory.md` §R-KD-03), `F26` im lặng. Nay được xác nhận là hành vi hệ thống.
+
+**Ba điều cần phân biệt cho đúng:**
+
+| Thứ | Có bị xoá không |
+|---|---|
+| **Hàng đợi đang hoạt động** của câu vừa xong | **CÓ** — xoá khi câu đóng |
+| **Khoá chuông** của từng ghế (`Đ-24`) | **Gỡ** — khoá gắn với một câu, sang câu mới thì mở lại |
+| **Lịch sử tín hiệu**, gồm cả tín hiệu trơ theo `Đ-25` | **KHÔNG BAO GIỜ** (`Đ-7`) — admin vẫn xem lại được sau khi câu đã đóng |
+
+**Làm mịn `Đ-7.b`**: quyết định cũ nói hàng đợi đang hoạt động reset **sau mỗi VÒNG**. Ở vòng có chuông, reset diễn ra **sau mỗi CÂU** — mịn hơn một bậc, không mâu thuẫn với `Đ-7.b` mà là trường hợp riêng chặt hơn.
+
+### 11.13 Biên thời gian là biên ĐÓNG `[Đ-28]`
+
+> Tín hiệu hoặc submission có server timestamp **đúng bằng** mốc hết giờ ⇒ **vẫn hợp lệ**. Chỉ **vượt quá** mốc mới bị loại.
+
+Áp **thống nhất cho cả hai loại**, không có ngoại lệ theo vòng:
+
+| Loại | Đúng mốc | Quá mốc |
+|---|---|---|
+| **Tín hiệu giành quyền trả lời** (chuông) | Tính là giành quyền | Không giành được |
+| **Submission đáp án** | Được chấm | **Mặc định** không tính, không tham gia xếp hạng |
+
+**Quá hạn KHÔNG phải là phán quyết của máy.** Bản quá hạn vẫn vào **lịch sử trên màn admin**, đánh dấu **ĐỎ** để phân biệt với bản hợp lệ. Hệ thống **chỉ đánh dấu, không chặn cứng** — hai việc sau đều là **thao tác bấm của admin**:
+
+1. **Hiển thị** bản đó ra màn thí sinh và viewer hay không (nhất quán `Đ-22`).
+2. **Chấm điểm** bản đó hay không — admin có thể quyết định vẫn công nhận.
+
+⇒ Nhất quán với `Đ-1`: máy không tự chấm, **kể cả chấm loại**. "Quá hạn" là một **nhãn**, không phải một quyết định.
+
+> **Lưu ý ở vòng xếp hạng**: nếu admin công nhận một bản quá hạn ở Tăng tốc thì **cả bảng xếp hạng của câu đó tính lại** — theo `Đ-5.3.1`, một câu là một event điểm cho toàn bộ người chơi.
+
+**Tiền lệ `Athena-Intelligent-Olympia`**: hiển thị bài làm luôn là một nút riêng của admin — `AIServer/Acceleration.cs` `Answer_Click` (gửi lệnh `show`) ở Tăng tốc, `AIServer/Obstacle.cs` `ShowAnswer_Click` ở VCNV.
+
+⇒ Đóng `game-rules-review-old.md` GRR-002 và GRR-035. Hai mục này nằm cùng nhóm "Quy ước biên thời gian" ở `game-rules-open-questions.md` Tầng 2, vốn được ghi chú *"nên quyết cùng lúc để khỏi sinh ba quy ước khác nhau"* — nay đã thống nhất.
+
+**Còn lại của nhóm đó**: `GRR-031` — độ phân giải so sánh ở Tăng tốc (ms / 10ms / µs). `K-8` đã chốt **ms**, nhưng giá trị mặc định của `tieRule` trong SPEC thì chưa.
+
+### 11.14 Nút thao tác một chiều tự tắt sau khi bấm `[Đ-29]`
+
+Mẫu chung đã được chốt lặp lại cho bốn nút, nay phát biểu thành một quy tắc:
+
+> Nút thực hiện một **bước không quay lại** sẽ **tự tắt ngay khi bấm**, và bước kế tiếp **bật lên** thay thế.
+
+| Nút | Bấm xong thì | Mã |
+|---|---|---|
+| **Đúng / Sai** | Tắt; nút "Câu kế tiếp" bật | `Đ-17` |
+| **Start timer** | Tắt (chống bấm trùng tạo mốc) | `Đ-20` |
+| **Chuông** (gồm "Mở chướng ngại vật") | Tắt cho câu đó; sang câu mới mở lại | `Đ-24` |
+| **Chuyển câu** | Tắt; nút "Hiển thị câu hỏi" của câu mới bật | *(quyết định 2026-07-25)* |
+
+⇒ Không tồn tại "bấm nhầm hai lần" ở bất kỳ nút nào trong bảng.
+
+**CHƯA áp cho** các nút chưa được chốt — mẫu này **không tự lan sang chúng**: nút **kết thúc vòng** (`game-rules-review.md` GRR-163 vẫn mở), mở miếng ghép, công bố Chướng ngại vật, xác nhận tín hiệu trong hàng đợi, bỏ vòng / chạy lại vòng (GRR-160).
+
+> Phân biệt kỹ: nút **"chuyển câu"** đã chốt ở bảng trên; nút **"kết thúc vòng"** thì chưa. Hai thao tác khác nhau, dù cùng nằm trên màn điều khiển.
+
+### 11.15 Luật cho bao nhiêu câu thì đúng bấy nhiêu `[Đ-30]`
+
+> **Hệ thống không bao giờ tự sinh câu thứ N+1.** Khi đã hỏi đủ số câu quy định, nút "Câu kế tiếp" **chuyển thành nút kết thúc** — kết thúc lượt, kết thúc lượt chung, hoặc kết thúc vòng tuỳ ngữ cảnh.
+
+| Vòng | Số câu theo luật |
+|---|---|
+| Khởi động — lượt riêng | **6** câu mỗi thí sinh |
+| Khởi động — lượt chung | **12** câu |
+| VCNV | **4** hàng ngang + **1** ô trung tâm |
+| Tăng tốc | **4** câu |
+| Về đích | **3** câu mỗi gói |
+| Câu hỏi phụ | **3** câu |
+
+**Hệ quả cho đặc tả**: biên *"lớn hơn max"* của mọi vòng là **KHÔNG TỒN TẠI**. Trước đây tài liệu để ngỏ *"chặn cứng hay chỉ cảnh báo"* — cả hai đều thừa, vì không có đường vào nào tạo ra được tình huống đó.
+
+**Không lẫn với `U-3`**: cấu hình `rowCount` 5-8 ở VCNV là **đổi chính con số của luật** (ngoài luật O26, thang điểm cho cấu hình đó vẫn chưa định nghĩa — U-3 còn mở). Quyết định này chỉ nói: **đã ấn định bao nhiêu thì chạy đúng bấy nhiêu**, không tự vượt.
+
+**Quan hệ với `Đ-15.3`** (ngưỡng chặn cứng): không thêm ngưỡng chặn nào. Đây là **thiếu đường vào**, không phải **chặn đường vào** — nên nguyên tắc *"chỉ chặn cứng ở ngưỡng bất khả thi vật lý"* vẫn nguyên vẹn.
+
+### 11.16 Kho đề kiểm tại cửa vào từng vòng `[Đ-31]`
+
+> **Không đủ số câu ⇒ KHÔNG BẮT ĐẦU ĐƯỢC VÒNG ĐÓ.** Các vòng khác vẫn bắt đầu bình thường.
+
+⇒ **"Kho đề cạn giữa vòng" KHÔNG TỒN TẠI.** Nhu cầu của một vòng là **con số cố định** (`Đ-30`) và được kiểm đủ ngay tại cửa vào; câu bị bỏ qua vẫn nằm trong con số đó. **Chạy lại** một vòng cũng phải qua đúng cửa đó.
+
+⇒ Đóng `game-rules-inventory.md` **U-9** (pool cạn giữa trận do skip nhiều) và **U-10** (pool câu phụ cạn giữa tie-break).
+
+**Trả lời luôn `Đ-5.g` / `S-12`** (*"pre-flight chạy theo vòng hay theo cả playlist"*): **theo VÒNG**, tại thời điểm mở vòng — không phải một lần trước trận.
+
+**Hai điều cần ghi rõ vì chúng đổi quyết định cũ:**
+
+1. **Đây là chỗ chặn cứng THỨ BA.** `Đ-15.3` từng kết luận *"chỉ hai ngưỡng chặn cứng thật"* (cửa sổ cướp ≥2 và Câu hỏi phụ ≥2, đều về số người). Nay thêm một ngưỡng về **tài nguyên đề**. Tiêu chí cũ vẫn được tôn trọng: một vòng không đủ câu thì **không chạy trọn được**, tức là vòng đó **không còn nghĩa** — đúng định nghĩa "bất khả thi vật lý" của `§1.3`.
+
+2. **Ghi đè tiền lệ Athena.** `§1.3` ghi nhận bản cũ *"thiếu đề chỉ CẢNH BÁO, không chặn"* — 5 chỗ cảnh báo về kho đề, không chỗ nào chặn. Nay thiếu đề **chặn ở cấp vòng**. Đây là khác biệt có chủ đích, không phải sao chép thiếu.
+
+**Phạm vi chặn là VÒNG, không phải TRẬN**: trận vẫn chạy các vòng còn đủ đề. Admin thấy được thiếu bao nhiêu câu để bổ sung rồi mở lại.
+
 ---
 
 ## 12. Bảng tra mã quyết định
@@ -555,3 +729,12 @@ Vế 3 là điều kiện để hai vế đầu an toàn, và phải ẩn **cả
 | **Đ-20** | Đồng hồ khoá thí sinh, không khoá admin | §11.5 |
 | **Đ-21** | Không tồn tại trạng thái "trận tạm dừng" | §11.6 |
 | **Đ-22** | Tín hiệu thí sinh không làm gián đoạn đồng hồ; hoãn HIỂN THỊ chứ không hoãn thời gian | §11.7 |
+| **Đ-23** | Hai tín hiệu cùng mốc thời gian: hàng đợi tự quyết định, ngẫu nhiên | §11.8 |
+| **Đ-24** | Nút chuông tự khoá ngay khi bấm (frontend, trước khi gửi) | §11.9 |
+| **Đ-25** | Tín hiệu đến sau khi đã có người giành quyền: ghi nhận nhưng trơ | §11.10 |
+| **Đ-26** | "Hiển thị câu hỏi" và "start timer" là hai thao tác riêng, thứ tự cố định | §11.11 |
+| **Đ-27** | Chấm xong là kết thúc câu; xoá hàng đợi đang hoạt động, gỡ khoá chuông | §11.12 |
+| **Đ-28** | Biên thời gian là biên ĐÓNG; bản quá hạn vào lịch sử, đánh dấu đỏ | §11.13 |
+| **Đ-29** | Nút thao tác một chiều tự tắt sau khi bấm | §11.14 |
+| **Đ-30** | Luật cho bao nhiêu câu thì đúng bấy nhiêu; không có câu thứ N+1 | §11.15 |
+| **Đ-31** | Kho đề kiểm tại cửa vào từng vòng; thiếu thì không mở vòng đó | §11.16 |
