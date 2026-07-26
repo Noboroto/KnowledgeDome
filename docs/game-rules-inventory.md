@@ -373,7 +373,17 @@ Demo dùng chuỗi phẳng: `CHO / KHOI_DONG_RIENG / KHOI_DONG_CHUNG / VCNV / TA
 - **Bảng thời gian**: 20đ → 15s nghĩ + 30s thực hành (cướp: 20s) · 30đ → 20s nghĩ + 60s thực hành (cướp: 40s).
 - **Actor**: Thí sinh, MC/ban cố vấn/khách mời (giới thiệu dụng cụ — `W26`), Admin (chấm "đạt yêu cầu").
 - **Rule mâu thuẫn**: `W26` thêm *"Một số tập **có thể** có 1 câu hỏi thực hành"* (không bắt buộc mỗi trận).
-- **Chưa định nghĩa**: **không có trường dữ liệu nào cho "câu thực hành"** trong `SPEC` §9 (field list: `displayId, fieldId, wordCount, explanation, note, timeSeconds?, value?, clues[]?, everPublic`). Luật tồn tại nhưng data model không có chỗ khai. Chấm "thực hành đạt yêu cầu" là đánh giá của người, không phải so khớp text. *(U-6)*
+- **`U-6` ĐÃ ĐÓNG 2026-07-26** — ✅ chủ dự án chốt **bổ sung trường khai câu thực hành**. Năm trường, đặc tả đầy đủ ở `docs/game-rules.md` GR-019 §Mô hình dữ liệu:
+
+| Trường | Mặc định | Ghi chú |
+|---|---|---|
+| `isPractical` | `false` | Chỉ hợp lệ với câu pool **Về đích** |
+| `practiceSeconds` | **30** (20đ) · **60** (30đ) | Metadata **từng câu** như `timeSeconds` (G-4) |
+| `stealPracticeSeconds` | **20** (20đ) · **40** (30đ) | Thời gian thực hành của **người cướp** — khác cửa sổ bấm chuông 5s |
+| `equipmentNote` | rỗng | Dụng cụ BTC phải mang; máy chỉ nhắc, **không kiểm được** |
+| `acceptanceCriteria` | rỗng | Thay `acceptedAnswers` ở câu thực hành; bảo mật ngang `acceptedAnswers` (admin + MC) |
+
+  Chấm *"thực hành đạt yêu cầu"* vẫn là **đánh giá của người**, không so khớp text (nguyên tắc nền điểm 1). Quyết định này đóng luôn **`GRR-050/051`** (câu hỏi thực hành **thuộc v1**).
 
 ## R-VD-05. Cướp quyền (steal)
 
@@ -680,7 +690,7 @@ Mọi rule trong tài liệu này khi mô tả "Kết quả khi đúng / khi sai
 | U-3 | `cnvPointsByRowsOpened` cho `rowCount` 5-8 | R-VCNV-04 |
 | U-4 | Lượt chọn hàng ngang khi số thí sinh > số hàng | R-VCNV-03 |
 | U-5 | "3 TS còn lại" cướp quyền khi ghế ≠ 4 | R-VD-05 |
-| U-6 | **Trường dữ liệu "câu thực hành"** không tồn tại; chấm "đạt yêu cầu" không phải so khớp text | R-VD-04 |
+| ~~U-6~~ ✅ | **ĐÃ ĐÓNG 26/07** — bổ sung 5 trường: `isPractical` · `practiceSeconds` · `stealPracticeSeconds` · `equipmentNote` · `acceptanceCriteria`. Xem R-VD-04 và GR-019 | R-VD-04 |
 | U-7 | **Trường phân biệt câu miệng vs câu gõ** không tồn tại | R-GEN-03 |
 | U-8 | NSHV × steal transfer: số học khi cả hai cùng áp | R-VD-06, R-VD-05 |
 | U-34 | **Câu trắc nghiệm Khởi động** ("đúng sai / chọn đáp án cho sẵn") không có mô hình dữ liệu | R-KD-05 |

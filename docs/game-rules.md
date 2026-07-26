@@ -32,8 +32,8 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 
 | Status | Nghĩa | Số rule |
 |---|---|---|
-| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **33** |
-| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **4** |
+| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **34** |
+| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **3** |
 | `CONFLICT` | Hai nguồn cùng áp dụng nhưng cho outcome khác nhau; **tài liệu này không phân xử** | **0** |
 
 > Status là phép **AND**: chỉ cần một nhánh treo là cả rule treo.
@@ -64,6 +64,7 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | GR-016 | Về đích: thứ tự lượt thi | **26/07** |
 | GR-017 | Về đích: chọn gói câu | **26/07** |
 | GR-018 | Về đích: trả lời câu của mình | trước 26/07 |
+| GR-019 | Về đích: câu hỏi thực hành | **26/07** (thêm 5 trường, đóng `U-6`) |
 | GR-022 | Câu hỏi phụ: điều kiện kích hoạt | trước 26/07 |
 | GR-023 | Câu hỏi phụ: thể thức ba câu | trước 26/07 |
 | GR-024 | Câu hỏi phụ: bấm chuông trước hiệu lệnh | **26/07** |
@@ -86,7 +87,6 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 
 | Mã | Tên | Treo vì | Chờ quyết ở |
 |---|---|---|---|
-| GR-019 | Về đích: câu hỏi thực hành | Câu hỏi thực hành có thuộc v1 không; chưa có trường khai `câu thực hành` (`U-6`) | `GRR-050/051` — Tầng 3 (**phạm vi v1**) |
 | GR-020 | Về đích: cướp quyền | Số học khi **Ngôi sao hy vọng gặp cướp quyền** (`U-8`); làm tròn `−½` giá trị lẻ (`U-20`) | `U-8` mới · `GRR-046`/`Đ-3` — Tầng 5.1 |
 | GR-021 | Về đích: Ngôi sao hy vọng | Cùng `U-8` với GR-020 | `U-8` mới |
 | GR-036 | Mất kết nối và giữ ghế | `dropoutPolicy` chưa liệt kê được danh sách giá trị hợp lệ (`U-13`) | `U-13` — chưa có mã trong `open-questions` |
@@ -279,7 +279,7 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | GR-016 | Về đích: thứ tự lượt thi | **CONFIRMED** |
 | GR-017 | Về đích: chọn gói câu | **CONFIRMED** |
 | GR-018 | Về đích: trả lời câu của mình | **CONFIRMED** |
-| GR-019 | Về đích: câu hỏi thực hành | NEEDS CLARIFICATION |
+| GR-019 | Về đích: câu hỏi thực hành | **CONFIRMED** |
 | GR-020 | Về đích: cướp quyền | NEEDS CLARIFICATION |
 | GR-021 | Về đích: Ngôi sao hy vọng | NEEDS CLARIFICATION |
 
@@ -2463,52 +2463,84 @@ Không applicable (1 TS thi 1 lượt; vòng Khởi động chung mới concurre
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Định nghĩa khi câu được đánh dấu là "thực hành", thí sinh được cung cấp dụng cụ thực hành, và chấm điểm là "thực hành đạt yêu cầu" (không phải so khớp text).
 
 ### Actors
 - Thí sinh (người thi chính): thực hành với dụng cụ
-- MC / Ban cố vấn / Khách mời: giới thiệu dụng cụ (per W26, không spec v1)
-- Admin: chấm "thực hành đạt yêu cầu"
-- Setter: đánh dấu câu là "thực hành" (chưa có field — U-6)
+- MC / Ban cố vấn / Khách mời: giới thiệu dụng cụ
+- Admin: bấm mốc chuyển pha, chấm "đạt yêu cầu / không đạt"
+- Setter: **khai câu là thực hành qua các trường ở mục dưới**
+
+### Mô hình dữ liệu — 5 trường bổ sung *(✅ chủ dự án chốt 2026-07-26, đóng `U-6`)*
+
+> Trước 26/07 không có cách nào khai một câu là "thực hành" ⇒ toàn bộ GR-019 không có đường vào. Năm trường dưới đây là **tập tối thiểu** để rule chạy được; mỗi trường đều truy nguyên về một câu trong nguồn gốc.
+
+| Trường | Kiểu | Mặc định | Nguồn / lý do |
+|---|---|---|---|
+| **`isPractical`** | boolean | `false` | Cờ khai câu thực hành. **Chỉ hợp lệ với câu pool Về đích** — luật gốc chỉ có câu thực hành ở vòng này |
+| **`practiceSeconds`** | số giây | **30** (câu 20đ) · **60** (câu 30đ) | *"Đối với câu hỏi 20 điểm… thời gian thực hành là 30 giây. Đối với câu hỏi 30 điểm… thời gian thực hành là 60 giây."* Là **metadata TỪNG CÂU** như `timeSeconds` (G-4), preset chỉ đặt default |
+| **`stealPracticeSeconds`** | số giây | **20** (câu 20đ) · **40** (câu 30đ) | *"Đối với câu hỏi 20 điểm, thời gian thực hành là 20 giây. Đối với câu hỏi 30 điểm, thời gian thực hành là 40 giây."* — câu này của nguồn nói về **người cướp quyền**. Đây là trường đóng `C4` |
+| **`equipmentNote`** | text | rỗng | *"chương trình sẽ giới thiệu các **dụng cụ liên quan** đến câu hỏi thực hành"* — BTC phải mang dụng cụ tới trường quay, nên phải khai được từ lúc soạn đề |
+| **`acceptanceCriteria`** | text | rỗng | Tiêu chí để admin phán quyết *"đạt yêu cầu"*. Đây là **thứ thay `acceptedAnswers`** ở câu thực hành: không có đáp án chữ để so khớp |
+
+**Ràng buộc và hệ quả:**
+
+- **Bảo mật**: `acceptanceCriteria` cùng mức với `acceptedAnswers` — **chỉ admin + MC** (GR-037). `equipmentNote` cũng **không** ra viewer/thí sinh trong trận (nó tiết lộ bản chất câu hỏi), nhưng **phải** xem được trong kho đề để BTC chuẩn bị.
+- **Không có gì để highlight**: GR-027 (chuẩn hoá + tô màu khác biệt) **không áp** cho câu thực hành — không tồn tại đáp án text.
+- **Kênh trả lời thứ BA**: thực hành không phải *nói* cũng không phải *gõ*. Theo nguyên tắc nền điểm 22, nó đi **nhánh trên** (như *nói*): **không có ô nhập nào để chờ**, nên nút chấm của admin **sống suốt**, không khoá tới hết giờ.
+- **Hai mốc bấm, không phải một** (nguyên tắc nền điểm 17 + NT-B): `hiển thị câu` → `start timer suy nghĩ` → **`bắt đầu thực hành`** → `chấm`. Mốc thứ ba là **nút mới của admin**, và chính nó đóng câu hỏi *"ai bấm, lúc nào"* của `GRR-050/051`.
+- **Dụng cụ là vật lý, máy không kiểm được**: cửa vào vòng (`Đ-31`) chỉ **hiển thị `equipmentNote` như checklist** và **cảnh báo**, **không chặn cứng** (NT-D). Không có chỗ chặn thứ tư.
+- **`Đ-19` áp nguyên**: *"thực hành không đạt"* và *"không thực hành gì"* là **cùng một thao tác** (Sai) — không cần nút thứ ba.
 
 ### Related states
 - Vòng Về đích
 - Câu được draw từ gói đã chọn
-- **Thuộc tính câu**: **NEEDS CLARIFICATION** — không có trường dữ liệu trong SPEC §9 để khai "câu thực hành" (U-6)
+- **Thuộc tính câu**: `isPractical = true`
 
 ### Trigger
-Câu được draw, nó có thuộc tính "thực hành" (chưa định nghĩa cách khai).
+Câu được draw và có `isPractical = true`.
 
 ### Preconditions
-- Câu được đánh dấu là "thực hành" (chưa có cơ chế)
+- Câu có `isPractical = true`
 - TS là người thi chính lượt này
-- Dụng cụ thực hành có sẵn (ví dụ rubik cube, bàn cờ — không định nghĩa v1)
-- MC / Ban cố vấn có mặt để giới thiệu (per W26)
+- Dụng cụ thực hành đã được BTC chuẩn bị theo `equipmentNote` (**ngoài hệ thống** — máy chỉ nhắc, không kiểm được)
+- MC / Ban cố vấn có mặt để giới thiệu dụng cụ
 
 ### Inputs
 - Câu 20đ vs 30đ (xác định thời gian)
 - Thời gian suy nghĩ + thực hành: bảng R-VD-04
   - 20đ: 15s suy + **30s thực hành** (cướp: 20s)
   - 30đ: 20s suy + **60s thực hành** (cướp: 40s)
-- Tiêu chí "đạt yêu cầu" (không định nghĩa, để admin đánh giá)
+- `acceptanceCriteria` — tiêu chí để admin đánh giá (máy **không** phán quyết, nguyên tắc nền điểm 1)
+- `equipmentNote` — dụng cụ cần chuẩn bị
 
 ### Conditions
-1. Khi câu là thực hành → timer **riêng** thành 2 phase: suy nghĩ + thực hành
-2. **Admin chấm**: "đạt yêu cầu" (Yes/No) hoặc **miễn chấm = Sai** (nếu bấy lâu chưa làm xong)
+1. Khi câu là thực hành → timer chia **2 pha**: suy nghĩ (`timeSeconds`) rồi thực hành (`practiceSeconds`), ranh giới là **một nút bấm của admin**
+2. **Admin chấm**: "đạt yêu cầu" / "không đạt" — hai lựa chọn, theo `Đ-19` *"không thực hành gì"* cũng là "không đạt"
 3. Nếu **đạt**: +value (20 hoặc 30)
-4. Nếu **không đạt**: 0 điểm (khác câu suy giải) → mở cửa sổ cướp
+4. Nếu **không đạt**: 0 điểm → mở **cửa sổ bấm chuông 5 giây** để cướp quyền
+5. Người cướp được quyền thì thực hành trong `stealPracticeSeconds` (**20s** cho câu 20đ · **40s** cho câu 30đ)
 
 ### Decision table
 
 | Case | Conditions | Expected outcome | State change | Error |
 |---|---|---|---|---|
 | C1 | Câu 20đ thực hành: TS suy 15s, thực hành 30s, admin chấm "đạt" | **+20 điểm** (không mở cướp) | EventLog: SCORE_ADJUST +20 | — |
-| C2 | Câu 20đ thực hành: TS suy 15s, thực hành 20s (còn 10s mà chưa làm xong), admin chấm "không đạt" | **0 điểm** + **mở cửa sổ cướp 20s** (20s = thời gian cướp 20đ) | EventLog: 0 · queue cửa sổ cướp (Đ-7.2) | — |
+| C2 | Câu 20đ thực hành: TS suy 15s, hết 30s thực hành mà chưa xong, admin chấm "không đạt" | **0 điểm** + **mở cửa sổ bấm chuông 5 giây** | EventLog: 0 · queue cửa sổ cướp (Đ-7.2) | — |
 | C3 | Câu 30đ thực hành: TS suy 20s, thực hành 60s, admin chấm "đạt" | **+30 điểm** | EventLog: SCORE_ADJUST +30 | — |
-| C4 | **NEEDS CLARIFICATION** — Câu 30đ thực hành, cướp đúng: người cướp thực hành 40s hay làm gì? | Bảng R-VD-04 nói người cướp "thực hành 20s (20đ) hoặc 40s (30đ)", nhưng không nói cách xác định câu **cướp đó** là hay không thực hành (U-6 — không khai được) | — | Chưa định nghĩa hành vi |
+| C4 — **đóng `U-6`** | Câu 30đ thực hành, người thi chính không đạt, có người bấm chuông trong 5s và cướp được | Người cướp **cũng thực hành**, trong **`stealPracticeSeconds` = 40 giây** (câu 20đ thì 20 giây). Đạt ⇒ **lấy điểm từ** người thi chính (`transfer`, K-12); không đạt ⇒ **−½ giá trị câu** | EventLog: transfer hoặc −½ value | — |
+
+> **Phân biệt hai con số hay bị lẫn ở C2/C4** — nguồn có **hai** mốc thời gian khác nhau cho pha cướp, và bản trước của rule này gộp sai thành một:
+>
+> | Mốc | Giá trị | Nguồn |
+> |---|---|---|
+> | **Cửa sổ bấm chuông** để giành quyền | **5 giây**, không đổi theo mức điểm | *"giành quyền trả lời bằng cách bấm chuông nhanh trong **5 giây**"* |
+> | **Thời gian thực hành của người cướp** | **20s** (câu 20đ) · **40s** (câu 30đ) | *"Đối với câu hỏi 20 điểm, thời gian thực hành là 20 giây. Đối với câu hỏi 30 điểm, thời gian thực hành là 40 giây."* |
+>
+> Con số 20/40 **chỉ bắt đầu đếm SAU KHI** đã có người cướp được quyền — nó không phải độ dài cửa sổ chuông.
 | C5 | Câu 20đ thực hành, TS + NSHV đạt | **+20 × 2 = +40 điểm** (nhân đôi) | EventLog: SCORE_ADJUST +40 | — |
 | C6 | Câu 20đ thực hành, TS + NSHV không đạt | **−20** (hình phạt NSHV, coi như sai) + mở cửa sổ cướp | EventLog: SCORE_ADJUST −20 | — |
 
@@ -2528,14 +2560,17 @@ Câu được draw, nó có thuộc tính "thực hành" (chưa định nghĩa c
 - Phán quyết của admin là cuối cùng (không tự chấm)
 
 ### Error outcomes
-- **Tiêu chí "đạt" chưa định nghĩa** (U-6): admin tự quyết (ADVISORY MODEL, Đ-5)
-- **Không khai được câu thực hành** (U-6): NEEDS CLARIFICATION — không field trong schema để khai (xem SPEC §9)
+- **`isPractical = true` trên câu KHÔNG thuộc pool Về đích**: cấu hình không hợp lệ ⇒ chặn ở **contest builder / kho đề**, không phải lỗi lúc chạy
+- **`isPractical = true` nhưng `equipmentNote` rỗng**: **cảnh báo** ở cửa vào vòng (BTC có thể không biết cần mang gì) — không chặn cứng (NT-D)
+- **`acceptanceCriteria` rỗng**: admin vẫn phán quyết được bằng đánh giá của mình (mô hình advisory, nguyên tắc nền điểm 1) ⇒ **cảnh báo**, không chặn
 
 ### Evaluation order
 1. Draw câu (GR-017)
-2. Check câu là "thực hành" (chưa có cơ chế)
-3. Timer 2 phase: suy nghĩ, sau đó thực hành
-4. TS thực hành trong thời gian quy định
+2. Đọc `isPractical` của câu
+3. Admin bấm **hiển thị câu** ⇒ đề lên màn (mốc `Đ-26`, cũng là mốc `usedInContest`)
+4. Admin bấm **start timer** ⇒ đếm pha suy nghĩ `timeSeconds`
+5. Admin bấm **bắt đầu thực hành** ⇒ đếm pha thực hành `practiceSeconds` *(mốc mới, đóng `GRR-050/051`)*
+6. TS thực hành trong thời gian quy định
 5. Admin chấm "đạt" (Yes) hay "không đạt" (No)
 6. Tính điểm tuỳ kết quả
 
@@ -2557,14 +2592,16 @@ Không applicable (1 TS thi).
 - Câu 30đ thực hành, TS + NSHV "đạt" → +30 × 2 = +60 điểm.
 
 **Không hợp lệ:**
-- Không có field "thực hành" để khai ở setter → **NEEDS CLARIFICATION** (U-6).
-- Câu 20đ "thực hành", người cướp lấy 20s → không biết người cướp có cần thực hành không (U-6).
+- Đặt `isPractical = true` cho câu Khởi động / VCNV / Tăng tốc ⇒ ngoài luật, chặn ở kho đề.
+- Cho máy tự kết luận *"đạt yêu cầu"* từ `acceptanceCriteria` ⇒ trái nguyên tắc nền điểm 1; đó là văn bản để **người** đối chiếu.
+- Gộp *"start timer"* và *"bắt đầu thực hành"* thành một nút ⇒ mất mốc đóng pha suy nghĩ.
 
 ### Source traceability
-- **Thời gian thực hành**: `game-rules-inventory.md` R-VD-04 (bảng 20đ vs 30đ)
-- **Chấm "đạt yêu cầu"**: `game-rules-inventory.md` R-VD-04 ("chấm 'đạt yêu cầu'")
-- **Cướp thực hành**: `game-rules-inventory.md` R-VD-04 (bảng "khi cướp")
-- **Chưa có field dữ liệu**: `SPEC` §9 (Question fields: `displayId, fieldId, wordCount, explanation, note, timeSeconds?, value?, clues[]?, everPublic` — chưa khai "thực hành")
+- **Khai câu thực hành (5 trường)**: ✅ chủ dự án chốt **2026-07-26** — đóng `U-6` và `GRR-050/051`. Xem mục **Mô hình dữ liệu** đầu rule
+- **Thời gian suy nghĩ + thực hành + thời gian của người cướp**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích đoạn *"Trong câu hỏi thực hành…"* (nguyên văn cả ba cặp số) · `game-rules-inventory.md` R-VD-04
+- **Cửa sổ bấm chuông 5 giây** (khác thời gian thực hành của người cướp): cùng đoạn nguồn
+- **Chấm "đạt yêu cầu"**: `game-rules-inventory.md` R-VD-04 · nguyên tắc nền điểm 1 (`Đ-1` — người phán quyết)
+- **Mốc chuyển pha là nút của admin**: `Đ-26`, `Đ-33` (mẫu chung), đóng `GRR-050/051`
 
 ---
 
