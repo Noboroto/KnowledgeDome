@@ -18,6 +18,7 @@
 - [0. Tóm tắt — 4 nguyên tắc phái sinh](#0-tóm-tắt--4-nguyên-tắc-phái-sinh)
 - [0.5. Bảng gộp — mục đã được quyết định SẴN CÓ trả lời](#05-bảng-gộp--mục-đã-được-quyết-định-sẵn-có-trả-lời)
 - [0.6. Cập nhật 26/07 chiều — game-rules.md đã đóng toàn bộ 37 rule](#06-cập-nhật-2026-07-26-chiều--game-rulesmd-đã-đóng-toàn-bộ-37-rule)
+- [**0.7. 25 đề xuất CHƯA DUYỆT — danh sách đầy đủ**](#07-25-đề-xuất-chưa-duyệt--danh-sách-đầy-đủ)
 - [1. Mục ĐÃ CHẾT vì quyết định sau đè lên](#1-mục-đã-chết-vì-quyết-định-sau-đè-lên)
 - [2. Tầng 2 — Quy ước biên thời gian](#2-tầng-2--quy-ước-biên-thời-gian)
 - [3. Tầng 3 — Phạm vi v1](#3-tầng-3--phạm-vi-v1)
@@ -36,13 +37,15 @@
 
 Phần lớn 120 mục treo **không cần 120 quyết định**. Chúng rơi vào bốn nguyên tắc, mỗi nguyên tắc suy ra từ những gì đã chốt. Duyệt bốn nguyên tắc này là đóng được ~70% backlog.
 
-### NT-A — Biên thời gian là NỬA MỞ `[start, end)`
+### NT-A — Biên thời gian là biên ĐÓNG `[start, end]` *(`Đ-28`, đã chốt sẵn)*
 
-Cửa sổ thời gian tính từ mốc admin bấm, **bao gồm** mốc mở, **không bao gồm** mốc đóng. Tín hiệu ở đúng mốc hết giờ (chênh 0 ms) là **quá hạn**.
+Cửa sổ thời gian tính từ mốc admin bấm, **bao gồm CẢ HAI đầu**. Tín hiệu hoặc submission có server timestamp **đúng bằng** mốc hết giờ ⇒ **VẪN HỢP LỆ**. Chỉ **vượt quá** mốc mới là quá hạn.
 
-> Đây là quyết định **rẻ** chứ không phải khắc nghiệt, vì `Đ-28`/điểm 21 đã gỡ ngòi nổ: quá hạn **không bị loại**, chỉ **tô đỏ** và admin phán quyết. Nếu bản quá hạn bị máy vứt đi thì mới phải cân nhắc chọn biên đóng.
+> ⚠️ **Sửa lỗi 2026-07-26.** Bản đầu của mục này đề xuất biên **nửa mở** (*"chênh 0 ms ⇒ quá hạn"*) — **ngược** với `Đ-28`, một quyết định **đã chốt**. Đây đúng là lỗi mà thứ tự ưu tiên ở §0.5 sinh ra để phòng: `GRR-002` và `GRR-035` **chưa bao giờ là câu hỏi mở** — `Đ-28` §11.13 đã trả lời, và ghi rõ *"áp thống nhất cho cả hai loại, không có ngoại lệ theo vòng"*. `docs/glossary.md` TERM tương ứng cũng đã ghi *"biên t = đúng mốc đã chốt là TRONG… không còn là câu hỏi mở"*.
+>
+> Kiểm tra lan toả: `docs/game-rules.md` **nhất quán "biên đóng"** ở toàn bộ 13 chỗ có trích `Đ-28` ⇒ lỗi **không** lan sang tài liệu luật. Chỉ file này sai, và đã sửa.
 
-Đóng: `GRR-002`, `GRR-035`, một nửa `GRR-031`.
+Đóng: `GRR-002`, `GRR-035` — **bằng quyết định sẵn có, không phải bằng đề xuất mới**.
 
 ### NT-B — Mốc thời gian nào cũng là MỘT NÚT của admin
 
@@ -88,7 +91,7 @@ Không thêm chỗ thứ tư. Mọi câu hỏi *"cái này chặn hay cảnh bá
 | **Đã chết** — quyết định sau đè lên | ≈10 | Xoá khỏi backlog (§1) |
 | **`SUY RA`** — hệ quả bắt buộc của cái đã chốt | ≈75 | Đọc lướt; **không duyệt thì tài liệu tự mâu thuẫn** |
 | **Duyệt nguyên văn** — Tầng 4 đã có sẵn lập luận | 39 | Bấm duyệt cả lô (§5.1) |
-| **`ĐỀ XUẤT`** — chỗ thật sự phải chọn | **≈22** | **Đọc kỹ. Đây là toàn bộ việc còn lại** |
+| **`ĐỀ XUẤT`** — chỗ thật sự phải chọn | **25** | **Đọc kỹ. Đây là toàn bộ việc còn lại** — danh sách đầy đủ ở §0.7 |
 | **`KHÔNG QUYẾT`** | 7 | Cần dữ kiện ngoài tài liệu (§10) |
 
 ### Bảy pattern gộp được nhiều câu hỏi
@@ -104,6 +107,14 @@ Mỗi dòng dưới đây là **một** câu trả lời đã tồn tại, bị 
 | **P5 — Sửa điểm/trạng thái chỉ có MỘT đường: event đảo ngược** | Nguyên tắc nền điểm 6, `Đ-5.3` | `GRR-115` · `GRR-116` · `GRR-117` · `Đ-7.2b` · `Q-A3` · `GRR-106` · `Đ-6.3c` | §7 |
 | **P6 — Đáp án và thông tin nội bộ chỉ tới ADMIN + MC** | `CLAUDE.md` §Zero-trust, `D15.2`, `S-13` | `Q-B1` · `Đ-5.f` · `S-4` · `Q-A7` | §7.1, §9 |
 | **P7 — Nguồn nháp thua nguồn đang có hiệu lực** | `.specify/memory/constitution.md` (`plans/**` là nháp) | `C-1` · `C-2` · `C-3` · `C-5` · `C-10` | §8 |
+
+### Một mục tôi đã SỬA SAI vì tái phân xử quyết định đã chốt
+
+| Mã | Sai thế nào | Đúng là |
+|---|---|---|
+| **`GRR-002` / `GRR-035`** (biên thời gian) | Tôi xếp là `ĐỀ XUẤT` và đề xuất biên **nửa mở** — *"chênh 0 ms ⇒ quá hạn"* | **`Đ-28` đã chốt biên ĐÓNG**: *"timestamp **đúng bằng** mốc hết giờ ⇒ **vẫn hợp lệ**; chỉ **vượt quá** mới bị loại"*, và *"áp thống nhất cho cả hai loại"*. `docs/glossary.md` cũng đã ghi *"không còn là câu hỏi mở"*. ⇒ Hai mã này thuộc bảng **P-gộp**, không phải nhóm phải chọn. Xem NT-A |
+
+Đây đúng là lỗi mà thứ tự ưu tiên ở đầu mục này sinh ra để phòng, và nó **ngược hướng** nên không thể coi là vô hại. Lan toả đã kiểm: `docs/game-rules.md` nhất quán *"biên đóng"* ở **cả 13 chỗ** trích `Đ-28` ⇒ chỉ file này sai.
 
 ### Ba mục tôi đã HẠ mức vì tìm thấy quyết định sẵn có
 
@@ -133,7 +144,61 @@ Ba mục khác được **nâng** căn cứ (vẫn giữ kết luận cũ, nhưn
 
 **`U-13` đáng chú ý ở chỗ nó là mảnh thứ tư của cùng một mẫu** — *máy tô nổi bật, người phán quyết*: `Đ-1` (khác biệt ký tự) · `Đ-28` (bản gửi quá hạn) · `Đ-5` (recommendation lượt/vòng) · `U-13` (ghế quá grace). Nên phát biểu thành **một** nguyên tắc trong PRD thay vì bốn quyết định rời.
 
-**Còn lại của file này** (chưa áp): nhóm `ĐỀ XUẤT` cấp sản phẩm ở §8-§9 (`product-discovery.md`) và 7 mục `KHÔNG QUYẾT` ở §10.
+---
+
+## 0.7. 25 đề xuất CHƯA DUYỆT — danh sách đầy đủ
+
+> Đây là **toàn bộ** việc còn chờ bạn. Không mục nào trong đây đang **chặn** `docs/game-rules.md` (37/37 rule đã `CONFIRMED`) — chúng chặn **PRD, spec và giao diện**.
+>
+> Ngoại lệ duy nhất được ghi tường minh: **`Đ-6.3c`** có mặt trong GR-024 kèm nhãn *"còn treo, KHÔNG chặn rule này"*.
+
+### A. Luật và engine — 13 mục
+
+| # | Mã | Đề xuất | Ảnh hưởng nếu chọn khác |
+|---|---|---|---|
+| 1 | `GRR-010` | Câu hỏi **lựa chọn** (Khởi động) **vào v1** — mode sân khấu nên chỉ cần hiển thị được phương án | Phạm vi v1 |
+| 2 | `GRR-037` | Câu hỏi **sắp xếp** (Tăng tốc) **vào v1 ở dạng đáp án TEXT** (gõ `3-1-4-2`), UI kéo-thả để v1.5 | Phạm vi v1 · nếu đòi kéo-thả thì thành hạng mục lớn |
+| 3 | `GRR-011` | Hai thể thức lượt riêng khác nhau trong một vòng: **cho phép + cảnh báo `L7`** | Công bằng thi đấu |
+| 4 | `GRR-077` | Thêm trạng thái **`ABANDONED`** cho trận không hoàn thành | Máy trạng thái trận · thống kê `SM-11` |
+| 5 | `GRR-088` | `everPublic` đánh dấu nhầm: **KHÔNG khôi phục được**, phải tạo câu mới | Hàng rào chống rò đề |
+| 6 | `Đ-1.a`/`Q-B2`/`S-9` | Nhiều `acceptedAnswers`: tô theo **đáp án khớp nhất** + chip đổi, **không** hiện song song N bản | Màn chấm của admin |
+| 7 | `Đ-1.c`/`Q-B5` | **Giữ** `wordCount` làm **chip gợi ý phụ** | Màn chấm |
+| 8 | `Đ-4.c`/`Q-C4` | Mode sân khấu: ô ghi nội dung đáp án **tuỳ chọn**, không bắt buộc | Biên bản · PDF |
+| 9 | `Q-C1c` | Contest chứa cả `official` lẫn rehearsal ⇒ **dùng chung mode** | Bất đối xứng với `revealAnswerAfterJudge` (per-match) — cần ghi lý do vào PRD |
+| 10 | `Đ-5.d` | Override rồi thì luật phái sinh bám **event log thực tế**: thi Về đích 2 lần ⇒ **2 gói câu**; **NSHV một lần/thí sinh/contest**, không hồi sinh | Điểm thật |
+| 11 | `Đ-5.1d` | Tổng quát hoá mốc: *"điểm sau Tăng tốc"* đọc thành **"điểm tại thời điểm admin mở vòng Về đích"** | Đóng luôn `Đ-5.1e` và mọi biến thể bỏ vòng |
+| 12 | `Đ-6.3c` | Gỡ lệnh cấm: **có event hoàn nguyên, KHÔNG dialog** | Audit · UI. **Đã ghi là không chặn GR-024** |
+| 13 | `Đ-5.f`/`S-4` | Recommendation hiển thị cho **admin + MC, KHÔNG viewer** | Trình diễn (lộ thứ tự sắp tới) |
+
+### B. Ba danh sách và hai mục sửa phát biểu — 5 mục
+
+| # | Mã | Đề xuất |
+|---|---|---|
+| 14 | `Đ-15.a` | **Bổ sung 4 loại conflict**: `L6` ghế trống/mất kết nối · `L7` hai thể thức lượt riêng · `V6` mở vòng không theo playlist mà chưa đánh dấu bỏ · `Đ3` rút câu đã dùng trong contest |
+| 15 | `Đ-15.b` | Cảnh báo **tắt được theo VÒNG** cho 14 loại thường trực; **KHÔNG bao giờ tắt** cho 6 loại phá huỷ (`V1` `V2` `V5` `E1` `E2` `Đ2`) |
+| 16 | `Đ-15.2` | Sửa `S3` (bỏ `PAUSED`, viết lại thành *"giữa hai pha"*) · thêm **`S8`** thí sinh vắng mặt giữa vòng |
+| 17 | `GRR-113` | Quy **ba** cụm từ hình phạt về **một** thang phạm vi: `CÂU` / `VÒNG` / `TRẬN` (cần sửa `glossary.md`) |
+| 18 | `GRR-120` | Chạy lại vòng sau `FINISHED`: **cho phép**, cảnh báo hạng phá huỷ, PDF in nhãn *"bản sửa đổi lần N"*; thu hẹp `Đ-6.4d` về đúng cấp **CÂU** |
+
+### C. Cấp sản phẩm — 7 mục
+
+| # | Mã | Đề xuất |
+|---|---|---|
+| 19 | `C-4` | `D26` = **chốt một phần** (đổi nhãn tiêu đề); `D27` result bundle ⇒ **hoãn sang v1.5** |
+| 20 | `C-9` | Ranh giới **Contest = bản thiết kế · Match = một lần chạy**; mã phòng thuộc **contest**; UI có nút *"Bắt đầu trận mới"* |
+| 21 | `Q-A2` | Miếng ghép admin **mở tay CÓ tính** vào thang điểm Chướng ngại vật |
+| 22 | `S-3` | Dialog cảnh báo gồm **4 phần** (luật nào lệch · recommendation · hệ quả · ô lý do bắt buộc), **KHÔNG timeout tự đóng** |
+| 23 | `S-6` | Biên bản in mỗi vòng thành **các "lần chạy"** đánh số, ba nhãn `hiệu lực`/`đã bỏ`/`đã chạy lại`; event revert in **xen kẽ đúng vị trí thời gian** |
+| 24 | `S-16` | *"Một admin"* = **nhiều tài khoản, MỘT PHIÊN điều khiển**; phiên chuyển giao được ⇒ cũng là phương án dự phòng cho `S-17` |
+| 25 | `S-18` | Toast invalid state theo mẫu **hai vế**: *"[không làm được gì] — [vì trạng thái nào]"*; **cấm** toast chung chung |
+
+### Ba mục đáng đọc trước
+
+- **`S-16`** — nó đồng thời trả lời `Đ-18` và bù lại phương án dự phòng mà `Đ-21` đã bỏ (admin rớt mạng giữa trận). Chọn sai ở đây thì **hỏng trận** khi máy admin chết.
+- **`Đ-15.b`** — 20 loại conflict mà không có cơ chế tắt thì dialog phá huỷ sẽ bị bấm qua theo phản xạ.
+- **`GRR-037`** — khác biệt giữa *"một dòng text"* và *"UI kéo-thả"* là khác biệt về **khối lượng công việc**, không phải về luật.
+
+**Ngoài 25 mục trên**, còn **7 mục `KHÔNG QUYẾT`** ở §10 cần dữ kiện ngoài tài liệu (`Đ-9.e` BGK · `S-15` biên bản viết tay · `AS-4` số người vận hành · `GRR-103` theo dõi wiki · `Đ-4.5a` quy trình bốc thăm · bản quyền format Olympia · license repo). Nặng nhất là **`S-15`**.
 
 ---
 
@@ -160,8 +225,8 @@ Ba mục khác được **nâng** căn cứ (vẫn giữ kết luận cũ, nhưn
 
 | Mã | Phân xử | Mức | Lý do |
 |---|---|---|---|
-| **GRR-002** | Cửa sổ là **`[mở, đóng)`**. Chênh **0 ms** ⇒ **quá hạn** | `ĐỀ XUẤT` | (1) Quy ước khoảng nửa mở là chuẩn công nghiệp cho mốc thời gian (Google/AWS API: *start inclusive, end exclusive*) — hai cửa sổ liên tiếp **không chồng nhau**, không có mili-giây nào thuộc về hai pha. (2) Không cần "công bằng hoá" biên vì `Đ-28` đã cho bản quá hạn sống tiếp dưới dạng **tô đỏ** để admin phán quyết. Chọn biên chặt + van thoát bằng con người, **không** chọn biên lỏng |
-| **GRR-035** | **Cùng quy ước GRR-002** — không có quy ước riêng cho submission | `SUY RA` | DRY. Ba mã này được yêu cầu quyết cùng lúc chính vì lý do đó |
+| **GRR-002** | Cửa sổ là **`[mở, đóng]` — biên ĐÓNG**. Chênh **0 ms** ⇒ **VẪN KỊP** | `ĐÃ CHỐT SẴN` (`Đ-28`) | ⚠️ **Đã sửa 26/07** — bản đầu của dòng này đề xuất biên nửa mở (*"chênh 0 ms ⇒ quá hạn"*), **ngược** `Đ-28` §11.13. Đó là **lỗi tái phân xử một quyết định đã chốt**, đúng loại lỗi mà thứ tự ưu tiên §0.5 sinh ra để phòng. Lập luận "chuẩn công nghiệp nửa mở" **không được viện dẫn** ở đây: `Đ-28` đã chọn, và nó còn ghi *"áp thống nhất cho cả hai loại, không có ngoại lệ theo vòng"* |
+| **GRR-035** | **Cùng `Đ-28`** — không có quy ước riêng cho submission | `ĐÃ CHỐT SẴN` (`Đ-28`) | `Đ-28` phát biểu thẳng cho **cả** tín hiệu chuông **và** submission. DRY được giữ, nhưng bằng quyết định sẵn có chứ không bằng đề xuất mới |
 | **GRR-031** | ✅ **CHỦ DỰ ÁN CHỐT 2026-07-26**: độ phân giải = **millisecond**; `tieRule` mặc định = **cùng ms ⇒ cùng bậc** (`share-high`), bậc kế nhảy `n+k` (`GRR-032`) | `CHỐT` | Lý do của chủ dự án: **máy tính dễ tính toán** — so hai số nguyên ms, không làm tròn, không số thực. **Điều tra tiền lệ 26/07 cho kết quả NGƯỢC** (chương trình thật dùng **2 chữ số thập phân** — xem §2.1), và cái giá đã được ghi nhận: cửa sổ hoà hẹp hơn thực tế **10 lần**. Quyết định giữ `ms` là **có chủ đích, không phải sai sót**. Đóng GR-014 |
 
 ### 2.1 Tiền lệ chương trình cho `GRR-031` — điều tra 2026-07-26
