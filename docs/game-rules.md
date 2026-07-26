@@ -32,13 +32,13 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 
 | Status | Nghĩa | Số rule |
 |---|---|---|
-| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **32** |
-| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **5** |
+| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **33** |
+| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **4** |
 | `CONFLICT` | Hai nguồn cùng áp dụng nhưng cho outcome khác nhau; **tài liệu này không phân xử** | **0** |
 
 > Status là phép **AND**: chỉ cần một nhánh treo là cả rule treo.
 >
-> **Đợt 2026-07-26** đóng **17 rule** (16 từ `NEEDS CLARIFICATION`, 1 từ `CONFLICT`). Không có luật mới nào được phát minh — toàn bộ là **hệ quả bắt buộc** của quyết định đã chốt, theo thứ tự ưu tiên: quyết định sẵn có → câu trùng pattern → suy luận. Chi tiết từng mã: `docs/reviews/game-rules-resolutions.md`.
+> **Đợt 2026-07-26** đóng **18 rule** (16 từ `NEEDS CLARIFICATION`, 1 từ `CONFLICT`, và **GR-014** sau khi rà tiền lệ chương trình rồi chủ dự án chốt `K-8` = `ms`). Không có luật mới nào được phát minh — toàn bộ là **hệ quả bắt buộc** của quyết định đã chốt, theo thứ tự ưu tiên: quyết định sẵn có → câu trùng pattern → suy luận. Chi tiết từng mã: `docs/reviews/game-rules-resolutions.md`.
 >
 > Bốn loại khiếm khuyết `IDEMPOTENCY` · `CONCURRENCY` · `INVALID_TRANSITION` · `ORDER_DEPENDENT` — vốn là nguyên nhân chính khiến rule treo — nay đóng gần hết bằng **bốn quyết định sẵn có**: `Đ-29` (nút một chiều tự tắt ⇒ idempotency), `Đ-16` + nguyên tắc nền điểm 9 (invalid state ⇒ không có tín hiệu ⇒ nhánh không tồn tại), nguyên tắc nền điểm 3 (hàng đợi thuần theo server timestamp ⇒ concurrency), và `Đ-26`/`Đ-33` (mốc là nút của admin ⇒ evaluation order do thứ tự nút quyết định).
 
@@ -59,6 +59,7 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | GR-011 | VCNV: ô trung tâm và gợi ý cuối | **26/07** |
 | GR-012 | VCNV: toàn bộ thí sinh bị loại | **26/07** |
 | GR-013 | Tăng tốc: xếp hạng tốc độ | trước 26/07 |
+| GR-014 | Tăng tốc: đồng thời gian | **26/07** (`K-8` chốt `ms`) |
 | GR-015 | Tăng tốc: ghi nhận bản cuối | trước 26/07 |
 | GR-016 | Về đích: thứ tự lượt thi | **26/07** |
 | GR-017 | Về đích: chọn gói câu | **26/07** |
@@ -85,7 +86,6 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 
 | Mã | Tên | Treo vì | Chờ quyết ở |
 |---|---|---|---|
-| GR-014 | Tăng tốc: đồng thời gian | Độ phân giải so sánh và giá trị mặc định của `tieRule` | `GRR-031` — `open-questions` Tầng 2 |
 | GR-019 | Về đích: câu hỏi thực hành | Câu hỏi thực hành có thuộc v1 không; chưa có trường khai `câu thực hành` (`U-6`) | `GRR-050/051` — Tầng 3 (**phạm vi v1**) |
 | GR-020 | Về đích: cướp quyền | Số học khi **Ngôi sao hy vọng gặp cướp quyền** (`U-8`); làm tròn `−½` giá trị lẻ (`U-20`) | `U-8` mới · `GRR-046`/`Đ-3` — Tầng 5.1 |
 | GR-021 | Về đích: Ngôi sao hy vọng | Cùng `U-8` với GR-020 | `U-8` mới |
@@ -269,7 +269,7 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | Mã | Tên | Status |
 |---|---|---|
 | GR-013 | Tăng tốc: xếp hạng tốc độ | **CONFIRMED** |
-| GR-014 | Tăng tốc: đồng thời gian | NEEDS CLARIFICATION |
+| GR-014 | Tăng tốc: đồng thời gian | **CONFIRMED** |
 | GR-015 | Tăng tốc: ghi nhận bản cuối | **CONFIRMED** |
 
 ### Vòng Về đích
@@ -1902,7 +1902,7 @@ Không tồn tại phán quyết đồng thời: **mỗi contest chỉ có MỘT
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Quy định xử lý khi hai hay nhiều thí sinh trả lời đúng trong cùng một khoảng thời gian (hoà tốc độ).
@@ -1914,35 +1914,42 @@ Quy định xử lý khi hai hay nhiều thí sinh trả lời đúng trong cùn
 
 ### Related states
 - Vòng Tăng tốc, đã ghi nhận submission từ R-TT-03
-- Trạng thái timestamp của ≥2 người: `server-received` bằng nhau (**millisecond**, không phải chữ số thập phân, K-8)
+- Trạng thái timestamp của ≥2 người: `server-received` bằng nhau ở **MILLISECOND** (số nguyên ms)
 
 ### Trigger
-Admin chấm Đúng ≥2 thí sinh của cùng một câu, có server-received timestamp bằng nhau (đến mức millisecond).
+Admin chấm Đúng ≥2 thí sinh của cùng một câu, có server-received timestamp **bằng nhau ở mức millisecond**.
 
 ### Preconditions
 - Vòng Tăng tốc đang chạy
-- ≥2 thí sinh nộp submission với **server-received timestamp hoàn toàn giống nhau** (R-GEN-05)
+- ≥2 thí sinh nộp submission có **server-received timestamp (ms) bằng nhau**
 - Nội dung submission (sau trim) khác nhau hoặc giống nhau (điều này không ảnh hưởng quyết định hoà)
 
 ### Inputs
-- Tập người hoà: `{TS1, TS2, … TSn}` có timestamp bằng nhau
+- Tập người hoà: `{TS1, TS2, … TSn}` có timestamp ms bằng nhau
 - Vị trí thứ hạng hiện tại của tập hoà (trước khi chấm)
 - Thang điểm câu: [40, 30, 20, 10]
 
 ### Conditions
-1. Độ phân giải so sánh: **millisecond** (R-GEN-05 điểm, K-8)
-2. Tất cả người hoà nhận **cùng mức điểm** (đó là điểm thứ hạng của nhóm)
-3. Thứ hạng tiếp theo nhảy qua số người hoà (xem C2, C4 dưới)
+1. **Độ phân giải so sánh: MILLISECOND** (số nguyên ms, server-received) — ✅ **chủ dự án chốt 2026-07-26**, lý do: **máy tính dễ tính toán**. So sánh là phép so hai số nguyên, không có làm tròn, không có số thực
+2. Tất cả người hoà nhận **cùng mức điểm** (đó là điểm thứ hạng của nhóm) — `tieRule: 'share-high'`
+3. Thứ hạng tiếp theo **nhảy qua** số người hoà: sau nhóm k người đồng hạng ở bậc n, người kế nhận bậc **n+k** (`GRR-032` — standard competition ranking)
+
+> **Chênh với tiền lệ chương trình — đã biết và đã chấp nhận.** Chương trình thật xếp thứ tự ở **hàng phần trăm giây** (xem **Source traceability**), tức cửa sổ hoà của hệ thống này **hẹp hơn 10 lần**: hai bản cách nhau 3 ms sẽ **được phân định** ở đây trong khi chương trình thật coi là **hoà**. Hệ quả thực tế: luật *"cùng nhận một mức điểm"* vẫn đúng về hành vi nhưng **rất ít khi được kích hoạt**.
+>
+> Đây là **lựa chọn có chủ đích**, không phải sai sót. Nếu sau này muốn khớp chương trình thật thì **không phải sửa luật** — chỉ đổi `tieRule` sang mức 10 ms, và phép so vẫn là số nguyên (`timestamp / 10`), không phát sinh số thực. Ghi ở đây để lần sau không ai phải điều tra lại.
 
 ### Decision table
 
 | Case | Conditions | Expected outcome | State change | Error |
 |---|---|---|---|---|
-| C1 | 4 TS, 2 người (A, B) cùng timestamp 100ms trả lời đúng, 1 người (C) 150ms | A +40, B +40 (cùng 1st) · C +10 (skip 2nd và 3rd, nhảy to 4th) | EventLog: SCORE_ADJUST ×2 → 40, ×1 → 10 | — |
-| C2 | 4 TS, 3 người (A, B, C) cùng timestamp 100ms đúng, 1 người (D) 150ms | A +40, B +40, C +40 · D +0 (4 người nhưng chỉ 3 đúng → không có hạng 4) | EventLog: SCORE_ADJUST ×3 → 40, D không sinh event | — |
-| C3 | 4 TS, 1 người (A) 100ms, 2 người (B, C) cùng 150ms, 1 người (D) 200ms | A +40 · B +30, C +30 (cùng 2nd) · D +10 | EventLog: SCORE_ADJUST ×4 (A→40, B→30, C→30, D→10) | — |
-| C4 | 4 TS, 1 người (A) 100ms, 2 người (B, C) cùng 150ms, không có người 200ms | A +40 · B +30, C +30 · không tính hạng 4 | EventLog: SCORE_ADJUST ×3 | — |
-| C5 | 4 TS, 2 người (A, B) timestamp 100.001ms vs 100.002ms (khác millisecond) | **Xem GR-015**: đây là vấn đề last-wins ghi nhận, không phải hoà tốc độ → A bấm trước → A +40, B +30 | EventLog: SCORE_ADJUST A→40, B→30 | — |
+| C1 — **ca kinh điển 40/40/20/10** | 4 TS đều đúng: A và B cùng **5420 ms**, C **7100 ms**, D **9800 ms** | A +40, B +40 (cùng bậc 1) · C **+20** (bậc 1+2 = **3**, bỏ qua bậc 2) · D **+10** (bậc 4) | EventLog: **một** event điểm cho cả bảng | — |
+| C1b | Cùng C1 nhưng D **sai** | A +40, B +40 · C +20 · D +0 | EventLog: một event cho cả bảng | — |
+| C2 | 4 TS, A, B, C cùng **5420 ms** đúng; D **7100 ms** **đúng** | A +40, B +40, C +40 · D **+10** (bậc 1+3 = **4**) | EventLog: một event cho cả bảng | — |
+| C2b | Cùng C2 nhưng D **SAI** | A +40, B +40, C +40 · D +0 (sai = 0, không trừ) | EventLog: một event cho cả bảng | — |
+| C3 | 4 TS, A **3200 ms**; B và C cùng **5420 ms**; D **7100 ms** — cả 4 đúng | A +40 · B +30, C +30 (cùng bậc 2) · D **+10** (bậc 2+2 = **4**) | EventLog: một event cho cả bảng | — |
+| C4 | 4 TS, A **3200 ms**; B và C cùng **5420 ms** đúng; D sai | A +40 · B +30, C +30 · D +0 | EventLog: một event cho cả bảng | — |
+| C5 — biên của lựa chọn ms | A **5423 ms** vs B **5429 ms** | **KHÔNG hoà** — A +40, B +30. Chênh 6 ms là **phân định được** ở độ phân giải ms. *(Chương trình thật coi đây là **hoà** vì cả hai là 5,42 s — chênh đã biết, xem Conditions)* | EventLog: một event cho cả bảng | — |
+| C6 | A **5420 ms** vs B **5421 ms** — chênh đúng **1 ms** | **KHÔNG hoà** — A +40, B +30. 1 ms là đơn vị nhỏ nhất, vẫn phân định | EventLog: một event cho cả bảng | — |
 
 ### Outcomes
 - **Tất cả người hoà**: nhận điểm của thứ hạng soonest của nhóm (ví dụ hoà ở hạng 2 → tất cả +30)
@@ -1959,16 +1966,18 @@ Admin chấm Đúng ≥2 thí sinh của cùng một câu, có server-received t
 - Các câu khác không bị ảnh hưởng
 
 ### Error outcomes
-- **Độ phân giải khác millisecond** (ví dụ so sánh đến microsecond): **NEEDS CLARIFICATION** — SPEC §6 có option `tieRule: 'microsecond'`, nhưng K-8 chốt millisecond cho O26 (R-TT-02); chưa nói default là gì
+- **Cấu hình `tieRule` khác mặc định**: `tieRule` là **RuleConfig**, admin đổi được. Mặc định `O26_DEFAULT@1` = **`share-high` ở millisecond**. Hai option còn lại vẫn cấu hình được: **10 ms** (khớp chương trình thật) và `'microsecond'` của SPEC §6 — riêng `'microsecond'` thì điều khoản *"cùng nhận một mức điểm"* trên thực tế **không bao giờ chạy**, nên **không dùng cho preset `O26_DEFAULT@1`**
 - **Chỉ 1 người đúng**: không phải hoà, không tính luật này
-- **Khác millisecond nhưng gần nhất**: theo GR-015 (last-wins, không phải hoà)
+- **Nhiều bản gửi của cùng một người**: mốc dùng để xếp hạng là bản **CUỐI CÙNG** hợp lệ, theo GR-015 (last-wins) — không liên quan luật hoà ở đây
 
 ### Evaluation order
-1. Sau khi admin chấm Đúng cho ≥2 TS
-2. Server so sánh server-received timestamp của tất cả người đúng, độ phân giải **millisecond**
-3. Nhóm người có timestamp bằng nhau = "hoà"
-4. Gán cùng mức điểm cho nhóm
-5. Tính hạng tiếp theo dựa trên số người hoà
+1. Admin chấm Đúng/Sai cho **từng** thí sinh; chỉ người được chấm **Đúng** vào tập xếp hạng
+2. Lấy **bản cuối cùng hợp lệ** của mỗi người (GR-015, last-wins) và thời gian trả lời của bản đó
+3. So sánh **trực tiếp trên số nguyên millisecond** — không làm tròn, không số thực
+4. Nhóm những người có giá trị bằng nhau = **một bậc**
+5. Gán **cùng mức điểm** cho cả nhóm (`share-high`)
+6. Bậc kế tiếp = bậc hiện tại **+ số người trong nhóm** (`GRR-032`)
+7. Admin bấm **"chốt câu"** ⇒ phát **một** event điểm cho toàn bộ bảng (`Đ-5.3.1a`, `Đ-5.3.1b`)
 
 ### Boundaries
 - **Số người hoà = 0**: không áp luật (0 người có cùng timestamp → không hoà)
@@ -1984,17 +1993,38 @@ Nếu 2 admin chấm người khác nhau cùng câu: xử lý theo mô hình v1 
 
 ### Examples
 **Hợp lệ:**
-- 4 TS (A, B, C, D): A trả lời 100ms, B trả lời 100ms (hoà A), C trả lời 150ms, D không trả lời. Admin chấm Đúng A/B/C → A +40, B +40 (hoà A ở hạng 1), C +10 (nhảy to 4th vì 2 người hoà hạng 1).
-- 4 TS: A 100ms, B 100ms, C 100ms (hoà A/B), D 150ms. Admin chấm Đúng A/B/C/D → A/B/C +40 (hoà), D +0 (không đủ hạng).
+- 4 TS đều đúng: A **5420 ms**, B **5420 ms**, C **7100 ms**, D **9800 ms** ⇒ **40 / 40 / 20 / 10** — đúng ví dụ kinh điển mà nguồn hàm ý.
+- A, B, C cùng **5420 ms** đúng, D **7100 ms** đúng ⇒ **40 / 40 / 40 / 10** (nhóm 3 người ở bậc 1 ⇒ bậc kế = 1+3 = 4).
 
 **Không hợp lệ:**
-- A 100.001ms, B 100.002ms → không hoà (khác millisecond) → không áp GR-014, theo GR-015 (last-wins).
+- Dùng `tieRule: 'microsecond'` cho preset `O26_DEFAULT@1` ⇒ luật hoà thành mã chết.
+- Xếp hạng trên timestamp của **bản gửi đầu** thay vì **bản cuối** ⇒ trái GR-015 (last-wins).
 
 ### Source traceability
-- **Định nghĩa hoà tốc độ**: `game-rules-inventory.md` R-TT-02 · `game-rules-decisions.md` §3.4 (một câu = một event)
-- **Độ phân giải**: `game-rules-inventory.md` R-TT-02 (K-8 chốt millisecond thay vì 2 chữ số thập phân của W26)
-- **Server time**: `game-rules-inventory.md` R-GEN-05
-- **Quy tắc xếp hạng**: `docs/source/fandom-olympia-26-luat-choi.md` §Tăng tốc (nguyên văn "trong cùng một khoảng thời gian")
+
+**`K-8` ĐÃ PHÂN XỬ 2026-07-26 — giữ MILLISECOND theo quyết định của chủ dự án, biết rõ nó lệch tiền lệ chương trình.**
+
+Điều tra tiền lệ ngày 26/07 cho ra kết quả **ngược** với lựa chọn `ms`; chủ dự án vẫn chọn `ms` với lý do **máy tính dễ tính toán**. Ghi cả hai phía để quyết định này về sau không bị đọc là sai sót:
+
+| Nguồn | Nói gì về độ phân giải | Hạng nguồn |
+|---|---|---|
+| `docs/source/fandom-olympia-26-luat-choi.md` §Tăng tốc | *"trong cùng một **khoảng thời gian**"* — **KHÔNG nêu độ phân giải** | **Source of truth** (D8) |
+| [`W26` vi.wikipedia — Olympia 26](https://vi.wikipedia.org/wiki/%C4%90%C6%B0%E1%BB%9Dng_l%C3%AAn_%C4%91%E1%BB%89nh_Olympia_n%C4%83m_th%E1%BB%A9_26) | *"Nếu có 2 thí sinh trở lên cùng trả lời đúng trong cùng một thời gian hệ thống ghi nhận (**tính đến 2 chữ số thập phân**), họ sẽ cùng giành được số điểm tương ứng."* | Nguồn ngoài, **cụ thể** |
+| [`W` vi.wikipedia — Đường lên đỉnh Olympia](https://vi.wikipedia.org/wiki/%C4%90%C6%B0%E1%BB%9Dng_l%C3%AAn_%C4%91%E1%BB%89nh_Olympia) | *"Tùy theo thứ tự thời gian (**được tính đến hàng phần trăm**) trả lời đúng, thí sinh sẽ ghi được 40, 30, 20 và 10 điểm."* | Nguồn ngoài, **xác nhận độc lập** |
+| `plans/.../research/rules-2026.md` §7 | *"độ phân giải ms server-received"* | **BẢN NHÁP tự viết trong repo** |
+
+**Lập luận cũ của `K-8` KHÔNG đứng được — nhưng kết luận vẫn được giữ vì lý do khác.** `K-8` cũ loại `W26` *"theo D8"*; thực ra **D8 chỉ cho phép loại `W26` ở chỗ Fandom nói KHÁC**, mà ở đây Fandom **im lặng** hoàn toàn về độ phân giải nên không có gì để loại bằng. Con số `ms` đến từ `R26` §7 = **file nháp trong repo**, không phải nguồn; `D13.3` chỉ chốt **hành vi**, không chốt độ phân giải.
+
+⇒ Căn cứ thật của `ms` **không phải nguồn luật**, mà là **quyết định kỹ thuật của chủ dự án**: so hai số nguyên ms là phép so đơn giản nhất, không làm tròn, không số thực. `game-rules-inventory.md` R-TT-02 ghi đúng cái giá phải trả: *"chọn ms làm cửa sổ hoà **hẹp hơn 10 lần** so với `W26` → ít trường hợp hoà hơn thực tế chương trình."*
+
+> **Đường thoát nếu đổi ý**: đổi `tieRule` sang mức 10 ms. Phép so vẫn là số nguyên — chia nguyên cho 10 rồi so — nên **không** đánh đổi gì về độ phức tạp tính toán. Luật, decision table và thang nhảy bậc **không phải sửa**.
+
+**Bề rộng tiền lệ**: điều khoản chia điểm khi đồng thời gian tồn tại **từ Olympia 7** ([Fandom — Tăng tốc](https://duong-len-dinh-olympia.fandom.com/vi/wiki/T%C4%83ng_t%E1%BB%91c): *"Từ Olympia 7, điểm số đã được tính theo tiêu chí thí sinh trả lời đúng và nhanh nhất. Trong trường hợp có nhiều thí sinh cùng trả lời đúng trong cùng một khoảng thời gian, những thí sinh đó sẽ cùng ghi được một mức điểm…"*) ⇒ khoảng **19 mùa** liên tục, không phải điều khoản mới của O26.
+
+- **Định nghĩa hoà tốc độ**: `game-rules-inventory.md` R-TT-02 · `docs/source/fandom-olympia-26-luat-choi.md` §Tăng tốc
+- **Nhảy bậc khi hoà**: `GRR-032` — standard competition ranking (đóng mục *"chưa định nghĩa"* của R-TT-02)
+- **Một câu = một event điểm**: `game-rules-decisions.md` §3.4 · `Đ-5.3.1a`, `Đ-5.3.1b`
+- **Server time**: `game-rules-inventory.md` R-GEN-05 · GR-035 (đồng hồ đơn điệu)
 
 ---
 

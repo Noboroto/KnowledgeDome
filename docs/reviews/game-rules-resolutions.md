@@ -143,7 +143,24 @@ Ba mục khác được **nâng** căn cứ (vẫn giữ kết luận cũ, nhưn
 |---|---|---|---|
 | **GRR-002** | Cửa sổ là **`[mở, đóng)`**. Chênh **0 ms** ⇒ **quá hạn** | `ĐỀ XUẤT` | (1) Quy ước khoảng nửa mở là chuẩn công nghiệp cho mốc thời gian (Google/AWS API: *start inclusive, end exclusive*) — hai cửa sổ liên tiếp **không chồng nhau**, không có mili-giây nào thuộc về hai pha. (2) Không cần "công bằng hoá" biên vì `Đ-28` đã cho bản quá hạn sống tiếp dưới dạng **tô đỏ** để admin phán quyết. Chọn biên chặt + van thoát bằng con người, **không** chọn biên lỏng |
 | **GRR-035** | **Cùng quy ước GRR-002** — không có quy ước riêng cho submission | `SUY RA` | DRY. Ba mã này được yêu cầu quyết cùng lúc chính vì lý do đó |
-| **GRR-031** | Độ phân giải xếp hạng = **mili-giây**. `tieRule` mặc định = **cùng ms ⇒ cùng bậc** | `ĐỀ XUẤT` | (1) Nhiễu mạng LAN là ±1-50 ms; tuyên bố độ phân giải µs là **độ chính xác giả**. (2) Khớp nguyên tắc nền điểm 15: quyền **chia được** (điểm Tăng tốc) thì cùng mốc ⇒ cùng mức (K-8); quyền **không chia được** (chuông) thì cùng mốc ⇒ hàng đợi tự quyết ngẫu nhiên |
+| **GRR-031** | ✅ **CHỦ DỰ ÁN CHỐT 2026-07-26**: độ phân giải = **millisecond**; `tieRule` mặc định = **cùng ms ⇒ cùng bậc** (`share-high`), bậc kế nhảy `n+k` (`GRR-032`) | `CHỐT` | Lý do của chủ dự án: **máy tính dễ tính toán** — so hai số nguyên ms, không làm tròn, không số thực. **Điều tra tiền lệ 26/07 cho kết quả NGƯỢC** (chương trình thật dùng **2 chữ số thập phân** — xem §2.1), và cái giá đã được ghi nhận: cửa sổ hoà hẹp hơn thực tế **10 lần**. Quyết định giữ `ms` là **có chủ đích, không phải sai sót**. Đóng GR-014 |
+
+### 2.1 Tiền lệ chương trình cho `GRR-031` — điều tra 2026-07-26
+
+> Ghi lại vì kết quả **ngược** với quyết định cuối, và vì lập luận cũ của `K-8` có lỗi cần đóng lại cho đúng.
+
+| Nguồn | Nói gì | Hạng |
+|---|---|---|
+| `docs/source/fandom-olympia-26-luat-choi.md` §Tăng tốc | *"trong cùng một **khoảng thời gian**"* — **không nêu độ phân giải** | **Source of truth** (D8) |
+| [`W26` vi.wikipedia Olympia 26](https://vi.wikipedia.org/wiki/%C4%90%C6%B0%E1%BB%9Dng_l%C3%AAn_%C4%91%E1%BB%89nh_Olympia_n%C4%83m_th%E1%BB%A9_26) | *"cùng một thời gian hệ thống ghi nhận (**tính đến 2 chữ số thập phân**)"* | Nguồn ngoài, cụ thể |
+| [`W` vi.wikipedia bài tổng](https://vi.wikipedia.org/wiki/%C4%90%C6%B0%E1%BB%9Dng_l%C3%AAn_%C4%91%E1%BB%89nh_Olympia) | *"thứ tự thời gian (**được tính đến hàng phần trăm**)"* | Xác nhận độc lập |
+| `plans/.../research/rules-2026.md` §7 | *"độ phân giải **ms** server-received"* | **Nháp trong repo** |
+
+**Ba kết luận:**
+
+1. **Điều khoản hoà là THẬT và CŨ** — có từ **Olympia 7** ([Fandom — Tăng tốc](https://duong-len-dinh-olympia.fandom.com/vi/wiki/T%C4%83ng_t%E1%BB%91c)), khoảng **19 mùa** liên tục. Không phải trường hợp giả định.
+2. **Lập luận cũ của `K-8` sai.** Nó loại `W26` *"theo D8"*, nhưng D8 chỉ cho phép loại `W26` ở chỗ Fandom nói **khác** — Fandom **im lặng** về độ phân giải nên không có gì để loại bằng. Con số `ms` đến từ **file nháp**, không phải nguồn. ⇒ Căn cứ thật của `ms` là **quyết định kỹ thuật của chủ dự án**, và tài liệu phải ghi đúng như vậy thay vì trích `D8`.
+3. **Không tìm được ca trận cụ thể nào** có hai người trùng thời gian trên **một câu** Tăng tốc. Phải phân biệt với thứ **rất phổ biến và hay bị lẫn**: trùng **TỔNG** điểm sau Tăng tốc (Olympia 18 — ba người cùng 140 sau câu 1; Olympia 26 — Đức Minh và Nam Sơn cùng 105; 2024 — Diễm Quỳnh và Đức Huy cùng 160). Đó là **cộng dồn ra số bằng nhau**, không phải hoà thời gian.
 
 **Kèm theo (kỹ thuật, cần ghi để luật đứng vững)** — `GRR-082`: thứ tự xếp hạng trong một trận phải tính trên **đồng hồ đơn điệu** (monotonic) của tiến trình server, đồng hồ tường chỉ dùng để **hiển thị và ghi log**. Khi đó đồng hồ hệ thống nhảy giữa trận **không thể** đảo thứ hạng đã ghi. Điều này biến `GRR-082` từ câu hỏi luật thành ràng buộc kỹ thuật.
 
