@@ -22,7 +22,8 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | `docs/source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
 | `docs/glossary.md` | **Thuật ngữ chuẩn** TERM-001 → TERM-060; file này dùng đúng tên ở đó |
 | `docs/game-rules-inventory.md` | Kiểm kê R-*, các mục chưa định nghĩa U-*, các mâu thuẫn K-* |
-| `docs/reviews/game-rules-decisions.md` | Quyết định **đã chốt** Đ-1 → Đ-15 |
+| `docs/reviews/game-rules-decisions.md` | Quyết định **đã chốt** Đ-1 → Đ-36 |
+| `docs/reviews/game-rules-resolutions.md` | **Phân xử 2026-07-26** — hệ quả suy ra từ quyết định đã chốt, kèm mức tin cậy từng mã. Nguồn của đợt đóng 17 rule |
 | `docs/reviews/game-rules-open-questions.md` | Câu hỏi **còn chờ** chủ dự án quyết |
 | `docs/reviews/game-rules-review.md` | Vấn đề lượt 3 (GRR-137 → GRR-171) |
 | `docs/reviews/game-rules-review-old.md` | Vấn đề lượt 1-2 (GRR-001 → GRR-136) |
@@ -31,34 +32,64 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 
 | Status | Nghĩa | Số rule |
 |---|---|---|
-| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **15** |
-| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **21** |
-| `CONFLICT` | Hai nguồn cùng áp dụng nhưng cho outcome khác nhau; **tài liệu này không phân xử** | **1** |
+| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **32** |
+| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **5** |
+| `CONFLICT` | Hai nguồn cùng áp dụng nhưng cho outcome khác nhau; **tài liệu này không phân xử** | **0** |
 
-> **Vì sao phần lớn rule vẫn `NEEDS CLARIFICATION`**: bốn loại khiếm khuyết `IDEMPOTENCY` · `CONCURRENCY` · `INVALID_TRANSITION` · `ORDER_DEPENDENT` chưa từng được rà cho tới lượt review thứ 3, nên hầu hết rule còn ít nhất một nhánh treo ở các mục **Evaluation order**, **Idempotency** hoặc **Concurrency**. Phần **Conditions**, **Decision table** hàng happy path và **Boundaries** của các rule đó vẫn dùng được để viết spec.
+> Status là phép **AND**: chỉ cần một nhánh treo là cả rule treo.
 >
-> Status là phép **AND**: chỉ cần một nhánh treo là cả rule treo. Đợt quyết định `Đ-16` → `Đ-31` (2026-07-25), cộng lượt rà suy luận cuối, đã đưa **14 rule** về `CONFIRMED`.
+> **Đợt 2026-07-26** đóng **17 rule** (16 từ `NEEDS CLARIFICATION`, 1 từ `CONFLICT`). Không có luật mới nào được phát minh — toàn bộ là **hệ quả bắt buộc** của quyết định đã chốt, theo thứ tự ưu tiên: quyết định sẵn có → câu trùng pattern → suy luận. Chi tiết từng mã: `docs/reviews/game-rules-resolutions.md`.
+>
+> Bốn loại khiếm khuyết `IDEMPOTENCY` · `CONCURRENCY` · `INVALID_TRANSITION` · `ORDER_DEPENDENT` — vốn là nguyên nhân chính khiến rule treo — nay đóng gần hết bằng **bốn quyết định sẵn có**: `Đ-29` (nút một chiều tự tắt ⇒ idempotency), `Đ-16` + nguyên tắc nền điểm 9 (invalid state ⇒ không có tín hiệu ⇒ nhánh không tồn tại), nguyên tắc nền điểm 3 (hàng đợi thuần theo server timestamp ⇒ concurrency), và `Đ-26`/`Đ-33` (mốc là nút của admin ⇒ evaluation order do thứ tự nút quyết định).
 
-Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn nhất:
+### 32 rule `CONFIRMED`
 
-| Mã | Tên | Status |
+| Mã | Tên | Đóng từ |
 |---|---|---|
-| GR-001 | Khởi động lượt riêng: chấm câu | `CONFIRMED` |
-| GR-002 | Khởi động lượt riêng: hết thời gian suy nghĩ | `CONFIRMED` |
-| GR-003 | Khởi động lượt chung: giành quyền bằng chuông | `CONFIRMED` |
-| GR-004 | Khởi động lượt chung: chấm câu và hình phạt | `CONFIRMED` |
-| GR-005 | Khởi động lượt chung: cửa sổ chuông rỗng | `CONFIRMED` |
-| GR-006 | Khởi động: ghi nhận đáp án | `CONFIRMED` |
-| GR-013 | Tăng tốc: xếp hạng tốc độ | `CONFIRMED` |
-| GR-015 | Tăng tốc: ghi nhận bản cuối | `CONFIRMED` |
-| GR-018 | Về đích: trả lời câu của mình | `CONFIRMED` |
-| GR-022 | Câu hỏi phụ: điều kiện kích hoạt | `CONFIRMED` |
-| GR-023 | Câu hỏi phụ: thể thức ba câu | `CONFIRMED` |
-| GR-027 | Chuẩn hoá và highlight đáp án | `CONFIRMED` |
-| GR-028 | Điểm là hàm của event log | `CONFIRMED` |
-| GR-033 | Mốc thời gian do admin bấm | `CONFIRMED` |
-| GR-034 | Chuông chỉ nhận click chuột | `CONFIRMED` |
-| GR-037 | Phạm vi hiển thị đáp án | `CONFLICT` |
+| GR-001 | Khởi động lượt riêng: chấm câu | trước 26/07 |
+| GR-002 | Khởi động lượt riêng: hết thời gian suy nghĩ | trước 26/07 |
+| GR-003 | Khởi động lượt chung: giành quyền bằng chuông | trước 26/07 |
+| GR-004 | Khởi động lượt chung: chấm câu và hình phạt | trước 26/07 |
+| GR-005 | Khởi động lượt chung: cửa sổ chuông rỗng | trước 26/07 |
+| GR-006 | Khởi động: ghi nhận đáp án | trước 26/07 |
+| GR-007 | VCNV: lượt chọn hàng ngang | **26/07** |
+| GR-008 | VCNV: trả lời hàng ngang và mở miếng ghép | **26/07** |
+| GR-009 | VCNV: bấm chuông giải Chướng ngại vật | **26/07** |
+| GR-010 | VCNV: trả lời sai Chướng ngại vật | **26/07** |
+| GR-011 | VCNV: ô trung tâm và gợi ý cuối | **26/07** |
+| GR-012 | VCNV: toàn bộ thí sinh bị loại | **26/07** |
+| GR-013 | Tăng tốc: xếp hạng tốc độ | trước 26/07 |
+| GR-015 | Tăng tốc: ghi nhận bản cuối | trước 26/07 |
+| GR-016 | Về đích: thứ tự lượt thi | **26/07** |
+| GR-017 | Về đích: chọn gói câu | **26/07** |
+| GR-018 | Về đích: trả lời câu của mình | trước 26/07 |
+| GR-022 | Câu hỏi phụ: điều kiện kích hoạt | trước 26/07 |
+| GR-023 | Câu hỏi phụ: thể thức ba câu | trước 26/07 |
+| GR-024 | Câu hỏi phụ: bấm chuông trước hiệu lệnh | **26/07** |
+| GR-025 | Câu hỏi phụ: hết câu chưa phân định | **26/07** |
+| GR-026 | Phán quyết của admin | **26/07** |
+| GR-027 | Chuẩn hoá và highlight đáp án | trước 26/07 |
+| GR-028 | Điểm là hàm của event log | trước 26/07 |
+| GR-029 | Điều chỉnh điểm thủ công | **26/07** |
+| GR-030 | Bỏ vòng và chạy lại vòng | **26/07** |
+| GR-031 | Rút đề và no-repeat toàn contest | **26/07** |
+| GR-032 | Hàng đợi tín hiệu và xác nhận của admin | **26/07** |
+| GR-033 | Mốc thời gian do admin bấm | trước 26/07 |
+| GR-034 | Chuông chỉ nhận click chuột | trước 26/07 |
+| GR-035 | Server time là source of truth duy nhất | **26/07** |
+| GR-037 | Phạm vi hiển thị đáp án | **26/07** (từ `CONFLICT`) |
+
+### 5 rule còn treo — và đang chờ ĐÚNG cái gì
+
+> Cả năm đều treo vì một mục **chưa ai quyết**, không phải vì thiếu suy luận. Mỗi dòng chỉ thẳng tới chỗ cần chủ dự án phát biểu.
+
+| Mã | Tên | Treo vì | Chờ quyết ở |
+|---|---|---|---|
+| GR-014 | Tăng tốc: đồng thời gian | Độ phân giải so sánh và giá trị mặc định của `tieRule` | `GRR-031` — `open-questions` Tầng 2 |
+| GR-019 | Về đích: câu hỏi thực hành | Câu hỏi thực hành có thuộc v1 không; chưa có trường khai `câu thực hành` (`U-6`) | `GRR-050/051` — Tầng 3 (**phạm vi v1**) |
+| GR-020 | Về đích: cướp quyền | Số học khi **Ngôi sao hy vọng gặp cướp quyền** (`U-8`); làm tròn `−½` giá trị lẻ (`U-20`) | `U-8` mới · `GRR-046`/`Đ-3` — Tầng 5.1 |
+| GR-021 | Về đích: Ngôi sao hy vọng | Cùng `U-8` với GR-020 | `U-8` mới |
+| GR-036 | Mất kết nối và giữ ghế | `dropoutPolicy` chưa liệt kê được danh sách giá trị hợp lệ (`U-13`) | `U-13` — chưa có mã trong `open-questions` |
 
 ## Nguyên tắc nền áp cho MỌI rule
 
@@ -226,12 +257,12 @@ Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn
 
 | Mã | Tên | Status |
 |---|---|---|
-| GR-007 | VCNV: lượt chọn hàng ngang | NEEDS CLARIFICATION |
-| GR-008 | VCNV: trả lời hàng ngang và mở miếng ghép | NEEDS CLARIFICATION |
-| GR-009 | VCNV: bấm chuông giải Chướng ngại vật | NEEDS CLARIFICATION |
-| GR-010 | VCNV: trả lời sai Chướng ngại vật | NEEDS CLARIFICATION |
-| GR-011 | VCNV: ô trung tâm và gợi ý cuối | NEEDS CLARIFICATION |
-| GR-012 | VCNV: toàn bộ thí sinh bị loại | NEEDS CLARIFICATION |
+| GR-007 | VCNV: lượt chọn hàng ngang | **CONFIRMED** |
+| GR-008 | VCNV: trả lời hàng ngang và mở miếng ghép | **CONFIRMED** |
+| GR-009 | VCNV: bấm chuông giải Chướng ngại vật | **CONFIRMED** |
+| GR-010 | VCNV: trả lời sai Chướng ngại vật | **CONFIRMED** |
+| GR-011 | VCNV: ô trung tâm và gợi ý cuối | **CONFIRMED** |
+| GR-012 | VCNV: toàn bộ thí sinh bị loại | **CONFIRMED** |
 
 ### Vòng Tăng tốc
 
@@ -245,8 +276,8 @@ Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn
 
 | Mã | Tên | Status |
 |---|---|---|
-| GR-016 | Về đích: thứ tự lượt thi | NEEDS CLARIFICATION |
-| GR-017 | Về đích: chọn gói câu | NEEDS CLARIFICATION |
+| GR-016 | Về đích: thứ tự lượt thi | **CONFIRMED** |
+| GR-017 | Về đích: chọn gói câu | **CONFIRMED** |
 | GR-018 | Về đích: trả lời câu của mình | **CONFIRMED** |
 | GR-019 | Về đích: câu hỏi thực hành | NEEDS CLARIFICATION |
 | GR-020 | Về đích: cướp quyền | NEEDS CLARIFICATION |
@@ -258,30 +289,30 @@ Các rule không mang trạng thái treo nào là điểm khởi đầu an toàn
 |---|---|---|
 | GR-022 | Câu hỏi phụ: điều kiện kích hoạt | **CONFIRMED** |
 | GR-023 | Câu hỏi phụ: thể thức ba câu | **CONFIRMED** |
-| GR-024 | Câu hỏi phụ: bấm chuông trước hiệu lệnh | NEEDS CLARIFICATION |
-| GR-025 | Câu hỏi phụ: hết câu chưa phân định | NEEDS CLARIFICATION |
+| GR-024 | Câu hỏi phụ: bấm chuông trước hiệu lệnh | **CONFIRMED** |
+| GR-025 | Câu hỏi phụ: hết câu chưa phân định | **CONFIRMED** |
 
 ### Chấm điểm và mô hình điểm
 
 | Mã | Tên | Status |
 |---|---|---|
-| GR-026 | Phán quyết của admin | NEEDS CLARIFICATION |
+| GR-026 | Phán quyết của admin | **CONFIRMED** |
 | GR-027 | Chuẩn hoá và highlight đáp án | **CONFIRMED** |
 | GR-028 | Điểm là hàm của event log | **CONFIRMED** |
-| GR-029 | Điều chỉnh điểm thủ công | NEEDS CLARIFICATION |
-| GR-030 | Bỏ vòng và chạy lại vòng | NEEDS CLARIFICATION |
-| GR-031 | Rút đề và no-repeat toàn contest | NEEDS CLARIFICATION |
+| GR-029 | Điều chỉnh điểm thủ công | **CONFIRMED** |
+| GR-030 | Bỏ vòng và chạy lại vòng | **CONFIRMED** |
+| GR-031 | Rút đề và no-repeat toàn contest | **CONFIRMED** |
 
 ### Điều khiển và hạ tầng trận
 
 | Mã | Tên | Status |
 |---|---|---|
-| GR-032 | Hàng đợi tín hiệu và xác nhận của admin | NEEDS CLARIFICATION |
+| GR-032 | Hàng đợi tín hiệu và xác nhận của admin | **CONFIRMED** |
 | GR-033 | Mốc thời gian do admin bấm | **CONFIRMED** |
 | GR-034 | Chuông chỉ nhận click chuột | **CONFIRMED** |
-| GR-035 | Server time là source of truth duy nhất | NEEDS CLARIFICATION |
+| GR-035 | Server time là source of truth duy nhất | **CONFIRMED** |
 | GR-036 | Mất kết nối và giữ ghế | NEEDS CLARIFICATION |
-| GR-037 | Phạm vi hiển thị đáp án | **CONFLICT** |
+| GR-037 | Phạm vi hiển thị đáp án | **CONFIRMED** |
 
 ---
 
@@ -995,7 +1026,7 @@ Hai nhánh đều triệt tiêu tranh chấp: nhánh trên không có bản gử
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 
@@ -1041,7 +1072,7 @@ Một tín hiệu chọn hàng ngang được phát. **Chủ thể phát tín hi
 | Case | Conditions | Expected outcome | State change | Error |
 |---|---|---|---|---|
 | C1 — happy path | Thí sinh đúng lượt chọn một hàng ngang chưa mở; admin xác nhận | Hàng ngang đó được đưa ra | Đánh dấu lượt chọn của thí sinh đã dùng; hàng ngang chuyển sang đang hỏi | — |
-| C2 — admin từ chối | Admin bấm No cho tín hiệu | Tín hiệu kế tiếp trong hàng đợi lên; **thí sinh không mất lượt** · ở mode nhập liệu, **nút chọn của thí sinh mở lại** (`Đ-36`) | NEEDS CLARIFICATION — `game-rules-review.md` GRR-143: chưa nói hàng ngang đã bị đánh dấu đã hỏi chưa, câu đã bị rút khỏi kho chưa, đồng hồ đã chạy chưa | — |
+| C2 — admin từ chối | Admin bấm No cho tín hiệu | Tín hiệu kế tiếp trong hàng đợi lên; **thí sinh không mất lượt** · ở mode nhập liệu, **nút chọn của thí sinh mở lại** (`Đ-36`) | **Không tác dụng phụ nào đã phát sinh** (`GRR-143`): hàng ngang **chưa** đánh dấu đã hỏi — *"đã được hỏi" = đã hiển thị cho thí sinh* (`GRR-085`), mà chưa xác nhận thì chưa hiển thị · câu **chưa tiêu, trả lại kho** — *đã rút nhưng chưa hiển thị = chưa tiêu* (`GRR-118`) · đồng hồ **chưa chạy** — đồng hồ chỉ chạy từ mốc admin bấm start timer, nằm sau mốc hiển thị (`Đ-26`) | — |
 | C3 — người đang tới lượt đã bị loại | Thí sinh bị loại trước khi dùng lượt chọn | Lượt dồn cho **vị trí tiếp theo** | Cập nhật người đang tới lượt | — |
 | C4 — boundary: hết vòng vị trí mà còn hàng chưa chọn | Vị trí cuối đã chọn xong, vẫn còn hàng ngang | Lượt **quay lại vị trí số 1** | Cập nhật người đang tới lượt | — |
 | C5 — chọn hàng ngang đã mở | Thao tác trỏ vào hàng ngang đã được chọn | **KHÔNG TỒN TẠI** — hàng ngang đã mở không còn là mục tiêu chọn được; máy thí sinh **không hiển thị nó như lựa chọn** và bấm **không phản hồi** (`Đ-16`) | Không đổi | — |
@@ -1049,7 +1080,7 @@ Một tín hiệu chọn hàng ngang được phát. **Chủ thể phát tín hi
 | C6b — repeated action, mode **nhập liệu** | Thí sinh click chọn hàng ngang nhiều lần | Click đầu mở **dialog xác nhận**; xác nhận xong **khoá nút chọn** ⇒ **đúng một tín hiệu** rời máy thí sinh cho một lượt chọn (`Đ-36`) | Nút chọn của ghế đó chuyển sang khoá; khoá **mở lại** nếu admin bấm No | — |
 | C7 — invalid state: tín hiệu từ thí sinh sai lượt | Thí sinh chưa tới lượt phát tín hiệu chọn | Tín hiệu vào hàng đợi; admin quyết định — hệ thống **cảnh báo**, không chặn cứng | Ghi tín hiệu | — |
 | C8 — số thí sinh nhiều hơn số hàng ngang | Ví dụ 12 thí sinh, 4 hàng ngang | **NGOÀI PHẠM VI v1** `[v1.5]` — v1 đặc tả cho **đúng 4 thí sinh** (§2), mà 4 thí sinh / 4 hàng ngang thì *"tối đa 1 lượt"* vừa đủ. Luật cho 1-12 người thuộc v1.5 (`game-rules-inventory.md` U-4) | — | — |
-| C9 — hai loại tín hiệu chờ cùng lúc | Một tín hiệu chọn hàng ngang và một tín hiệu "Mở chướng ngại vật" cùng nằm trong hàng đợi | NEEDS CLARIFICATION — `game-rules-review.md` GRR-144: chưa nói hàng đợi xử lý thuần theo thứ tự tới hay ưu tiên theo loại | Không xác định | — |
+| C9 — hai loại tín hiệu chờ cùng lúc | Một tín hiệu chọn hàng ngang và một tín hiệu "Mở chướng ngại vật" cùng nằm trong hàng đợi | **Thuần theo thứ tự tới, KHÔNG ưu tiên theo loại** (`GRR-144`) — nguyên tắc nền điểm 3: *"mọi tín hiệu vào hàng đợi theo server timestamp"*, không có mệnh đề nào cho phép sắp xếp lại theo loại. Cùng mốc thời gian ⇒ hàng đợi tự quyết ngẫu nhiên (điểm 15) | Hàng đợi giữ đúng thứ tự tiếp nhận; admin duyệt lần lượt | — |
 
 ### Outcomes
 
@@ -1075,7 +1106,11 @@ Không có lỗi nghiệp vụ. Tín hiệu sai lượt đi qua **cảnh báo**,
 
 ### Evaluation order
 
-NEEDS CLARIFICATION — nguồn không quy định thứ tự kiểm tra giữa: (a) thí sinh có đúng lượt không, (b) thí sinh đã bị loại chưa, (c) hàng ngang còn chưa mở không, (d) thí sinh đã dùng lượt chọn chưa. Thứ tự này quyết định outcome của C5 và C7.
+**Thứ tự không còn ý nghĩa** — bốn phép kiểm (a) đúng lượt · (b) đã bị loại · (c) hàng ngang còn chưa mở · (d) đã dùng lượt chọn đều là **điều kiện render**, không phải điều kiện xử lý tín hiệu:
+
+1. Cả bốn được đánh giá **một lần, tại thời điểm dựng màn thí sinh**. Trạng thái nào không hợp lệ thì nút chọn tương ứng **không được render** và bấm **không phản hồi** (`Đ-16`, nguyên tắc nền điểm 9).
+2. ⇒ Không tín hiệu nào được sinh ra cho các nhánh đó ⇒ **không có gì để sắp thứ tự**. C5 và C7 vì vậy đều rơi vào nhánh *"KHÔNG TỒN TẠI"*, không phụ thuộc thứ tự đánh giá.
+3. Việc admin **ép lượt trái luật** (`Đ-5`) diễn ra **ở khâu gán lượt**, tức **trước** khi cửa sổ chọn mở — nên nó đổi giá trị của (a) chứ không tạo ra một tín hiệu sai lượt cần phân xử.
 
 ### Boundaries
 
@@ -1101,11 +1136,13 @@ Thao tác **chọn hàng ngang** không phải chuông nên đi theo cơ chế r
 
 > Khoá ở đây nằm tại **giao diện**. Theo `CLAUDE.md` §Zero-trust, server vẫn phải bỏ qua tín hiệu chọn trùng nếu nhận được.
 
-NEEDS CLARIFICATION — **thao tác xác nhận của admin** bấm hai lần vẫn chưa được quy định.
+**Thao tác xác nhận của admin**: nút Yes/No là **nút thao tác một chiều** ⇒ **tự tắt sau khi bấm** (`Đ-29`), nên lần bấm thứ hai không tồn tại ở giao diện. Server vẫn phải bỏ qua lệnh xác nhận trùng cho cùng một tín hiệu (`CLAUDE.md` §Zero-trust).
 
 ### Concurrency
 
-NEEDS CLARIFICATION — `game-rules-review.md` GRR-144: thứ tự xử lý giữa tín hiệu chọn hàng ngang và tín hiệu "Mở chướng ngại vật" trong cùng một hàng đợi chặn chưa được quy định, trong khi thứ tự đó ảnh hưởng trực tiếp tới băng điểm Chướng ngại vật (GR-009).
+Hàng đợi chặn ở VCNV xử lý **thuần theo thứ tự tiếp nhận** (server timestamp), **không** ưu tiên theo loại tín hiệu — xem C9 và nguyên tắc nền điểm 3. Hai tín hiệu cùng mốc thời gian: hàng đợi tự quyết **ngẫu nhiên** (điểm 15).
+
+> Đây chính là câu trả lời cho `game-rules-review.md` GRR-144, và nó **cố định** băng điểm Chướng ngại vật ở GR-009: băng chốt theo trạng thái tại **mốc admin xác nhận** (`Đ-7.c`), mà thứ tự xác nhận thì đã tất định theo thứ tự hàng đợi.
 
 ### Examples
 
@@ -1131,7 +1168,7 @@ NEEDS CLARIFICATION — `game-rules-review.md` GRR-144: thứ tự xử lý gi�
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 
@@ -1175,8 +1212,8 @@ Admin **bấm hiển thị đáp án** sau khi hết thời gian suy nghĩ, rồ
 | C1 — happy path | Một thí sinh được admin chấm Đúng | **+10** cho thí sinh đó; miếng ghép tương ứng được mở | Sinh event điểm; miếng ghép chuyển sang đã mở | — |
 | C2 — nhiều thí sinh cùng đúng | Nhiều người được chấm Đúng cho cùng hàng ngang | **+10 cho mỗi người**; miếng ghép được mở | Sinh event điểm cho từng người | — |
 | C3 — không ai đúng | Mọi thí sinh đều bị chấm Sai hoặc không trả lời | **0** cho tất cả; miếng ghép **không** được mở | Hàng ngang khép lại, miếng ghép giữ nguyên | — |
-| C4 — boundary: cần bao nhiêu người đúng để mở | Đúng 1 trong 4 người trả lời đúng | NEEDS CLARIFICATION — `game-rules-inventory.md` U-37: nguồn chỉ nói *"trả lời đúng → mở"*, không nêu ngưỡng số người; biến thể *"ít nhất 1 thí sinh"* của nguồn khác đã bị loại theo K-5 | Không xác định | — |
-| C5 — repeated action: admin bấm mở miếng ghép hai lần | Miếng ghép đã mở, admin bấm mở lần nữa | NEEDS CLARIFICATION — nguồn không nói thao tác mở là vô hiệu khi đã mở | Không xác định | — |
+| C4 — boundary: cần bao nhiêu người đúng để mở | Đúng 1 trong 4 người trả lời đúng | **Miếng ghép mở khi có ≥1 người đúng**; **mọi người đúng đều được 10 điểm**, không giới hạn số người (`GRR-014`/`GRR-015` — nguồn không đặt ngưỡng nào, và không có mệnh đề nào giới hạn số người hưởng điểm) | Miếng ghép mở · +10 cho **từng** thí sinh được chấm Đúng | — |
+| C5 — repeated action: admin bấm mở miếng ghép hai lần | Miếng ghép đã mở, admin bấm mở lần nữa | **KHÔNG TỒN TẠI** — nút mở miếng ghép là **nút thao tác một chiều**, tự tắt sau khi bấm (`Đ-29`) | Không đổi. Server bỏ qua lệnh mở trùng (`CLAUDE.md` §Zero-trust) | — |
 | C6 — invalid state: đáp án từ thí sinh đã bị loại | Người đã bị loại vẫn thao tác trên máy | Ô nhập **không hiển thị**, thao tác **không phản hồi** ⇒ không gửi được đáp án nào | Không đổi | — |
 | C7 — đáp án đến sau khi hết 15 giây | Bản gửi đến sau mốc hết giờ | **GIỮ CẢ BẢN HỢP LỆ LẪN BẢN QUÁ HẠN**, bản quá hạn tô **đỏ**. Admin quyết **Đúng / Sai**; nếu **chỉ có** bản quá hạn thì có thêm lựa chọn **HUỶ KẾT QUẢ** | Cả hai bản hiển thị trên màn admin; hiển thị ra ngoài và chấm điểm đều **do admin bấm** | — |
 | C8 — boundary: đáp án đến đúng mốc 15 giây | Server timestamp trùng mốc | **Được chấm** — biên **đóng** | Bản được ghi nhận như bản hợp lệ | — |
@@ -1207,7 +1244,13 @@ Không có lỗi nghiệp vụ được định nghĩa.
 
 ### Evaluation order
 
-NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) chấm từng thí sinh, (b) xác định miếng ghép có được mở không, (c) đánh dấu hàng ngang đã hỏi. Thứ tự (b) so với (a) trở nên quan trọng khi số người đúng khác nhau — xem U-37.
+Thứ tự **tất định**, suy ra từ ngưỡng *"≥1 người đúng"* đã chốt ở C4 (`GRR-014`/`GRR-015`):
+
+1. **(a) Chấm từng thí sinh** — phải xong **toàn bộ** trước, vì điều kiện *"≥1 đúng"* chỉ đánh giá được khi đã biết phán quyết của mọi người. Mỗi phán quyết là một event điểm riêng cho từng thí sinh (`Đ-5.3.1b`: quy tắc *"một câu = một event"* chỉ áp cho vòng xếp hạng).
+2. **(b) Xác định miếng ghép có mở không** — phép OR trên tập kết quả của bước 1.
+3. **(c) Đánh dấu hàng ngang đã hỏi** — bước cuối, đóng câu.
+
+> Thứ tự này **không nhạy cảm** với số người đúng, đúng vì ngưỡng là *"≥1"* chứ không phải một con số cụ thể — điều đã đóng `U-37`.
 
 ### Boundaries
 
@@ -1223,7 +1266,7 @@ NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) chấm
 ### Idempotency
 
 - Bấm cùng loại phán quyết nhiều lần cho **cùng một thí sinh**: một event duy nhất.
-- Bấm mở miếng ghép nhiều lần: NEEDS CLARIFICATION — nguồn không quy định.
+- Bấm mở miếng ghép nhiều lần: **không tồn tại** — nút một chiều, tự tắt sau lần bấm đầu (`Đ-29`); server bỏ qua lệnh trùng.
 
 ### Concurrency
 
@@ -1254,7 +1297,7 @@ Tín hiệu **"Mở chướng ngại vật" đến giữa lúc đồng hồ hàn
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 
@@ -1302,11 +1345,11 @@ Thí sinh bấm nút "Mở chướng ngại vật".
 | C4 — bấm sau 4 hàng | Như C1 | **+30** | Như C1 | — |
 | C5 — bấm sau khi gợi ý cuối đã đưa ra | Gợi ý cuối đã hiện | **+20** | Như C1 | — |
 | C6 — trả lời sai | Admin chấm Sai | Chuyển GR-010 — thí sinh **bị loại** khỏi vòng | Đánh dấu thí sinh bị loại | — |
-| C7 — boundary: mốc chốt băng điểm | Bấm khi đã hỏi 1 hàng, admin xác nhận sau khi hàng 2 đã bắt đầu | NEEDS CLARIFICATION — `game-rules-review.md` GRR-142: chưa nói băng điểm chốt theo server timestamp lúc bấm hay theo trạng thái lúc admin xác nhận; chênh lệch **10 điểm** | Không xác định | — |
-| C8 — admin từ chối tín hiệu | Admin bấm No | Tín hiệu kế tiếp lên; **thí sinh không mất lượt** | NEEDS CLARIFICATION — `game-rules-review.md` GRR-143 (tác dụng phụ đã phát sinh hay chưa) | — |
+| C7 — boundary: mốc chốt băng điểm | Bấm khi đã hỏi 1 hàng, admin xác nhận sau khi hàng 2 đã bắt đầu | **Băng điểm chốt theo trạng thái tại mốc ADMIN XÁC NHẬN** (`Đ-7.c`) — đó là mốc tín hiệu **có hiệu lực**. Tình huống mô tả ở cột trái **không dựng được**: hàng đợi **chặn** ở VCNV (nguyên tắc nền điểm 4), nên chừng nào tín hiệu CNV còn chờ duyệt thì **không hàng ngang nào mở thêm được** ⇒ hai mốc luôn cho **cùng một** số hàng đã mở, chênh lệch 10 điểm không phát sinh | Băng điểm chốt tại mốc xác nhận | — |
+| C8 — admin từ chối tín hiệu | Admin bấm No | Tín hiệu kế tiếp lên; **thí sinh không mất lượt** | **Chưa tác dụng phụ nào phát sinh** (`GRR-143`) — cùng lập luận C2 của GR-007: chưa xác nhận thì chưa hiển thị (`GRR-085`), câu chưa tiêu (`GRR-118`), đồng hồ chưa chạy (`Đ-26`) | — |
 | C9 — invalid state: bấm sau khi đã bị loại | Thí sinh đã bị loại tiếp tục bấm | Máy thí sinh **không hiển thị gì**, bấm **không phản hồi** ⇒ không có tín hiệu nào được tạo | Không đổi | — |
 | C10 — invalid state: đã có người giải đúng | Vòng đã kết thúc vì có người giải đúng | Máy thí sinh **không hiển thị gì**, bấm **không phản hồi** ⇒ không có tín hiệu nào được tạo | Không đổi | — |
-| C11 — số hàng ngang khác 4 | Cấu hình 5-8 hàng ngang | NEEDS CLARIFICATION — `game-rules-inventory.md` U-3: băng điểm cho cấu hình này chưa được định nghĩa | Không xác định | — |
+| C11 — số hàng ngang khác 4 | Cấu hình 5-8 hàng ngang | **Băng điểm lấy từ cấu hình, không suy ra từ luật.** `rowCount` **không bị khoá cứng ở 4**; đổi lại, thang điểm Chướng ngại vật là **mảng cấu hình BẮT BUỘC dài bằng `rowCount`** mà người dựng contest phải điền. Thiếu mảng đó là **thiếu cấu hình** ⇒ chặn tại contest builder, **không** phải tình huống lúc chạy. Đóng `U-3` bằng cách chuyển nó từ *"luật chưa định nghĩa"* sang *"giá trị do người dựng khai"*, đúng `CLAUDE.md` (*"mọi timer/điểm là RuleConfig — KHÔNG hard-code luật"*) | Băng điểm đọc từ mảng cấu hình theo số hàng đã mở | — |
 
 ### Outcomes
 
@@ -1321,7 +1364,7 @@ Thí sinh bấm nút "Mở chướng ngại vật".
 
 ### No-change guarantees
 
-- Điểm hàng ngang đã kiếm được trước đó của người giải sai: NEEDS CLARIFICATION — `game-rules-inventory.md` U-24 chưa nói có bị trừ không.
+- Điểm hàng ngang đã kiếm được trước đó của người giải sai: **GIỮ NGUYÊN, không bị trừ** (`GRR-022`/`GRR-023` — *"bị loại khỏi phần thi này"* = mất mọi **quyền** trong vòng VCNV; nguồn không có mệnh đề trừ điểm nào). Đóng `U-24`.
 - **Từ chối không làm thí sinh mất lượt.**
 - **Lịch sử tín hiệu không bao giờ bị xoá.**
 
@@ -1331,7 +1374,11 @@ Không có lỗi nghiệp vụ được định nghĩa.
 
 ### Evaluation order
 
-NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) chốt số hàng ngang đã hỏi để tính băng điểm, (b) admin xác nhận tín hiệu, (c) admin phán quyết đúng/sai. Thứ tự (a) so với (b) chính là nội dung `game-rules-review.md` GRR-142.
+Thứ tự **tất định**: **(b) admin xác nhận tín hiệu → (a) chốt số hàng ngang đã hỏi → (c) admin phán quyết đúng/sai.**
+
+- (b) đứng trước (a) vì `Đ-7.c` chốt mốc tính điểm là **thời điểm admin xác nhận** — đó là lúc tín hiệu có hiệu lực, nên cũng là lúc đọc trạng thái bàn cờ.
+- (a) đứng trước (c) vì băng điểm phải cố định **trước** khi phán quyết, để kết quả không phụ thuộc admin chấm nhanh hay chậm.
+- Đây là câu trả lời cho `game-rules-review.md` GRR-142; xem thêm C7, nơi hàng đợi chặn làm hai mốc trùng nhau trên thực tế.
 
 ### Boundaries
 
@@ -1342,7 +1389,7 @@ NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) chốt
 | Trong khoảng | Đã hỏi 2-3 hàng | **50** · **40** |
 | Bằng max | Đã hỏi **4** hàng | **30** |
 | Lớn hơn max | Sau khi gợi ý cuối đã đưa ra | **20** |
-| Ngoài luật | Cấu hình 5-8 hàng ngang | NEEDS CLARIFICATION — U-3 |
+| Ngoài luật | Cấu hình 5-8 hàng ngang | Thang điểm là **mảng cấu hình bắt buộc** dài bằng `rowCount`, do người dựng contest điền; thiếu ⇒ chặn tại builder. Xem C11 |
 
 ### Idempotency
 
@@ -1350,7 +1397,9 @@ Nút "Mở chướng ngại vật" là **chuông** ⇒ **tự khoá ngay khi b�
 
 ### Concurrency
 
-NEEDS CLARIFICATION — `game-rules-review.md` GRR-144: khi một tín hiệu chọn hàng ngang đang chờ admin duyệt và một tín hiệu "Mở chướng ngại vật" đến, thứ tự xử lý chưa được quy định, mà thứ tự đó làm đổi băng điểm.
+Khi một tín hiệu chọn hàng ngang đang chờ duyệt và một tín hiệu "Mở chướng ngại vật" đến: hàng đợi xử lý **thuần theo thứ tự tiếp nhận** (nguyên tắc nền điểm 3), **không** ưu tiên theo loại — xem GR-007 C9 và GR-032.
+
+> **Băng điểm không bị đe doạ** bởi thứ tự này: hàng đợi **chặn** ở VCNV (điểm 4), nên tín hiệu chọn hàng ngang đang chờ duyệt **chưa** làm tăng số hàng đã mở. Dù tín hiệu CNV được duyệt trước hay sau, số hàng đã mở tại mốc xác nhận nó là **như nhau**. Đây là câu trả lời cho `game-rules-review.md` GRR-144 ở phạm vi GR-009.
 
 ### Examples
 
@@ -1375,7 +1424,7 @@ NEEDS CLARIFICATION — `game-rules-review.md` GRR-144: khi một tín hiệu ch
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 
@@ -1415,7 +1464,7 @@ Admin bấm Sai cho một tín hiệu giải Chướng ngại vật đã đượ
 |---|---|---|---|---|
 | C1 — happy path | Admin bấm Sai | Thí sinh **bị loại khỏi vòng VCNV**; **không** trừ điểm | Đánh dấu thí sinh bị loại | — |
 | C2 — lượt chọn của người bị loại | Người bị loại chưa dùng lượt chọn hàng ngang | Lượt dồn sang vị trí tiếp theo (GR-007) | Cập nhật người tới lượt | — |
-| C3 — điểm hàng ngang đã kiếm | Người bị loại đã được +10 từ hàng ngang trước đó | NEEDS CLARIFICATION — `game-rules-inventory.md` U-24: chưa nói có bị trừ lại không | Không xác định | — |
+| C3 — điểm hàng ngang đã kiếm | Người bị loại đã được +10 từ hàng ngang trước đó | **GIỮ NGUYÊN, không bị trừ lại** (`GRR-022`/`GRR-023`): *"bị loại khỏi phần thi này"* tước **quyền tham gia**, không tước **điểm đã ghi**; nguồn không có mệnh đề trừ điểm. Đóng `U-24` | Điểm không đổi; chỉ đặt cờ bị loại trong phạm vi vòng VCNV | — |
 | C4 — invalid state: người đã bị loại tiếp tục thao tác | Sự kiện đến từ ghế đã bị loại | Máy thí sinh **không hiển thị gì**, bấm **không phản hồi** ⇒ không có tín hiệu nào được tạo | Không đổi | — |
 | C5 — boundary: người cuối cùng bị loại | Mọi thí sinh đều đã bị loại | Chuyển GR-012 | Vòng kết thúc | — |
 | C6 — thi đội | Một thành viên trả lời sai | Loại **cả đội** — luật v2, chưa hiện thực | Đánh dấu cả đội bị loại | — |
@@ -1462,7 +1511,14 @@ Bấm lại nút chấm: KHÔNG XẢY RA — nút khoá sau lần bấm đầu (
 
 ### Concurrency
 
-NEEDS CLARIFICATION — nguồn không quy định điều gì xảy ra khi phán quyết Sai được chốt trong lúc đồng hồ hàng ngang đang chạy, hoặc khi người này đồng thời có một đáp án hàng ngang đang chờ chấm.
+Hai tình huống đồng thời, cả hai đều đã có quy tắc:
+
+| Tình huống | Xử lý | Căn cứ |
+|---|---|---|
+| Phán quyết **Sai** cho Chướng ngại vật được chốt **trong lúc đồng hồ hàng ngang đang chạy** | Đồng hồ **chạy tiếp bình thường**, không dừng, không kéo dài. Câu hàng ngang **tiếp tục** cho những người còn quyền | Nguyên tắc nền điểm 14 (*"tín hiệu không làm gián đoạn đồng hồ"*) · `GRR-108` (*"một người mất quyền ⇒ câu vẫn tiếp tục cho người còn lại"*) |
+| Người vừa bị loại **đang có một đáp án hàng ngang chờ chấm** | Bản đó **vẫn được chấm bình thường** nếu nó được gửi **trước** mốc phán quyết Sai. Máy **không** tự huỷ nó — máy không phán quyết (nguyên tắc nền điểm 1); admin là người quyết | Điểm 1 · `Đ-28` (bản nào cũng giữ lại cho admin phán quyết) |
+
+> Mốc bị loại là mốc **admin bấm**, tuyệt đối, không ân hạn (điểm 2). Mọi thứ trước mốc đó là hợp lệ, sau mốc đó thì nút của người này không còn render (`Đ-16`).
 
 ### Examples
 
@@ -1486,7 +1542,7 @@ NEEDS CLARIFICATION — nguồn không quy định điều gì xảy ra khi phá
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 
@@ -1530,10 +1586,10 @@ Cả 4 hàng ngang đã được hỏi xong mà chưa có thí sinh nào giải 
 | C2 — trả lời đúng câu ô trung tâm | Admin chấm Đúng | **+10**; ô trung tâm được mở | Sinh event điểm; ô trung tâm mở | — |
 | C3 — trả lời sai câu ô trung tâm | Admin chấm Sai | Ô trung tâm **không** được mở; băng điểm Chướng ngại vật **vẫn là 20** | Không sinh điểm | — |
 | C4 — giải đúng Chướng ngại vật sau gợi ý cuối | Trong 15 giây | **+20** | Sinh event điểm; vòng kết thúc | — |
-| C5 — ai được trả lời câu ô trung tâm | Cả sân hay theo lượt | NEEDS CLARIFICATION — `game-rules-inventory.md` U-25 | Không xác định | — |
+| C5 — ai được trả lời câu ô trung tâm | Cả sân hay theo lượt | **Mọi thí sinh CHƯA BỊ LOẠI đều được trả lời** — không theo lượt (`GRR-024`). Câu ô trung tâm **luôn gõ máy**, bất kể mode contest (`GRR-126`). Đóng `U-25` | Ghi nhận đáp án của từng người còn quyền | — |
 | C6 — có hàng ngang không ai trả lời đúng | Miếng ghép của hàng đó không mở | Giai đoạn này **vẫn** tới được — điều kiện là *hàng ngang đã được hỏi*, không phải *miếng ghép đã mở* | Chuyển giai đoạn bình thường | — |
 | C7 — boundary: hết 15 giây không ai giải | Không có tín hiệu giải Chướng ngại vật | Chuyển kết thúc vòng | Vòng khép lại | — |
-| C8 — repeated action: admin bấm mở ô trung tâm hai lần | Ô đã mở, bấm lại | NEEDS CLARIFICATION — nguồn không quy định | Không xác định | — |
+| C8 — repeated action: admin bấm mở ô trung tâm hai lần | Ô đã mở, bấm lại | **KHÔNG TỒN TẠI** — nút một chiều, tự tắt sau khi bấm (`Đ-29`) | Không đổi. Server bỏ qua lệnh trùng (`CLAUDE.md` §Zero-trust) | — |
 
 ### Outcomes
 
@@ -1560,7 +1616,13 @@ Không có lỗi nghiệp vụ được định nghĩa.
 
 ### Evaluation order
 
-NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) chấm câu ô trung tâm, (b) mở ô trung tâm, (c) mở cửa sổ 15 giây để giải Chướng ngại vật. Trình tự này ảnh hưởng ai kịp bấm chuông trong 15 giây đó.
+Thứ tự **tất định vì cả ba đều là mốc admin bấm**, theo mẫu chung `Đ-26`/`Đ-33` — thứ tự các nút chính là thứ tự đánh giá, và nút sau chỉ bật khi nút trước đã bấm:
+
+1. **(a) Chấm câu ô trung tâm** — phán quyết cho từng người còn quyền. Nút "bước kế tiếp" chỉ hiện sau khi đã chấm (nguyên tắc nền điểm 13).
+2. **(b) Mở ô trung tâm** — nút một chiều, tự tắt (`Đ-29`).
+3. **(c) Mở cửa sổ 15 giây** — mốc riêng, bắt đầu đếm từ khi admin bấm (điểm 2: mốc do admin bấm là tuyệt đối).
+
+> *"Ai kịp bấm chuông trong 15 giây"* vì vậy **không phụ thuộc tốc độ thao tác của admin**: cửa sổ mở tại mốc (c) và đóng đúng 15 giây sau mốc đó, chung cho mọi thí sinh còn quyền (`GRR-107`).
 
 ### Boundaries
 
@@ -1575,11 +1637,15 @@ NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) chấm
 
 ### Idempotency
 
-NEEDS CLARIFICATION — thao tác mở ô trung tâm và thao tác đưa ra gợi ý cuối bấm lặp lại chưa được quy định. Riêng nút start timer thì đã có quy tắc: **tự khoá sau lần bấm đầu**.
+Thao tác **mở ô trung tâm** và thao tác **đưa ra gợi ý cuối** đều là **nút thao tác một chiều** ⇒ **tự tắt sau lần bấm đầu** (`Đ-29`), cùng một mẫu với nút start timer. Bấm lặp lại không tồn tại ở giao diện; server bỏ qua lệnh trùng (`CLAUDE.md` §Zero-trust).
 
 ### Concurrency
 
-NEEDS CLARIFICATION — nguồn không quy định điều gì xảy ra khi một tín hiệu giải Chướng ngại vật đến đúng lúc admin đang đưa ra gợi ý cuối. Đây chính là biên giữa băng **30** và băng **20** — chênh lệch 10 điểm, cùng họ với `game-rules-review.md` GRR-142.
+Tín hiệu giải Chướng ngại vật đến **đúng lúc admin đang đưa ra gợi ý cuối**: băng điểm chốt theo trạng thái tại **mốc admin xác nhận tín hiệu** (`Đ-7.c`), **không** theo mốc thí sinh bấm.
+
+- Mốc *"đã đưa gợi ý cuối"* là **một lần bấm của admin** (điểm 2), nên nó có server timestamp rõ ràng — biên giữa băng **30** và băng **20** vì vậy là một so sánh tất định, không phải vùng xám.
+- Hàng đợi **chặn** ở VCNV (điểm 4) ⇒ tín hiệu chờ duyệt **không** tự chuyển băng trong lúc chờ; admin thấy đúng thứ tự tiếp nhận và tự phán quyết.
+- Cùng họ và cùng lời giải với `game-rules-review.md` GRR-142 — xem GR-009 C7.
 
 ### Examples
 
@@ -1604,7 +1670,7 @@ NEEDS CLARIFICATION — nguồn không quy định điều gì xảy ra khi mộ
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 
@@ -1645,10 +1711,10 @@ Mọi thí sinh đều đã ở trạng thái bị loại khỏi vòng VCNV.
 | C2 — admin công bố Chướng ngại vật | Admin bấm thao tác mở toàn bộ | Mở mọi miếng ghép và hiện Chướng ngại vật cho viewer | Trạng thái hiển thị thay đổi | — |
 | C3 — admin không bấm công bố | Admin bỏ qua thao tác này | **Không** phải trạng thái tắc — admin luôn chuyển vòng được | Vòng vẫn kết thúc được | — |
 | C4 — hàng ngang chưa hỏi | Còn 2 hàng ngang chưa được chọn | Bị bỏ; câu tương ứng vẫn tính là **đã dùng** | Câu không trả lại kho đề | — |
-| C5 — repeated action: bấm công bố hai lần | Đã mở toàn bộ, bấm lại | NEEDS CLARIFICATION — nguồn không quy định | Không xác định | — |
+| C5 — repeated action: bấm công bố hai lần | Đã mở toàn bộ, bấm lại | **KHÔNG TỒN TẠI** — nút một chiều, tự tắt sau khi bấm (`Đ-29`) | Không đổi. Server bỏ qua lệnh trùng (`CLAUDE.md` §Zero-trust) | — |
 | C6 — invalid state: tín hiệu đến sau khi vòng đã kết thúc | Thí sinh vẫn bấm chuông | Máy thí sinh **không hiển thị gì**, bấm **không phản hồi** ⇒ không có tín hiệu nào được tạo | Không đổi | — |
 | C7 — boundary: chỉ còn 1 người chưa bị loại | Chưa thoả điều kiện | Vòng chạy tiếp với người đó | Không đổi | — |
-| C8 — điểm hàng ngang đã kiếm | Các thí sinh đã có điểm hàng ngang trước khi bị loại | NEEDS CLARIFICATION — `game-rules-inventory.md` U-24 | Không xác định | — |
+| C8 — điểm hàng ngang đã kiếm | Các thí sinh đã có điểm hàng ngang trước khi bị loại | **GIỮ NGUYÊN cho tất cả** — bị loại tước quyền, không tước điểm (`GRR-022`/`GRR-023`). Kể cả khi **cả sân** bị loại, điểm hàng ngang đã ghi vẫn được mang sang vòng sau. Đóng `U-24` | Điểm không đổi | — |
 
 ### Outcomes
 
@@ -1673,7 +1739,11 @@ Không có lỗi nghiệp vụ được định nghĩa.
 
 ### Evaluation order
 
-NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) đánh dấu vòng kết thúc, (b) bỏ các hàng ngang chưa hỏi, (c) thao tác công bố của admin. Riêng (c) đã được xác nhận là **không bắt buộc** để (a) xảy ra.
+Thứ tự **tất định**: **(c) công bố (nếu admin chọn làm) → (b) bỏ các hàng ngang chưa hỏi → (a) đánh dấu vòng kết thúc.**
+
+- (c) là **tuỳ chọn**, không bắt buộc để (a) xảy ra — admin toàn quyền mở/đóng hiển thị (`C-11` ở `product-discovery`), nhưng vòng vẫn kết thúc được mà không công bố.
+- (b) đứng trước (a) vì hàng ngang chưa hỏi phải được đóng lại **trước** khi vòng chốt; theo `GRR-118`, câu **đã rút nhưng chưa hiển thị** là **chưa tiêu** và **trả lại kho đề**.
+- (a) là mốc cuối, do admin bấm nút kết thúc vòng — nút này chính là nút "Câu kế tiếp" đã chuyển dạng khi hết số câu quy định (nguyên tắc nền điểm 19).
 
 ### Boundaries
 
@@ -1688,11 +1758,21 @@ NEEDS CLARIFICATION — nguồn không quy định thứ tự giữa: (a) đánh
 
 ### Idempotency
 
-NEEDS CLARIFICATION — thao tác công bố Chướng ngại vật của admin bấm lặp lại chưa được quy định; thao tác kết thúc vòng bấm lặp lại cùng dạng `game-rules-review.md` GRR-163.
+Cả hai thao tác — **công bố Chướng ngại vật** và **kết thúc vòng** — là **nút một chiều, tự tắt sau khi bấm** (`Đ-29`); bấm lặp lại không tồn tại ở giao diện, server bỏ qua lệnh trùng (`CLAUDE.md` §Zero-trust). Đóng luôn `game-rules-review.md` GRR-163, vốn cùng dạng.
 
 ### Concurrency
 
-NEEDS CLARIFICATION — nguồn không quy định điều gì xảy ra với các tín hiệu còn nằm trong hàng đợi tại thời điểm vòng kết thúc. Hàng đợi **đang hoạt động** được đặt lại sau mỗi vòng, nhưng lịch sử tín hiệu thì giữ vĩnh viễn.
+Tín hiệu còn nằm trong hàng đợi khi vòng kết thúc: **vô hiệu, nhưng không bị xoá.**
+
+Áp quy tắc vòng đời tín hiệu (`Đ-7.b2`): *tín hiệu gắn với **ĐÍCH** của nó và vô hiệu khi đích đóng.*
+
+| Loại tín hiệu | Đích | Vô hiệu khi |
+|---|---|---|
+| Chọn hàng ngang | **lượt chọn** | Lượt chọn đó kết thúc |
+| Trả lời hàng ngang | **câu** | Câu được chấm xong (điểm 18) |
+| "Mở chướng ngại vật" | **vòng** | Vòng VCNV kết thúc |
+
+> ⇒ Việc *"hàng đợi đang hoạt động đặt lại sau mỗi vòng"* là **hệ quả tự nhiên** của quy tắc trên, không phải một quy tắc riêng. **Lịch sử tín hiệu giữ vĩnh viễn** (nguyên tắc nền điểm 3) — admin vẫn xem lại được để phân xử khiếu nại sau khi vòng đã đóng.
 
 ### Examples
 
@@ -2029,7 +2109,7 @@ Nếu thí sinh gửi lại giữa admin chấm câu khác: server phải hỗ t
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Định nghĩa thứ tự nào thí sinh được thi lượt đầu tiên, tiếp theo, ở vòng Về đích. Thứ tự tính lại sau mỗi lượt hoàn thành.
@@ -2069,7 +2149,7 @@ Bắt đầu vòng Về đích, hoặc sau khi một lượt Về đích hoàn t
 | C1 | Sau TT: A=110đ/pos1, B=90đ/pos2, C=80đ/pos3, D=70đ/pos4 | Lượt 1: A (điểm cao nhất 110) | UI recommend A, admin xác nhận | — |
 | C2 | Sau TT: A=110đ/pos2, B=110đ/pos1, C=90đ/pos3, D=80đ/pos4 | Lượt 1: B (110 điểm, hoà A nhưng pos 1 < pos 2) | Recommend B (tie-break = position) | — |
 | C3 | Sau lượt 1 (A thi), A có −20 (sai cướp): A=90đ/pos1, B=110đ/pos2, C=80đ/pos3, D=70đ/pos4 | Lượt 2: B (110đ, cao nhất giây) | Tính lại ranking sau lượt 1 → recommend B | — |
-| C4 | **NEEDS CLARIFICATION** — 4 TS hoà điểm: A/B/C/D =100đ với pos 1/2/3/4 | **Tie-break theo "vị trí thấp nhất" = A (pos 1)** | Recommend A, nhưng tie-break luật (R-VD-02) chưa định nghĩa "vị trí" = ghế hay thứ hạng (U-27) | Chưa chốt "vị trí" là gì |
+| C4 | 4 TS hoà điểm: A/B/C/D =100đ với pos 1/2/3/4 | **Tie-break theo "vị trí thấp nhất" = A (pos 1)** | **`"vị trí"` = SỐ THỨ TỰ 1..N do BỐC THĂM** — không phải số ghế, không phải thứ hạng điểm (`GRR-040`). *"Vị trí đứng thấp nhất"* = **số vị trí NHỎ NHẤT**. Đóng `U-27` và `U-17` | — |
 | C5 | Admin override recommendation: B có 90đ nhưng A có 110đ → admin chọn B thi lượt 1 | Chạy lượt B (không đúng recommendation) | **Dialog cảnh báo** (Đ-5): "thứ tự sai, vẫn thực hiện?" → admin Yes | Conflict luật (cảnh báo, không chặn) |
 
 ### Outcomes
@@ -2090,7 +2170,9 @@ Bắt đầu vòng Về đích, hoặc sau khi một lượt Về đích hoàn t
 
 ### Error outcomes
 - **Tất cả người đã thi (chưa lấy từ "chưa thi")**: không còn lượt → chuyển tie-break hoặc kết thúc (hệ thống không chặn cứng, admin quyết, Đ-5.1)
-- **Tie-break toàn bộ** (4 người hoà): **NEEDS CLARIFICATION** (U-27, U-17)
+- **Tie-break toàn bộ** (4 người hoà): giải được — `"vị trí"` là **số bốc thăm 1..N**, người có số nhỏ nhất đi trước (`GRR-040`). Đóng `U-27`, `U-17`.
+
+> `"Vị trí"` là một **giá trị dữ liệu của ghế trong contest**, đặt trước trận và không đổi giữa trận. **Quy trình bốc thăm ngoài đời** diễn ra khi nào so với lúc dựng contest là câu hỏi vận hành, ghi ở `Đ-4.5a` — nó **không** ảnh hưởng luật tie-break ở đây.
 
 ### Evaluation order
 1. Tính điểm tích luỹ hiện tại của mỗi TS: `score[i] = sum(events từ Khởi động → Tăng tốc)`
@@ -2133,7 +2215,7 @@ Server tính lại ranking giữa các lượt: phải lấy snapshot điểm **
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Quy định thí sinh chọn 3 câu từ 2 mức điểm {20, 30} để tạo thành gói cá nhân trước khi bắt đầu thi lượt đó.
@@ -2174,7 +2256,7 @@ TS bước vào màn chọn gói, hoặc tới lượt mà TS chưa chọn.
 | C1 | TS chọn 20/20/20 | Hệ thống chấp nhận, chuẩn bị draw 3 câu từ pool 20đ | `MatchState.packageChoice[seat] = [20, 20, 20]` · pool lock để reserve 3 câu 20đ | — |
 | C2 | TS chọn 20/30/30 | Hệ thống chấp nhận (phối hợp hợp lệ) | `packageChoice[seat] = [20, 30, 30]` · lock reserve 1 câu 20đ + 2 câu 30đ | — |
 | C3 | TS chưa chọn khi tới lượt (lượt bắt đầu) | **Admin chọn hộ: default 20/20/20** | `packageChoice[seat] = [20, 20, 20]` · admin có thể override trong dialog | — |
-| C4 | **NEEDS CLARIFICATION** — TS có thể đổi gói sau khi chọn không? | Hiện không có định nghĩa → assume không đổi được (chốt khi lựa chọn) | `packageChoice` lock, chỉ nở lại ở lượt tiếp theo (nếu có) | — |
+| C4 | TS có thể đổi gói sau khi chọn không? | **ĐỔI ĐƯỢC, cho tới mốc admin bấm "hiển thị câu đầu tiên của gói"** (`GRR-054`) | `packageChoice` **last-wins** tới mốc đó, rồi khoá. Mốc này đã tồn tại sẵn (`Đ-26`) và có đúng ý nghĩa cần thiết: **đề đã rời server**, không thể đổi ngược | — |
 
 ### Outcomes
 - **Chấp nhận**: ghi nhận lựa chọn, chuẩn bị draw 3 câu
@@ -2210,7 +2292,9 @@ TS bước vào màn chọn gói, hoặc tới lượt mà TS chưa chọn.
 - **Số câu ≥ 4**: UI reject (maximum 3)
 
 ### Idempotency
-Chọn 2 lần gói {20/30/30} → giữ lựa chọn đầu tiên (không cập nhật). Chọn **đổi** lựa chọn: **NEEDS CLARIFICATION** (U-26).
+Chọn nhiều lần trước mốc khoá: **last-wins** — bản chọn cuối cùng có hiệu lực, cùng ngữ nghĩa với nút gửi đáp án (nguyên tắc nền điểm 21: *"đáp án là thứ sửa được; chỉ đồng hồ/mốc mới đóng cửa"*). Chọn **đổi** gói: **được, cho tới mốc admin bấm hiển thị câu đầu tiên** (`GRR-054`). Đóng `U-26`.
+
+> Chọn gói **không phải chuông** — nó không đua tốc độ, nên không áp `Đ-29`/điểm 16 (*"bấm xong thì tắt"*).
 
 ### Concurrency
 Hai TS chọn cùng lúc: không có ảnh hưởng (mỗi TS riêng pool, chỉ pre-flight worst-case check toàn trận).
@@ -2466,7 +2550,7 @@ Khi người thi chính trả lời sai (hoặc hết giờ) câu Về đích, 3
 ### Actors
 - 3 TS còn lại: bấm chuông trong 5s (RO không áp — không nhịp chơi này)
 - Server: ghi nhận timestamp, xếp hạng (first-come / first-buzz)
-- Admin: chấm Đúng/Sai của người cướp (hoặc **NEEDS CLARIFICATION**: chấm cũng chưa chốt xử lý cần thiều để auto)
+- Admin: chấm Đúng/Sai của người cướp. **Không có nhánh tự chấm nào** — trong trận chính thức máy không bao giờ tự công nhận hay bác bỏ đáp án (nguyên tắc nền điểm 1, `Đ-1`)
 
 ### Related states
 - Vòng Về đích, người thi chính vừa **chấm Sai** (hoặc timeout)
@@ -2881,7 +2965,7 @@ Bắt đầu vòng Câu hỏi phụ (admin bấm start TIE_BREAK)
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Định nghĩa hình phạt và cơ chế khi thí sinh bấm chuông trước khi MC phát hiệu lệnh bắt đầu.
@@ -2962,7 +3046,7 @@ Thí sinh bấm chuông trong khoảng thời gian MC đang đọc câu hỏi (t
 
 ### Idempotency
 - Mỗi tín hiệu chuông = 1 entry trong lịch sử (append-only)
-- Admin bấm gỡ lệnh cấm: 1 lần gỡ = gỡ được (không re-gỡ); nếu bấm gỡ lần 2 = no-op (NEEDS CLARIFICATION — không có rule ghi idempotency của thao tác gỡ cấm)
+- Admin bấm **gỡ lệnh cấm**: nút một chiều, **tự tắt sau khi bấm** (`Đ-29`) ⇒ không có lần bấm thứ hai ở giao diện; server bỏ qua lệnh gỡ trùng (`CLAUDE.md` §Zero-trust). *(Còn treo, KHÔNG chặn rule này: thao tác gỡ có sinh **event hoàn nguyên** và có cần **dialog xác nhận** không — `Đ-6.3c`, đề xuất là **có event, không dialog**. Đây là chi tiết ghi log/giao diện, không đổi outcome của GR-024)*
 
 ### Concurrency
 - Hai thí sinh bấm sớm cùng lúc: cả hai bị cấm (timestamp < start-timer cho cả hai)
@@ -2986,7 +3070,7 @@ Thí sinh bấm chuông trong khoảng thời gian MC đang đọc câu hỏi (t
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Định nghĩa cơ chế khi hoàn tất 3 câu hỏi phụ nhưng vẫn chưa xác định được người thắng.
@@ -3024,13 +3108,14 @@ Kết thúc câu hỏi thứ 3 của tie-break, không có thí sinh nào trả 
 |---|---|---|---|---|
 | C1 — 3 câu chưa ai đúng, 2+ người | Kết quả 3 câu = [sai/sai/sai] hoặc [timeout/timeout/timeout] | **Bốc thăm** random (admin xác nhận) | Server sinh random ID | — |
 | C2 — Admin xác nhận bốc thăm | Admin bấm Yes trên kết quả random | Người bốc trúng = **NHẤT** (vị trí tie-break) | Match: TIE_BREAK → FINISHED · Thứ hạng final: người bốc trúng = 1 | — |
-| C3 — Admin bấm "bốc lại" | Admin muốn random lại (mạng lag, server hỏng) | **Bốc thăm lần 2** (random mới) | Event lịch sử ghi **cả lần 1 và lần 2** (append-only) · Chỉ lần cuối cùng = người NHẤT | NEEDS CLARIFICATION (`game-rules-review.md` GRR-157): kết quả bốc lần 2 có vào event không, hay coi lần 1 vô hiệu |
+| C3 — Admin bấm "bốc lại" | Admin muốn random lại (mạng lag, server hỏng) | **Bốc thăm lần 2** (random mới) | **Cả hai lần đều là event thật trong log** (append-only, nguyên tắc nền điểm 6 — lịch sử linear, không bao giờ xoá). **Lần cuối cùng có hiệu lực**; lần 1 **không bị đánh dấu vô hiệu**, nó chỉ bị một event sau ghi đè kết quả. Đóng `game-rules-review.md` GRR-157 | — |
 | C4 — Pool câu phụ cạn | Không đủ 3 câu cho vòng Câu hỏi phụ | **KHÔNG BẮT ĐẦU ĐƯỢC vòng Câu hỏi phụ** — pre-flight chặn tại cửa vào vòng. Không tồn tại tình huống cạn giữa vòng | Vòng không mở; các vòng khác vẫn bắt đầu được | — |
 
 ### Outcomes
 - **Bốc thăm**: Server / admin xác nhận 1 người từ nhóm = người thắng vị trí NHẤT
 - **Kết quả chốt**: Kết quả bốc thăm là **tối sau cùng**, không được undo (event append-only, Đ-5.3)
-- **Lịch sử bất biến**: Nếu bốc lại, cả lần 1 và lần 2 được ghi trong event log (NEEDS CLARIFICATION nếu là cái nào có hiệu lực)
+- **Lịch sử bất biến**: nếu bốc lại, **cả lần 1 và lần 2 đều nằm trong event log**; **lần cuối cùng có hiệu lực** (điểm 6). Không có khái niệm *"huỷ lần 1"* — sửa kết quả chỉ bằng cách thêm event sau
+- **Nhóm hoà không được phân định**: nếu admin **không** chọn phân định một nhóm, các thành viên nhóm đó ghi **ĐỒNG HẠNG** (`GRR-057`/`Đ-10.7a` — theo standard competition ranking đã duyệt ở `GRR-032`)
 
 ### State changes
 - MatchEvent: thêm event "TIEBREAK_DRAW" hoặc tương tự (ghi kết quả bốc)
@@ -3045,7 +3130,7 @@ Kết thúc câu hỏi thứ 3 của tie-break, không có thí sinh nào trả 
 ### Error outcomes
 - Pool câu phụ không đủ: vòng không mở được; admin chuyển sang phương án ngoài hệ thống hoặc bổ sung đề rồi mở lại
 - RNG hỏng: Fallback sang admin quyết định (advisory)
-- Bấm bốc lại khi đã confirm (`game-rules-review.md` GRR-160): NEEDS CLARIFICATION — làm lại random hay no-op
+- Bấm bốc lại khi đã confirm (`game-rules-review.md` GRR-160): **nút bốc thăm là nút một chiều, tự tắt sau khi bấm** (`Đ-29`). *"Bốc lại"* là **một thao tác riêng, có dialog Yes/No** (thao tác không hoàn tác được ⇒ `CLAUDE.md` §UX), sinh **event mới**, không phải bấm trùng nút cũ
 
 ### Evaluation order
 1. Câu 3 đóng, server kiểm tra: có ai trả lời đúng không?
@@ -3062,7 +3147,7 @@ Kết thúc câu hỏi thứ 3 của tie-break, không có thí sinh nào trả 
 - **Pool tie-break = 0 câu còn lại**: không mở được vòng Câu hỏi phụ
 
 ### Idempotency
-- Mỗi lần bấm "Bốc thăm" sinh 1 random event mới (NEEDS CLARIFICATION — không rõ nó có idempotency không)
+- Mỗi lần bấm "Bốc thăm" sinh **1 random event mới** — thao tác này **KHÔNG idempotent theo thiết kế**, và đó là chủ đích: mục đích của "bốc lại" chính là ra một kết quả khác. Chống bấm trùng ngoài ý muốn nằm ở `Đ-29` (nút tự tắt) + dialog Yes/No, **không** nằm ở dedup phía server
 - Nếu admin bấm "Yes" trên kết quả bốc lần 1 rồi bấm lại "Yes" (lag) → lần 2 là no-op (đã xác nhận rồi)
 
 ### Concurrency
@@ -3086,7 +3171,7 @@ Kết thúc câu hỏi thứ 3 của tie-break, không có thí sinh nào trả 
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Định nghĩa quyền và cơ chế phán quyết Đúng/Sai của admin, phân biệt giữa trận chính thức (official) và tự luyện tập (practice).
@@ -3164,8 +3249,8 @@ Một thí sinh gửi đáp án (submission)
 - **Ở practice: autoJudge là default, admin có thể override** (ngoài v1)
 
 ### Error outcomes
-- **Không rõ câu miệng vs câu gõ** (NEEDS CLARIFICATION — U-7): ở official cả hai đều admin chấm; ở practice, máy chỉ so khớp text
-- **Practice gặp câu MIỆNG** (NEEDS CLARIFICATION — U-38): autoJudge không chấm được câu miệng; có bị skip hay admin chấm manually?
+- **Câu miệng vs câu gõ** (`U-7` — ĐÓNG): kênh trả lời **không phải thuộc tính của câu hỏi**, nó là **mode của contest** (`Đ-4`) cộng với hai vòng luôn gõ máy (VCNV, Tăng tốc). Ở trận chính thức **cả hai kênh đều do admin chấm** (nguyên tắc nền điểm 1) ⇒ phân biệt này **không đổi outcome của GR-026**, nó chỉ đổi việc có gì để highlight hay không (`GR-027`). Các rule *"ghi nhận đáp án đầu/cuối"*, *"timestamp đáp án"*, *"highlight"* **không bị xoá ở mode sân khấu, chỉ không được kích hoạt** (`GRR-131`)
+- **Practice gặp câu MIỆNG** (`U-38` — ĐÓNG): **không tồn tại tình huống này.** Practice **khoá về mode nhập liệu** (`GRR-127`), vì mode sân khấu cần người nghe. Practice thuộc **v1.5**; v1 luôn có người điều khiển nên mọi câu đều có admin chấm
 - **Câu chưa chấm không thể bị bỏ lại**: phán quyết là **điều kiện để chuyển sang câu tiếp theo**, nên không tồn tại trạng thái "vòng đã đóng mà còn câu chưa chấm" ở các vòng hỏi tuần tự. Riêng vòng xếp hạng (Tăng tốc), việc chuyển câu khi **mới chấm một phần** số thí sinh vẫn chưa được quy định — xem `game-rules-review.md` GRR-162.
 
 ### Evaluation order
@@ -3245,7 +3330,7 @@ Thí sinh gửi đáp án (submission)
 |---|---|---|---|---|
 | C1 — Khớp chính xác sau normalize | Submission "  HUẾ  " vs ans "Huế", case-insensitive + trim ON | **Highlight = KHÔNG CÓ khác biệt** (100% match) | UI: "Khớp đúng chính tả" (gợi ý) · Admin có thể bấm C | — |
 | C2 — Khác 1 ký tự | Submission "Hué" vs ans "Huế", stripDiacritics OFF | **Highlight = ký tự khác** (dấu ') | UI: "Khác chỗ: ký tự 2" · Admin bấm C hoặc X tùy MC | — |
-| C3 — Khác 1 ký tự, bỏ dấu ON | Submission "Hue" vs ans "Huế", stripDiacritics ON | **Highlight = không khác** (dấu bỏ qua) | UI: "Khớp nếu bỏ dấu" (gợi ý tuỳ chọn) | CONFLICT (K-6): F26 yêu cầu "dấu sai → không công nhận", nhưng bỏ dấu ON → coi như đúng |
+| C3 — Khác 1 ký tự, bỏ dấu ON | Submission "Hue" vs ans "Huế", stripDiacritics ON | **Highlight = không khác** (dấu bỏ qua) | UI: "Khớp nếu bỏ dấu" (gợi ý tuỳ chọn) | **`K-6` ĐÃ TAN — không còn là conflict.** F26 (*"dấu sai → không công nhận"*) nói về **PHÁN QUYẾT**, còn `stripDiacritics` chỉ đổi **CÁCH TÔ MÀU**. Vì máy không phán quyết (nguyên tắc nền điểm 1), hai phát biểu không cùng đối tượng nên không thể mâu thuẫn: bỏ dấu ON nghĩa là *"đừng tô đỏ chỗ khác dấu"*, **không** nghĩa là *"công nhận đúng"*. Admin vẫn chấm Sai theo F26 nếu muốn |
 | C4 — Khác từ ngữ | Submission "Thành phố Huế" vs ans "Huế" | **Highlight = từ thêm/thiếu** (mỗi từ khác) | UI: "Có từ thêm: Thành phố" · Admin quyết | — |
 | C5 — Trống / timeout | Submission = "" hoặc không gửi | **Không highlight** (không so khớp) | UI: "Không có đáp án" · Gợi ý = N/A | — |
 
@@ -3424,7 +3509,7 @@ Không xảy ra — **mỗi contest chỉ có MỘT admin duy nhất**, nên kh�
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Định nghĩa cơ chế điều chỉnh điểm (SCORE_ADJUST) do admin quyết định, độc lập với việc revert event chấm điểm, không tự revert khi bỏ vòng.
@@ -3463,9 +3548,9 @@ Admin chọn "Chỉnh điểm tay" hoặc tương tự (nút thủ công)
 |---|---|---|---|---|
 | C1 — Chỉnh +5 | Admin: delta=+5, reason="sửa nhầm câu 2", seat=A | Event: `{type: SCORE_ADJUST, delta: +5, reason: '…', seat: A}` · Score A += 5 | MatchEvent += event · Audit: ghi admin + reason + ts | — |
 | C2 — Chỉnh −10 | Admin: delta=−10, reason="câu thực hành admin chấm sai", seat=B | Event: `{type: SCORE_ADJUST, delta: −10, reason: '…', seat: B}` · Score B += (−10) = −10 nếu Ban đầu 0 | MatchEvent += event · Score cho phép âm (Đ-2) | — |
-| C3 — Chỉnh delta=0 | Admin nhập delta=0, reason="..." | **No-op**: không sinh event (delta=0) hoặc **sinh event để ghi lịch sử** (phụ thuộc design) | NEEDS CLARIFICATION — không rõ delta=0 có event không | — |
+| C3 — Chỉnh delta=0 | Admin nhập delta=0, reason="..." | **SINH EVENT** | Điểm không đổi, nhưng event **vẫn được ghi**: lịch sử là append-only và không bao giờ xoá (nguyên tắc nền điểm 6), còn ô **lý do** là **kênh duy nhất** ghi được xuất xứ một quyết định (`S-14` chốt AuditLog không có trường *"người yêu cầu"*). Một điều chỉnh delta=0 kèm lý do chính là **một ghi chú chính thức vào biên bản trận** — vứt nó đi là vứt mất dữ liệu phân xử | — |
 | C4 — Chỉnh ngay sau bỏ vòng | Admin chỉnh +3 cho A sau khi bỏ VCNV | **Chỉnh vẫn có hiệu lực** — không tự revert theo bỏ vòng (Đ-11.B) | MatchEvent: vòng bị revert + event chỉnh riêng · Điểm được tính lại từ event log | — |
-| C5 — Bỏ vòng **sau** chỉnh | Admin chỉnh +5 cho A, sau đó bỏ vòng Khởi động | **Chỉnh vẫn giữ**: bỏ vòng revert sự kiện Khởi động nhưng **không revert SCORE_ADJUST** (Đ-11.B) | MatchEvent: revert KĐ events, SCORE_ADJUST vẫn ở | NEEDS CLARIFICATION (`game-rules-review.md` GRR-159): chỉnh "mồ côi" khi bỏ vòng sau đó |
+| C5 — Bỏ vòng **sau** chỉnh | Admin chỉnh +5 cho A, sau đó bỏ vòng Khởi động | **Chỉnh vẫn giữ**: bỏ vòng revert sự kiện Khởi động nhưng **không revert SCORE_ADJUST** (Đ-11.B) | MatchEvent: revert KĐ events, SCORE_ADJUST vẫn ở | **Điều chỉnh "mồ côi" là hành vi ĐÚNG, không phải lỗi** (`GRR-159`). `GRR-117` chốt: bỏ/chạy lại vòng hoàn nguyên **các trạng thái sinh bởi event CỦA VÒNG ĐÓ**; `SCORE_ADJUST` là event **của admin**, không thuộc vòng nào ⇒ nằm ngoài phạm vi hoàn nguyên. Muốn bỏ nó thì hoàn nguyên **chính nó**, như mọi event khác |
 
 ### Outcomes
 - **Event vào MatchEvent** với delta + reason + admin ID
@@ -3503,7 +3588,13 @@ Admin chọn "Chỉnh điểm tay" hoặc tương tự (nút thủ công)
 - **Tần suất**: không limit (admin chỉnh mấy lần cũng được, mỗi lần 1 event)
 
 ### Idempotency
-Nếu admin bấm chỉnh lần 2 (lag), **lần 2 = event mới** (NEEDS CLARIFICATION — không rõ có dedup không). Khác với JUDGE (dedup per Đ-3.3).
+Nếu admin bấm chỉnh lần 2 (lag), **lần 2 = event mới** — thao tác này **KHÔNG dedup**, khác với JUDGE (dedup per `Đ-3.3`), và đó là **chủ đích**: hai lần chỉnh +5 liên tiếp là một yêu cầu hợp lệ (tổng +10), máy không có cách nào phân biệt nó với một cú bấm trùng do lag.
+
+Chống bấm trùng ngoài ý muốn nằm ở **giao diện**, không ở dedup phía server:
+
+- Nút xác nhận điều chỉnh là **nút một chiều, tự tắt sau khi bấm** (`Đ-29`).
+- Điều chỉnh điểm là thao tác **không hoàn tác được** ⇒ đi qua **dialog Yes/No** (`CLAUDE.md` §UX).
+- **Bắt nhập lý do** (`R-GEN-07`) — một bước gõ tay nữa khiến bấm trùng do lag gần như không xảy ra.
 
 ### Concurrency
 Không có hai admin nên các lần điều chỉnh luôn tuần tự; nhiều lần điều chỉnh liên tiếp cộng dồn theo thứ tự bấm
@@ -3526,7 +3617,7 @@ Không có hai admin nên các lần điều chỉnh luôn tuần tự; nhiều 
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Định nghĩa cơ chế bỏ hẳn một vòng hoặc chạy lại vòng, bao gồm revert điểm, quản lý pool đề, và lịch sử audit.
@@ -3567,7 +3658,7 @@ Admin chọn "Bỏ vòng" hoặc "Chạy lại vòng" (nút thủ công)
 | C2 — Chạy lại vòng VCNV | Admin bấm "Chạy lại VCNV" → dialog Yes | Pool check OK → reset queue, mở lại VCNV, admin chọn lại từ đầu | MatchEvent: REVERT VCNV events + reset queue · Playlist: vòng VCNV "đã chạy lại" | Nếu pool không đủ → pre-flight chặn |
 | C3 — Bỏ vòng nhưng SCORE_ADJUST ở vòng đó | Admin bỏ KĐ (KĐ events revert), nhưng có +5 SCORE_ADJUST gắn KĐ | **SCORE_ADJUST KHÔNG tự revert** (Đ-11.B) | MatchEvent: revert KĐ events, SCORE_ADJUST vẫn ở | Ví dụ `game-rules-review.md` GRR-159 |
 | C4 — Bỏ vòng B khi vòng A chưa xong (`game-rules-review.md` GRR-164) | Admin mở vòng B khi vòng A còn tín hiệu chờ duyệt | **Advisory**: cảnh báo "vòng A chưa kết thúc", admin bấm Yes/No ⇒ vẫn thực hiện | Match state: A → B (admin quyết định thứ tự) | Không hard-block (advisory mode, Đ-1.2) |
-| C5 — Bỏ vòng hai lần (lag) | Admin bấm "Bỏ VCNV" lần 1, bấm lại lần 2 | **Lần 2 là lặp lại revert?** NEEDS CLARIFICATION (`game-rules-review.md` GRR-160) | Nếu no-op: điểm không đổi · Nếu revert lần 2: điểm tụt gấp đôi | NEEDS CLARIFICATION — Đ-3.3 chỉ dedup JUDGE, không cover REVERT |
+| C5 — Bỏ vòng hai lần (lag) | Admin bấm "Bỏ VCNV" lần 1, bấm lại lần 2 | **NO-OP — điểm KHÔNG tụt gấp đôi** (`GRR-160`) | Ba lớp chặn độc lập: **(1)** nút "Bỏ vòng" là nút một chiều, **tự tắt sau khi bấm** (`Đ-29`); **(2)** bỏ vòng thuộc **hạng phá huỷ** ⇒ dialog Yes/No **không tắt được** và **bắt nhập lý do**, nên không thể là cú bấm phản xạ; **(3)** server từ chối lệnh bỏ vòng cho một vòng **đã ở trạng thái đã bỏ** — đây là **INVALID STATE**, không phải dedup (`CLAUDE.md` §Zero-trust) | — |
 
 ### Outcomes
 - **Bỏ vòng**: Điểm bị revert (event đảo ngược), biên bản nhãn "đã bỏ", câu đã dùng KHÔNG trả lại (Đ-5.2f)
@@ -3591,7 +3682,7 @@ Admin chọn "Bỏ vòng" hoặc "Chạy lại vòng" (nút thủ công)
 ### Error outcomes
 - **Pool cạn**: chạy lại vòng cũng phải qua **cửa vào vòng** — thiếu câu thì không chạy lại được vòng đó
 - **Vòng chưa kết thúc**: `game-rules-review.md` GRR-164 cảnh báo (không hard-block)
-- **Bỏ vòng bấm 2 lần** (`game-rules-review.md` GRR-160): NEEDS CLARIFICATION — có no-op hay revert lại
+- **Bỏ vòng bấm 2 lần** (`game-rules-review.md` GRR-160): **no-op** — vòng đã ở trạng thái *"đã bỏ"* thì lệnh bỏ lần nữa là thao tác ở **invalid state**, server từ chối. Xem C5
 
 ### Evaluation order
 1. Admin chọn vòng
@@ -3614,7 +3705,16 @@ Admin chọn "Bỏ vòng" hoặc "Chạy lại vòng" (nút thủ công)
 - **Số lần chạy lại**: không limit (admin chạy mấy lần cũng được, miễn pool còn)
 
 ### Idempotency
-Bấm "Bỏ vòng" lần 2 (lag): NEEDS CLARIFICATION (`game-rules-review.md` GRR-160) — nó có dedup không, hay sinh revert event thứ 2 (điểm tụt gấp đôi)
+Bấm "Bỏ vòng" lần 2 (lag): **no-op, không sinh revert event thứ hai, điểm không tụt gấp đôi.**
+
+Cần phân biệt rõ hai cơ chế — `Đ-3.3` chỉ dedup `JUDGE` và **không** cần mở rộng sang `REVERT`:
+
+| Cơ chế | Áp cho | Vì sao đủ ở đây |
+|---|---|---|
+| **Dedup** (hai lệnh giống nhau, giữ một) | `JUDGE` | Không dùng cho bỏ vòng |
+| **INVALID STATE** (lệnh không hợp lệ ở trạng thái hiện tại) | Bỏ vòng, chạy lại vòng | Vòng **đã bỏ** không còn là mục tiêu của lệnh bỏ ⇒ lệnh bị từ chối bất kể nó là bấm trùng hay bấm mới (nguyên tắc nền điểm 9) |
+
+> Cùng cách này áp cho **chạy lại vòng**: mỗi lần chạy lại là một **lần chạy mới có chủ đích**, không phải bấm trùng — nên nó **không** bị dedup, mà bị chặn bởi dialog hạng phá huỷ và cửa kiểm kho đề (`Đ-31`).
 
 ### Concurrency
 Không xảy ra — **mỗi contest chỉ có MỘT admin duy nhất**, nên không tồn tại hai luồng thao tác admin đồng thời
@@ -3638,7 +3738,7 @@ Không xảy ra — **mỗi contest chỉ có MỘT admin duy nhất**, nên kh�
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Định nghĩa cơ chế rút ngẫu nhiên câu hỏi từ pool, và quy tắc không lặp lại câu trong toàn bộ contest (qua nhiều match).
@@ -3688,7 +3788,7 @@ Admin bấm "start trận" (LOBBY → vòng đầu) hoặc đầu mỗi turn khi
 - **Câu rút được ghi dấu** `usedInContest = true` (mềm, không phải xoá)
 - **Event `QUESTIONS_DRAWN`** ghi rõ qid + timestamp (để replay)
 - **Pool effective giảm** (loại câu `usedInContest`)
-- **Câu skip cũng tiêu pool** (Đ-5.2f): nếu bỏ qua lượt → câu đã hiển thị set cờ `usedInContest` (NEEDS CLARIFICATION — chưa rõ "đã dùng" = đã hiện hay đã chấm)
+- **Câu skip cũng tiêu pool** (Đ-5.2f): **`"đã dùng"` = ĐÃ HIỂN THỊ cho thí sinh**, không phải *"đã chấm"* (`GRR-085`) ⇒ câu bị bỏ qua sau khi đã hiện vẫn set cờ `usedInContest`. Ngược lại, câu **đã rút nhưng CHƯA hiển thị** là **chưa tiêu, trả lại kho** (`GRR-118`). Đóng `U-30`
 
 ### State changes
 - MatchEvent: +1 `QUESTIONS_DRAWN` event (per turn rút)
@@ -3704,7 +3804,7 @@ Admin bấm "start trận" (LOBBY → vòng đầu) hoặc đầu mỗi turn khi
 ### Error outcomes
 - **Pool cạn trước start** (pre-flight chặn): Người tạo contest chưa gán đủ câu hoặc contest dùng pool chia sẻ quá tải
 - **Pool cạn giữa vòng**: không tồn tại — pre-flight chạy tại cửa vào **từng vòng**
-- **Câu skip**: NEEDS CLARIFICATION (U-30 — "đã dùng" = hiện hay chấm)
+- **Câu skip**: `"đã dùng"` = **đã hiển thị** (`GRR-085`); rút mà chưa hiện thì trả lại kho (`GRR-118`). Ranh giới trùng đúng mốc `Đ-26` (*admin bấm hiển thị câu hỏi*) — cùng một mốc phục vụ cả ba rule. Đóng `U-30`
 
 ### Evaluation order
 1. Admin chọn câu hỏi trước start (kho đề → full-text search → filter → sort → snapshot vào match config) ← **PHẢI làm trước khi start** (R-KD-07)
@@ -3723,7 +3823,7 @@ Admin bấm "start trận" (LOBBY → vòng đầu) hoặc đầu mỗi turn khi
 - **Phạm vi no-repeat**: Toàn contest (global `usedInContest` flag)
 
 ### Idempotency
-- Mỗi call "rút câu" (draw) → **sinh 1 `QUESTIONS_DRAWN` event**; nếu admin bấm draw lại (lag), lần 2 = **event riêng** (NEEDS CLARIFICATION — không rõ có dedup không)
+- Mỗi call "rút câu" (draw) → **sinh 1 `QUESTIONS_DRAWN` event**; nếu admin bấm draw lại (lag), lần 2 = **event riêng**, **không dedup**. Điều này **an toàn** nhờ `GRR-118`: câu của lần rút thứ nhất **chưa hiển thị** ⇒ **chưa tiêu, trả lại kho** ⇒ bấm trùng không làm hao pool. Chống bấm trùng ngoài ý muốn vẫn nằm ở `Đ-29` (nút một chiều tự tắt)
 - Event log ghi hết → replay được thứ tự câu
 
 ### Concurrency
@@ -3746,7 +3846,7 @@ Không có hai luồng điều khiển đồng thời (**một admin duy nhất 
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Tất cả tín hiệu từ thí sinh phải vào hàng đợi theo thứ tự thời gian server, không có cơ chế bỏ tín hiệu. Admin lựa chọn duyệt hoặc từ chối từng tín hiệu tùy vòng. Việc reject một tín hiệu không làm thí sinh mất lượt của mình.
@@ -3851,8 +3951,13 @@ Tất cả tín hiệu từ thí sinh phải vào hàng đợi theo thứ tự t
 - VCNV (queue chặn): không có xung đột vì admin duyệt tuần tự
 - Khởi động chung, cướp quyền: hai tín hiệu cùng ms → **hàng đợi tự quyết định, ngẫu nhiên**; thứ tự được ghi lại nên dựng lại được
 
-**Hai loại tín hiệu trong queue chặn (VCNV)**: Chọn hàng ngang và "Mở chướng ngại vật" cùng queue (`game-rules-review.md` GRR-144 — NEEDS CLARIFICATION):
-- FIFO hay ưu tiên loại nào? Chưa định nghĩa
+**Hai loại tín hiệu trong queue chặn (VCNV)**: chọn hàng ngang và "Mở chướng ngại vật" dùng **chung một hàng đợi**, xử lý **FIFO thuần theo server timestamp** — **KHÔNG** ưu tiên theo loại (`game-rules-review.md` GRR-144).
+
+- Căn cứ: nguyên tắc nền điểm 3 — *"mọi tín hiệu của thí sinh đều vào hàng đợi theo server timestamp"*. Không có mệnh đề nào cho phép sắp xếp lại theo loại, và thêm quy tắc ưu tiên sẽ tạo một tiêu chí mà thí sinh không quan sát được.
+- Hai tín hiệu **cùng mốc**: hàng đợi tự quyết **ngẫu nhiên** (điểm 15), như mọi chỗ khác.
+- **Băng điểm Chướng ngại vật không bị ảnh hưởng** bởi lựa chọn này: queue **chặn** ở VCNV nên tín hiệu chọn hàng ngang đang chờ duyệt chưa làm tăng số hàng đã mở; băng chốt tại **mốc admin xác nhận** (`Đ-7.c`). Xem GR-009 C7.
+
+**Vòng đời tín hiệu** (`Đ-7.b2`): *tín hiệu gắn với **ĐÍCH** của nó và vô hiệu khi đích đóng* — chọn hàng ngang gắn với **lượt chọn**, trả lời gắn với **câu**, "Mở chướng ngại vật" gắn với **vòng**. Việc hàng đợi đang hoạt động được đặt lại theo vòng/câu là **hệ quả** của quy tắc này, không phải quy tắc riêng. **Lịch sử tín hiệu không bao giờ bị xoá** (điểm 3).
 
 ### Examples
 
@@ -4155,7 +4260,7 @@ Nút bấm chuông (để giành quyền trả lời) chỉ nhận tín hiệu t
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Tất cả timeout, thứ tự chuông, thứ hạng tốc độ, và mốc thời gian quyết định trong trận đều tính theo đồng hồ server. Client chỉ hiển thị; không ai sửa được server time. Đây là nguyên tắc nền để đảm bảo công bằng và tái lập được lịch sử trận.
@@ -4219,7 +4324,7 @@ Tất cả timeout, thứ tự chuông, thứ hạng tốc độ, và mốc th�
 - **Client không có quyền lực**: client hiển thị là informational; server là executive
 
 ### Error outcomes
-- Lệch clock quá lớn (portable Windows LAN): NEEDS CLARIFICATION (U-14) — chưa có quy tắc xử lý
+- Lệch clock (portable Windows LAN, máy không NTP) — `U-14` ĐÓNG: **không ảnh hưởng luật.** Client **chỉ hiển thị**, mọi mốc đều lấy theo server. Riêng phía server, thứ tự và xếp hạng trong một trận phải tính trên **ĐỒNG HỒ ĐƠN ĐIỆU** (monotonic) của tiến trình, **đồng hồ tường chỉ dùng để hiển thị và ghi log** ⇒ đồng hồ hệ thống bị chỉnh giữa trận **không thể** đảo thứ hạng đã ghi. Đóng luôn `GRR-082`
 - Submission sau timeout: bỏ qua; không cộng điểm
 
 ### Evaluation order
@@ -4332,9 +4437,9 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 | C2 — Quá 120s grace period | Admin không can thiệp; thời gian quá 120s | Xử lý theo `dropoutPolicy` | Seat state: `dropped_out` hoặc loại khỏi vòng | — |
 | C3 — Rớt mạng đúng lượt riêng Khởi động | Disconnect xảy ra vòng Khởi động riêng | **Admin quyết** — không có trạng thái tạm dừng của hệ thống; admin ngừng thao tác và xử lý ngoài hệ thống | Không đổi | — |
 | C4 — Kết nối lại; trận đã chuyển vòng | Thí sinh kết nối lại ở vòng tiếp theo | Sync state toàn bộ vòng; restore tất cả UI | UI: full sync | — |
-| C5 — Admin can thiệp trước hết grace | Admin kick thí sinh hoặc cho phép giữ lâu hơn | **NEEDS CLARIFICATION**: Quyền admin mở rộng grace? | Tuỳ quyết định | Không định nghĩa admin override |
+| C5 — Admin can thiệp trước hết grace | Admin kick thí sinh hoặc cho phép giữ lâu hơn | **ĐƯỢC — cả hai.** Grace 120 giây là **khuyến nghị của hệ thống**, không phải ràng buộc cưỡng chế: đây không phải ngưỡng bất khả thi vật lý nên nó chỉ **cảnh báo**, admin ép được (nguyên tắc nền điểm 8) | Kick ⇒ ghế rời trận; gia hạn ⇒ ghế giữ tiếp. Cả hai là thao tác **không hoàn tác được** ⇒ dialog Yes/No + ghi AuditLog kèm lý do | — |
 | C6 — Hai thí sinh cùng mất kết nối | Cả A, B disconnect trong grace | Cả hai đều có 120s để quay lại độc lập | Seat A, B: both in grace | — |
-| C7 — Mất kết nối ở cuối câu hỏi phụ | Disconnect t=0; hết grace t=120; trận đã xong | Quá grace nhưng trận xong; ghế xoá hay giữ? | **NEEDS CLARIFICATION**: retention policy | `game-rules-review-old.md` GRR-129 chưa định rõ |
+| C7 — Mất kết nối ở cuối câu hỏi phụ | Disconnect t=0; hết grace t=120; trận đã xong | **Ghế được GIỮ** | Grace chỉ chi phối **quyền thao tác trong trận**; khi trận đã kết thúc thì không còn gì để thao tác nên hết grace **không có hệ quả nào**. Bản ghi ghế thuộc **contest** và sống theo **retention của match** (`official` 12 tháng · `practice` 3 tháng), không bị grace xoá | — |
 | C8 — Grace deadline vs timeout cùng ms | t=119.999s: submission tới, grace hết ở t=120 | Submission được tính vì tới trong grace | Submission: `accepted` | — |
 
 ### Outcomes
@@ -4353,9 +4458,9 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 - **Ghế không bị xoá ngay khi disconnect**: giữ 120s để quay lại
 
 ### Error outcomes
-- Lệch clock portable Windows LAN: NEEDS CLARIFICATION (U-14) — không có quy tắc xử lý grace trên thiết bị không NTP
-- `dropoutPolicy` không định nghĩa: U-13 — NEEDS CLARIFICATION (danh sách đầy đủ giá trị)
-- Grace quá hạn nhưng admin chưa định nghĩa hành động: NEEDS CLARIFICATION (auto-drop hay chờ admin)
+- Lệch clock portable Windows LAN (`U-14` — ĐÓNG): grace đo bằng **đồng hồ server**, client không tham gia tính toán; máy thí sinh không NTP **không ảnh hưởng** mốc grace. Xem GR-035
+- Grace quá hạn nhưng admin chưa thao tác (ĐÓNG): **CHỜ ADMIN, không auto-drop.** v1 luôn có người điều khiển, và hệ thống không tự thực hiện thao tác có hệ quả (nguyên tắc nền điểm 1). Hết grace chỉ **hiện khuyến nghị** cho admin; ghế vẫn giữ tới khi admin bấm
+- ⚠️ **`dropoutPolicy` chưa liệt kê được danh sách giá trị hợp lệ (`U-13`) — ĐÂY LÀ MỤC DUY NHẤT còn treo của GR-036.** Không suy ra được từ nguồn nào: cần chủ dự án kê ra tập giá trị (ví dụ `giữ-ghế` / `chờ-admin` / `tự-rời`) và ngữ nghĩa từng giá trị. Lưu ý hai nhánh vừa đóng ở trên đã **thu hẹp** câu hỏi: mặc định phải là một giá trị **không tự động hoá**
 
 ### Evaluation order
 1. Server phát hiện disconnect (socket timeout)
@@ -4369,9 +4474,11 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 - **Boundary t=120.000s**: **vẫn trong grace** — biên đóng (`Đ-28`).
 
 ### Idempotency
-**Reconnect lần thứ hai**: Nếu kết nối lại, mất lại, kết nối lại (trong 120s từ disconnect đầu):
-- Được phục hồi lần 2? Hay 120s tính từ disconnect lần cuối?
-- NEEDS CLARIFICATION
+**Reconnect lần thứ hai**: kết nối lại, mất lại, kết nối lại ⇒ **grace tính LẠI TỪ ĐẦU kể từ lần mất kết nối GẦN NHẤT**, và **không giới hạn số lần** phục hồi.
+
+- Grace là *"cửa sổ chờ một ghế đang mất kết nối quay lại"*; mỗi lần mất kết nối mở một cửa sổ mới. Cộng dồn thời gian của các lần trước sẽ biến grace thành **hình phạt cho mạng yếu**, mà nguồn không có hình phạt nào như vậy.
+- Giới hạn số lần cũng là một hình phạt không có trong nguồn. Trường hợp lạm dụng/thiết bị lỗi xử lý bằng **can thiệp của admin** (C5), không bằng luật cứng.
+- Mọi lần mất và nối lại đều vào **lịch sử, không bao giờ xoá** (nguyên tắc nền điểm 3) để admin phân xử.
 
 ### Concurrency
 **Disconnect ở biên grace**: submission tới ở 119.999s, grace hết ở 120.000s ⇒ **trong grace, được nhận** (biên đóng, `Đ-28`). Câu còn mở là **số phận của các submission đã nhận sau khi ghế bị xử dropout** (`game-rules-review.md` GRR-169):
@@ -4418,7 +4525,7 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 
 ### Status
 
-CONFLICT
+CONFIRMED
 
 ### Purpose
 Đáp án của các câu hỏi chỉ được phép hiển thị cho những kênh cụ thể tùy theo cấu hình `revealAnswerAfterJudge`. Mục đích: bảo vệ bí mật đề; admin + MC luôn được xem; viewer chỉ xem sau khi chấm xong (nếu bật).
@@ -4473,7 +4580,19 @@ CONFLICT
 | C6 — Viewer ở trận practice, reveal OFF | `matchPurpose=practice`; `revealAnswerAfterJudge=false` → | **KHÔNG trả về đáp án** | Server không trả đáp án | — |
 | C7 — Viewer ở trận practice, reveal ON, đã chấm | `matchPurpose=practice`; `revealAnswerAfterJudge=true`; đã chấm → | Trả về đáp án | No state change | — |
 | C8 — Overlay (OBS frame) | Kênh: overlay (read-only) → | **LUÔN KHÔNG trả đáp án**; read-only tuyệt đối | Server không trả đáp án | — |
-| C9 — CONFLICT: PRD vs SPEC | `PRD` NFR-4: "contest bật" · `SPEC` + `CLAUDE.md`: "per-MATCH" → | **NEEDS CLARIFICATION — K-4**: per-match hay per-contest? | Config scope chưa chốt | K-4: CONFLICT |
+| C9 — phạm vi cấu hình `revealAnswerAfterJudge` | Một contest chứa **cả** match `official` lẫn match rehearsal | **PER-MATCH** — mỗi match mang giá trị riêng, lấy mặc định theo `matchPurpose` (`official` ⇒ TẮT · `practice` ⇒ BẬT). Đóng `K-4` | Giá trị được **snapshot vào match lúc start**; sửa cấu hình contest sau đó không đụng match đã chạy | — |
+
+> **Vì sao per-match, không phải per-contest** — ba nguồn thuận, một nguồn nghịch, và nguồn nghịch là **bản nháp**:
+>
+> | Nguồn | Phát biểu | Hiệu lực |
+> |---|---|---|
+> | `research/ruleconfig-v2-spec.md` §11 và §13 | **per-MATCH**, §13 còn ghi thẳng *"không phải per-contest"* | Spec engine |
+> | `CLAUDE.md` §Nguyên tắc code | *"config **per-match** theo matchPurpose"* | **Đang có hiệu lực** |
+> | `plans/**/PRD.md` NFR-4 | *"**contest** bật"* | **BẢN NHÁP** — theo `.specify/memory/constitution.md`, nháp không phải nguồn sự thật |
+>
+> Lập luận độc lập với thứ bậc nguồn: per-contest **phá use-case rehearsal của `D21`** — một contest không thể vừa có trận chính thức giấu đáp án vừa có trận tổng duyệt hiện đáp án. Việc cần làm: sửa câu chữ `NFR-4` khi migrate vào `docs/source/`.
+>
+> **Không lẫn với mode trả lời**, vốn là **per-CONTEST** (`Q-C1c`): mode là thuộc tính của **sân khấu và phần cứng** (có micro không, thí sinh có bàn phím không) nên không đổi giữa hai trận cùng phòng; `revealAnswerAfterJudge` là thuộc tính **sư phạm** của từng trận. Hai trục khác nhau, không phải thiếu nhất quán.
 
 ### Outcomes
 - **Trả về đáp án**: server gửi `question.acceptedAnswers`; audit log ghi lại
@@ -4533,13 +4652,13 @@ CONFLICT
 - OBS livestream lấy frame từ `/overlay` (public, 6-digit room code)
 - OBS **KHÔNG bao giờ** nhận đáp án; read-only tuyệt đối
 
-**Ví dụ 5 — CONFLICT (K-4) — chưa quyết định**:
-- `PRD` NFR-4: *"contest bật revealAnswerAfterJudge"* → per-contest
-- `SPEC` §11, §13: *"per-MATCH"* → per-match (mỗi trận khác nhau)
-- **NEEDS CLARIFICATION**: Dùng cái nào? K-4 chưa chốt
+**Ví dụ 5 — hai match trong cùng một contest** (chính là use-case đóng `K-4`):
+- Contest "Chung kết khối 12" chứa **match tổng duyệt** (`practice`, `revealAnswerAfterJudge = true`) và **match chính thức** (`official`, `revealAnswerAfterJudge = false`)
+- Cùng một contest, cùng một kho đề, cùng một mode trả lời — **nhưng hai giá trị reveal khác nhau**
+- Với per-contest thì kịch bản này **không dựng được**; đây là lý do quyết định cuối cùng là **per-match**
 
 ### Source traceability
-- **CONFLICT — K-4**: `PRD` NFR-4 vs `SPEC` §11/§13 + `CLAUDE.md`
+- **`K-4` ĐÃ PHÂN XỬ 2026-07-26 — per-MATCH**: `SPEC` §11/§13 + `CLAUDE.md` (đang có hiệu lực) thắng `PRD` NFR-4 (**bản nháp**). Xem C9
 - `game-rules-inventory.md` §R-GEN-10 — Phạm vi đáp án
 - `CLAUDE.md` §Zero-trust security — Đáp án chỉ admin + MC
 - `CLAUDE.md` §Mô hình truy cập — Viewer public, read-only
