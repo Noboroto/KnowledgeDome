@@ -17,6 +17,7 @@
 
 - [0. Tóm tắt — 4 nguyên tắc phái sinh](#0-tóm-tắt--4-nguyên-tắc-phái-sinh)
 - [0.5. Bảng gộp — mục đã được quyết định SẴN CÓ trả lời](#05-bảng-gộp--mục-đã-được-quyết-định-sẵn-có-trả-lời)
+- [0.6. Cập nhật 26/07 chiều — game-rules.md đã đóng toàn bộ 37 rule](#06-cập-nhật-2026-07-26-chiều--game-rulesmd-đã-đóng-toàn-bộ-37-rule)
 - [1. Mục ĐÃ CHẾT vì quyết định sau đè lên](#1-mục-đã-chết-vì-quyết-định-sau-đè-lên)
 - [2. Tầng 2 — Quy ước biên thời gian](#2-tầng-2--quy-ước-biên-thời-gian)
 - [3. Tầng 3 — Phạm vi v1](#3-tầng-3--phạm-vi-v1)
@@ -118,6 +119,24 @@ Ba mục khác được **nâng** căn cứ (vẫn giữ kết luận cũ, nhưn
 
 ---
 
+## 0.6. Cập nhật 2026-07-26 (chiều) — `game-rules.md` đã đóng TOÀN BỘ 37 rule
+
+> Sau khi áp file này vào `docs/game-rules.md`, cộng **năm quyết định của chủ dự án trong cùng ngày**, tài liệu luật **không còn nhánh treo nào**: `CONFIRMED 37 / NEEDS CLARIFICATION 0 / CONFLICT 0`.
+
+| Mục | Cách đóng | Rule được mở |
+|---|---|---|
+| `K-8` — độ phân giải "đồng thời gian" | **Quyết định**: `ms`, lý do *máy tính dễ tính toán*. Điều tra tiền lệ cho kết quả **ngược** (chương trình thật dùng 2 chữ số thập phân) — chênh đã biết và đã chấp nhận, ghi rõ ở §2.1 | GR-014 |
+| `U-6` — trường khai câu thực hành | **Quyết định**: bổ sung 5 trường ⇒ câu hỏi thực hành **thuộc v1** | GR-019 |
+| `U-20` — làm tròn `−½` giá trị lẻ | **Quyết định**: phương án (b), chia số nguyên | GR-020 |
+| `U-13` — `dropoutPolicy` | **Quyết định**: *"chỉ highlight, admin là người quyết"* ⇒ **không có** chính sách tự động nào để kê; chỉ còn cấu hình ngưỡng grace | GR-036 |
+| `U-8` — số học NSHV × cướp quyền | **ĐỌC NGUỒN**, không cần quyết định — dòng 90 luật gốc: *"kể cả các thí sinh còn lại có giành quyền trả lời hay không"* ⇒ người thi chính mất `value` **đúng một lần** | GR-020, GR-021 |
+
+**`U-13` đáng chú ý ở chỗ nó là mảnh thứ tư của cùng một mẫu** — *máy tô nổi bật, người phán quyết*: `Đ-1` (khác biệt ký tự) · `Đ-28` (bản gửi quá hạn) · `Đ-5` (recommendation lượt/vòng) · `U-13` (ghế quá grace). Nên phát biểu thành **một** nguyên tắc trong PRD thay vì bốn quyết định rời.
+
+**Còn lại của file này** (chưa áp): nhóm `ĐỀ XUẤT` cấp sản phẩm ở §8-§9 (`product-discovery.md`) và 7 mục `KHÔNG QUYẾT` ở §10.
+
+---
+
 ## 1. Mục ĐÃ CHẾT vì quyết định sau đè lên
 
 > Không cần phân xử — cần **xoá khỏi backlog**. Đây là nợ tài liệu, không phải nợ quyết định.
@@ -172,7 +191,7 @@ Ba mục khác được **nâng** căn cứ (vẫn giữ kết luận cũ, nhưn
 |---|---|---|---|
 | **GRR-010** — câu hỏi lựa chọn (Khởi động) | **CÓ, trong v1** | `ĐỀ XUẤT` | Rẻ nhất. Mode mặc định là sân khấu ⇒ thí sinh **đọc** đáp án ⇒ chỉ cần **hiển thị được các phương án**, không cần mô hình dữ liệu mới, không cần luật chấm mới (`Đ-1`: admin chấm). Ở mode nhập liệu, thí sinh gõ nhãn phương án như một đáp án text bình thường |
 | **GRR-037** — câu hỏi sắp xếp (Tăng tốc) | **CÓ, trong v1 — nhưng ở dạng ĐÁP ÁN TEXT**, không có UI kéo-thả | `ĐỀ XUẤT` | Cái đắt của GRR-037 không phải bản thân loại câu, mà là **UI kéo-thả** + **quy tắc đúng/sai theo từng vị trí**. Cả hai biến mất nếu thí sinh gõ thứ tự (`3-1-4-2`): đó là một đáp án text, dùng nguyên `GR-027` highlight và `Đ-1` admin chấm. **Không phát sinh gì mới.** UI kéo-thả để v1.5 như một cải tiến nhập liệu, không phải một loại câu mới |
-| **GRR-050/051** — câu hỏi thực hành (Về đích) | **CÓ, trong v1** | `SUY RA` (NT-B) | Phần chấm vốn không phải vấn đề (*"đạt yêu cầu"* là đánh giá của người). Cái thiếu — chuyển pha suy nghĩ → thực hành — chính là **một nút mốc của admin**, cùng mẫu `Đ-26`/`Đ-33`. Không cần cơ chế mới |
+| **GRR-050/051 + `U-6`** — câu hỏi thực hành (Về đích) | ✅ **CHỦ DỰ ÁN CHỐT 2026-07-26**: **CÓ, trong v1**, kèm **bổ sung 5 trường** khai câu thực hành — `isPractical` · `practiceSeconds` (30/60) · `stealPracticeSeconds` (20/40) · `equipmentNote` · `acceptanceCriteria` | `CHỐT` | Chuyển pha suy nghĩ → thực hành là **một nút mốc của admin**, cùng mẫu `Đ-26`/`Đ-33` (NT-B). Cả ba cặp số đều có **nguyên văn trong nguồn**. Nhân đó sửa một **lỗi thật** trong GR-019: bản cũ gộp *cửa sổ bấm chuông 5 giây* với *thời gian thực hành của người cướp 20/40s* thành một con số. Đóng GR-019 |
 | **Đ-0.1a** — cấu hình 5-12 ghế thì start được không | **Start được, qua CẢNH BÁO `N2`** | `SUY RA` (NT-D) | `N2` (*"số thí sinh ≠ 4"*) đã nằm trong danh sách cảnh báo §1.1. Chặn cứng ở đây sẽ là **chỗ chặn thứ tư**, trái NT-D. **Kèm điều kiện**: contest builder phải bắt admin **điền đủ mảng thang điểm Tăng tốc** dài bằng số ghế — thiếu thì đó là *thiếu cấu hình*, chặn ở builder, không phải chặn ở start |
 | **§0.2 S-1** — khoá cứng `rowCount = 4` | **KHÔNG khoá.** `rowCount` 4-8, thang điểm CNV là **mảng cấu hình bắt buộc** dài bằng `rowCount` | `SUY RA` | `CLAUDE.md`: *"mọi timer/điểm là RuleConfig — KHÔNG hard-code luật"*. Khoá cứng 4 là hard-code. Cái thật sự thiếu (`U-3`) là **giá trị thang điểm** cho 5-8 hàng — giải bằng bắt admin điền, đúng mô hình "luật tuỳ biến" |
 | **§0.2 S-2** — khoá playlist chuẩn 4 vòng | **KHÔNG khoá** | `SUY RA` | `Đ-5` đã biến playlist thành **gợi ý**. Khoá playlist là lấy lại quyền đã trao cho admin |
@@ -253,7 +272,7 @@ Không có đề xuất nào ở Tầng 4 mâu thuẫn với nguyên tắc nền
 | **Đ-5.1g** — *"còn câu hỏi"* đo ở mức nào | **Đủ TRỌN VÒNG**, và **theo từng mức điểm / lĩnh vực** ở vòng nào luật yêu cầu (Về đích: đủ cả mốc 20 và 30) | `SUY RA` | Điểm 19 + điểm 20: nhu cầu một vòng là con số **cố định**; "≥1 câu" không cho phép chạy trọn vòng nên vô nghĩa với `Đ-31` |
 | **Đ-5.1h** — kiểm *"còn câu hỏi"* lúc nào | **Tại cửa vào vòng**, tức lúc bấm chạy lại | `SUY RA` | `Đ-31` |
 | **Đ-5.1i** — chặn cứng hay cảnh báo | **Chặn cứng** — và **không phải ngoại lệ mới**, nó chính là chỗ chặn thứ hai đã chốt ở `Đ-31` | `SUY RA` | NT-D |
-| **GRR-046 / Đ-3** — giá trị câu lẻ ở Về đích | **Cho nhập số nguyên bất kỳ. Định nghĩa −½ là LÀM TRÒN XUỐNG** (giá trị 25 ⇒ phạt 12) | `ĐỀ XUẤT` | Chặn bằng validation là hard-code luật (trái `CLAUDE.md`). Làm tròn xuống là **tất định** và **có lợi cho thí sinh** — chọn hướng đó khi luật gốc im lặng. Dưới `O26_DEFAULT@1` tình huống này không xảy ra (20/30 ⇒ 10/15) |
+| **GRR-046 / Đ-3 / `U-20`** — giá trị câu lẻ ở Về đích | ✅ **CHỦ DỰ ÁN CHỐT 2026-07-26 — phương án (b)**: cho nhập số nguyên bất kỳ; `phạt = value / 2` bằng **phép chia số nguyên** (cắt về 0). `value = 25` ⇒ phạt **12** | `CHỐT` | ⚠️ Phải làm tròn trên **ĐỘ LỚN** rồi mới gắn dấu âm — `floor(−12,5) = −13` là **sai** (nặng hơn, ngược quyết định). Ba lý do: (1) đúng bằng hành vi mặc định của chia số nguyên ⇒ không tốn code, cùng tinh thần `K-8`; (2) nguồn im lặng thì chọn hướng **nhẹ hơn** cho thí sinh; (3) không hard-code ràng buộc *"giá trị phải chẵn"* vào validation. Dưới `O26_DEFAULT@1` tình huống **không tồn tại** (20/30 ⇒ 10/15). Đóng GR-020 |
 
 ### 6.2 Chính sách
 

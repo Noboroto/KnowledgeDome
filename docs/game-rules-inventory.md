@@ -399,7 +399,11 @@ Demo dùng chuỗi phẳng: `CHO / KHOI_DONG_RIENG / KHOI_DONG_CHUNG / VCNV / TA
   - `ATH` — Athena cũ không transfer (đã bãi bỏ).
   - `SPEC` §2b: **CẤM cùng đội cướp** (hard-code) — chỉ áp khi thi đội.
   - `R26` §7: câu bị skip khi đang mở cửa sổ cướp → **huỷ cửa sổ**, không ai cộng/trừ (nhãn "đề xuất").
-- **Chưa định nghĩa**: "3 TS còn lại" với 1-12 ghế *(U-5)*; điểm lẻ khi −½ giá trị lẻ (`R26` §7 đề xuất Zod ép chẵn / floor về 0, **chưa chốt** *(U-20)*); người bị cướp có xuống âm được không *(U-28)*.
+- **`U-20` ĐÃ ĐÓNG 2026-07-26 — phương án (b): `phạt = value / 2` bằng PHÉP CHIA SỐ NGUYÊN** (cắt về 0). Ví dụ `value = 25` ⇒ phạt **12** ⇒ điểm đổi **−12**. ✅ chủ dự án chốt.
+  - ⚠️ **Cẩn thận dấu**: phải làm tròn trên **độ lớn** rồi mới gắn dấu âm. `floor(−12,5) = −13` là **sai** — nặng hơn, ngược quyết định.
+  - Lý do: đúng bằng hành vi mặc định của chia số nguyên (không tốn code); chỗ nguồn im lặng thì chọn hướng **nhẹ hơn** cho thí sinh; **không** hard-code ràng buộc *"giá trị phải chẵn"* vào validation ⇒ giữ được lời hứa luật tuỳ biến. Phương án cũ của `R26` §7 (*Zod ép chẵn*) bị loại vì chính lý do thứ ba.
+  - **Dưới `O26_DEFAULT@1` tình huống này KHÔNG TỒN TẠI**: 20/30 ⇒ nửa là 10/15, đều nguyên. Quy ước chỉ chạm contest cấu hình ngoài luật 2026.
+- **Chưa định nghĩa**: "3 TS còn lại" với 1-12 ghế *(U-5)*; người bị cướp có xuống âm được không *(U-28)* — *lưu ý `U-28` đã được nguyên tắc nền điểm 7 trả lời: **điểm được phép âm, không có sàn***.
 
 ## R-VD-06. Ngôi sao hy vọng (NSHV)
 
@@ -410,7 +414,18 @@ Demo dùng chuỗi phẳng: `CHO / KHOI_DONG_RIENG / KHOI_DONG_CHUNG / VCNV / TA
 - **Kết quả khi sai**: **−giá trị câu**, kể cả có người cướp hay không.
 - **Actor**: Thí sinh.
 - **Rule mâu thuẫn**: `SPEC` §2b — thi đội: **1 lần/ĐƠN VỊ ĐIỂM/trận** (`DEF` D17.4). `R26` §7: NSHV áp sang câu thay thế khi câu bị skip (nhãn "đề xuất", chưa chốt *(U-18)*).
-- **Chưa định nghĩa**: **số học khi NSHV sai + có người cướp thành công** — NSHV sai = −value; cướp transfer = −value nữa. Người dùng NSHV mất **1 hay 2 lần value**? `F26` nói "kể cả có người giành quyền hay không" hàm ý penalty NSHV độc lập, nhưng không nói cộng dồn transfer. *(U-8)*
+- **`U-8` ĐÃ ĐÓNG 2026-07-26 — mất ĐÚNG MỘT LẦN `value`.** Hình phạt NSHV **thay thế** phần nợ của transfer, không cộng dồn.
+  - Căn cứ: `F26` dòng 90 *"Trả lời sai sẽ bị trừ đi số điểm của câu hỏi, **kể cả các thí sinh còn lại có giành quyền trả lời hay không**"*. Mệnh đề này tồn tại **đúng để** nói số học của người thi chính **độc lập** với hành động của người cướp ⇒ có cướp hay không, kết quả của họ **như nhau**. Đây là **quy định của nguồn**, không phải suy diễn.
+  - Nó cũng giải thích vì sao mệnh đề đó phải có: ở câu **không** NSHV, người thi chính sai mà không ai cướp thì mất **0**; có NSHV thì mất `value` **dù không ai cướp**.
+
+| Tình huống (A có NSHV, bị chấm Sai) | A | Người cướp B |
+|---|---|---|
+| Không ai cướp | **−value** | — |
+| B cướp **đúng** | **−value** | **+value** |
+| B cướp **sai** | **−value** | **−½ value** |
+
+  - **Hai lỗi tài liệu từng làm `U-8` trông khó hơn thực tế**: (1) bảng cũ ở GR-021 C5 viết như thể *"TS NSHV"* và *"người thi chính"* là **hai người**, trong khi NSHV do chính người đang thi đặt lên câu của mình; (2) `GR-018` **đã ghi đúng đáp án** (*"−30 từ NSHV, không sinh sự kiện Sai riêng"*) mà GR-020/GR-021 chưa đồng bộ.
+  - **Người cướp không dùng được NSHV trên câu đang cướp** — NSHV phải đặt trước khi câu được đọc; người cướp chỉ bấm chuông sau khi câu đã bị trả lời sai.
 
 ## R-VD-07. Pre-flight custom-build (chỉ có trong repo)
 
@@ -586,10 +601,12 @@ Mọi rule trong tài liệu này khi mô tả "Kết quả khi đúng / khi sai
 - **Nguồn**: `PRD` FR-3.5 · `US` US-5.4 · `research/ux-gaps.md`
 - **Điều kiện đầu vào**: thí sinh mất kết nối.
 - **Kết quả khi < 120s**: **giữ ghế** + state-sync; banner "đang kết nối lại".
-- **Kết quả khi quá grace**: theo `dropoutPolicy`.
+- **Kết quả khi quá grace**: hệ thống **CHỈ TÔ NỔI BẬT** ghế trên màn admin kèm thời lượng mất kết nối; **admin quyết** giữ / gia hạn / kick. Không có hệ quả tự động nào.
 - **Actor**: Thí sinh, Server, Admin.
 - **Rule mâu thuẫn**: `DEF` D13.4 — rớt đúng lượt riêng thì engine pause + admin quyết, ghi đè grace.
-- **Chưa định nghĩa**: danh sách đầy đủ giá trị `dropoutPolicy`. *(U-13)*
+- **`U-13` ĐÃ ĐÓNG 2026-07-26** — ✅ chủ dự án chốt: *"chỉ highlight, admin là người quyết"*. ⇒ **KHÔNG cần kê danh sách giá trị `dropoutPolicy`**, vì **không có chính sách tự động nào** để kê. Cấu hình duy nhất còn lại là **ngưỡng grace** (mặc định **120 giây**) — mốc để bắt đầu tô nổi bật.
+  - Cùng **một mẫu** với `Đ-1` (tô khác biệt ký tự, admin chấm) và `Đ-28` (tô đỏ bản quá hạn, admin phán quyết). Nguyên tắc nền điểm 1 áp nguyên: máy đo và hiển thị **sự kiện**, người giữ **phán quyết**.
+  - **Kick** là thao tác không hoàn tác được ⇒ dialog Yes/No + AuditLog kèm lý do (`CLAUDE.md` §UX, `S-2`).
 
 ## R-GEN-10. Phạm vi đáp án (bảo mật — quy tắc sản phẩm)
 
@@ -707,7 +724,7 @@ Mọi rule trong tài liệu này khi mô tả "Kết quả khi đúng / khi sai
 | U-10 | Pool câu phụ cạn **giữa** tie-break | R-TB-04 |
 | U-11 | Câu thay thế cũng hỏng media | R-GEN-11 |
 | U-12 | Default N giây của `autoPauseOnHostDisconnect` | R-GEN-08 |
-| U-13 | Danh sách đầy đủ `dropoutPolicy` | R-GEN-09 |
+| ~~U-13~~ ✅ | **ĐÃ ĐÓNG 26/07** — quá grace thì **chỉ tô nổi bật, admin quyết**; không có `dropoutPolicy` tự động nên không có gì để kê. Chỉ còn cấu hình **ngưỡng grace** (120s) | R-GEN-09 |
 | U-14 | Lệch clock ở profile portable (không NTP) | R-GEN-05 |
 | U-15 | Undo một chấm điểm **steal transfer** (2 seat) | R-GEN-07, R-VD-05 |
 

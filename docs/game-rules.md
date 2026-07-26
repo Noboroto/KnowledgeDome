@@ -32,17 +32,28 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 
 | Status | Nghĩa | Số rule |
 |---|---|---|
-| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **34** |
-| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **3** |
+| `CONFIRMED` | Mọi nhánh của rule đều có câu trả lời từ nguồn | **37 — TOÀN BỘ** |
+| `NEEDS CLARIFICATION` | Định nghĩa cốt lõi đã rõ, nhưng còn ≥1 nhánh chưa được nguồn quy định | **0** |
 | `CONFLICT` | Hai nguồn cùng áp dụng nhưng cho outcome khác nhau; **tài liệu này không phân xử** | **0** |
 
 > Status là phép **AND**: chỉ cần một nhánh treo là cả rule treo.
 >
-> **Đợt 2026-07-26** đóng **18 rule** (16 từ `NEEDS CLARIFICATION`, 1 từ `CONFLICT`, và **GR-014** sau khi rà tiền lệ chương trình rồi chủ dự án chốt `K-8` = `ms`). Không có luật mới nào được phát minh — toàn bộ là **hệ quả bắt buộc** của quyết định đã chốt, theo thứ tự ưu tiên: quyết định sẵn có → câu trùng pattern → suy luận. Chi tiết từng mã: `docs/reviews/game-rules-resolutions.md`.
+> ✅ **2026-07-26: cả 37 rule đều `CONFIRMED`.** Đợt này đóng **22 rule** (21 từ `NEEDS CLARIFICATION`, 1 từ `CONFLICT`) — tài liệu **không còn nhánh treo nào**, dùng được để viết spec và acceptance criteria. Không có luật mới nào được phát minh — toàn bộ là **hệ quả bắt buộc** của quyết định đã chốt, theo thứ tự ưu tiên: quyết định sẵn có → câu trùng pattern → suy luận. Chi tiết từng mã: `docs/reviews/game-rules-resolutions.md`.
 >
 > Bốn loại khiếm khuyết `IDEMPOTENCY` · `CONCURRENCY` · `INVALID_TRANSITION` · `ORDER_DEPENDENT` — vốn là nguyên nhân chính khiến rule treo — nay đóng gần hết bằng **bốn quyết định sẵn có**: `Đ-29` (nút một chiều tự tắt ⇒ idempotency), `Đ-16` + nguyên tắc nền điểm 9 (invalid state ⇒ không có tín hiệu ⇒ nhánh không tồn tại), nguyên tắc nền điểm 3 (hàng đợi thuần theo server timestamp ⇒ concurrency), và `Đ-26`/`Đ-33` (mốc là nút của admin ⇒ evaluation order do thứ tự nút quyết định).
 
-### 32 rule `CONFIRMED`
+**Sáu quyết định sẵn có gánh gần hết đợt này** — không luật mới nào được phát minh:
+
+| Quyết định | Đóng nhóm nhánh nào |
+|---|---|
+| `Đ-29` — nút một chiều tự tắt sau khi bấm | toàn bộ `IDEMPOTENCY` |
+| `Đ-16` + nguyên tắc nền điểm 9 — invalid state | toàn bộ `INVALID_TRANSITION` (nhánh **không tồn tại**, không phải "bị chặn") |
+| Nguyên tắc nền điểm 3 — hàng đợi theo server timestamp | `CONCURRENCY`, gồm `GRR-144` |
+| `Đ-26` / `Đ-33` — mốc là nút của admin | `ORDER_DEPENDENT` |
+| `GRR-085` + `GRR-118` — *"đã dùng" = đã hiển thị* | mọi nhánh "câu đã tiêu pool chưa" |
+| Nguyên tắc nền điểm 1 — máy không phán quyết | `U-6`, `U-7`, `U-13`, `U-38` — cùng mẫu *"máy highlight, người quyết"* |
+
+### 37 rule `CONFIRMED` — toàn bộ
 
 | Mã | Tên | Đóng từ |
 |---|---|---|
@@ -65,6 +76,8 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | GR-017 | Về đích: chọn gói câu | **26/07** |
 | GR-018 | Về đích: trả lời câu của mình | trước 26/07 |
 | GR-019 | Về đích: câu hỏi thực hành | **26/07** (thêm 5 trường, đóng `U-6`) |
+| GR-020 | Về đích: cướp quyền | **26/07** (đóng `U-8`, `U-20`) |
+| GR-021 | Về đích: Ngôi sao hy vọng | **26/07** (đóng `U-8`) |
 | GR-022 | Câu hỏi phụ: điều kiện kích hoạt | trước 26/07 |
 | GR-023 | Câu hỏi phụ: thể thức ba câu | trước 26/07 |
 | GR-024 | Câu hỏi phụ: bấm chuông trước hiệu lệnh | **26/07** |
@@ -79,17 +92,21 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | GR-033 | Mốc thời gian do admin bấm | trước 26/07 |
 | GR-034 | Chuông chỉ nhận click chuột | trước 26/07 |
 | GR-035 | Server time là source of truth duy nhất | **26/07** |
+| GR-036 | Mất kết nối và giữ ghế | **26/07** (đóng `U-13`) |
 | GR-037 | Phạm vi hiển thị đáp án | **26/07** (từ `CONFLICT`) |
 
-### 5 rule còn treo — và đang chờ ĐÚNG cái gì
+### Không còn rule nào treo
 
-> Cả năm đều treo vì một mục **chưa ai quyết**, không phải vì thiếu suy luận. Mỗi dòng chỉ thẳng tới chỗ cần chủ dự án phát biểu.
+Mọi mục `U-*` và `K-*` từng chặn một rule đều đã có câu trả lời. Bốn mục cuối được đóng ngày 26/07 bằng **quyết định của chủ dự án**, không phải suy luận:
 
-| Mã | Tên | Treo vì | Chờ quyết ở |
-|---|---|---|---|
-| GR-020 | Về đích: cướp quyền | Số học khi **Ngôi sao hy vọng gặp cướp quyền** (`U-8`); làm tròn `−½` giá trị lẻ (`U-20`) | `U-8` mới · `GRR-046`/`Đ-3` — Tầng 5.1 |
-| GR-021 | Về đích: Ngôi sao hy vọng | Cùng `U-8` với GR-020 | `U-8` mới |
-| GR-036 | Mất kết nối và giữ ghế | `dropoutPolicy` chưa liệt kê được danh sách giá trị hợp lệ (`U-13`) | `U-13` — chưa có mã trong `open-questions` |
+| Mục | Quyết định | Rule được mở |
+|---|---|---|
+| `K-8` | Độ phân giải "đồng thời gian" = **millisecond** (lý do: máy tính dễ tính toán) — biết rõ và chấp nhận chênh với tiền lệ chương trình | GR-014 |
+| `U-6` | **Bổ sung 5 trường** khai câu thực hành ⇒ câu hỏi thực hành **thuộc v1** | GR-019 |
+| `U-20` | `−½` giá trị lẻ ⇒ **chia số nguyên**, làm tròn xuống theo **độ lớn** hình phạt | GR-020 |
+| `U-13` | Quá grace ⇒ **chỉ tô nổi bật, admin quyết**; **không** có `dropoutPolicy` tự động | GR-036 |
+
+`U-8` (số học Ngôi sao hy vọng × cướp quyền) đóng bằng **đọc nguồn**, không cần quyết định: dòng 90 của luật gốc quy định thẳng.
 
 ## Nguyên tắc nền áp cho MỌI rule
 
@@ -280,8 +297,8 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | GR-017 | Về đích: chọn gói câu | **CONFIRMED** |
 | GR-018 | Về đích: trả lời câu của mình | **CONFIRMED** |
 | GR-019 | Về đích: câu hỏi thực hành | **CONFIRMED** |
-| GR-020 | Về đích: cướp quyền | NEEDS CLARIFICATION |
-| GR-021 | Về đích: Ngôi sao hy vọng | NEEDS CLARIFICATION |
+| GR-020 | Về đích: cướp quyền | **CONFIRMED** |
+| GR-021 | Về đích: Ngôi sao hy vọng | **CONFIRMED** |
 
 ### Vòng Câu hỏi phụ
 
@@ -311,7 +328,7 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | GR-033 | Mốc thời gian do admin bấm | **CONFIRMED** |
 | GR-034 | Chuông chỉ nhận click chuột | **CONFIRMED** |
 | GR-035 | Server time là source of truth duy nhất | **CONFIRMED** |
-| GR-036 | Mất kết nối và giữ ghế | NEEDS CLARIFICATION |
+| GR-036 | Mất kết nối và giữ ghế | **CONFIRMED** |
 | GR-037 | Phạm vi hiển thị đáp án | **CONFIRMED** |
 
 ---
@@ -2609,7 +2626,7 @@ Không applicable (1 TS thi).
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Khi người thi chính trả lời sai (hoặc hết giờ) câu Về đích, 3 TS còn lại được bấm chuông để giành quyền trả lời trong cửa sổ 5 giây. Người cướp đúng lấy điểm từ người sai (transfer); cướp sai bị trừ nửa giá trị.
@@ -2655,14 +2672,14 @@ Admin bấm "Sai" cho người thi chính (hoặc timeout tự động) → **m�
 | C2 | Câu 30đ, TS[i] sai, TS[j] @ 100ms cướp **sai** "Moscow" | TS[j] −15 (nửa 30); admin có thể chọn **Huỷ kết quả** thay vì Sai để không áp hình phạt | EventLog: SCORE_ADJUST TS[j]−15 · TS[i] vẫn −30 (không hoàn lại) | — |
 | C3 | Câu 20đ, TS[i] sai, **không ai bấm trong 5s** | TS[i] −20 (vẫn trừ), không ai +20 | EventLog: SCORE_ADJUST TS[i]−20 | — |
 | C4 | Câu 20đ, TS[i] sai, TS[j] gửi 3 bản: "Paris" @ 100ms, "London" @ 150ms, "Berlin" @ 200ms | TS[j] chấm dựa trên **bản ĐẦU "Paris"** (khác GR-015) | Admin so khớp "Paris" để chấm | — |
-| C5 | Câu 20đ, TS[i] sai + NSHV sai (−20 từ NSHV, hình phạt thay thế transfer) → TS[j] cướp đúng | TS[i] −20 (từ NSHV, thay thế −20 transfer + người cướp lấy được) → TS[j] +0 hoặc +20? | **NEEDS CLARIFICATION** (U-8) — số học khi NSHV × transfer chưa định | Conflict GR-021 × GR-020 |
+| C5 — **đóng `U-8`** | Câu 20đ, người thi chính A **có NSHV** và bị chấm Sai; B cướp đúng | **A −20 · B +20.** A mất giá trị câu **ĐÚNG MỘT LẦN**: hình phạt NSHV **thay thế** phần nợ của transfer, không cộng dồn | EventLog: A −20 (nhãn NSHV), B +20 | — |
 | C6 | Số người còn lại ≠ 3 (ghế ≠ 4) | `[v1.5]` — v1 đặc tả cho đúng 4 thí sinh nên *"3 thí sinh còn lại"* luôn đúng nghĩa; dải 1-12 thuộc v1.5 (U-5). Riêng trường hợp **runtime tụt dưới 4 giữa trận** đã chốt: **admin quyết**, hệ thống chỉ cảnh báo (§6.4) | — | — |
 
 ### Outcomes
 - **Cướp Đúng**: người cướp +value (lấy từ TS[i]), TS[i] −value (transfer)
 - **Cướp Sai**: người cướp −(value/2), TS[i] vẫn −value (không hoàn lại)
 - **Không ai cướp**: TS[i] −value, không ai nhận được
-- **Nếu NSHV TS[i] sai**: **NEEDS CLARIFICATION** (U-8) — kết hợp GR-021 + GR-020 chưa định
+- **Nếu người thi chính có NSHV và sai** (`U-8` — ĐÓNG): người đó mất **−value một lần**, **bất kể** có ai cướp hay không; người cướp đúng vẫn **+value**. Nguồn quy định thẳng ở dòng 90: *"Trả lời sai sẽ bị trừ đi số điểm của câu hỏi, **kể cả các thí sinh còn lại có giành quyền trả lời hay không**"* ⇒ số học của người thi chính **độc lập** với hành động của người cướp. Xem C5 và GR-021
 
 ### State changes
 - EventLog: SCORE_ADJUST cho TS[i] (−value) và TS[cướp] (±delta)
@@ -2677,7 +2694,13 @@ Admin bấm "Sai" cho người thi chính (hoặc timeout tự động) → **m�
 ### Error outcomes
 - **Admin không chấm "Sai" cho TS[i]**: cửa sổ cướp không mở (logic tùy implement)
 - **Bấm ngoài cửa sổ 5s**: không tính (server reject ngoài deadline)
-- **Giá trị lẻ −½ value lẻ**: **NEEDS CLARIFICATION** (U-20 — làm tròn thế nào?)
+- **Giá trị câu LẺ, hình phạt `−½`** (`U-20` — ✅ chủ dự án chốt **2026-07-26**, phương án **(b)**): **làm tròn xuống theo ĐỘ LỚN của hình phạt**, tức `phạt = value / 2` bằng **phép chia số nguyên** (cắt về 0). Ví dụ `value = 25` ⇒ phạt **12** ⇒ điểm đổi **−12**.
+
+> ⚠️ **Cẩn thận với DẤU** — đây là chỗ dễ cài sai: `−½ × 25 = −12,5`. Nếu hiểu *"làm tròn xuống"* theo nghĩa toán học thì `floor(−12,5) = −13`, tức **nặng hơn**, **ngược** quyết định. Phải làm tròn trên **độ lớn** rồi mới gắn dấu âm: `−(25 / 2) = −12`.
+>
+> Ba lý do chọn (b): **(1)** đúng bằng hành vi mặc định của phép chia số nguyên ⇒ không tốn dòng code nào, cùng tinh thần với `K-8`; **(2)** chỗ nguồn im lặng thì chọn hướng **nhẹ hơn** cho thí sinh — hình phạt nặng quá mức sinh khiếu nại công bằng, nhẹ quá mức thì không; **(3)** **không** hard-code ràng buộc "giá trị phải chẵn" vào validation, giữ được lời hứa luật tuỳ biến.
+>
+> **Dưới preset `O26_DEFAULT@1` tình huống này KHÔNG TỒN TẠI**: giá trị chỉ 20 và 30 ⇒ nửa là 10 và 15, đều nguyên. Quy ước này chỉ chạm tới contest cấu hình ngoài luật 2026.
 - **Điểm người cướp xuống âm**: hợp lệ — **điểm được phép âm, KHÔNG có sàn** (`Đ-2`).
 
 ### Evaluation order
@@ -2722,7 +2745,7 @@ Không tồn tại: **mỗi contest chỉ có MỘT admin duy nhất** (`Đ-18`)
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
 Quyền đặt cược lên câu hỏi Về đích của TS: đúng → ×2 điểm câu, sai → −value, bất kể có người cướp hay không. Mỗi TS 1 lần/trận.
@@ -2765,7 +2788,19 @@ Thí sinh bấm nút NSHV trước mốc đóng cửa sổ.
 | C2 | Câu 30đ, TS bấm NSHV @ 100ms, admin chấm Sai | **−30** (hình phạt đầy đủ, không cộng dồn lên cướp transfer) | `score[seat] −= 30` · `nshvUsed[seat] = true` | — |
 | C3 | Câu 20đ, TS bấm NSHV lần 1 @ 100ms (admin chấp nhận Yes), rồi bấm lần 2 @ 200ms | Lần 2 **không được chấp nhận** — nút disabled | Lần 2 bị **reject** (hoặc UI không cho bấm) | — |
 | C4 | Câu 30đ, TS bấm NSHV @ 100ms (trước mốc đóng cửa sổ), admin chấm "Đúng" + có người cướp đúng | **TS +60 (30×2)** · **người cướp +30 (transfer từ sai TS[i], không phải từ TS ấy)** | `score[seat_nshv] += 60` · `score[seat_steal] += 30` | — |
-| C5 | **NEEDS CLARIFICATION** — Câu 30đ, TS NSHV sai (−30) + TS[i] sai → có người cướp đúng | TS NSHV −30 · người thi chính TS[i] −30 (transfer) · người cướp +30? Hay +0? (U-8) | — | Số học không chốt |
+| C5 — **đóng `U-8`** | Câu 30đ, người thi chính A **có NSHV** và bị chấm **Sai**; B cướp đúng | **A −30 · B +30.** A mất giá trị câu **đúng một lần** — hình phạt NSHV **thay thế** phần nợ của transfer, **không cộng dồn** thành −60 | `score[A] −= 30` · `score[B] += 30` · `nshvUsed[A] = true` | — |
+| C5b | Cùng C5 nhưng **B cướp sai** | **A −30** (không đổi) · **B −15** (`−½` giá trị câu, hình phạt riêng của B) | `score[A] −= 30` · `score[B] −= 15` | — |
+| C5c | Cùng C5 nhưng **không ai cướp** | **A −30** (không đổi) | `score[A] −= 30` | — |
+
+> **`U-8` được nguồn quy định thẳng, không phải suy diễn.** Dòng 90 của `docs/source/fandom-olympia-26-luat-choi.md`: *"Trả lời sai sẽ bị trừ đi số điểm của câu hỏi, **kể cả các thí sinh còn lại có giành quyền trả lời hay không**."* Mệnh đề in đậm tồn tại **đúng để** nói rằng số học của người thi chính **độc lập** với hành động của người cướp ⇒ C5, C5b, C5c cho A **cùng một** kết quả `−value`.
+>
+> Nó cũng giải thích **vì sao mệnh đề đó cần có mặt**: ở câu **không** NSHV, A sai mà không ai cướp thì A mất **0**; có NSHV thì A mất `value` **dù không ai cướp**. Đó chính là điều nguồn muốn nhấn.
+>
+> **Hai lỗi tài liệu từng làm `U-8` trông khó hơn thực tế** — nay đã sửa:
+> 1. Bảng cũ viết như thể *"TS NSHV"* và *"người thi chính TS[i]"* là **hai người khác nhau**. Không phải: Ngôi sao hy vọng do **chính người đang thi** đặt lên câu **của mình**, trước khi câu được đọc (Conditions điểm 2). Cùng một người — bảng dựng sai tiền đề nên không ra được đáp số.
+> 2. `GR-018` **đã ghi đúng đáp án từ trước** (*"−30 từ NSHV, không sinh sự kiện Sai riêng"*), chỉ GR-020/GR-021 chưa đồng bộ.
+>
+> **Người cướp KHÔNG thể dùng Ngôi sao hy vọng trên câu đang cướp**: NSHV phải đặt **trước khi câu được đọc**, còn người cướp chỉ quyết định bấm chuông **sau khi** câu đã đọc và đã bị trả lời sai. Ngôi sao của họ vẫn còn nguyên cho **lượt thi của chính họ**.
 | C6 — bấm sau khi cửa sổ đã đóng | Admin đã bấm hiển thị câu lúc 50ms, thí sinh bấm NSHV lúc 100ms | **KHÔNG TỒN TẠI** — cửa sổ đặt Ngôi sao hy vọng đóng tại mốc admin bấm hiển thị (`game-rules-review-old.md` GRR-048); ngoài cửa sổ thì nút **không hiển thị và không phản hồi** (`Đ-16`) ⇒ không có tín hiệu nào được tạo | Không đổi; ngôi sao **vẫn chưa dùng** | — |
 
 ### Outcomes
@@ -4457,10 +4492,16 @@ Tất cả timeout, thứ tự chuông, thứ hạng tốc độ, và mốc th�
 
 ### Status
 
-NEEDS CLARIFICATION
+CONFIRMED
 
 ### Purpose
-Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết nối lại và giữ ghế. Quá thời gian grace, ghế bị xử lý theo `dropoutPolicy` (mất quyền, bị loại từ vòng, hoặc xoá khỏi trận tùy vòng). Trong khoảng grace, trạng thái của ghế được giữ nguyên (state-sync khi quay lại).
+Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết nối lại và giữ ghế. Trong khoảng grace, trạng thái của ghế được giữ nguyên (state-sync khi quay lại).
+
+**Quá grace, hệ thống CHỈ HIGHLIGHT — ADMIN là người quyết** *(✅ chủ dự án chốt 2026-07-26, đóng `U-13`)*: không có chính sách tự động nào, không tự loại, không tự xoá ghế. Ghế được **tô nổi bật trên màn admin** kèm thời lượng đã mất kết nối; admin chọn **giữ · gia hạn · kick**.
+
+> Đây **cùng một mẫu** với `Đ-1` (máy tô khác biệt ký tự, admin chấm) và với `Đ-28` (máy tô đỏ bản quá hạn, admin phán quyết). Nguyên tắc nền điểm 1 áp nguyên: **máy độc quyền SỰ KIỆN** (đo và hiển thị thời gian mất kết nối), **người độc quyền PHÁN QUYẾT**.
+>
+> ⇒ **`dropoutPolicy` KHÔNG còn là một enum chính sách tự động.** Không cần kê tập giá trị `mất-quyền / loại-khỏi-vòng / xoá-khỏi-trận` nữa — không giá trị nào trong số đó được máy tự áp. Thứ duy nhất còn là **cấu hình** ở đây là **ngưỡng grace** (mốc bắt đầu tô nổi bật), mặc định **120 giây**.
 
 ### Actors
 - **Thí sinh** — mất kết nối, kết nối lại
@@ -4482,7 +4523,7 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 ### Inputs
 - ghế mất kết nối
 - `disconnectTime`: server timestamp khi phát hiện disconnect
-- `dropoutPolicy`: config của trận quy định xử lý dropout (chưa liệt kê đầy đủ — U-13)
+- **Ngưỡng grace** (mặc định **120 giây**) — mốc để hệ thống bắt đầu **tô nổi bật** ghế. Không có `dropoutPolicy` tự động (`U-13` đóng)
 
 ### Conditions
 **Mất kết nối**:
@@ -4493,7 +4534,7 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 - Ghế được restore state
 
 **Quá grace (>= 120s)**:
-- Ghế bị xử lý theo `dropoutPolicy`
+- Ghế được **tô nổi bật** trên màn admin; trạng thái ghế **không tự đổi**
 - Ghế có thể bị loại khỏi vòng, mất quyền, hoặc xoá từ trận
 
 ### Decision table
@@ -4501,7 +4542,8 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 | Case | Conditions | Expected outcome | State change | Error |
 |---|---|---|---|---|
 | C1 — Mất kết nối; kết nối lại < 120s | Thí sinh quay lại trong grace | Ghế restore state; banner "đã kết nối lại" | Seat state: quay về cũ | — |
-| C2 — Quá 120s grace period | Admin không can thiệp; thời gian quá 120s | Xử lý theo `dropoutPolicy` | Seat state: `dropped_out` hoặc loại khỏi vòng | — |
+| C2 — Quá 120s grace period | Admin không can thiệp; thời gian quá 120s | **Ghế được TÔ NỔI BẬT trên màn admin** kèm thời lượng mất kết nối. **KHÔNG tự loại, KHÔNG tự xoá.** Ghế **giữ nguyên** trong trận cho tới khi admin bấm | Trạng thái ghế **không đổi**; chỉ thêm chỉ báo hiển thị | — |
+| C2b — Admin phán quyết sau khi quá grace | Admin bấm **giữ** / **gia hạn** / **kick** | Theo đúng lựa chọn của admin. **Kick** là thao tác **không hoàn tác được** ⇒ dialog Yes/No + AuditLog kèm lý do | Chỉ đổi khi admin bấm | — |
 | C3 — Rớt mạng đúng lượt riêng Khởi động | Disconnect xảy ra vòng Khởi động riêng | **Admin quyết** — không có trạng thái tạm dừng của hệ thống; admin ngừng thao tác và xử lý ngoài hệ thống | Không đổi | — |
 | C4 — Kết nối lại; trận đã chuyển vòng | Thí sinh kết nối lại ở vòng tiếp theo | Sync state toàn bộ vòng; restore tất cả UI | UI: full sync | — |
 | C5 — Admin can thiệp trước hết grace | Admin kick thí sinh hoặc cho phép giữ lâu hơn | **ĐƯỢC — cả hai.** Grace 120 giây là **khuyến nghị của hệ thống**, không phải ràng buộc cưỡng chế: đây không phải ngưỡng bất khả thi vật lý nên nó chỉ **cảnh báo**, admin ép được (nguyên tắc nền điểm 8) | Kick ⇒ ghế rời trận; gia hạn ⇒ ghế giữ tiếp. Cả hai là thao tác **không hoàn tác được** ⇒ dialog Yes/No + ghi AuditLog kèm lý do | — |
@@ -4511,7 +4553,7 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 
 ### Outcomes
 - **Trong grace**: ghế giữ vị trí; state sync; banner thông báo reconnecting
-- **Quá grace**: xử lý theo `dropoutPolicy` (mất quyền vòng hiện tại, loại khỏi trận, hoặc giữ điểm cũ không cộng thêm)
+- **Quá grace**: **chỉ tô nổi bật, không có hệ quả tự động nào.** Mọi thay đổi trạng thái ghế đều đến từ **một thao tác bấm của admin**
 - **Quay lại**: UI restore toàn bộ trạng thái
 
 ### State changes
@@ -4527,13 +4569,13 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 ### Error outcomes
 - Lệch clock portable Windows LAN (`U-14` — ĐÓNG): grace đo bằng **đồng hồ server**, client không tham gia tính toán; máy thí sinh không NTP **không ảnh hưởng** mốc grace. Xem GR-035
 - Grace quá hạn nhưng admin chưa thao tác (ĐÓNG): **CHỜ ADMIN, không auto-drop.** v1 luôn có người điều khiển, và hệ thống không tự thực hiện thao tác có hệ quả (nguyên tắc nền điểm 1). Hết grace chỉ **hiện khuyến nghị** cho admin; ghế vẫn giữ tới khi admin bấm
-- ⚠️ **`dropoutPolicy` chưa liệt kê được danh sách giá trị hợp lệ (`U-13`) — ĐÂY LÀ MỤC DUY NHẤT còn treo của GR-036.** Không suy ra được từ nguồn nào: cần chủ dự án kê ra tập giá trị (ví dụ `giữ-ghế` / `chờ-admin` / `tự-rời`) và ngữ nghĩa từng giá trị. Lưu ý hai nhánh vừa đóng ở trên đã **thu hẹp** câu hỏi: mặc định phải là một giá trị **không tự động hoá**
+- **`U-13` ĐÓNG 2026-07-26**: **không cần** kê tập giá trị `dropoutPolicy` — vì **không có chính sách tự động nào** để kê. Máy chỉ **tô nổi bật**, admin quyết. Cấu hình duy nhất còn lại là **ngưỡng grace** (mặc định 120 giây)
 
 ### Evaluation order
 1. Server phát hiện disconnect (socket timeout)
 2. Bắt đầu grace 120s countdown
 3. Nếu kết nối lại trước 120s: state-sync, restore
-4. Nếu quá 120s: áp `dropoutPolicy`
+4. Nếu quá 120s: **tô nổi bật ghế trên màn admin**, chờ admin phán quyết — không áp hệ quả nào
 
 ### Boundaries
 - **Grace 120 giây**: cứng; không thay đổi
@@ -4562,7 +4604,7 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 
 **Ví dụ 2 — Quá grace (tự động dropout)**:
 - Thí sinh B mất kết nối t=0
-- t=120s: quá grace → xử lý theo `dropoutPolicy`
+- t=120s: quá grace → ghế **tô nổi bật** trên màn admin, vẫn ở trong trận; chờ admin bấm giữ / gia hạn / kick
 - Nếu policy = `remove_from_round` → B loại khỏi vòn hiện tại
 - B không thể quay lại vòng này
 
