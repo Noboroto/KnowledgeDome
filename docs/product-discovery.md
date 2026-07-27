@@ -311,7 +311,7 @@ Bối cảnh gốc: D1 chốt **1-12 thí sinh**. Nhưng luật O26 (`P/research
 | Người dùng tạo match ở đâu trong luồng UI? | Nút *"Bắt đầu trận mới"* ở màn trận đã đóng sổ — `EVENT-046`, guard **kho đề còn lại đủ pre-flight** |
 | Mã phòng thuộc về đâu? | **Contest** ⇒ viewer/overlay **không phải join lại** giữa hai trận |
 | Cái gì reset theo trận? | Điểm · event log · ghế đã gán · biên bản · cấu hình đóng băng (`NT-C` đóng băng lại ở vòng đầu **của trận mới**) |
-| Cái gì đi xuyên qua? | Cờ **no-repeat**: câu đã hiển thị **không bao giờ** trả về kho (`INV-11`) |
+| Cái gì đi xuyên qua? | Cờ **no-repeat**: câu đã hiển thị **không bao giờ** trả về kho (`INV-011`) |
 
 **Ràng buộc suy ra** `[SUY RA]`: **một contest chỉ có MỘT trận đang chạy tại một thời điểm** — vì mã phòng thuộc contest, hai trận song song sẽ đụng nhau ở cùng một phòng. `EVENT-046` vì vậy đòi trận trước **đã ở `FINISHED`**.
 
@@ -619,7 +619,7 @@ Phần luật + rà soát "lượt thi" theo nguồn: `docs/reviews/game-rules-r
 
 | Ràng buộc | Suy ra từ |
 |---|---|
-| **Thứ hạng do SERVER tính và đẩy xuống.** Client **không** tự suy ra từ bản sao điểm của mình | `CLAUDE.md` §Quy ước (server-authoritative tuyệt đối) · INV-04 |
+| **Thứ hạng do SERVER tính và đẩy xuống.** Client **không** tự suy ra từ bản sao điểm của mình | `CLAUDE.md` §Quy ước (server-authoritative tuyệt đối) · `INV-004` |
 | **Hoà điểm ⇒ ĐỒNG HẠNG**, theo standard competition ranking (hạng kế nhảy qua số người đồng hạng) | `GRR-032` (đã duyệt) · `GRR-057` / `Đ-10.7a` |
 | **Nhịp lộ từng người là ANIMATION, không phải engine.** Engine emit **một** sự kiện công bố kèm bảng xếp hạng; cách trình bày (lộ dần, bục, confetti) là config client-side | `D22` (animation là module độc lập với engine/rule) |
 | **Không tự đóng.** Mở và đóng đều là **thao tác bấm của admin**; không có bộ đếm tự quay về | Nguyên tắc nền điểm 2 · `Đ-11` / **C-11** |
