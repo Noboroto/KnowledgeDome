@@ -22,6 +22,8 @@
 
 **Tiền tố `QĐ-` cố ý khác `Đ-` cũ** — thấy `Đ-` là biết đang đọc tài liệu chưa dọn.
 
+**Số hiệu là ĐỊNH DANH, không phải chỉ mục.** Mục mới nhận số kế tiếp còn trống và được đặt vào **đúng chương chủ đề** của nó — nên thứ tự đọc không nhất thiết tăng dần. Đây là chủ đích: đánh số lại mỗi lần thêm một quyết định sẽ làm mọi trích dẫn cũ trôi nghĩa, kể cả trích dẫn nằm ngoài repo.
+
 ---
 
 # A. Nguyên tắc nền
@@ -120,13 +122,37 @@ Mọi lệch luật khác **chỉ cảnh báo**.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-7`, `GRR-129`
 
-### QĐ-008 — Mỗi contest có đúng MỘT admin
+### QĐ-068 — v1 khoá cứng BỐN hàng ngang VCNV; cấu hình vẫn nhận 5-8
 
-**Quyết định.** Không có mô hình nhiều admin đồng thời trên một contest.
+**Quyết định.** v1 **khoá cứng `rowCount = 4`**. Mô hình dữ liệu, RuleConfig và giao diện vẫn nhận **5-8** để phiên bản sau chỉ việc mở khoá, nhưng **engine-path cho ≠ 4 chưa tồn tại** và cửa tạo contest **không cho chọn** giá trị khác.
 
-**Vì sao.** Bỏ hẳn một lớp vấn đề: tranh chấp phán quyết, khoá đồng thời, thứ tự ghi. Hồ sơ triển khai là một buổi thi có một bàn điều khiển.
+**Vì sao.** Băng điểm Chướng ngại vật cho 5-8 hàng **không tồn tại trong bất kỳ nguồn nào** — bịa ra là bịa requirement. Khoá cứng ở tầng **cấu hình** thì rẻ và gỡ được; để mở mà không có luật thì hệ thống chạy vào một nhánh không ai đặc tả.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-18`
+**Hệ quả.** Cùng khuôn với `QĐ-007`: **hạ tầng làm sẵn, luật để sau**. Không migrate schema khi mở khoá.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `U-3`, `C-7` *(vế `rowCount`)*
+
+### QĐ-069 — v1 khoá cứng playlist BỐN vòng chuẩn
+
+**Quyết định.** Playlist v1 **luôn là bốn vòng**, đúng thứ tự luật gốc: **Khởi động → Vượt chướng ngại vật → Tăng tốc → Về đích**. **Câu hỏi phụ không phải vòng thứ năm** — nó là nhánh phân định, chỉ mở khi có hoà trong `tieBreakPositions` (`GR-022`).
+
+Không lặp vòng, không đổi thứ tự, không bớt vòng ở **thiết kế** contest.
+
+**Vì sao.** Playlist tuỳ ý là mục tiêu dài hạn, nhưng luật gốc **không có** tình huống *"chạy Khởi động hai lần trong một trận"*: điểm cộng dồn thế nào, cờ Ngôi sao hy vọng có đặt lại không, thứ tự lượt tính theo lần chạy nào — không câu nào trong nguồn trả lời được.
+
+**Đừng nhầm với `QĐ-035`.** Bỏ vòng và **chạy lại** vòng vẫn được phép — đó là **sửa sự cố** một vòng đã hỏng, khác hẳn việc **thiết kế** một contest có hai vòng Khởi động. Thứ tự **chạy** vẫn do admin quyết (`QĐ-002`); thứ bị khoá là **cấu hình** playlist.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-7` *(vế playlist)*, `G-2` *(vế "số vòng không cứng")*
+
+### QĐ-008 — Một contest có nhiều TÀI KHOẢN admin, nhưng đúng MỘT PHIÊN điều khiển
+
+**Quyết định.** Ràng buộc *"một admin"* đặt ở tầng **phiên**, không ở tầng tài khoản. Một contest được gán **nhiều tài khoản** quyền admin; tại một thời điểm chỉ **một phiên** giữ quyền điều khiển. Các phiên admin khác **xem được, không bấm được** — cùng bề mặt hiển thị, khác quyền ghi.
+
+**Vì sao.** Khoá theo **tài khoản** thì mất người là mất trận: admin ốm, máy hỏng, đổi ca giữa buổi đều thành sự cố không lối thoát. Khoá theo **phiên** giữ nguyên toàn bộ lợi ích của một-người-bấm — không tranh chấp phán quyết, không khoá đồng thời, thứ tự ghi tất định — mà vẫn có **người thay thế**.
+
+**Hệ quả.** Phải có cơ chế **chuyển quyền điều khiển** giữa hai phiên, và mọi lần chuyển đều vào `AuditLog`. Mỗi event vẫn mang **đúng một** `actor` = phiên đang giữ quyền lúc bấm ⇒ mô hình event log không đổi gì.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-18`, `S-16`
 
 ### QĐ-009 — v1 luôn có người điều khiển
 
@@ -589,6 +615,20 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu Đ�
 ---
 
 # J. Hiển thị và bảo mật
+
+### QĐ-070 — Admin mất kết nối là ca của CLIENT, không có cơ chế riêng
+
+**Quyết định.** Admin là **một client như mọi client**. Rớt mạng thì quay lại và **khôi phục từ state của server** — cùng cơ chế với ghế thí sinh (`QĐ-046`). **Không** đóng băng đồng hồ, **không** tự tạm dừng trận, **không** có vai dự phòng tự động.
+
+**Server sập là mất khả năng cứu** — và đó là ranh giới đã chấp nhận, không phải chỗ thiếu đặc tả.
+
+**Vì sao.** Mọi phương án *"máy tự xử khi vắng admin"* đều đụng `QĐ-001`: máy không được tự phán quyết. Đóng băng đồng hồ thì đụng `QĐ-030`. Đường duy nhất còn lại — cũng là đường rẻ nhất — là **coi admin như client** và dựa vào chính cơ chế khôi phục đã có.
+
+**Hệ quả.** Trong lúc admin vắng, **đồng hồ vẫn chạy** và thí sinh vẫn bị khoá theo giờ. Đây là **hệ quả được chấp nhận**, không phải lỗi. Van thoát sau sự cố là **điều chỉnh điểm thủ công** (`GR-029`) hoặc **bỏ / chạy lại vòng** (`GR-030`) — admin xem lại lịch sử rồi quyết.
+
+Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài khoản admin khác **tiếp quản được** khi phiên cũ mất kết nối.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `S-17`
 
 ### QĐ-048 — Admin TOÀN QUYỀN mở và đóng đáp án, ô chữ
 

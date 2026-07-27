@@ -9,7 +9,7 @@
 | Ký hiệu | Là gì | Vị thế |
 |---|---|---|
 | **Luật gốc** | `source/fandom-olympia-26-luat-choi.md` — bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26), lấy 2026-07-23 | **Source of truth duy nhất về LUẬT** |
-| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-067` | Source of truth về **lựa chọn sản phẩm** |
+| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-070` | Source of truth về **lựa chọn sản phẩm** |
 | **Rule** | `game-rules.md` — `GR-001` → `GR-037` | Đặc tả nghiệp vụ **chuẩn tắc** |
 | **Máy trạng thái** | `game-state-machine.md` — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` | Đặc tả **chuẩn tắc** phần vận hành |
 | **Thuật ngữ** | `glossary.md` — `TERM-001` → `TERM-056` | Tên gọi chuẩn |
@@ -133,6 +133,8 @@ Engine hỗ trợ, preset O26 **không** dùng. Ghi ở đây để chúng khôn
 | Tăng tốc **clue-buzz** | — | Cấu hình được; **không** trong preset O26 |
 | VCNV `rowCount` **5-8** hàng ngang | — | Cấu hình được. Đây là **đổi con số của luật**, khác hẳn việc hệ thống tự đẻ thêm câu |
 | Câu hỏi phụ cho **nhiều nhóm hoà** | — | `tieBreakPositions` mặc định `[1]` — chỉ phân định vị trí NHẤT. Mở rộng được |
+
+> ⚠️ **v1 KHOÁ CỨNG hai thứ trong bảng này**: `rowCount` = **4** (`QĐ-068`) và playlist = **bốn vòng chuẩn, đúng thứ tự** (`QĐ-069`). Mô hình dữ liệu và RuleConfig vẫn nhận giá trị khác để phiên bản sau chỉ việc mở khoá — nhưng **engine-path chưa tồn tại** và cửa tạo contest **không cho chọn**. Cùng khuôn với `QĐ-007`: hạ tầng làm sẵn, luật khoá ở trường hợp v1.
 
 ---
 

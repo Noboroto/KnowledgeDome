@@ -120,11 +120,10 @@ Người tổ chức một trận Olympia ở quy mô trường/CLB **không có
 | NG-6 | Không chặn copy đề | P3 — "giá trị thấp, dễ bypass" (`P/research/ux-gaps.md`) |
 | NG-7 | Không auto-transcode media ở v1 | D6 — chỉ khuyến nghị trong docs |
 
-### 3.3 Non-goal chưa được quyết
+### 3.3 Pháp lý `[CHỐT 2026-07-27]`
 
-- `[NEEDS CLARIFICATION: Bản quyền FORMAT Olympia (tên chương trình, logo, cấu trúc vòng là tài sản VTV) — sản phẩm có được đặt tên/nhắc "Olympia" trong UI công khai không?]`
-  `P/research/product-gaps.md` §1.3 nêu đây là gap **P1**, ghi ⏸️ *"User bỏ mục quyết định (D7 đã xoá 12/07)"*. Thiết kế trung lập vẫn giữ (tên vòng là data trong RuleConfig) nhưng **câu hỏi pháp lý chưa được trả lời, chỉ bị gỡ khỏi sổ quyết định**.
-- `[NEEDS CLARIFICATION: License của repo?]` — `P/research/product-gaps.md` §1.4, cũng P1, cũng ⏸️ bị gỡ cùng D7.
+- **Bản quyền format Olympia**: ✅ **đã được chấp thuận** — chủ dự án xác nhận 2026-07-27. Sản phẩm dùng tên và cấu trúc vòng bình thường. Thiết kế trung lập vẫn giữ (tên vòng là dữ liệu trong RuleConfig) vì nó phục vụ **tính tuỳ biến**, không phải để né bản quyền.
+- **License repo**: **không ghi license ở giai đoạn này** — đây là **sản phẩm nội bộ**, không phát hành ra ngoài. Cần xét lại nếu về sau có ý định mở mã hoặc bán.
 
 ---
 
@@ -266,20 +265,24 @@ Trainer tạo practice match từ đề public → pre-flight chỉ cảnh báo 
 
 → 300ms của US-4.1 không nói mạng nào. Nếu là Internet thì nó chặt hơn NFR-1 (500ms); nếu là LAN thì lỏng hơn (200ms). Không nguồn nào giải quyết.
 
-### C-6 `[CONFLICT]` — "Hệ thống trung lập bản quyền" vs. FR chưa có disclaimer
+### C-6 `[CHỐT 2026-07-27]` — Disclaimer khi upload nhạc nền
 
-D10 và spec §10 yêu cầu **disclaimer bản quyền khi upload backgroundTrack**. `P/PRD.md` §7 Rủi ro nhắc *"disclaimer khi upload"*. Nhưng **không FR nào trong §4** quy định disclaimer này → nó chỉ tồn tại ở mục Rủi ro và spec, không phải requirement chính thức.
+> **Phân xử**: bản quyền **format** đã được chấp thuận (§3.3) nên vế đó tan. Còn lại là **nhạc nền do người dùng tự upload** — thứ hệ thống không kiểm được nguồn gốc. Giữ **disclaimer khi upload** và nâng nó thành **FR chính thức**, không để nằm ở mục Rủi ro.
 
-### C-7 `[ĐÃ PHÂN XỬ 2026-07-24]` — Luật cho >4 thí sinh chưa định nghĩa ở cấp sản phẩm
+**Bối cảnh cũ:** D10 và spec §10 yêu cầu disclaimer bản quyền khi upload `backgroundTrack`; `P/PRD.md` §7 Rủi ro có nhắc, nhưng **không FR nào trong §4** quy định — nó chỉ tồn tại ở mục Rủi ro và spec.
+
+### C-7 `[CHỐT 2026-07-24, bổ sung 2026-07-27]` — Luật cho >4 thí sinh
 
 > **Chủ dự án chốt 2026-07-24**: **v1 = ĐÚNG 4 thí sinh** — luật chỉ đặc tả cho cấu hình 4. Luật cho số thí sinh khác 4 để **v2**. **Hạ tầng (schema, seat model, `scoringUnit`, RuleConfig dạng mảng) vẫn hỗ trợ nhiều thí sinh ngay từ v1** — v2 chỉ ship luật và sửa controller, KHÔNG migrate schema.
 >
 > Hệ quả: bảng bên dưới **không còn chặn v1**; nó trở thành backlog v2. Chi tiết các mục bị hoãn: `docs/reviews/game-rules-review-old.md` §0.1 (GRR-017, GRR-029, GRR-030, GRR-045, GRR-083, GRR-105).
 >
-> **Vẫn còn treo, KHÔNG được quyết định này cover** (biến thiên theo trục khác, không phải số thí sinh):
-> - `[NEEDS CLARIFICATION: v1 có khoá cứng rowCount = 4 không?]` — thang điểm CNV cho `rowCount` 5-8 vẫn không tồn tại trong nguồn nào.
-> - `[NEEDS CLARIFICATION: v1 có khoá cứng playlist chuẩn 4 vòng không?]` — playlist tuỳ ý (G-2) cho phép lặp vòng / đổi thứ tự, chưa có luật.
-> - `[NEEDS CLARIFICATION: G-2 ghi "1-12 thí sinh" — có sửa thành "v1: 4; v2: 1-12" không?]` — Goal G-2 và D1 hiện vẫn phát biểu 1-12 mà không phân mốc.
+> **Ba mục từng treo theo trục khác — đã chốt 2026-07-27:**
+> - **`rowCount` v1 khoá cứng 4**, cấu hình vẫn nhận 5-8 → `decisions.md` `QĐ-068`.
+> - **Playlist v1 luôn bốn vòng chuẩn**, không lặp, không đổi thứ tự → `QĐ-069`. Câu hỏi phụ **không phải vòng thứ năm**.
+> - **G-2 và D1 sửa câu chữ**: v1 = **luật cho đúng 4**; **dữ liệu, schema và code** làm cho 1-12 ngay từ v1; **phiên bản sau** mới cập nhật luật và state → `QĐ-007`.
+>
+> **Một khuôn duy nhất cho cả ba** — và cũng là khuôn của `QĐ-007`: *hạ tầng làm sẵn cho trường hợp tổng quát, luật khoá cứng ở trường hợp v1*. Mở khoá về sau **không** phải migrate schema.
 
 Bối cảnh gốc: D1 chốt **1-12 thí sinh**. Nhưng luật O26 (`P/research/rules-2026.md`) được viết cho **đúng 4 người**:
 
@@ -514,7 +517,7 @@ Phần luật + rà soát "lượt thi" theo nguồn: `docs/reviews/game-rules-r
 | S-1 | **Ai** có quyền bỏ vòng / chạy lại vòng / override cảnh báo? Đ-5 và Đ-5.1 nói "admin" nhưng không gắn permission cụ thể trong catalog CASL. Đây là các thao tác phá huỷ nhất trong hệ thống. | E-1, E-7 |
 | ~~S-13~~ | ✅ **ĐÃ CHỐT 2026-07-24: nhánh (A) — MC quyết bằng lời, admin bấm.** `/mc` **giữ nguyên read-only**; không permission CASL mới, không đổi mô hình truy cập, không phát sinh bề mặt quyền mới. **Mô hình ba tầng**: MC = thẩm quyền phán quyết trên sân khấu (nói) · Admin = cảm biến + cơ cấu chấp hành duy nhất (bấm) · Server = sự kiện và thời gian (không ai sửa). | E-1, E-7, E-9 |
 | ~~S-14~~ | ✅ **ĐÃ CHỐT 2026-07-24: KHÔNG** — AuditLog **không** có trường "người yêu cầu" tách khỏi "người thao tác". Mọi event giữ một `actor` duy nhất = người bấm (admin). ⇒ **Hệ thống KHÔNG phải là hồ sơ duy nhất của trận**: log chịu trách nhiệm về **thời gian và thao tác**; **việc AI quyết định được ghi ở BIÊN BẢN VIẾT TAY** ngoài hệ thống (chốt 24/07). SM-8 đã sửa theo. Xem thêm **S-15**. | E-11 |
-| **S-15** | ⚠️ **Biên bản viết tay là một PHẦN CHÍNH THỨC của hồ sơ trận, nhưng chưa xuất hiện ở bất kỳ tài liệu nào.** Chốt 24/07: xuất xứ quyết định (MC quyết gì, vì sao) nằm ở biên bản viết tay của BTC, không nằm trong hệ thống. Đây là **phụ thuộc vận hành mới** — nếu BTC không lập biên bản thì khiếu nại về "ai quyết" **không có nguồn nào** phân xử. Câu hỏi: **(a)** đây là giả định vận hành hay yêu cầu quy trình bắt buộc? **(b)** PDF kết quả (US-7.1) có cần in kèm phần trống để ghi tay / chỗ ký xác nhận không? **(c)** có cần mẫu biên bản chuẩn trong tài liệu triển khai không? | E-10, E-12 |
+| ~~**S-15**~~ | ✅ **ĐÃ ĐÓNG 2026-07-27: không thuộc phạm vi hệ thống.** Chủ dự án xác nhận không cần đặc tả biên bản viết tay. Cũ: ⚠️ **Biên bản viết tay là một PHẦN CHÍNH THỨC của hồ sơ trận, nhưng chưa xuất hiện ở bất kỳ tài liệu nào.** Chốt 24/07: xuất xứ quyết định (MC quyết gì, vì sao) nằm ở biên bản viết tay của BTC, không nằm trong hệ thống. Đây là **phụ thuộc vận hành mới** — nếu BTC không lập biên bản thì khiếu nại về "ai quyết" **không có nguồn nào** phân xử. Câu hỏi: **(a)** đây là giả định vận hành hay yêu cầu quy trình bắt buộc? **(b)** PDF kết quả (US-7.1) có cần in kèm phần trống để ghi tay / chỗ ký xác nhận không? **(c)** có cần mẫu biên bản chuẩn trong tài liệu triển khai không? | E-10, E-12 |
 | S-2 | **Revert có bắt nhập lý do** như `SCORE_ADJUST` (`R-GEN-07`: *"bắt buộc nhập lý do"*) không? Có audit entry riêng cho revert / bỏ vòng / chạy lại không? | E-7, E-11 |
 | S-3 | **Dialog cảnh báo conflict** (Đ-5): nội dung hiển thị gì, có bắt nhập lý do, có timeout tự đóng không? | E-7 |
 | S-4 | **Recommendation hiển thị cho ai** (Đ-5.f) — admin, MC, viewer? Hiển thị cho viewer là lộ thứ tự sắp tới. | E-7, E-9 |
@@ -563,8 +566,8 @@ Phần luật + rà soát "lượt thi" theo nguồn: `docs/reviews/game-rules-r
 
 | ID | Vấn đề | Epic |
 |---|---|---|
-| **S-16** | **Đ-18 chưa nói "một admin" là ràng buộc ở tầng nào**: một tài khoản duy nhất cho mỗi contest, hay nhiều tài khoản nhưng khoá còn một phiên điều khiển? Hai cách cho hai thiết kế permission khác nhau, và ảnh hưởng luôn kịch bản admin đổi máy giữa trận | E-1, E-7 |
-| **S-17** | **Không có phương án dự phòng khi admin mất kết nối giữa trận** (`Đ-21`): trận cứ chạy, thí sinh vẫn bị đồng hồ khoá. Van thoát duy nhất là bỏ / chạy lại vòng (`Đ-5.1`), mà cách đó **tiêu đề** (câu đã dùng không trả lại kho). Có cần quy trình vận hành riêng cho tình huống này không? | E-7, E-12 |
+| ~~**S-16**~~ | ✅ **ĐÃ CHỐT 2026-07-27 (`QĐ-008`): nhiều TÀI KHOẢN, một PHIÊN điều khiển.** Các phiên admin khác **xem được, không bấm được**; có cơ chế chuyển quyền điều khiển, mọi lần chuyển vào `AuditLog`. Khoá theo tài khoản thì mất người là mất trận. Cũ: **Đ-18 chưa nói "một admin" là ràng buộc ở tầng nào**: một tài khoản duy nhất cho mỗi contest, hay nhiều tài khoản nhưng khoá còn một phiên điều khiển? Hai cách cho hai thiết kế permission khác nhau, và ảnh hưởng luôn kịch bản admin đổi máy giữa trận | E-1, E-7 |
+| ~~**S-17**~~ | ✅ **ĐÃ CHỐT 2026-07-27 (`QĐ-070`): admin là CLIENT như mọi client.** Rớt mạng thì quay lại và khôi phục từ state của server, cùng cơ chế với ghế thí sinh. **Không** đóng băng đồng hồ, **không** tự tạm dừng, **không** vai dự phòng tự động. Server sập là **mất khả năng cứu** — ranh giới đã chấp nhận. Quyền điều khiển gắn với **phiên** (`QĐ-008`) nên tài khoản admin khác tiếp quản được. Cũ: **Không có phương án dự phòng khi admin mất kết nối giữa trận** (`Đ-21`): trận cứ chạy, thí sinh vẫn bị đồng hồ khoá. Van thoát duy nhất là bỏ / chạy lại vòng (`Đ-5.1`), mà cách đó **tiêu đề** (câu đã dùng không trả lại kho). Có cần quy trình vận hành riêng cho tình huống này không? | E-7, E-12 |
 | **S-19** | **Athena tự khoá ô nhập hàng ngang của chính người vừa bấm "Mở chướng ngại vật"** (`ObstacleUI.cs` `Obstacle_Click`) — coi như người đó đã dồn hết vào CNV. `Đ-22` **không nói** tới điểm này. Người bấm CNV, trong lúc chờ admin duyệt, **có còn được trả lời hàng ngang không**? Luật gốc chỉ loại họ khi trả lời **sai** CNV, nên khoá ngay lúc bấm là **nghiêm hơn luật** | E-7, E-8 |
 | **S-18** | **Đ-16 cần bộ thông điệp toast chuẩn** — mỗi loại invalid state nói gì. Nếu chỉ hiện một câu chung chung thì admin không biết vì sao thao tác bị chặn, giữa lúc đang phải xử lý nhanh | E-7, E-8 |
 | **S-20** | **Đ-36 chưa nói nút chọn hàng ngang có hiện trên máy thí sinh CHƯA TỚI LƯỢT không** (mode nhập liệu). `Đ-16` (invalid state → máy thí sinh không render gì) đẩy về "không hiện" ⇒ tín hiệu sai lượt **không tồn tại**; còn `Đ-5` (cảnh báo, không chặn cứng) giả định tín hiệu sai lượt **tới được** server và admin ép được. Hai rule cho hai thiết kế màn thí sinh khác nhau, và quyết định luôn một hàng trong bảng quyết định GR-007 | E-7, E-8 |
@@ -802,7 +805,7 @@ Theo thứ tự chặn:
 | 4 | Trả lời **C-8** (ai bấm bắt đầu 3s) | Acceptance criteria vòng Khởi động |
 | 5 | ~~Làm rõ **C-9** (Contest vs Match trong UI)~~ → **ĐÃ CHỐT 27/07** (`Đ-49`): mã phòng thuộc **contest**, nút *"Bắt đầu trận mới"* khi kho đề còn đủ, một trận chạy tại một thời điểm | Journey J-2, J-4 nay viết được |
 | 6 | Đồng bộ **C-2, C-3, C-6, C-10** (tài liệu cũ chưa sync) | Chất lượng nguồn — nên sửa ngay khi migrate vào `docs/source/` |
-| 7 | Quyết định về **NG chưa chốt**: bản quyền format Olympia + license repo | Có thể chặn phát hành, không chặn viết PRD |
+| ~~7~~ | ~~Bản quyền format Olympia + license repo~~ → **ĐÃ CHỐT 2026-07-27**: bản quyền **đã được chấp thuận**; **không ghi license** vì là sản phẩm nội bộ. Xem §3.3 | — |
 | 8 | Chạy gate người thật (`product-gaps.md` §6.1) | Kiểm chứng AS-1, AS-3, AS-4, AS-8 |
 
 ---
