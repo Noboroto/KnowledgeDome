@@ -2268,9 +2268,15 @@ CONFIRMED
 Quy định thí sinh chọn 3 câu từ 2 mức điểm {20, 30} để tạo thành gói cá nhân trước khi bắt đầu thi lượt đó.
 
 ### Actors
-- Thí sinh: chọn gói câu
-- Server: xác nhận hợp lệ, lưu lựa chọn
-- Admin: chọn hộ nếu TS chưa chọn khi tới lượt (default 20/20/20)
+
+**Chủ thể chọn phụ thuộc MODE TRẢ LỜI** (`Đ-40`, chốt 27/07 — cùng khuôn `Đ-36` của chọn hàng ngang):
+
+| Mode | Ai chọn | Cơ chế |
+|---|---|---|
+| **Sân khấu** (mặc định) | **Admin bấm** | TS **nói gói của mình trên sân khấu**; admin nghe và bấm. Máy TS **không render** nút chọn gói — đây là **đường vào duy nhất**, không phải fallback |
+| **Nhập liệu** | **Thí sinh** | TS tự chọn trên máy; admin **chọn hộ** default 20/20/20 nếu TS chưa chọn khi tới lượt (C3) |
+
+- Server: xác nhận hợp lệ, lưu lựa chọn (validate lại bất kể client là ai — Zero-trust)
 
 ### Related states
 - Vòng Về đích, trước khi câu hỏi được rút (draw)
@@ -2302,13 +2308,16 @@ TS bước vào màn chọn gói, hoặc tới lượt mà TS chưa chọn.
 |---|---|---|---|---|
 | C1 | TS chọn 20/20/20 | Hệ thống chấp nhận, chuẩn bị draw 3 câu từ pool 20đ | `MatchState.packageChoice[seat] = [20, 20, 20]` · pool lock để reserve 3 câu 20đ | — |
 | C2 | TS chọn 20/30/30 | Hệ thống chấp nhận (phối hợp hợp lệ) | `packageChoice[seat] = [20, 30, 30]` · lock reserve 1 câu 20đ + 2 câu 30đ | — |
-| C3 | TS chưa chọn khi tới lượt (lượt bắt đầu) | **Admin chọn hộ: default 20/20/20** | `packageChoice[seat] = [20, 20, 20]` · admin có thể override trong dialog | — |
+| C3 | **Mode nhập liệu**, TS chưa chọn khi tới lượt (lượt bắt đầu) | **Admin chọn hộ: default 20/20/20** | `packageChoice[seat] = [20, 20, 20]` · admin có thể override trong dialog | — |
+| C5 | **Mode sân khấu** — TS nói gói trên sân khấu | **Admin bấm chốt gói theo lời TS** (`Đ-40`). Không có mốc "quá hạn": admin vốn là người bấm | `packageChoice[seat] = [a, b, c]` · **last-wins** tới mốc khoá như C4 | — |
+| C6 | **Mode sân khấu** — máy TS gửi lựa chọn gói | **Không tồn tại đường này**: nút không render; server **từ chối** nếu vẫn nhận được (Zero-trust) | Không đổi | Drop + AuditLog |
 | C4 | TS có thể đổi gói sau khi chọn không? | **ĐỔI ĐƯỢC, cho tới mốc admin bấm "hiển thị câu đầu tiên của gói"** (`GRR-054`) | `packageChoice` **last-wins** tới mốc đó, rồi khoá. Mốc này đã tồn tại sẵn (`Đ-26`) và có đúng ý nghĩa cần thiết: **đề đã rời server**, không thể đổi ngược | — |
 
 ### Outcomes
 - **Chấp nhận**: ghi nhận lựa chọn, chuẩn bị draw 3 câu
 - **Từ chối**: hiện UI error, yêu cầu chọn lại (client-side validate)
-- **Chưa chọn**: admin chọn hộ default 20/20/20 (server-side fallback)
+- **Chưa chọn** (chỉ mode nhập liệu): admin chọn hộ default 20/20/20 (server-side fallback)
+- **Mode sân khấu**: không có nhánh "chưa chọn" — admin là người bấm, gói chỉ tồn tại khi admin đã bấm
 
 ### State changes
 - Bảng chọn gói: thêm record `(seat, packageChoice=[a, b, c])`
@@ -2326,8 +2335,8 @@ TS bước vào màn chọn gói, hoặc tới lượt mà TS chưa chọn.
 - **Mức không nằm {20, 30}**: UI reject (client + server Zod)
 
 ### Evaluation order
-1. TS vào màn chọn gói (hoặc admin chọn hộ nếu TS không chọn kịp)
-2. Nhập lựa chọn: click 3 nút / chọn dropdown (UI tuỳ design)
+1. **Sân khấu**: TS nói gói trên sân khấu ⇒ admin vào màn chốt gói · **Nhập liệu**: TS vào màn chọn gói (hoặc admin chọn hộ nếu TS không chọn kịp)
+2. Nhập lựa chọn: click 3 nút / chọn dropdown (UI tuỳ design) — trên máy **admin** hay máy **thí sinh** tuỳ mode
 3. Client validate (3 item, mỗi item ∈ {20, 30})
 4. Confirm → server lưu lựa chọn
 5. Lệnh draw 3 câu (câu 1 từ mức `choice[0]`, câu 2 từ `choice[1]`, câu 3 từ `choice[2]`)
@@ -2748,12 +2757,18 @@ Không tồn tại: **mỗi contest chỉ có MỘT admin duy nhất** (`Đ-18`)
 CONFIRMED
 
 ### Purpose
-Quyền đặt cược lên câu hỏi Về đích của TS: đúng → ×2 điểm câu, sai → −value, bất kể có người cướp hay không. Mỗi TS 1 lần/trận.
+Quyền đặt cược lên câu hỏi Về đích của TS: đúng → ×2 điểm câu, sai → −value, bất kể có người cướp hay không. Mỗi TS **1 lần / lần chạy vòng Về đích** (`Đ-42`) — trong luồng thường là **1 lần/trận** như luật gốc; chạy lại vòng thì đặt lại.
 
 ### Actors
-- Thí sinh (người thi chính): bấm nút NSHV trước khi câu được đọc/hiện
-- Admin: duyệt tín hiệu NSHV (queue, chấm Yes/No, per Đ-7.2)
-- Server: xác nhận NSHV còn / đã tiêu, tính số học
+
+**Chủ thể ĐẶT phụ thuộc MODE TRẢ LỜI** (`Đ-41`, chốt 27/07 — cùng khuôn `Đ-36` / `Đ-40`):
+
+| Mode | Ai bấm | Cơ chế |
+|---|---|---|
+| **Sân khấu** (mặc định) | **Admin** | Người thi chính **nói miệng trên sân khấu** *"đặt Ngôi sao hy vọng"* **trước khi câu được mở**; admin nghe và bấm, qua **dialog Yes/No** (thao tác không hoàn tác được). Máy TS **không render** nút NSHV |
+| **Nhập liệu** | **Thí sinh** (người thi chính) | TS tự bấm nút NSHV trước mốc đóng cửa sổ |
+
+- Server: xác nhận NSHV còn / đã tiêu, tính số học, validate lại chủ thể theo mode (Zero-trust)
 
 ### Related states
 - Vòng Về đích, trước khi câu được đọc hoặc hiện màn hình (mốc admin bấm "hiển thị câu", `game-rules-review-old.md` GRR-048)
@@ -2761,7 +2776,7 @@ Quyền đặt cược lên câu hỏi Về đích của TS: đúng → ×2 đi�
 - Hàng đợi tín hiệu: NSHV vào queue, admin duyệt (Đ-7.2 VCNV chặn, nhưng NSHV không trong VCNV)
 
 ### Trigger
-Thí sinh bấm nút NSHV trước mốc đóng cửa sổ.
+Nút NSHV được bấm trước mốc đóng cửa sổ — **sân khấu**: admin bấm sau khi nghe TS nói · **nhập liệu**: TS tự bấm (`Đ-41`).
 
 ### Preconditions
 - Vòng Về đích, lượt của TS
@@ -2775,10 +2790,11 @@ Thí sinh bấm nút NSHV trước mốc đóng cửa sổ.
 - Quyết định admin: **Yes** (chấp nhận NSHV) hay **No** (từ chối)
 
 ### Conditions
-1. **Chỉ 1 lần/TS/trận**: sau khi bấm lần 1 được admin chấp nhận (Yes) → nút NSHV disabled
+1. **Chỉ 1 lần / TS / LẦN CHẠY VÒNG** (`Đ-42`, 27/07): sau khi bấm lần 1 → nút NSHV disabled. **Chạy lại vòng Về đích (`EVENT-004`) hoặc bỏ vòng (`EVENT-003`) ⇒ cờ ĐẶT LẠI**, ngôi sao dùng được lại. Luồng thường vẫn đúng *"1 lần / TS / trận"* của luật gốc, vì Về đích chạy một lần trong một trận và NSHV chỉ tồn tại ở vòng này. Đề xuất `Đ-5.d` (phạm vi contest, không hồi sinh) **bị bác**
 2. **Mốc đóng**: admin bấm "hiển thị câu" (`game-rules-review-old.md` GRR-048 — mốc "đọc lên hoặc hiện lên")
 3. **Bấm trước mốc**: là hợp lệ; bấm sau → không hợp lệ (queue reject ngoài cửa sổ)
-4. **Queue**: Về đích là vòng hàng đợi **KHÔNG chặn** (`Đ-7.2`) ⇒ tín hiệu đặt Ngôi sao hy vọng **có hiệu lực ngay**, không chờ admin xác nhận.
+4. **Queue**: Về đích là vòng hàng đợi **KHÔNG chặn** (`Đ-7.2`) ⇒ tín hiệu đặt Ngôi sao hy vọng **có hiệu lực ngay**, không chờ admin xác nhận. **Chỉ áp cho mode nhập liệu** — ở mode sân khấu admin là người bấm nên không có tín hiệu để duyệt (`Đ-41`; xem `game-state-machine.md` `UNRES-13`).
+5. **Mode sân khấu**: máy TS **không có** nút NSHV ⇒ không tồn tại đường phát tín hiệu từ phía TS; server **từ chối** nếu vẫn nhận được (Zero-trust).
 
 ### Decision table
 
@@ -2801,6 +2817,8 @@ Thí sinh bấm nút NSHV trước mốc đóng cửa sổ.
 > 2. `GR-018` **đã ghi đúng đáp án từ trước** (*"−30 từ NSHV, không sinh sự kiện Sai riêng"*), chỉ GR-020/GR-021 chưa đồng bộ.
 >
 > **Người cướp KHÔNG thể dùng Ngôi sao hy vọng trên câu đang cướp**: NSHV phải đặt **trước khi câu được đọc**, còn người cướp chỉ quyết định bấm chuông **sau khi** câu đã đọc và đã bị trả lời sai. Ngôi sao của họ vẫn còn nguyên cho **lượt thi của chính họ**.
+| C7 — **mode sân khấu** (`Đ-41`) | TS nói *"đặt Ngôi sao hy vọng"* trên sân khấu trước khi câu được mở; admin bấm | **Hợp lệ** — admin là chủ thể bấm ở mode này; qua **dialog Yes/No** vì thao tác không hoàn tác được. Cùng một người bấm NSHV và bấm hiển thị câu ⇒ **không có cuộc đua ở biên cửa sổ** | `nshvUsed[seat] = true` | — |
+| C8 — **mode sân khấu**, máy TS gửi tín hiệu NSHV | Nút không render nhưng vẫn có request tới server | **Không tồn tại đường này** — server từ chối (Zero-trust) | Không đổi | Drop + AuditLog |
 | C6 — bấm sau khi cửa sổ đã đóng | Admin đã bấm hiển thị câu lúc 50ms, thí sinh bấm NSHV lúc 100ms | **KHÔNG TỒN TẠI** — cửa sổ đặt Ngôi sao hy vọng đóng tại mốc admin bấm hiển thị (`game-rules-review-old.md` GRR-048); ngoài cửa sổ thì nút **không hiển thị và không phản hồi** (`Đ-16`) ⇒ không có tín hiệu nào được tạo | Không đổi; ngôi sao **vẫn chưa dùng** | — |
 
 ### Outcomes
@@ -3353,7 +3371,12 @@ Một thí sinh gửi đáp án (submission)
 ### Error outcomes
 - **Câu miệng vs câu gõ** (`U-7` — ĐÓNG): kênh trả lời **không phải thuộc tính của câu hỏi**, nó là **mode của contest** (`Đ-4`) cộng với hai vòng luôn gõ máy (VCNV, Tăng tốc). Ở trận chính thức **cả hai kênh đều do admin chấm** (nguyên tắc nền điểm 1) ⇒ phân biệt này **không đổi outcome của GR-026**, nó chỉ đổi việc có gì để highlight hay không (`GR-027`). Các rule *"ghi nhận đáp án đầu/cuối"*, *"timestamp đáp án"*, *"highlight"* **không bị xoá ở mode sân khấu, chỉ không được kích hoạt** (`GRR-131`)
 - **Practice gặp câu MIỆNG** (`U-38` — ĐÓNG): **không tồn tại tình huống này.** Practice **khoá về mode nhập liệu** (`GRR-127`), vì mode sân khấu cần người nghe. Practice thuộc **v1.5**; v1 luôn có người điều khiển nên mọi câu đều có admin chấm
-- **Câu chưa chấm không thể bị bỏ lại**: phán quyết là **điều kiện để chuyển sang câu tiếp theo**, nên không tồn tại trạng thái "vòng đã đóng mà còn câu chưa chấm" ở các vòng hỏi tuần tự. Riêng vòng xếp hạng (Tăng tốc), việc chuyển câu khi **mới chấm một phần** số thí sinh vẫn chưa được quy định — xem `game-rules-review.md` GRR-162.
+- **Câu chưa chấm không thể bị bỏ lại**: phán quyết là **điều kiện để chuyển sang câu tiếp theo**, nên không tồn tại trạng thái "vòng đã đóng mà còn câu chưa chấm" — **ở mọi vòng, không còn ngoại lệ**.
+- **Chốt câu khi mới chấm một phần** (`Đ-43`, chủ dự án chốt 27/07 — đóng `GRR-162`): áp cho **hai vòng chấm theo lô** — **Tăng tốc** và **câu hàng ngang VCNV**. Admin bấm **chốt câu** lúc nào cũng được; **mọi ghế chưa chấm ⇒ SAI**.
+  - **Tăng tốc**: ghế mặc định SAI nhận **0** điểm và **không giữ chỗ** trong thang 40/30/20/10. Vẫn là **MỘT** event điểm cho toàn bộ bảng ⇒ huỷ kết quả revert cả bảng.
+  - **Câu hàng ngang VCNV**: ghế mặc định SAI nhận **0** điểm và **KHÔNG bị loại** — bị loại chỉ đến từ trả lời **sai Chướng ngại vật** (GR-010).
+  - **NGOẠI LỆ — tín hiệu "Mở chướng ngại vật" đang chờ duyệt KHÔNG bị mặc định**: đó là phán quyết **riêng lẻ, có chủ đích**, và SAI ở đó **loại thí sinh**. Không tồn tại đường nào để một cú bấm chốt câu loại một thí sinh.
+  - **Không phải máy tự chấm**, không phải ngoại lệ của nguyên tắc nền điểm 1: **cú bấm chốt câu CHÍNH LÀ phán quyết** (*"những ai tôi chưa chấm ⇒ SAI"*). **Không** có bộ đếm nào tự chốt khi hết giờ.
 
 ### Evaluation order
 1. Thí sinh gửi submission (hoặc timeout)

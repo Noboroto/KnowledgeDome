@@ -6,7 +6,21 @@
 >
 > **Cập nhật gần nhất**: 2026-07-27.
 >
-> **Bốn quyết định của chủ dự án được đưa vào tài liệu này** — `Đ-37` (sửa danh sách đề tại cửa vào vòng) · `Đ-38` (`LOBBY` là cửa vào vòng, enum 4 giá trị) · `Đ-39` (pipeline vòng độc lập) · `C-19` / `C-20` (màn công bố kết quả · điểm số công khai với mọi vai).
+> **Quyết định của chủ dự án được đưa vào tài liệu này:**
+>
+> | Mã | Nội dung |
+> |---|---|
+> | `Đ-37` | Sửa danh sách đề tại cửa vào vòng |
+> | `Đ-38` | `LOBBY` là cửa vào vòng, enum 4 giá trị |
+> | `Đ-39` | Pipeline vòng độc lập |
+> | `C-19` · `C-20` | Màn công bố kết quả · điểm số công khai với mọi vai |
+> | `Đ-40` | **Chọn gói Về đích theo mode** |
+> | `Đ-41` | **Đặt Ngôi sao hy vọng theo mode** |
+> | `Đ-42` | **Chạy lại vòng ⇒ đặt lại cờ NSHV** — xoá ngoại lệ cuối cùng của `Đ-39` |
+> | `C-21` | **Banner tạm dừng** — lớp phủ chặn toàn cục, không chữ, không lý do; **chỉ bật được khi không đồng hồ nào chạy** |
+> | `Đ-43` | **Chốt câu ⇒ ghế chưa chấm mặc định SAI** — áp cho **Tăng tốc** và **câu hàng ngang VCNV**; xoá ngoại lệ cuối cùng của `INV-10`. **Không** áp cho tín hiệu "Mở chướng ngại vật" |
+>
+> `Đ-40` → `Đ-43` chốt ngày **27/07**. `Đ-40` và `Đ-41` cùng một khuôn với `Đ-36`: **sân khấu ⇒ thí sinh nói miệng, admin bấm · nhập liệu ⇒ thí sinh tự bấm**.
 >
 > **Hai nguồn KHÔNG dùng làm căn cứ**: `plans/**` là **bản nháp** (`CLAUDE.md`); demo tĩnh `public/` là **bản xem thử làm vội, không có giá trị tham chiếu** (chủ dự án xác nhận 2026-07-27). Tiền lệ hiện thực `Athena-Intelligent-Olympia` dùng để **phát hiện nhánh còn thiếu**, không dùng để quyết luật — đối chiếu ở [[#D. Đối chiếu tiền lệ — Athena|§D]].
 
@@ -28,7 +42,7 @@
   - **Cấp TRẬN** (STATE-001 → STATE-008) — **loại trừ lẫn nhau**, đúng **một** giá trị tại một thời điểm.
   - **Cấp GIAI ĐOẠN / CÂU** (STATE-009 → STATE-021) — nằm **bên trong** một trạng thái cấp trận.
   - **Cấp GHẾ và cấp TÍN HIỆU** (STATE-022 → STATE-033) — **cờ song song**, nhiều cái cùng đúng một lúc.
-  - **Cấp LỚP PHỦ** (STATE-034 → STATE-039) — chồng lên trạng thái đang chạy mà **không huỷ** nó; **nhiều lớp cùng bật là hợp lệ**. Xem `INV-21`.
+  - **Cấp LỚP PHỦ** (STATE-034 → STATE-040) — chồng lên trạng thái đang chạy mà **không huỷ** nó; **nhiều lớp cùng bật là hợp lệ**. Xem `INV-21`.
 - **Marker**: `NEEDS CLARIFICATION` = nguồn chưa quy định · `CONFLICT` = hai nguồn cùng áp dụng nhưng cho outcome khác nhau; tài liệu này **không phân xử**.
 - Trạng thái nào **không có nguồn** thì **không được đặt ra** — chỗ cần một trạng thái trung gian mà tài liệu chưa quy định được ghi ở [[#Unresolved transitions|Unresolved transitions]].
 
@@ -38,7 +52,7 @@
 
 # Sơ đồ
 
-> Sáu sơ đồ theo đúng sáu thang bậc ở [[#Quy ước đọc|Quy ước đọc]]. Mỗi node ghi **mã + mô tả ngắn**; nhãn trên mũi tên là **sự kiện** (mã `EVENT-*`), guard đặt trong ngoặc.
+> Bảy sơ đồ theo đúng sáu thang bậc ở [[#Quy ước đọc|Quy ước đọc]] — riêng thang *giai đoạn bên trong một vòng* tách làm **3a (VCNV)** và **3b (Về đích)** cho dễ nhìn. Mỗi node ghi **mã + mô tả ngắn**; nhãn trên mũi tên là **sự kiện** (mã `EVENT-*`), guard đặt trong ngoặc.
 >
 > **Chỉ sơ đồ 1 và 2 là máy trạng thái loại trừ lẫn nhau.** Bốn sơ đồ còn lại mô tả **vòng đời song song** — chúng chạy *bên trong* hoặc *chồng lên* sơ đồ 1, không thay thế nó.
 
@@ -104,7 +118,7 @@ stateDiagram-v2
 > **Bốn mốc đầu đều là NÚT BẤM CỦA ADMIN, thứ tự cố định, không gộp được.** Gộp *"hiển thị"* với *"start timer"* là **phá luật**: cửa sổ chuông co lại đúng bằng thời gian suy nghĩ, và cửa sổ Ngôi sao hy vọng mất mốc đóng.
 > Ở vòng **gõ máy**, cạnh `S019 → S021` **không tồn tại** — nút chấm khoá tới khi hết giờ (`Đ-35`).
 
-## Sơ đồ 3 — Giai đoạn bên trong VCNV và VỀ ĐÍCH (§B)
+## Sơ đồ 3a — Giai đoạn bên trong VCNV (§B)
 
 ```mermaid
 stateDiagram-v2
@@ -115,10 +129,23 @@ stateDiagram-v2
     S009 --> S009: hỏi xong một hàng ngang
     S009 --> S010: đã hỏi đủ 4 hàng<br/>và chưa ai giải đúng CNV
   }
+```
+
+> Vòng lặp ở `S009` là **bốn lượt hỏi hàng ngang**, không phải bốn trạng thái khác nhau. `S010` chỉ tới khi **đã hỏi đủ 4 hàng** mà Chướng ngại vật vẫn chưa ai giải đúng.
+>
+> **Sơ đồ này CỐ Ý chỉ vẽ hai giai đoạn — nó không phải bức tranh đủ của vòng VCNV.** Ba thứ chạy song song bị lược, vì chúng thuộc thang bậc khác và vẽ vào đây sẽ trộn tầng:
+> - **`EVENT-028` "Mở chướng ngại vật" — bấm được ở BẤT KỲ thời điểm nào của vòng**, kể cả khi chưa hàng ngang nào được hỏi (băng điểm **60**), kể cả giữa lúc đồng hồ một hàng ngang đang chạy. Nó **KHÔNG chuyển giai đoạn**: vòng vẫn ở nguyên `S009`/`S010`, **đồng hồ vẫn chạy bình thường**, không đóng băng, không kéo dài (`INV-13`, `GR-008` C9). Tín hiệu vào hàng đợi **CHẶN**, và **không lộ** đáp án chuẩn lẫn bài làm của thí sinh khác cho tới khi admin bấm hiển thị (`T-040`). Nút này là **chuông** ⇒ **tự khoá ngay khi bấm** (`Đ-24`) ⇒ mỗi ghế chỉ phát **một** tín hiệu cho cả vòng. Vòng đời tín hiệu ở [[#Sơ đồ 5 — Cấp TÍN HIỆU (§E)|Sơ đồ 5]].
+> - **Vòng đời từng câu hàng ngang** (hiển thị → chạy giờ → chấm) ở [[#Sơ đồ 2 — Cấp CÂU (§C), áp cho mọi vòng|Sơ đồ 2]].
+> - **Ba lối ra của cả vòng** — có người giải **đúng** CNV · **toàn bộ** thí sinh bị loại ⇒ `STATE-007` · hết **15 giây** sau gợi ý cuối mà không ai giải — là **exit conditions của `STATE-004`**, thuộc [[#Sơ đồ 1 — Cấp TRẬN (§A)|Sơ đồ 1]].
+
+## Sơ đồ 3b — Giai đoạn bên trong VỀ ĐÍCH (§B)
+
+```mermaid
+stateDiagram-v2
   state "STATE-006 · VỀ ĐÍCH" as VD {
     direction LR
     S011: STATE-011 · XẾP LƯỢT<br/>điểm cao nhất đi trước<br/>hoà ⇒ số vị trí nhỏ nhất
-    S012: STATE-012 · CHỌN GÓI<br/>3 mức từ 20 hoặc 30<br/>admin chọn hộ 20/20/20 nếu quá hạn
+    S012: STATE-012 · CHỌN GÓI<br/>3 mức từ 20 hoặc 30<br/>sân khấu ⇒ thí sinh NÓI, admin bấm<br/>nhập liệu ⇒ thí sinh tự chọn
     S014: STATE-014 · THỰC HÀNH người thi chính<br/>30 giây câu 20đ · 60 giây câu 30đ
     S013: STATE-013 · CỬA SỔ CƯỚP QUYỀN<br/>5 giây · hàng đợi KHÔNG chặn<br/>người cướp tính bản ĐẦU TIÊN
     S015: STATE-015 · THỰC HÀNH người cướp<br/>20 giây câu 20đ · 40 giây câu 30đ<br/>KHÁC cửa sổ chuông 5 giây
@@ -141,13 +168,11 @@ stateDiagram-v2
   state "Phạm vi VÒNG — đặt lại khi mở vòng (Đ-39)" as RS {
     S022: STATE-022 · BỊ LOẠI KHỎI VCNV<br/>sai Chướng ngại vật<br/>mất quyền, KHÔNG mất điểm
     S028: STATE-028 · LƯỢT CHỌN ĐÃ DÙNG<br/>admin bấm Yes cho tín hiệu chọn
+    S027: STATE-027 · NSHV ĐÃ DÙNG<br/>chạy lại vòng ⇒ ĐẶT LẠI (Đ-42)<br/>luồng thường vẫn là 1 lần/trận
   }
   state "Phạm vi CÂU — chết cùng câu" as QS {
     S023: STATE-023 · BỊ CẤM TRẢ LỜI<br/>bấm chuông trước hiệu lệnh<br/>MC quyết, admin gỡ được
     S029: STATE-029 · CHUÔNG ĐÃ KHOÁ<br/>tự khoá ngay khi bấm<br/>gỡ khi sang câu mới
-  }
-  state "Phạm vi TRẬN" as MS {
-    S027: STATE-027 · NSHV ĐÃ DÙNG<br/>một lần cho cả trận<br/>NGOẠI LỆ của Đ-39
   }
   state "Kết nối" as CS {
     direction LR
@@ -160,7 +185,9 @@ stateDiagram-v2
   }
 ```
 
-> Bốn nhóm này **không loại trừ nhau**: một ghế có thể vừa bị loại khỏi VCNV, vừa đã dùng NSHV, vừa đang mất kết nối. **Vòng đời khác nhau** là lý do phải tách nhóm — `Đ-39` đặt lại nhóm *phạm vi VÒNG* tại mốc mở vòng, nhưng **không** đụng nhóm *phạm vi TRẬN*.
+> Ba nhóm này **không loại trừ nhau**: một ghế có thể vừa bị loại khỏi VCNV, vừa đã dùng NSHV, vừa đang mất kết nối. **Vòng đời khác nhau** là lý do phải tách nhóm — `Đ-39` đặt lại **toàn bộ** nhóm *phạm vi VÒNG* tại mốc mở vòng.
+>
+> **`Đ-42` (27/07) xoá hẳn nhóm *phạm vi TRẬN*.** `STATE-027` từng là **thành viên duy nhất** của nhóm đó và là **ngoại lệ duy nhất** của `Đ-39`; nay nó chuyển sang phạm vi VÒNG. Hệ quả: **không còn cờ ghế nào có phạm vi TRẬN** — mọi cờ đều thuộc *vòng*, *câu*, hoặc *vòng đời kết nối*, và `Đ-39` **không còn ngoại lệ nào**.
 
 ## Sơ đồ 5 — Cấp TÍN HIỆU (§E)
 
@@ -199,10 +226,15 @@ stateDiagram-v2
     S038: STATE-038 · TOAST INVALID STATE<br/>KHÔNG ép được
     S039: STATE-039 · DIALOG PHÍA THÍ SINH<br/>chọn hàng ngang mode nhập liệu<br/>NGOẠI LỆ DUY NHẤT
   }
+  state "F.3 — Chặn TOÀN CỤC · không gắn thao tác nào" as F3 {
+    S040: STATE-040 · BANNER TẠM DỪNG<br/>KHÔNG CHỮ, không lý do<br/>thí sinh: chặn hết · viewer: báo tạm dừng<br/>admin KHÔNG bị phủ · đồng hồ VẪN CHẠY
+  }
   BASE --> F1: EVENT-039 mở công bố
   F1 --> BASE: EVENT-040 đóng công bố
   BASE --> F2: thao tác cần hỏi lại
   F2 --> BASE: quyết xong
+  BASE --> F3: EVENT-041 mở banner
+  F3 --> BASE: EVENT-042 đóng banner
 ```
 
 > **`INV-21`**: mở hay đóng một lớp phủ **không đổi gì** ở trạng thái bên dưới — không sinh event điểm, không đụng đồng hồ, không đụng hàng đợi. **Nhiều lớp bật cùng lúc là hợp lệ.**
@@ -257,8 +289,17 @@ stateDiagram-v2
 
 - **Description**: vòng đi tìm Chướng ngại vật qua **4 hàng ngang** + **1 ô trung tâm**. Hàng ngang **luôn trả lời bằng máy** bất kể mode contest. Là vòng **duy nhất** hàng đợi tín hiệu **CHẶN**.
 - **Entry conditions**: admin mở vòng VCNV; cửa vào vòng đủ câu.
-- **Allowed actions**: chọn hàng ngang (**một đường vào mỗi mode**: sân khấu → chỉ admin; nhập liệu → chỉ thí sinh) · mọi thí sinh chưa bị loại gõ đáp án hàng ngang · bấm "Mở chướng ngại vật" **bất cứ lúc nào** · admin duyệt Yes/No từng tín hiệu · admin mở miếng ghép.
-- **Forbidden actions**: thao tác từ ghế **đã bị loại** — máy thí sinh không hiển thị gì, bấm không phản hồi · chọn hàng ngang **đã mở** · ưu tiên tín hiệu theo **loại** khi duyệt hàng đợi (phải thuần FIFO theo server timestamp).
+- **Allowed actions**: chọn hàng ngang (**một đường vào mỗi mode**: sân khấu → chỉ admin; nhập liệu → chỉ thí sinh) · mọi thí sinh chưa bị loại gõ đáp án hàng ngang · bấm "Mở chướng ngại vật" **bất cứ lúc nào** · admin duyệt Yes/No từng tín hiệu · admin mở miếng ghép · **chốt câu hàng ngang khi mới chấm một phần** — ghế chưa chấm **mặc định SAI** (`Đ-43`).
+- **Forbidden actions**: thao tác từ ghế **đã bị loại** — máy thí sinh không hiển thị gì, bấm không phản hồi · chọn hàng ngang **đã mở** · ưu tiên tín hiệu theo **loại** khi duyệt hàng đợi (phải thuần FIFO theo server timestamp) · **áp mặc định SAI lên một tín hiệu "Mở chướng ngại vật" đang chờ duyệt** — xem ranh giới dưới đây.
+
+> **Ở VCNV, "sai" có HAI hậu quả khác hẳn nhau — `Đ-43` chỉ chạm vào một.**
+>
+> | Loại phán quyết | Hậu quả khi SAI | `Đ-43` có áp không |
+> |---|---|---|
+> | **Câu hàng ngang** | **0** điểm, ghế **vẫn thi tiếp** | **CÓ** — mặc định SAI khi admin chốt câu |
+> | **Trả lời Chướng ngại vật** (`EVENT-028` → T-042) | Ghế **BỊ LOẠI** khỏi vòng (`STATE-022`) | **KHÔNG** — tín hiệu CNV là phán quyết **riêng lẻ, có chủ đích**, không nằm trong lô chấm của một câu hàng ngang. Không có đường nào để một cú bấm chốt câu loại một thí sinh |
+>
+> Rào này là bắt buộc: nếu để `Đ-43` quét cả tín hiệu CNV đang chờ, admin chốt câu vì lý do hoàn toàn khác sẽ **loại nhầm** một thí sinh — hậu quả nặng nhất của cả vòng.
 - **Exit conditions**: (a) có người giải **đúng** Chướng ngại vật · (b) **toàn bộ** thí sinh bị loại → STATE-007 · (c) hết cửa sổ 15 giây sau gợi ý cuối mà không ai giải.
 - **Terminal**: No
 - **Related rules**: GR-007 → GR-012, GR-032
@@ -268,8 +309,10 @@ stateDiagram-v2
 
 - **Description**: **4** câu, thời gian lần lượt **20/20/30/30 giây**, **luôn gõ máy**. Điểm theo **thứ hạng tốc độ trong số người được admin chấm ĐÚNG**: 40/30/20/10. Đồng thời gian (bằng nhau ở **millisecond**) ⇒ cùng mức điểm, bậc kế **nhảy qua** số người hoà.
 - **Entry conditions**: admin mở vòng Tăng tốc; cửa vào vòng đủ câu.
-- **Allowed actions**: thí sinh gửi và **gửi lại** đáp án tới khi hết giờ (ghi nhận **bản cuối**) · admin hiển thị câu / start timer / chấm từng người / chốt câu.
-- **Forbidden actions**: khoá ô nhập của thí sinh trước khi hết giờ · admin chấm **trước** khi hết giờ (nút chấm khoá tới khi hết giờ ở vòng gõ máy) · sinh **nhiều** event điểm cho một câu — một câu = **MỘT** event điểm cho **toàn bộ** bảng.
+- **Allowed actions**: thí sinh gửi và **gửi lại** đáp án tới khi hết giờ (ghi nhận **bản cuối**) · admin hiển thị câu / start timer / chấm từng người / **chốt câu khi mới chấm một phần** — mọi ghế chưa chấm **mặc định SAI** (`Đ-43`).
+- **Forbidden actions**: khoá ô nhập của thí sinh trước khi hết giờ · admin chấm **trước** khi hết giờ (nút chấm khoá tới khi hết giờ ở vòng gõ máy) · sinh **nhiều** event điểm cho một câu — một câu = **MỘT** event điểm cho **toàn bộ** bảng · **máy tự áp mặc định SAI khi hết giờ** — mặc định chỉ áp tại **cú bấm chốt câu của admin**, không có bộ đếm nào tự chốt.
+
+> **`Đ-43` KHÔNG phải ngoại lệ của `INV-03`** (*"không transition nào sinh điểm mà không qua phán quyết của người"*) và cũng không phải máy tự chấm. **Cú bấm "chốt câu" CHÍNH LÀ phán quyết** — nó phát biểu *"những ai tôi chưa chấm ⇒ SAI"*. Máy không tự làm gì khi hết giờ. Ghi rõ điều này để người đọc sau không tưởng đây là chỗ được phép tự chấm rồi nhân bản sang vòng khác.
 - **Exit conditions**: đã chốt câu thứ 4 **và** admin bấm kết thúc vòng.
 - **Terminal**: No
 - **Related rules**: GR-013, GR-014, GR-015, GR-026, GR-035
@@ -279,8 +322,8 @@ stateDiagram-v2
 
 - **Description**: mỗi thí sinh một **lượt thi** với **gói 3 câu** chọn từ hai mức **{20, 30}**. Sai ⇒ mở **cửa sổ cướp quyền 5 giây**. Mỗi thí sinh có **1 lần** Ngôi sao hy vọng cả trận.
 - **Entry conditions**: vòng Tăng tốc đã kết thúc; điểm tích luỹ đã tính; admin mở vòng Về đích.
-- **Allowed actions**: admin xếp/ép lượt (hệ thống chỉ **recommend**) · thí sinh chọn gói · thí sinh đặt NSHV **trước** mốc admin hiển thị câu · thí sinh khác bấm chuông cướp quyền · admin chấm Đúng / Sai / **Huỷ kết quả**.
-- **Forbidden actions**: đặt NSHV sau mốc admin bấm hiển thị câu — nút không render, không có tín hiệu · người **cướp** dùng NSHV trên câu đang cướp · đổi gói sau mốc admin hiển thị câu đầu tiên của gói.
+- **Allowed actions**: admin xếp/ép lượt (hệ thống chỉ **recommend**) · chọn gói (**chủ thể theo mode**, `Đ-40`) · đặt NSHV **trước** mốc admin hiển thị câu (**chủ thể theo mode**, `Đ-41`: sân khấu ⇒ thí sinh **nói miệng**, admin bấm; nhập liệu ⇒ thí sinh tự bấm) · thí sinh khác bấm chuông cướp quyền · admin chấm Đúng / Sai / **Huỷ kết quả**.
+- **Forbidden actions**: đặt NSHV sau mốc admin bấm hiển thị câu — nút không render, không có tín hiệu · **máy thí sinh render nút NSHV ở mode sân khấu** (`Đ-41`) · người **cướp** dùng NSHV trên câu đang cướp · đổi gói sau mốc admin hiển thị câu đầu tiên của gói.
 - **Exit conditions**: **mọi** thí sinh đã hoàn thành lượt của mình **và** admin bấm kết thúc vòng.
 - **Terminal**: No
 - **Related rules**: GR-016 → GR-021
@@ -303,7 +346,7 @@ stateDiagram-v2
 - **Entry conditions**: (a) vòng cuối playlist kết thúc **và** không có nhóm hoà trong phạm vi `tieBreakPositions` · (b) tie-break đã phân định được người thắng · (c) kết quả bốc thăm đã được admin xác nhận.
 - **Allowed actions**: **mở công bố kết quả (EVENT-039)** — hệ thống **gợi ý** mở tại đây · xem lại biên bản và toàn bộ lịch sử event · xuất PDF/biên bản · điều chỉnh điểm thủ công (sinh event mới, lịch sử append-only) · xem lại lịch sử tín hiệu.
 - **Forbidden actions**: mọi tín hiệu của thí sinh — vào lịch sử nhưng **không có hiệu lực** · xoá hoặc sửa event cũ.
-- **Exit conditions**: **không có** đường ra được nguồn phê duyệt. Xem [[#Terminal states|Terminal states]] và mục `UNRES-13`, `UNRES-14`.
+- **Exit conditions**: **không có** đường ra được nguồn phê duyệt. Xem [[#Terminal states|Terminal states]] và mục `UNRES-11`, `UNRES-12`.
 - **Terminal**: **Yes**
 - **Related rules**: GR-022, GR-025, GR-028, GR-029
 - **Source**: `game-rules-inventory.md` §Trạng thái game · `game-rules.md` §GR-022 Decision table C3/C4
@@ -347,14 +390,16 @@ stateDiagram-v2
 
 ### STATE-012 — VỀ ĐÍCH · CHỌN GÓI
 
-- **Description**: thí sinh đang chọn **3** mức từ tập **{20, 30}** để tạo gói của mình. Bốn phối hợp hợp lệ: 20/20/20 · 20/20/30 · 20/30/30 · 30/30/30.
+- **Description**: gói gồm **3** mức chọn từ tập **{20, 30}**. Bốn phối hợp hợp lệ: 20/20/20 · 20/20/30 · 20/30/30 · 30/30/30. **CHỦ THỂ CHỌN PHỤ THUỘC MODE** (`Đ-40`, cùng khuôn `Đ-36` của chọn hàng ngang): mode **sân khấu** ⇒ thí sinh **nói miệng trên sân khấu**, **admin bấm** — máy thí sinh **không render** nút chọn gói; mode **nhập liệu** ⇒ **thí sinh** tự chọn trên máy.
 - **Entry conditions**: thí sinh đã được chốt là người thi lượt hiện tại.
-- **Allowed actions**: thí sinh chọn và **đổi** gói (last-wins) · admin chọn hộ mặc định **20/20/20** nếu thí sinh chưa chọn khi tới lượt.
-- **Forbidden actions**: chọn số mục ≠ 3 · chọn mức ngoài {20, 30} dưới preset `O26_DEFAULT@1` · đổi gói **sau** mốc admin hiển thị câu đầu tiên của gói.
+- **Allowed actions**: **[sân khấu]** admin chốt gói theo lời thí sinh, **đổi được** (last-wins) tới mốc khoá · **[nhập liệu]** thí sinh chọn và **đổi** gói (last-wins) · **[chỉ nhập liệu]** admin chọn hộ mặc định **20/20/20** nếu thí sinh chưa chọn khi tới lượt (`GR-017` C3).
+- **Forbidden actions**: chọn số mục ≠ 3 · chọn mức ngoài {20, 30} dưới preset `O26_DEFAULT@1` · đổi gói **sau** mốc admin hiển thị câu đầu tiên của gói · **máy thí sinh render nút chọn gói ở mode sân khấu** — không có đường phát tín hiệu ở mode này.
 - **Exit conditions**: gói được chốt và câu đầu tiên được rút ⇒ STATE-017.
 - **Terminal**: No
 - **Related rules**: GR-017
-- **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích đoạn 4 · `game-rules.md` §GR-017
+- **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích đoạn 4 · `game-rules.md` §GR-017 · `Đ-40` (chủ dự án chốt 27/07)
+
+> **Khác `Đ-36` một điểm, có chủ ý**: ở **chọn hàng ngang**, mode nhập liệu cấm tuyệt đối admin chọn thay. Ở **chọn gói**, mode nhập liệu **vẫn giữ** fallback admin chọn hộ `20/20/20` khi thí sinh không chọn kịp — vì `GR-017` C3 (CONFIRMED) cần một đường thoát để lượt thi không tắc, còn chọn hàng ngang thì không có mốc "quá hạn" tương đương.
 
 ### STATE-013 — VỀ ĐÍCH · CỬA SỔ CƯỚP QUYỀN
 
@@ -411,7 +456,7 @@ stateDiagram-v2
 - **Description**: câu đã được server rút khỏi pool nhưng chưa lên màn thí sinh. **Chưa tiêu** — nếu không hiển thị thì **trả lại kho đề**.
 - **Entry conditions**: sự kiện rút đề đã phát cho câu này.
 - **Allowed actions**: admin bấm hiển thị câu hỏi · admin rút lại (câu quay về kho).
-- **Forbidden actions**: bấm chuông · gửi đáp án · đặt NSHV bị chặn — cửa sổ NSHV **đang mở** ở trạng thái này, đây là chỗ **duy nhất** đặt được.
+- **Forbidden actions**: bấm chuông · gửi đáp án. **Đặt NSHV KHÔNG bị chặn** — cửa sổ NSHV **đang mở** ở trạng thái này, đây là chỗ **duy nhất** đặt được (chủ thể bấm theo mode, `Đ-41`).
 - **Exit conditions**: admin bấm hiển thị câu hỏi ⇒ STATE-018.
 - **Terminal**: No
 - **Related rules**: GR-031, GR-021, GR-033
@@ -524,15 +569,17 @@ stateDiagram-v2
 
 ### STATE-027 — NGÔI SAO HY VỌNG ĐÃ DÙNG
 
-- **Description**: cờ **một chiều**, phạm vi **một trận**, một lần cho mỗi đơn vị điểm.
-- **Entry conditions**: thí sinh đặt NSHV trong cửa sổ hợp lệ (Về đích hàng đợi **không chặn** ⇒ có hiệu lực ngay khi tới).
+- **Description**: cờ **một chiều trong phạm vi một LẦN CHẠY vòng Về đích** (`Đ-42`), một lần cho mỗi đơn vị điểm. **Luồng thường vẫn đúng "1 lần / thí sinh / trận"** như luật gốc — vì Về đích chạy **một lần** trong một trận, và NSHV **chỉ tồn tại** ở vòng này. Cờ chỉ đặt lại khi vòng được **mở lại**.
+- **Entry conditions**: NSHV được đặt trong cửa sổ hợp lệ — **chủ thể bấm theo mode** (`Đ-41`): sân khấu ⇒ **admin** bấm sau khi nghe thí sinh nói; nhập liệu ⇒ **thí sinh** bấm, Về đích hàng đợi **không chặn** ⇒ có hiệu lực ngay khi tới.
 - **Allowed actions**: — (chỉ đọc, dùng làm guard)
-- **Forbidden actions**: đặt NSHV lần thứ hai — nút disabled.
-- **Exit conditions**: không có trong phạm vi một trận.
-- **Terminal**: Yes (trong phạm vi một trận)
-- **Related rules**: GR-021
-- **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích đoạn 6 · `game-rules.md` §GR-021
-- **Ghi chú**: `Đ-5.d` đề xuất phạm vi là **một contest**, không phải một trận — **đề xuất CHƯA DUYỆT**, xem `UNRES-04`.
+- **Forbidden actions**: đặt NSHV lần thứ hai **trong cùng một lần chạy vòng** — nút disabled.
+- **Exit conditions**: admin **bỏ vòng** (EVENT-003) hoặc **chạy lại vòng** (EVENT-004) Về đích ⇒ cờ **đặt lại**, ngôi sao dùng được lại (`Đ-42`).
+- **Terminal**: No — **đã đổi**: trước `Đ-42` cờ này là terminal trong phạm vi trận.
+- **Related rules**: GR-021, GR-030, `Đ-39`
+- **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích đoạn 6 · `game-rules.md` §GR-021 · **`Đ-42`** (chủ dự án chốt 27/07)
+
+> **`Đ-42` xoá một ngoại lệ, không thêm luật.** `STATE-027` từng là **cờ ghế duy nhất có phạm vi TRẬN** và vì thế là **ngoại lệ duy nhất** của `Đ-39` (*pipeline vòng độc lập — mở vòng thì đặt lại cờ phạm vi vòng*). Cho nó theo phạm vi VÒNG khiến `Đ-39` **không còn ngoại lệ nào**, mà **không** phá "1 lần/thí sinh/trận" của luật gốc — vì trong luồng thường hai phạm vi đó trùng nhau.
+> **Lý do chủ dự án đưa ra: "để dễ linh hoạt"** — chạy lại vòng là van thoát khi sự cố (`INV-16`, `INV-22`); nếu ngôi sao không hồi sinh thì chạy lại vòng **không khôi phục được** tình trạng ban đầu, và thí sinh mất quyền vì lỗi hệ thống chứ không phải vì lựa chọn của mình.
 
 ### STATE-028 — LƯỢT CHỌN HÀNG NGANG ĐÃ DÙNG
 
@@ -619,7 +666,8 @@ stateDiagram-v2
 | Nhóm | Ai thấy | Có chặn thao tác bên dưới? | Thành viên |
 |---|---|---|---|
 | **F.1 — Lớp phủ TRÌNH DIỄN** | viewer · overlay · thí sinh · admin | **Không** — thi đấu tiếp tục bình thường | STATE-034 · STATE-035 |
-| **F.2 — Lớp phủ TƯƠNG TÁC** | chủ yếu admin (một ngoại lệ ở thí sinh) | **Có**, nhưng chỉ chặn **đúng thao tác đang hỏi** | STATE-036 · STATE-037 · STATE-038 |
+| **F.2 — Lớp phủ TƯƠNG TÁC** | chủ yếu admin (một ngoại lệ ở thí sinh) | **Có**, nhưng chỉ chặn **đúng thao tác đang hỏi** | STATE-036 · STATE-037 · STATE-038 · STATE-039 |
+| **F.3 — Lớp phủ CHẶN TOÀN CỤC** | thí sinh · viewer · overlay · MC (**không** phủ admin) | **Có**, chặn **TOÀN BỘ** thao tác thí sinh, không gắn với thao tác nào cụ thể | STATE-040 |
 
 > **Phân biệt then chốt ở F.2**: bản thân **hộp thoại không đổi trạng thái gì cả** — thứ đổi trạng thái là **hành động được xác nhận sau đó**. Nên `INV-21` vẫn đúng nguyên: hộp thoại là một lớp phủ, hệ quả là một event riêng.
 
@@ -656,7 +704,7 @@ stateDiagram-v2
 - **Terminal**: No
 - **Related rules**: GR-036
 - **Source**: `game-rules.md` §GR-036 C1 (*"banner đã kết nối lại"*) · STATE-024
-- **Ghi chú**: đây là banner **duy nhất** báo tình trạng hệ thống. Trận **không bao giờ gián đoạn** ở phía hệ thống (`Đ-21`, `INV-16`), nên không có banner nào khác loại này.
+- **Ghi chú**: đây là banner **duy nhất báo tình trạng KẾT NỐI**, và là banner duy nhất do **server tự phát**. Trận **không bao giờ gián đoạn** ở phía hệ thống (`Đ-21`, `INV-16`) nên không có banner tự động nào khác. **Đừng trộn với `STATE-040`** — banner tạm dừng do **admin chủ động bấm**, chặn thao tác, và **không** báo tình trạng hệ thống.
 
 ---
 
@@ -710,6 +758,43 @@ stateDiagram-v2
 
 ---
 
+## F.3 — Lớp phủ chặn toàn cục
+
+### STATE-040 — BANNER TẠM DỪNG
+
+- **Description**: một lớp phủ **KHÔNG CHỮ** do admin chủ động bật. **Hai tác dụng khác nhau trên hai loại màn**: trên **máy thí sinh** — chặn **toàn bộ** thao tác; trên **viewer / overlay** — báo hiệu **trận đang tạm dừng**, thuần thị giác. **Không hiển thị text, không hiển thị lý do** (`C-21`) — khán giả **tự hiểu** từ bối cảnh sân khấu. Đây là lớp phủ **duy nhất** chặn thao tác mà **không gắn với một thao tác cụ thể** nào.
+- **Entry conditions**: admin bấm mở banner (EVENT-041), **và KHÔNG có cửa sổ thời gian nào đang đếm** (`C-21`). Đây là **điều kiện cứng của trạng thái**, không phải cảnh báo ép được: khi có đồng hồ chạy thì nút mở banner **không bật**, và đó là **invalid state** chứ không phải chỗ chặn cứng thứ tư — `INV-14` giữ nguyên con số **BA**.
+- **Allowed actions**: **admin làm mọi thứ như thường** — banner **không phủ máy admin** (`INV-15`: đồng hồ và lớp phủ khoá thí sinh, không khoá admin) · admin bấm đóng banner (EVENT-042).
+- **Forbidden actions**: **mọi thao tác từ máy thí sinh** — chuông · gửi đáp án · chọn hàng ngang · "Mở chướng ngại vật" · chọn gói · đặt NSHV · **hiển thị bất kỳ chữ nào trên banner**, gồm cả lý do, tên người bấm, hay đồng hồ đếm · **start timer trong lúc banner đang bật** (EVENT-006 — xem ràng buộc loại trừ hai chiều dưới đây) · **tự đóng theo bộ đếm** — mốc đóng là một thao tác bấm, như mọi mốc khác.
+- **Exit conditions**: admin bấm đóng (EVENT-042). Trạng thái bên dưới lộ lại **nguyên vẹn**.
+- **Terminal**: No
+- **Related rules**: `INV-21` (lớp phủ không đổi trạng thái bên dưới) · `INV-16` (đồng hồ không đóng băng) · `INV-06` (không có cơ chế drop) · `INV-15` · GR-035
+- **Source**: **`C-21`** (chủ dự án chốt 2026-07-27) · `Đ-11` / C-11 (quyền mở/đóng hiển thị) · `CLAUDE.md` §UX
+
+**Bốn ràng buộc suy ra từ quyết định sẵn có — không phải luật mới:**
+
+| Ràng buộc | Suy ra từ |
+|---|---|
+| **Tín hiệu thí sinh vẫn tới server trong lúc banner bật thì KHÔNG bị drop** — nó vào lịch sử với kết cục **`STATE-033` TÍN HIỆU TRƠ** | `INV-06` — mọi tín hiệu đã tới server đều phải có outcome |
+| **Server enforce việc chặn, không chỉ client** — máy thí sinh cũ hoặc bị sửa vẫn gửi được, server phải từ chối | `CLAUDE.md` §Zero-trust |
+| **Mở/đóng banner vào `AuditLog`** (actor, action, ts, ip). *"Không ghi lý do"* là ràng buộc **hiển thị**, không phải miễn trừ audit | `CLAUDE.md` §Audit log MỌI thao tác |
+| **Không cần dialog xác nhận** — banner **đảo ngược được** bằng một cú bấm; dialog chỉ dành cho thao tác **không hoàn tác được** | `CLAUDE.md` §UX |
+
+**Banner và đồng hồ LOẠI TRỪ LẪN NHAU — ràng buộc HAI CHIỀU:**
+
+| Chiều | Phát biểu | Trạng thái tương ứng |
+|---|---|---|
+| **Không mở banner khi đồng hồ chạy** (`C-21`, chủ dự án chốt) | Nút mở banner không bật | `STATE-019` đang đếm giờ · `STATE-010` cửa sổ 15 giây · `STATE-013` cửa sổ cướp quyền 5 giây |
+| **Không start timer khi banner đang bật** `[SUY RA]` | Nút start timer không bật; admin phải đóng banner trước | `STATE-040` |
+
+> **Chiều thứ hai là suy ra, không phải lời chủ dự án** — nhưng thiếu nó thì chiều thứ nhất **vô nghĩa**: admin cứ mở banner lúc rảnh rồi start timer, thí sinh lại bị chặn trong lúc giờ trôi, đúng cái ràng buộc muốn tránh.
+>
+> **Hệ quả: `INV-16` không bị đụng tới, và không cần ngoại lệ nào.** Không tồn tại thời điểm nào banner và một đồng hồ đang chạy cùng có mặt, nên câu hỏi *"banner có đóng băng đồng hồ không"* **không có chủ ngữ**. `STATE-018` (đã hiển thị, đồng hồ **chưa** chạy) **không** thuộc danh sách cấm — chuông sống ở đó không phải cửa sổ đếm.
+
+> **Vì sao KHÔNG xếp vào F.1 hay F.2**: F.1 định nghĩa là *không chặn thao tác* — banner này chặn. F.2 định nghĩa là *chủ yếu admin* và *chặn đúng thao tác đang hỏi* — banner này phủ **thí sinh + viewer** và chặn **tất cả**. Nhét vào nhóm nào cũng làm sai định nghĩa của nhóm đó, nên tách nhóm **F.3**.
+
+---
+
 # Events
 
 ## A. Sự kiện do ADMIN phát
@@ -734,7 +819,7 @@ stateDiagram-v2
 - **Description**: **admin chọn vòng nào bắt đầu**; playlist chỉ là gợi ý. Cửa vào vòng kiểm kho đề — thiếu câu thì **không mở được vòng đó**, nhưng các vòng khác vẫn mở bình thường.
 - **Inputs**: vòng đích · số câu vòng đó cần (con số cố định theo luật) · số câu còn trong kho.
 - **Valid states**: STATE-001, STATE-007, **và mọi trạng thái cấp trận khác** — kể cả khi vòng hiện tại **chưa kết thúc** (GR-030 C4: cảnh báo *"vòng A chưa kết thúc"*, admin bấm Yes thì vẫn chuyển; GR-012 C3: *"admin luôn chuyển vòng được"*).
-- **Invalid states**: — (mở vòng khi vòng trước chưa xong là **conflict luật**, đi qua **dialog cảnh báo**, admin ép được; không phải invalid state). **Nhưng vòng bị rời giữa chừng rơi vào trạng thái nào thì chưa có nguồn** — xem `UNRES-09`.
+- **Invalid states**: — (mở vòng khi vòng trước chưa xong là **conflict luật**, đi qua **dialog cảnh báo**, admin ép được; không phải invalid state). **Nhưng vòng bị rời giữa chừng rơi vào trạng thái nào thì chưa có nguồn** — xem `UNRES-07`.
 - **Related rules**: GR-030, GR-031
 - **Source**: `game-rules.md` §Nguyên tắc nền điểm 20 · §GR-030 C4
 
@@ -755,8 +840,9 @@ stateDiagram-v2
 - **Inputs**: vòng ID · kho đề còn đủ câu cho vòng đó.
 - **Valid states**: như EVENT-003.
 - **Invalid states**: kho đề không đủ ⇒ **không chạy lại được** (chặn tại cửa vào vòng).
-- **Related rules**: GR-030, GR-031
-- **Source**: `game-rules.md` §GR-030 C2, Idempotency
+- **Side effects**: đặt lại **toàn bộ** cờ *phạm vi VÒNG* của mọi ghế (`Đ-39`) — gồm `STATE-022` (bị loại khỏi VCNV), `STATE-028` (lượt chọn đã dùng), **và `STATE-027` NSHV đã dùng** (`Đ-42`, 27/07). Câu đã dùng **không** trả lại pool.
+- **Related rules**: GR-030, GR-031, `Đ-39`, `Đ-42`
+- **Source**: `game-rules.md` §GR-030 C2, Idempotency · `Đ-42`
 
 ### EVENT-005 — Bấm hiển thị câu hỏi
 
@@ -948,15 +1034,15 @@ stateDiagram-v2
 - **Related rules**: GR-025 C2
 - **Source**: `game-rules.md` §GR-025 Decision table, Idempotency
 
-### EVENT-024 — Chọn gói câu hộ thí sinh
+### EVENT-024 — Admin chốt gói câu
 
 - **Actor**: Admin
-- **Description**: fallback khi thí sinh chưa chọn gói lúc tới lượt. Mặc định **20/20/20**, admin override được trong dialog.
-- **Inputs**: ghế · gói mặc định.
+- **Description**: **hai ngữ cảnh khác nhau, cùng một thao tác** — **(a) mode sân khấu: đây là ĐƯỜNG VÀO DUY NHẤT**, không phải fallback: thí sinh **nói gói của mình trên sân khấu**, admin nghe và bấm (`Đ-40`; admin là **cảm biến + cơ cấu chấp hành** theo mô hình ba tầng). **(b) mode nhập liệu: fallback** khi thí sinh chưa chọn lúc tới lượt — mặc định **20/20/20**, admin override được trong dialog.
+- **Inputs**: ghế · ba mức đã chọn (mặc định `20/20/20` ở nhánh fallback).
 - **Valid states**: STATE-012
-- **Invalid states**: thí sinh đã chốt gói và mốc khoá đã qua.
-- **Related rules**: GR-017 C3
-- **Source**: `game-rules.md` §GR-017 Decision table
+- **Invalid states**: mốc khoá đã qua (admin đã bấm hiển thị câu đầu tiên của gói) — đề đã rời server.
+- **Related rules**: GR-017 C3, GR-017 C4
+- **Source**: `game-rules.md` §GR-017 Decision table · `Đ-40`
 
 ### EVENT-025 — Phán quyết ghế mất kết nối (giữ / gia hạn / kick)
 
@@ -1008,6 +1094,26 @@ stateDiagram-v2
 - **Related rules**: GR-037
 - **Source**: `product-discovery.md` C-19 · nguyên tắc nền điểm 2
 
+### EVENT-041 — Mở banner tạm dừng
+
+- **Actor**: Admin
+- **Description**: bật lớp phủ **không chữ** (`C-21`) — chặn toàn bộ thao tác trên máy thí sinh, báo hiệu tạm dừng trên viewer/overlay. **Không nhập lý do, không dialog xác nhận** (thao tác đảo ngược được).
+- **Inputs**: — (không có trường lý do; hành động vẫn vào `AuditLog`)
+- **Valid states**: **mọi** trạng thái cấp trận (STATE-001 → STATE-008), **với điều kiện không có cửa sổ thời gian nào đang đếm**.
+- **Invalid states**: **đang có đồng hồ chạy** — `STATE-019` · `STATE-010` · `STATE-013`: nút không bật, admin thấy **TOAST invalid state** (`STATE-038`) · banner đã bật (STATE-040) — nút một chiều, tự đổi thành nút đóng.
+- **Related rules**: `INV-21`, `INV-16`, GR-035
+- **Source**: `C-21` (chủ dự án chốt 27/07) · `Đ-11` / C-11
+
+### EVENT-042 — Đóng banner tạm dừng
+
+- **Actor**: Admin
+- **Description**: tắt lớp phủ; trạng thái bên dưới lộ lại **nguyên vẹn**. **Không có bộ đếm tự đóng** — mốc đóng là thao tác bấm, đúng nguyên tắc nền điểm 2.
+- **Inputs**: —
+- **Valid states**: STATE-040
+- **Invalid states**: banner chưa bật.
+- **Related rules**: `INV-21`
+- **Source**: `C-21` · nguyên tắc nền điểm 2
+
 ---
 
 ## B. Sự kiện do THÍ SINH phát
@@ -1056,22 +1162,25 @@ stateDiagram-v2
 ### EVENT-031 — Chọn gói câu
 
 - **Actor**: Thí sinh
-- **Description**: chọn 3 mức từ {20, 30}. **Last-wins** cho tới mốc khoá. Không phải chuông ⇒ không áp cơ chế "bấm xong thì tắt".
+- **Description**: chọn 3 mức từ {20, 30}. **CHỈ TỒN TẠI Ở MODE NHẬP LIỆU** (`Đ-40`) — ở mode sân khấu thí sinh **nói miệng**, đường vào là `EVENT-024`. **Last-wins** cho tới mốc khoá. Không phải chuông ⇒ không áp cơ chế "bấm xong thì tắt".
 - **Inputs**: ba mức đã chọn.
-- **Valid states**: STATE-012
-- **Invalid states**: sau mốc admin bấm hiển thị câu đầu tiên của gói — đề đã rời server, không đổi ngược được.
+- **Valid states**: STATE-012, contest ở mode **nhập liệu**.
+- **Invalid states**: contest ở mode **sân khấu** — nút không render, không có đường phát tín hiệu (`Đ-40`) · sau mốc admin bấm hiển thị câu đầu tiên của gói — đề đã rời server, không đổi ngược được.
 - **Related rules**: GR-017
-- **Source**: `game-rules.md` §GR-017 C4, Idempotency (`GRR-054`)
+- **Source**: `game-rules.md` §GR-017 C4, Idempotency (`GRR-054`) · `Đ-40`
 
 ### EVENT-032 — Đặt Ngôi sao hy vọng
 
-- **Actor**: Thí sinh
+- **Actor**: **theo mode** (`Đ-41`) — **sân khấu: ADMIN** bấm sau khi nghe thí sinh **nói miệng** trên sân khấu (máy thí sinh **không render** nút NSHV) · **nhập liệu: THÍ SINH** tự bấm.
 - **Description**: đặt cược **1 lần/thí sinh/trận**. Đúng ⇒ **gấp đôi** giá trị câu; sai ⇒ **trừ giá trị câu**, *"kể cả các thí sinh còn lại có giành quyền trả lời hay không"*.
 - **Inputs**: ghế · câu sắp hỏi · server timestamp.
 - **Valid states**: STATE-017 (câu đã rút, **chưa** hiển thị), khi ghế chưa dùng NSHV.
-- **Invalid states**: STATE-018 trở đi — cửa sổ **đã đóng** tại mốc admin bấm hiển thị; nút không hiển thị, không phản hồi ⇒ ngôi sao **vẫn chưa dùng** · ghế đã dùng NSHV (STATE-027) · người **cướp quyền** trên câu đang cướp.
+- **Invalid states**: STATE-018 trở đi — cửa sổ **đã đóng** tại mốc admin bấm hiển thị; nút không hiển thị, không phản hồi ⇒ ngôi sao **vẫn chưa dùng** · ghế đã dùng NSHV (STATE-027) · người **cướp quyền** trên câu đang cướp · **mode sân khấu + tín hiệu đến từ máy thí sinh** — không có đường này, server từ chối (Zero-trust).
 - **Related rules**: GR-021, GR-018, GR-020
-- **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích đoạn 6 · `game-rules.md` §GR-021
+- **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích đoạn 6 · `game-rules.md` §GR-021 · `Đ-41` (chủ dự án chốt 27/07)
+
+> **Nhánh admin bấm là thao tác KHÔNG hoàn tác được** (cờ NSHV một chiều, một lần cả trận) ⇒ theo `CLAUDE.md` §UX phải qua **dialog Yes/No phía admin**. Đây là suy ra từ rule đã chốt, không phải quyết định mới.
+> **Ở mode sân khấu, cùng một người bấm NSHV và bấm hiển thị câu** ⇒ cuộc đua ở biên cửa sổ **không tồn tại**, thứ tự tuần tự hiển nhiên. Đua chỉ còn ở mode nhập liệu và được `INV-05` (biên **đóng**) phân xử.
 
 ---
 
@@ -1155,6 +1264,8 @@ stateDiagram-v2
 | T-076 | STATE-001 LOBBY | EVENT-002 Mở vòng | Vòng trước đó **không mở được vì thiếu câu**, admin đã bổ sung qua T-075 và pre-flight nay đạt | Vòng được chọn | Đây là **lối thoát của ngưỡng chặn cứng `Đ-31`** — không có T-075 thì nhánh này không tồn tại | GR-031 C3, `Đ-37` |
 | T-077 | Mọi trạng thái cấp trận (STATE-001 → STATE-008) | EVENT-039 Mở công bố | Lớp công bố chưa mở | **+ STATE-034** (lớp phủ; trạng thái bên dưới **không đổi**) | Server tính thứ hạng từ event log, đẩy xuống **một** sự kiện. **Không** sinh event điểm, **không** đổi trạng thái trận | C-19, GR-028 |
 | T-078 | STATE-034 | EVENT-040 Đóng công bố | — | **− STATE-034**; trạng thái bên dưới lộ lại nguyên vẹn | Không có bộ đếm tự đóng | C-19 |
+| T-079 | Mọi trạng thái cấp trận (STATE-001 → STATE-008) | EVENT-041 Mở banner tạm dừng | Banner chưa bật **và KHÔNG có cửa sổ thời gian nào đang đếm** (`C-21`) | **+ STATE-040** (lớp phủ; trạng thái bên dưới **không đổi**) | Máy thí sinh bị chặn **toàn bộ**; viewer/overlay hiện banner **không chữ**; **máy admin không bị phủ**. **Không** sinh event điểm, **không** đụng hàng đợi. Không có đồng hồ nào để đụng — guard đã bảo đảm | C-21, `INV-21`, `INV-16` |
+| T-080 | STATE-040 | EVENT-042 Đóng banner tạm dừng | — | **− STATE-040**; trạng thái bên dưới lộ lại nguyên vẹn | Không có bộ đếm tự đóng | C-21 |
 
 ## B. Cấp CÂU (áp cho mọi vòng)
 
@@ -1196,6 +1307,7 @@ stateDiagram-v2
 | T-040 | STATE-004 (mọi giai đoạn) | EVENT-028 Mở chướng ngại vật | Ghế chưa bị loại; chưa ai giải đúng | STATE-030 Tín hiệu chờ duyệt | Ghi nhận **ngay**; đồng hồ hàng ngang **chạy tiếp**; **không lộ** đáp án chuẩn lẫn bài làm của người khác | GR-008 C9, GR-009 |
 | T-041 | STATE-030 (tín hiệu CNV) | EVENT-017 Duyệt Yes → EVENT-008 Chấm Đúng | — | STATE-001 LOBBY | Băng điểm chốt theo **số hàng ngang đã hỏi tại mốc admin xác nhận**: 60/50/40/30, sau gợi ý cuối **20**; vòng kết thúc | GR-009 C1→C5 |
 | T-042 | STATE-030 (tín hiệu CNV) | EVENT-017 Duyệt Yes → EVENT-009 Chấm Sai | — | STATE-022 Ghế bị loại khỏi VCNV | **Không trừ điểm**; điểm hàng ngang đã kiếm **GIỮ NGUYÊN**; lượt chọn chưa dùng dồn sang vị trí kế | GR-010 C1, C3 |
+| T-083 | STATE-020 (câu hàng ngang) | Admin bấm **chốt câu** khi mới chấm **một phần** số ghế | Nút chấm đã mở (đã hết giờ). **Không** có guard về độ phủ | STATE-021 | Mọi ghế **chưa chấm** ⇒ **SAI** (`Đ-43`): **0** điểm, **KHÔNG bị loại** — loại chỉ đến từ trả lời **sai Chướng ngại vật** (T-042). Dialog xác nhận **liệt kê tên các ghế sắp bị mặc định SAI** `[SUY RA]` | `Đ-43`, GR-008, GR-010 |
 
 ## E. Vòng Tăng tốc
 
@@ -1204,6 +1316,7 @@ stateDiagram-v2
 | T-043 | STATE-019 | EVENT-030 Gửi đáp án | Bản khác rỗng; nội dung **khác** bản trước | STATE-019 (không đổi) | Cập nhật bản cuối **và** timestamp xếp hạng | GR-015 C2 |
 | T-044 | STATE-019 | EVENT-030 Gửi đáp án | Nội dung **y hệt** bản trước sau trim | STATE-019 (không đổi) | Bản cuối đổi nhưng **timestamp KHÔNG cập nhật** (giữ lần đầu khai nội dung đó) | GR-015 C1 |
 | T-045 | STATE-020 | EVENT-008 Chấm Đúng (từng người) | Nút chấm đã mở (đã hết giờ) | STATE-021 | Xếp hạng theo timestamp bản cuối, độ phân giải **millisecond**; đồng thời gian ⇒ **cùng mức điểm**, bậc kế **nhảy qua** số người hoà; **MỘT** event điểm cho **toàn bộ** bảng | GR-013, GR-014 |
+| T-082 | STATE-020 | Admin bấm **chốt câu** khi mới chấm **một phần** số ghế | Nút chấm đã mở (đã hết giờ). **Không** có guard về độ phủ — admin chốt lúc nào cũng được | STATE-021 | Mọi ghế **chưa chấm** ⇒ **SAI** (`Đ-43`), 0 điểm và **không giữ chỗ** trong thang 40/30/20/10. Vẫn là **MỘT** event điểm cho **toàn bộ** bảng, gồm cả phần mặc định ⇒ `EVENT-010` Huỷ kết quả revert cả bảng. Dialog xác nhận **liệt kê tên các ghế sắp bị mặc định SAI** `[SUY RA]` | `Đ-43`, GR-013, GR-014, GR-026 |
 
 ## F. Vòng Về đích
 
@@ -1211,14 +1324,15 @@ stateDiagram-v2
 |---|---|---|---|---|---|---|
 | T-046 | STATE-006 | EVENT-002 Mở vòng | Vòng Tăng tốc đã kết thúc; điểm đã tính | STATE-011 Xếp lượt | Hệ thống hiện **recommendation** (điểm cao nhất; hoà thì **số vị trí nhỏ nhất**) | GR-016 |
 | T-047 | STATE-011 | Admin chốt người thi | Người được chọn **chưa thi** lượt nào | STATE-012 Chọn gói | Nếu admin ép trái recommendation ⇒ **dialog cảnh báo** Yes/No, không chặn cứng | GR-016 C5 |
-| T-048 | STATE-012 | EVENT-031 / EVENT-024 Chốt gói | Đúng **3** mục, mỗi mục ∈ {20, 30} | STATE-017 của câu đầu gói | Rút 3 câu theo mức đã chọn | GR-017 |
+| T-048 | STATE-012 | EVENT-031 (nhập liệu) / EVENT-024 (sân khấu, hoặc fallback nhập liệu) Chốt gói | Đúng **3** mục, mỗi mục ∈ {20, 30}; **chủ thể đúng mode** (`Đ-40`) | STATE-017 của câu đầu gói | Rút 3 câu theo mức đã chọn | GR-017, `Đ-40` |
 | T-049 | STATE-020 | EVENT-008 Chấm Đúng (người thi chính) | — | STATE-021 | **+giá trị câu**; **không** mở cửa sổ cướp | GR-018 C1 |
 | T-050 | STATE-020 | EVENT-009 Chấm Sai (người thi chính) | — | STATE-013 Cửa sổ cướp quyền | Người thi chính **0** điểm (hoặc **−giá trị câu** nếu có NSHV); mở cửa sổ **5 giây**, hàng đợi **KHÔNG chặn** | GR-018 C2, GR-020 |
 | T-051 | STATE-013 | EVENT-027 Bấm chuông | Người bấm **không phải** người thi chính; trong 5 giây | STATE-031 Tín hiệu đã duyệt | Người sớm nhất theo server timestamp giành quyền; cùng mốc ⇒ hàng đợi tự quyết **ngẫu nhiên** | GR-020 Conditions 1, 2 |
 | T-052 | STATE-013 | EVENT-008 Chấm Đúng (người cướp) | — | STATE-021 | **Transfer**: người sai **−giá trị câu**, người cướp **+giá trị câu**. Bản được chấm là **bản ĐẦU TIÊN** của người cướp | GR-020 C1 |
 | T-053 | STATE-013 | EVENT-009 Chấm Sai (người cướp) | — | STATE-021 | Người cướp **−½ giá trị câu** (chia số nguyên, làm tròn xuống theo **độ lớn**); người thi chính **không** được hoàn lại | GR-020 C2, Error outcomes |
 | T-054 | STATE-013 | EVENT-034 Hết giờ | Không ai bấm trong 5 giây | STATE-021 | Người thi chính giữ nguyên kết quả; không ai được cộng | GR-020 C3 |
-| T-055 | STATE-017 | EVENT-032 Đặt NSHV | Ghế chưa dùng NSHV; **trước** mốc admin bấm hiển thị câu | STATE-027 NSHV đã dùng | Có hiệu lực **ngay** (hàng đợi Về đích không chặn); nút NSHV disabled | GR-021 C1 |
+| T-055 | STATE-017 | EVENT-032 Đặt NSHV | Ghế chưa dùng NSHV **trong lần chạy vòng hiện tại** (`Đ-42`); **trước** mốc admin bấm hiển thị câu; **chủ thể đúng mode** (`Đ-41`) | STATE-027 NSHV đã dùng | Có hiệu lực **ngay** (hàng đợi Về đích không chặn); nút NSHV disabled. Nhánh **sân khấu**: admin bấm qua **dialog Yes/No** | GR-021 C1, `Đ-41`, `Đ-42` |
+| T-081 | STATE-027 | EVENT-003 Bỏ vòng / EVENT-004 Chạy lại vòng Về đích | — | **− STATE-027**; ngôi sao dùng lại được | Cùng cơ chế với mọi cờ *phạm vi VÒNG* khác (`Đ-39`) — NSHV **không còn là ngoại lệ** | `Đ-42`, GR-030 |
 | T-056 | STATE-020 (câu có NSHV) | EVENT-008 Chấm Đúng | — | STATE-021 | **+2× giá trị câu** (20 ⇒ +40 · 30 ⇒ +60) | GR-021 C1 |
 | T-057 | STATE-020 (câu có NSHV) | EVENT-009 Chấm Sai | — | STATE-013 Cửa sổ cướp quyền | **−giá trị câu ĐÚNG MỘT LẦN**, bất kể có ai cướp hay không — hình phạt NSHV **thay thế** phần nợ của transfer, không cộng dồn | GR-021 C5, C5b, C5c |
 | T-058 | STATE-019 (câu thực hành) | EVENT-007 Bắt đầu thực hành | Câu được khai là thực hành; start timer đã bấm | STATE-014 Pha thực hành | Đếm **30 giây** (câu 20đ) hoặc **60 giây** (câu 30đ) | GR-019 Conditions 1 |
@@ -1271,6 +1385,11 @@ stateDiagram-v2
 | STATE-009, hàng ngang đã mở | EVENT-029 Chọn hàng ngang | Hàng đã mở không còn là mục tiêu chọn được | KHÔNG CÓ TÍN HIỆU | GR-007 C5 |
 | STATE-009, mode **sân khấu** | EVENT-029 Thí sinh chọn hàng ngang | Máy thí sinh **không có nút chọn** ở mode này | KHÔNG CÓ TÍN HIỆU | GR-007 C6a (`Đ-36`) |
 | STATE-009, mode **nhập liệu** | EVENT-026 Admin chọn hàng ngang | Admin **không** chọn thay ở mode này | Nút không tồn tại | GR-007 Conditions (`Đ-36`) |
+| STATE-012, mode **sân khấu** | EVENT-031 Thí sinh chọn gói | Máy thí sinh **không render** nút chọn gói — thí sinh **nói miệng**, admin bấm | KHÔNG CÓ TÍN HIỆU | GR-017 (`Đ-40`) |
+| STATE-017, mode **sân khấu** | EVENT-032 Thí sinh đặt NSHV | Máy thí sinh **không render** nút NSHV — thí sinh **nói miệng**, admin bấm | KHÔNG CÓ TÍN HIỆU | GR-021 (`Đ-41`) |
+| STATE-040 banner tạm dừng đang bật | **Mọi** sự kiện do thí sinh phát (EVENT-027 → EVENT-032) | Banner chặn toàn bộ thao tác thí sinh; **server enforce**, không tin client | Tín hiệu vào lịch sử với kết cục **STATE-033 TÍN HIỆU TRƠ** — **không drop** (`INV-06`) | C-21, `INV-06`, `CLAUDE.md` §Zero-trust |
+| Đang có đồng hồ chạy (STATE-019 · STATE-010 · STATE-013) | EVENT-041 Mở banner tạm dừng | Banner và đồng hồ **loại trừ lẫn nhau** | Nút không bật; **TOAST** phía admin | C-21 |
+| STATE-040 banner tạm dừng đang bật | EVENT-006 Start timer | Chiều còn lại của cùng ràng buộc — phải đóng banner trước | Nút không bật; **TOAST** phía admin | C-21 `[SUY RA]` |
 | Ngoài cửa sổ chuông | EVENT-027 Bấm chuông | Cửa sổ đã đóng | KHÔNG CÓ TÍN HIỆU | GR-003 C6, GR-034 C6 |
 | STATE-008 FINISHED | EVENT-027 Bấm chuông | Tín hiệu vào lịch sử nhưng **không có hiệu lực** | Ghi lịch sử, không sinh outcome | `GRR-076` (nhánh `FINISHED` giữ) |
 | STATE-019 ở vòng **gõ máy** | EVENT-008 / EVENT-009 Chấm | Nút chấm **khoá tới khi hết giờ** — tránh chấm khi thí sinh còn đang sửa | Nút disabled | GR-006 Concurrency (`Đ-35`) |
@@ -1323,8 +1442,8 @@ Ba đường vào, tất cả đều được nguồn quy định:
 **Không có transition rời STATE-008 nào được nguồn phê duyệt.**
 
 - Sửa một kết quả đã chốt đi qua **hoàn nguyên event log** (GR-028) hoặc **điều chỉnh thủ công** (GR-029) — cả hai đều **thêm event mới**, trận **vẫn ở** STATE-008.
-- `GRR-120` đề xuất cho phép **chạy lại vòng sau `FINISHED`** (cảnh báo hạng phá huỷ, PDF in nhãn *"bản sửa đổi lần N"*) — **ĐỀ XUẤT CHƯA DUYỆT**, xem `UNRES-14`.
-- GR-022 lại mô tả `FINISHED` → `TIE_BREAK` như một transition bình thường — mâu thuẫn với tính terminal, xem `UNRES-13`.
+- `GRR-120` đề xuất cho phép **chạy lại vòng sau `FINISHED`** (cảnh báo hạng phá huỷ, PDF in nhãn *"bản sửa đổi lần N"*) — **ĐỀ XUẤT CHƯA DUYỆT**, xem `UNRES-12`.
+- GR-022 lại mô tả `FINISHED` → `TIE_BREAK` như một transition bình thường — mâu thuẫn với tính terminal, xem `UNRES-11`.
 
 ### Cách bắt đầu round hoặc game mới
 
@@ -1387,8 +1506,12 @@ Sau khi admin bấm, nút chấm khoá và nút "Câu kế tiếp" hiện lên. 
 
 ## INV-10 — Phán quyết là điều kiện để chuyển câu
 
-Không tồn tại trạng thái "vòng đã đóng mà còn câu chưa chấm" ở các vòng hỏi tuần tự.
-*Rule*: nguyên tắc nền điểm 13 · (ngoại lệ chưa quy định ở vòng xếp hạng: xem `UNRES-01`)
+Không tồn tại trạng thái "vòng đã đóng mà còn câu chưa chấm" — **ở mọi vòng, không còn ngoại lệ**.
+
+Ở **hai vòng chấm theo lô** — Tăng tốc và câu hàng ngang VCNV — bất biến này đứng vững nhờ `Đ-43`: cú bấm **chốt câu** của admin **mặc định mọi ghế chưa chấm là SAI** ⇒ chốt câu **hàm ý** cả bảng đã có phán quyết. Trước `Đ-43` đây là lỗ hổng duy nhất của `INV-10`.
+
+**Ngoại lệ tường minh**: tín hiệu **"Mở chướng ngại vật"** đang chờ duyệt **không** bị mặc định — nó là phán quyết riêng lẻ, và SAI ở đó **loại thí sinh** (`STATE-022`). Xem bảng ranh giới ở `STATE-004`.
+*Rule*: nguyên tắc nền điểm 13 · `Đ-43`
 
 ## INV-11 — Câu đã hiển thị thì không bao giờ trả lại kho
 
@@ -1479,44 +1602,36 @@ Admin chọn vòng nào bắt đầu và lượt của ai. Conflict luật ⇒ d
 
 # Unresolved transitions
 
+> **Mục này chỉ chứa việc CÒN TREO.** Khi một mục được chủ dự án chốt, nó bị **xoá khỏi đây** và đánh số lại liền mạch — không để lại stub *"đã đóng"*. Quyết định sống ở **chỗ nó có hiệu lực**: `STATE-*`, `EVENT-*`, bảng transitions, và rule tương ứng trong `game-rules.md`. Đọc mục này mà thấy trống nghĩa là **không còn gì treo**, không phải tài liệu thiếu.
+
 ## A. `NEEDS CLARIFICATION` — thiếu transition hoặc thiếu guard
 
-### UNRES-01 — Tăng tốc: chuyển câu khi mới chấm MỘT PHẦN số thí sinh
-
-Nguyên tắc nền điểm 13 nói *"phán quyết là điều kiện để chuyển câu"*, nhưng ghi rõ ngoại lệ: ở **vòng xếp hạng**, việc chuyển câu khi mới chấm một phần **chưa được quy định**. INV-10 vì vậy có một lỗ hổng ở STATE-005.
-*Nguồn*: `game-rules.md` §GR-026 Error outcomes · `game-rules-review.md` GRR-162
-
-### UNRES-02 — Số phận các submission đã nhận của ghế bị xử dropout
+### UNRES-01 — Số phận các submission đã nhận của ghế bị xử dropout
 
 GR-036 Concurrency đặt câu hỏi và **không trả lời**: submission tới trước khi admin kick được tính hay bỏ? T-072 không có side effect nào cho các submission đang treo.
 *Nguồn*: `game-rules.md` §GR-036 Concurrency · `game-rules-review.md` GRR-169 · `glossary.md` TERM-049
 
-### UNRES-03 — Ghế đã bị kick có quay lại được không
+### UNRES-02 — Ghế đã bị kick có quay lại được không
 
 STATE-026 không có exit condition nào được nguồn quy định.
 *Nguồn*: `game-rules.md` §GR-036 C2b
 
-### UNRES-04 — Phạm vi cờ "NSHV đã dùng": một TRẬN hay một CONTEST
-
-Luật gốc và GR-021 nói **1 lần / thí sinh / trận**. `Đ-5.d` đề xuất đọc thành **1 lần / thí sinh / contest**, không hồi sinh kể cả khi admin cho thi Về đích hai lần — **ĐỀ XUẤT CHƯA DUYỆT**. Exit condition của STATE-027 phụ thuộc lựa chọn này.
-*Nguồn*: `game-rules-resolutions.md` §0.7 mục 10
-
-### UNRES-05 — Trạng thái cho trận không hoàn thành
+### UNRES-03 — Trạng thái cho trận không hoàn thành
 
 Đề xuất thêm `ABANDONED` vào máy trạng thái (`GRR-077`) — **ĐỀ XUẤT CHƯA DUYỆT**. Hiện tại một trận bị bỏ dở **không có** trạng thái nào để rơi vào: STATE-008 FINISHED đòi hỏi trận đã phân định.
 *Nguồn*: `game-rules-resolutions.md` §0.7 mục 4
 
-### UNRES-06 — Thao tác tạo TRẬN MỚI trong cùng contest
+### UNRES-04 — Thao tác tạo TRẬN MỚI trong cùng contest
 
 Quy tắc no-repeat ở cấp contest hàm ý một contest chứa nhiều trận, nhưng **không nguồn nào phát biểu thao tác tạo trận mới** hay transition từ STATE-008 sang STATE-001 của trận kế. Đề xuất `C-9` (nút *"Bắt đầu trận mới"*) **CHƯA DUYỆT**.
 *Nguồn*: `game-rules-inventory.md` §R-GEN-06 · `game-rules-resolutions.md` §0.7 mục 20
 
-### UNRES-07 — Gỡ lệnh cấm có sinh event hoàn nguyên không
+### UNRES-05 — Gỡ lệnh cấm có sinh event hoàn nguyên không
 
 `Đ-6.3c` đề xuất *"có event, không dialog"* — **CHƯA DUYỆT**. T-065 vì vậy chưa khai được side effect đầy đủ. (Đã được ghi nhận là **không chặn** GR-024 vì không đổi outcome.)
 *Nguồn*: `game-rules.md` §GR-024 Idempotency · `game-rules-resolutions.md` §0.7 mục 12
 
-### UNRES-08 — Miếng ghép admin mở tay có tính vào thang điểm Chướng ngại vật không
+### UNRES-06 — Miếng ghép admin mở tay có tính vào thang điểm Chướng ngại vật không
 
 `Q-A2` đề xuất **CÓ tính** — **CHƯA DUYỆT**. Ảnh hưởng guard của T-041 (băng điểm đếm theo *"số hàng ngang đã hỏi"*, nhưng chưa nói miếng ghép mở tay có đổi con số đó không).
 
@@ -1525,9 +1640,9 @@ Quy tắc no-repeat ở cấp contest hàm ý một contest chứa nhiều trậ
 
 *Nguồn*: `game-rules-resolutions.md` §0.7 mục 21
 
-> **UNRES-09 → UNRES-12 phát hiện từ đối chiếu tiền lệ Athena** (xem [[#D. Đối chiếu tiền lệ — Athena|§D]]). Chúng **không phải** yêu cầu của Athena — Athena không có thẩm quyền quy định luật. Chúng là những **nhánh mà một bản hiện thực đã chạy thật buộc phải xử lý**, còn tài liệu KnowledgeDome thì chưa phát biểu.
+> **UNRES-07 → UNRES-10 phát hiện từ đối chiếu tiền lệ Athena** (xem [[#D. Đối chiếu tiền lệ — Athena|§D]]). Chúng **không phải** yêu cầu của Athena — Athena không có thẩm quyền quy định luật. Chúng là những **nhánh mà một bản hiện thực đã chạy thật buộc phải xử lý**, còn tài liệu KnowledgeDome thì chưa phát biểu.
 
-### UNRES-09 — Vòng bị rời giữa chừng rơi vào trạng thái nào
+### UNRES-07 — Vòng bị rời giữa chừng rơi vào trạng thái nào
 
 Ba đường rời một vòng đang chạy đều có nguồn, nhưng **chỉ hai** đường có hệ quả được quy định:
 
@@ -1539,12 +1654,12 @@ Ba đường rời một vòng đang chạy đều có nguồn, nhưng **chỉ h
 
 Đường thứ ba được nguồn **cho phép tường minh** (*"admin luôn chuyển vòng được"*), nhưng không nguồn nào nói vòng bị rời có **giữ điểm** hay không, có gắn nhãn gì trong biên bản, và nó có được **mở lại để chạy tiếp** (khác với *chạy lại từ đầu*) hay không.
 
-**Ảnh hưởng**: T-015/T-016 chỉ phủ hai đường đầu. Liên quan chặt với `UNRES-05` (`ABANDONED` ở cấp trận) — cùng một lỗ hổng ở hai cấp: **không có trạng thái nào cho "dở dang"**.
+**Ảnh hưởng**: T-015/T-016 chỉ phủ hai đường đầu. Liên quan chặt với `UNRES-03` (`ABANDONED` ở cấp trận) — cùng một lỗ hổng ở hai cấp: **không có trạng thái nào cho "dở dang"**.
 
 > **Tiền lệ Athena có một nút riêng cho việc này**: `Emergency_Click` — *"kết thúc khẩn cấp giữa phần thi"* — đóng vòng ngay, **giữ nguyên điểm đã ghi**, không revert. Đó là **đường thứ tư**, và KnowledgeDome **không có** thao tác tương ứng: nguyên tắc nền điểm 19 quy định nút kết thúc vòng **chỉ xuất hiện khi đã hỏi đủ số câu**.
 > *Nguồn*: `AIServer/Finish.cs` — `Emergency_Click` → `ScrollBack()` · dòng 1 của `bug.txt`
 
-### UNRES-10 — Số phận đồng hồ 15 giây khi có người bấm chuông ở Câu hỏi phụ
+### UNRES-08 — Số phận đồng hồ 15 giây khi có người bấm chuông ở Câu hỏi phụ
 
 GR-023 và GR-024 quy định đủ về **ai được quyền** và **hình phạt bấm sớm**, nhưng **im lặng** về đồng hồ: khi một thí sinh giành được quyền trả lời, cửa sổ 15 giây **chạy tiếp**, **dừng**, hay **kết thúc**?
 
@@ -1559,19 +1674,19 @@ Ba mệnh đề đang có, không mệnh đề nào giải được:
 > **Tiền lệ Athena: DỪNG rồi CHẠY TIẾP.** Có tín hiệu ⇒ đồng hồ ngừng cộng dồn; nếu người đó bị chấm **Sai** ⇒ quay lại `OnTime` và đồng hồ **chạy tiếp từ chỗ dừng**, không reset. Nhạc đếm giờ cũng ngừng rồi chạy tiếp theo — tức đây là **thiết kế có chủ đích**, không phải lỗi.
 > *Nguồn*: `AIServer/Extra.cs` — `ElapsedTime` chỉ cộng khi `State == OnTime`; `PnWrong_Click` đặt lại `State = OnTime`.
 
-### UNRES-11 — Admin đóng / mở một hàng ngang ngoài luồng hỏi
+### UNRES-09 — Admin đóng / mở một hàng ngang ngoài luồng hỏi
 
 `Đ-11` cho admin **toàn quyền mở/đóng đáp án và ô chữ**, nhưng máy trạng thái **không có** event nào cho thao tác *"đánh dấu một hàng ngang là đã hỏi mà không hỏi nó"* hay *"lộ đáp án một hàng ngang chưa hỏi"*. EVENT-014 chỉ phủ **mở miếng ghép sau khi đã chấm**.
 
 Câu chưa trả lời được:
 - Hàng ngang có mấy trạng thái? Tài liệu hàm ý **hai** (chưa hỏi / đã hỏi), nhưng *"đã hỏi mà không ai đúng"* và *"đã mở đáp án"* là hai thứ khác nhau ở màn hình.
 - Thao tác đó có tiêu câu (INV-11) không?
-- Nó có đổi băng điểm Chướng ngại vật không — trùng với `UNRES-08`.
+- Nó có đổi băng điểm Chướng ngại vật không — trùng với `UNRES-06`.
 
 > **Tiền lệ Athena có thao tác này và nó là một TOGGLE ba trạng thái**: hàng ngang đen (chưa hỏi) → đỏ (đánh dấu đã hỏi, **`RowTotal++`**) → xanh (lộ đáp án). Vào bằng chuột phải + hộp thoại *"Bạn có muốn mở hàng ngang?"*.
 > *Nguồn*: `AIServer/Obstacle.cs` — `OpenObstacle` → `RowShow_Click`
 
-### UNRES-12 — Match `practice` có tiêu `usedInContest` không `[v1.5]`
+### UNRES-10 — Match `practice` có tiêu `usedInContest` không `[v1.5]`
 
 INV-11 phát biểu *"câu đã hiển thị thì không bao giờ trả lại kho"*, phạm vi no-repeat là **toàn contest**. Không nguồn nào nói **match `practice` có nằm trong phạm vi đó không**.
 
@@ -1586,7 +1701,7 @@ Liên quan `TERM-054`: `everPublic` **đã có** ngoại lệ tường minh cho 
 
 ## B. `CONFLICT` — hai nguồn cho outcome khác nhau
 
-### UNRES-13 — `FINISHED` là terminal hay là trạng thái trung gian
+### UNRES-11 — `FINISHED` là terminal hay là trạng thái trung gian
 
 | Nguồn | Phát biểu |
 |---|---|
@@ -1595,30 +1710,36 @@ Liên quan `TERM-054`: `everPublic` **đã có** ngoại lệ tường minh cho 
 
 **Ảnh hưởng**: T-010 và T-011 hiện được viết theo cách đọc thứ nhất (Về đích → TIE_BREAK **hoặc** → FINISHED, không đi qua FINISHED rồi quay ra). Nếu chọn cách đọc thứ hai thì `FINISHED` **không phải** terminal và toàn bộ mục [[#Terminal states|Terminal states]] phải viết lại.
 
-### UNRES-14 — Có chạy lại vòng sau `FINISHED` được không
+### UNRES-12 — Có chạy lại vòng sau `FINISHED` được không
 
 `GRR-120` đề xuất **cho phép** (cảnh báo hạng phá huỷ, PDF in nhãn *"bản sửa đổi lần N"*) — **ĐỀ XUẤT CHƯA DUYỆT**. Nếu duyệt thì `FINISHED` mất tính terminal, và T-015/T-016 phải mở rộng valid states.
 *Nguồn*: `game-rules-resolutions.md` §0.7 mục 18
 
-### UNRES-15 — Tín hiệu đặt NSHV có đi qua hàng đợi CHẶN không
+### UNRES-13 — Tín hiệu đặt NSHV ở mode NHẬP LIỆU có chờ admin duyệt không
 
-Trong cùng một rule (GR-021):
+**Phạm vi còn lại sau `Đ-41`: chỉ mode nhập liệu.** Ở mode sân khấu admin **là người bấm** nên không có tín hiệu nào của thí sinh để duyệt — nhánh đó không còn câu hỏi.
+
+Trong cùng một rule (GR-021), hai vế cho outcome ngược nhau:
 
 | Chỗ | Phát biểu |
 |---|---|
 | Conditions điểm 4 · State changes | Về đích là vòng hàng đợi **KHÔNG chặn** ⇒ tín hiệu **có hiệu lực ngay**, không chờ admin |
 | Evaluation order bước 4-5 · C3 · Inputs | *"Admin duyệt (Yes = chấp nhận, No = từ chối)"*, *"nút disable nếu admin Yes"* |
 
-**Ảnh hưởng**: T-055 hiện viết theo vế thứ nhất (có hiệu lực ngay). Nếu vế thứ hai đúng thì phải chèn STATE-030 vào giữa.
+**Ảnh hưởng**: T-055 viết theo vế thứ nhất. Nếu vế thứ hai đúng thì phải chèn STATE-030 vào giữa.
 
-### UNRES-16 — Độ hạt của một event điểm
+**`[HYPOTHESIS — CHƯA DUYỆT]` Đây có thể là lỗi diễn đạt, không phải mâu thuẫn thật.** Cụm *"admin duyệt Yes/No"* rất có thể đang mô tả **admin là người thao tác** (mode sân khấu — mode mặc định), về sau bị đọc thành *"admin duyệt tín hiệu của thí sinh"*. **Tiền lệ Athena ủng hộ**: `Finish.cs` `Pi_DClick` đặt `StarOn = true` và phát lệnh xuống client **ngay trong handler** — không hàng đợi, không Yes/No; ở đó admin là người bấm nên khái niệm *"admin duyệt"* không tồn tại. Đây là **bằng chứng hiện thực, không phải quyết định** ([[#D. Đối chiếu tiền lệ — Athena|§D]]).
+
+Nếu chủ dự án xác nhận cách đọc này thì mục này **đóng**, và vế *"có hiệu lực ngay"* là vế đúng cho nhánh nhập liệu.
+
+### UNRES-14 — Độ hạt của một event điểm
 
 `TERM-026` `⚠ CONFLICT`: (E1) event **theo thí sinh**, dedup theo khoá `(câu, thí sinh, loại phán quyết)` · (E2) *"một câu = MỘT event điểm cho TOÀN BỘ người chơi"* ở vòng xếp hạng.
 
 **Ảnh hưởng trực tiếp lên transition**: T-045 (Tăng tốc) theo E2, T-022 (mọi vòng khác) theo E1. Vùng chưa định nghĩa: **đổi phán quyết của MỘT người ở Tăng tốc** — không có khoá dedup dùng chung cho cả hai độ hạt, nên không suy ra được side effect của transition đó.
 *Nguồn*: `glossary.md` TERM-026 · `game-rules-review.md` GRR-147
 
-### UNRES-17 — Mâu thuẫn nội bộ còn sót trong `game-rules.md`
+### UNRES-15 — Mâu thuẫn nội bộ còn sót trong `game-rules.md`
 
 Bốn chỗ mà **Decision table** đã ghi mục đó **đã đóng**, nhưng phần văn bản khác của **cùng rule** vẫn ghi **chưa chốt**. Không đổi outcome của transition nào, nhưng làm người đọc không biết tin vế nào:
 
@@ -1653,10 +1774,12 @@ Năm mục `CONFLICT` của `glossary.md` chạm trực tiếp vào tài liệu 
 
 ### D.1 — Athena XÁC NHẬN quyết định đã có của KnowledgeDome
 
-Sáu chỗ hai bên trùng nhau **dù suy ra từ đường khác nhau**. Đây là cơ sở để **không mở lại** các mục này.
+Tám chỗ hai bên trùng nhau **dù suy ra từ đường khác nhau**. Đây là cơ sở để **không mở lại** các mục này.
 
 | Quyết định KnowledgeDome | Athena làm gì | Nguồn Athena |
 |---|---|---|
+| **`Đ-42` — chạy lại vòng thì ĐẶT LẠI cờ NSHV** (bác đề xuất `Đ-5.d`) | Cờ `StarUsed` được đặt lại **bên trong setter của `CurrentPlayerIndex`** ⇒ phạm vi thực tế là **một lượt thi**, và chạy lại vòng thì ngôi sao **hồi sinh**. Athena **chưa bao giờ** giữ cờ này qua phạm vi trận | `Finish.cs` dòng `CurrentPlayerIndex` setter: `StarUsed = false;` |
+| **`Đ-41` — mode sân khấu: ADMIN bấm đặt NSHV, thí sinh chỉ nói miệng** | **Athena không có đường nào khác.** Đặt sao là **double-click của admin** lên panel thí sinh trên máy chủ; phía client **không tồn tại** nút đặt sao — `AICtrlLib` chỉ có `star.gif` để **hiển thị**. Athena chạy đúng một mode, và đó là mode sân khấu | `Finish.cs` `Pi_DClick` (app `AIServer`) · toàn bộ `AIClient` **không có** handler nào cho sao |
 | **Số học NSHV × cướp quyền** (`U-8`, GR-020 C5): người thi chính mất giá trị câu **đúng MỘT lần**, người cướp đúng vẫn **+value** | Khi trao điểm cho người cướp, chỉ trừ người thi chính **nếu người đó KHÔNG đặt sao** — vì đã trừ lúc chấm Sai rồi | `Finish.cs` `OtherRight_Click`: `if (!StarOn) Players[CurrentPlayerIndex].Score -= …` |
 | **Cửa sổ NSHV đóng tại mốc admin bấm hiển thị câu** (`GRR-048`, T-018) | Đặt sao chỉ nhận ở trạng thái *"đã chọn xong gói, chưa hiện câu"*; sau khi hiện câu thì không còn đường vào | `Finish.cs` `Pi_DClick` case `WaitingForShowingQuestion` |
 | **Thứ hạng Tăng tốc tính TRÊN TẬP NGƯỜI ĐÚNG** — người sai **không giữ chỗ** trong thang (GR-013, GR-014 Evaluation order) | Thang 40→30→20→10 chỉ **tụt một bậc khi có người đúng**; người sai bị bỏ qua hoàn toàn | `Acceleration.cs` `Done_Click`: `num -= 10` nằm **trong** nhánh `Right` |
@@ -1666,10 +1789,11 @@ Sáu chỗ hai bên trùng nhau **dù suy ra từ đường khác nhau**. Đây 
 
 ### D.2 — Athena làm KHÁC, và KnowledgeDome đã chốt ngược
 
-Bốn chỗ Athena đi một đường, KnowledgeDome đã chọn đường kia **và có căn cứ mạnh hơn**. Ghi lại để lần sau không ai "sửa" KnowledgeDome về phía Athena vì tưởng đó là chuẩn.
+Năm chỗ Athena đi một đường, KnowledgeDome đã chọn đường kia **và có căn cứ mạnh hơn**. Ghi lại để lần sau không ai "sửa" KnowledgeDome về phía Athena vì tưởng đó là chuẩn.
 
 | Điểm | Athena | KnowledgeDome | Vì sao KnowledgeDome thắng |
 |---|---|---|---|
+| **Chống bấm nhầm khi admin đặt NSHV** | **Double-click**, không hộp thoại — có hiệu lực **ngay** khi double-click | **Dialog Yes/No** (`EVENT-032` nhánh admin) | `CLAUDE.md` §UX bắt **mọi** thao tác admin **không hoàn tác được** đi qua dialog; cờ NSHV là **một chiều, một lần cả trận**. Double-click là quy ước desktop cũ, không đọc được ý định rõ như dialog, và không để lại chỗ ghi AuditLog có chủ ý |
 | Câu hỏi phụ, **trả lời sai** | Câu **vẫn mở**, những người còn lại tiếp tục bấm chuông cho tới khi cả nhóm đã thử | **Sang câu tiếp** (GR-023 C2) | Luật gốc nói thẳng: *"Nếu trả lời sai, các thí sinh sẽ **bước sang câu hỏi tiếp theo**."* — `docs/source/…` §Câu hỏi phụ |
 | Câu hỏi phụ, **điểm** | Cộng **+1** cho người trả lời đúng | **Không cộng điểm**, chỉ đổi thứ hạng (`K-9`, `GRR-058`) | Luật gốc mô tả kết quả là *"thí sinh có số điểm **bằng** với thí sinh còn lại"* — phân định thứ hạng, không phải ghi điểm |
 | **Ghi nhận bản cuối** khi nội dung y hệt bản trước | Luôn cập nhật mốc thời gian | **KHÔNG cập nhật** mốc, giữ lần đầu khai nội dung đó (GR-015 C1, T-044) | Cập nhật mốc cho một bản **không đổi nội dung** cho phép thí sinh **tự làm xấu** thứ hạng của mình bằng thao tác vô nghĩa — và ở vòng xếp hạng thì mốc **là** kết quả |
