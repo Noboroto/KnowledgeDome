@@ -167,16 +167,18 @@ stateDiagram-v2
 ```mermaid
 stateDiagram-v2
   direction LR
-  [*] --> S030: tín hiệu tới server<br/>kèm server timestamp
+  NHAN: Tín hiệu tới server<br/>kèm server timestamp
   S030: STATE-030 · CHỜ DUYỆT<br/>chỉ ở VCNV — hàng đợi CHẶN
-  S031: STATE-031 · ĐÃ DUYỆT<br/>có hiệu lực<br/>ở VCNV: mốc chốt băng điểm
+  S031: STATE-031 · ĐÃ DUYỆT<br/>có hiệu lực<br/>ở VCNV là mốc chốt băng điểm
   S032: STATE-032 · BỊ TỪ CHỐI<br/>admin bấm No<br/>thí sinh KHÔNG mất lượt
   S033: STATE-033 · TRƠ<br/>ghi nhận, không sinh hệ quả<br/>căn cứ để admin can thiệp
 
+  [*] --> NHAN
+  NHAN --> S030: vòng CHẶN — VCNV
+  NHAN --> S031: vòng KHÔNG chặn<br/>Khởi động chung · cướp quyền
+  NHAN --> S033: đã có người giành quyền
   S030 --> S031: EVENT-017 duyệt Yes
   S030 --> S032: EVENT-018 từ chối No
-  [*] --> S031: vòng KHÔNG chặn<br/>Khởi động chung · cướp quyền
-  [*] --> S033: đã có người giành quyền
 ```
 
 > **`S032` và `S033` là trạng thái cuối của một tín hiệu, nhưng KHÔNG BAO GIỜ bị xoá** — lịch sử tín hiệu là append-only vĩnh viễn (`INV-01`). Thứ bị xoá theo câu hoặc vòng là **hàng đợi đang hoạt động**, không phải lịch sử.
@@ -192,7 +194,7 @@ stateDiagram-v2
     S035: STATE-035 · BANNER KẾT NỐI<br/>đang hoặc đã kết nối lại
   }
   state "F.2 — Tương tác · chặn ĐÚNG thao tác đang hỏi" as F2 {
-    S036: STATE-036 · DIALOG XÁC NHẬN ADMIN<br/>thao tác không hoàn tác được<br/>hạng phá huỷ: bắt nhập lý do
+    S036: STATE-036 · DIALOG XÁC NHẬN ADMIN<br/>thao tác không hoàn tác được<br/>hạng phá huỷ thì bắt nhập lý do
     S037: STATE-037 · DIALOG CẢNH BÁO CONFLICT<br/>lệch luật nhưng ÉP ĐƯỢC
     S038: STATE-038 · TOAST INVALID STATE<br/>KHÔNG ép được
     S039: STATE-039 · DIALOG PHÍA THÍ SINH<br/>chọn hàng ngang mode nhập liệu<br/>NGOẠI LỆ DUY NHẤT
