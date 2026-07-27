@@ -770,7 +770,79 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 ---
 
-# L. Bảng tra mã CŨ → MỚI
+# L. Mô hình dữ liệu và quyền
+
+### QĐ-062 — `revealAnswerAfterJudge` là cờ CẤP TRẬN
+
+**Quyết định.** Cờ này thuộc **match**, không thuộc contest. Nó lấy **mặc định** theo `matchPurpose` — `official` tắt, `practice` bật — rồi admin đổi được cho từng trận.
+
+**Vì sao.** Ba chỗ đã chốt đều chỉ cùng một hướng, và một trong ba khiến phương án per-contest **không thể đúng**: `QĐ-040` cho một **contest thật chứa cả trận official lẫn trận practice**. Nếu cờ đặt ở cấp contest thì trận practice trong contest thật **không bật được** — mất đúng công dụng của nó. Thêm nữa `QĐ-051` khai mặc định **theo `matchPurpose`** (vốn per-match), và `QĐ-032` liệt cờ này vào gói **đóng băng vào TRẬN**.
+
+**Hệ quả.** Phát biểu *"contest bật"* trong `PRD` là **câu chữ lạc hậu**, phải sửa — không phải một cách đọc thay thế.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-032`, `QĐ-040`, `QĐ-051` · *Thay cho*: `C-1`, `K-4`
+
+### QĐ-063 — `Question.visibility` là giá trị DẪN XUẤT, không phải cột set tay
+
+**Quyết định.** `visibility` = `PUBLIC` **khi và chỉ khi** câu đang thuộc ≥1 bộ đề public. **Read-only**, không ai đặt được trực tiếp. Setter làm một câu thành public bằng cách **đưa nó vào một bộ đề public**, không bằng cách bật một cờ.
+
+**Vì sao.** Nếu `visibility` set tay được thì một người **gỡ được nhãn public khỏi câu đã lộ** — vô hiệu hoá chính hàng rào chống rò đề mà `everPublic` tồn tại để dựng, bằng một thao tác trông hoàn toàn hợp lệ. Zero-trust cấm để con người tắt một dấu vết bảo mật.
+
+**Hai cờ, hai vai, đừng gộp:**
+
+| Cờ | Loại | Dùng để |
+|---|---|---|
+| `visibility` | **Trạng thái hiện tại**, dẫn xuất | Hiển thị và lọc trong kho đề |
+| `everPublic` | **Dấu vết lịch sử**, một chiều | Pre-flight **hard-block** trận official |
+
+Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ nguy hiểm là *"đã từng lộ"*, không phải *"đang lộ"*.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-040` + zero-trust · *Thay cho*: `C-10`, `K-10`, `D16` (vế *"cột set tay"* bị thay thế)
+
+### QĐ-064 — Duyệt đề `DRAFT` → `ACTIVE` là việc của ADMIN
+
+**Quyết định.** Vai **admin** duyệt; hàng chờ duyệt nằm trên dashboard admin. **Không có vai reviewer riêng.**
+
+**Vì sao.** `CLAUDE.md` §UX đã khai thẳng hàng chờ này thuộc dashboard admin, và danh sách vai của hệ thống không có vai nào khác đảm nhiệm được.
+
+**Phân biệt với `QĐ-008`.** `QĐ-008` nói *"mỗi contest một admin"* — đó là **admin của một trận đang chạy**. Duyệt đề diễn ra ở **kho đề**, vốn nằm **ngoài** phạm vi một contest, nên ràng buộc một-người không áp ở đây.
+
+*Nguồn*: `CLAUDE.md` §UX · *Thay cho*: `C-3`
+
+### QĐ-065 — `User` là TÀI KHOẢN; một tài khoản giữ được nhiều vai, trừ một ràng buộc loại trừ
+
+**Quyết định.** `User` = tài khoản xác thực. **Một tài khoản giữ được nhiều vai** — *admin* và *setter* là cặp thường gặp nhất, và ở buổi thi nhỏ một người có thể vừa nói vừa bấm.
+
+**Ràng buộc loại trừ, bắt buộc kiểm ở server:** tài khoản đang ngồi **ghế thí sinh** của một trận **không được** đồng thời giữ vai **admin**, **MC**, hoặc **setter** trong contest đó.
+
+**Vì sao.** `QĐ-051` cho **admin và MC thấy đáp án**. Một thí sinh kiêm một trong hai vai đó là **gian lận có cấu trúc** — không phải rủi ro vận hành mà là một lỗ hổng do mô hình quyền để hở. Đây là ràng buộc **kiểm được bằng dữ liệu**, nên phải kiểm.
+
+**Hệ quả.** Ràng buộc gắn với **contest**, không với hệ thống: cùng một người có thể là thí sinh ở contest này và admin ở contest khác.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-051` + `CLAUDE.md` §Mô hình truy cập
+
+### QĐ-066 — Ba kiểu NHẬP đáp án; đáp án luôn là CHUỖI
+
+**Quyết định.** Thêm hai trường vào `Question`:
+
+| Trường | Giá trị | Dùng để |
+|---|---|---|
+| `answerInputKind` | `text` · `choice` · `ordering` | Quyết định **widget nhập** trên máy thí sinh |
+| `options[]` | danh sách phương án | Nội dung để render, cho `choice` và `ordering` |
+
+**Đáp án và bài làm vẫn là CHUỖI ở cả ba kiểu**: câu lựa chọn lưu `"B"`, câu sắp xếp lưu `"B, D, A, C"`.
+
+**Vì sao — `QĐ-010` làm bài toán nhỏ đi rất nhiều.** Máy **không chấm**, nên nó **không cần đánh giá** một thứ tự hay một lựa chọn; nó chỉ cần **hiển thị bài làm cạnh đáp án** để admin phán quyết. Serialise về chuỗi thì cơ chế **tô khác biệt ký tự** chạy nguyên và **không đẻ ra nhánh chấm mới** — câu sắp xếp `BDCA` so với đáp án `BDAC` cho ra highlight đúng hai vị trí bị hoán.
+
+**Vì sao chỉ hai kiểu mới, không phải bảy.** Luật gốc liệt kê 3 loại ở Khởi động và 4 loại ở Tăng tốc, nhưng *nhìn nhanh · suy luận · đoạn băng · hình ảnh · đoạn nhạc* khác nhau ở **nội dung và media**, không ở **cơ chế trả lời** — tất cả đều gõ một chuỗi. Chúng là **phân loại cho người soạn đề**, không phải nhánh của engine, nên thuộc về trường mô tả chứ không cần trường điều khiển.
+
+**Hệ quả.** `isPractical` là kênh trả lời **thứ tư**, nằm ngoài trục này — nó không có ô nhập nào, admin chấm *"đạt / không đạt"*.
+
+*Nguồn*: luật gốc §Khởi động (3 loại), §Tăng tốc (4 loại) + `[SUY RA]` từ `QĐ-010` · *Thay cho*: `U-34`, `U-36`, `U-7`
+
+---
+
+# M. Bảng tra mã CŨ → MỚI
 
 > Dùng khi đọc tài liệu chưa dọn hoặc `reviews/`. Mã cũ **không còn xuất hiện** trong đặc tả.
 
@@ -822,20 +894,24 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 | `Đ-30` | `QĐ-041` | `GRR-077` vế 1 | `QĐ-032` |
 | `Đ-31` | `QĐ-003`, `QĐ-042` | `GRR-077` vế 2 | `QĐ-038` |
 | `Đ-32` | `QĐ-059` | `GRR-120` | `QĐ-037` *(bác)* |
+| `C-1`, `K-4` | `QĐ-062` | `U-7`, `U-34`, `U-36` | `QĐ-066` |
+| `C-3` | `QĐ-064` | `C-2`, `C-5` | **còn treo** — §N |
+| `C-10`, `K-10` | `QĐ-063` | `D16` *(vế "cột set tay")* | `QĐ-063` *(bị thay thế)* |
 
 ---
 
-# M. Còn treo
+# N. Còn treo
 
-*(Trống — mọi mục thuộc phạm vi luật chơi và máy trạng thái trận đã được chốt.)*
+**Đúng MỘT mục, và nó không chặn đặc tả nào.**
 
-**Ngoài phạm vi sổ này, còn treo ở tài liệu khác:**
+### Quy mô viewer và ngưỡng độ trễ — cần con số của chủ dự án
 
-| Mã | Nội dung | Ở đâu |
-|---|---|---|
-| `C-1` | `revealAnswerAfterJudge` là per-contest hay per-match | `product-discovery.md` §6 |
-| `C-2` · `C-5` | Quy mô viewer · ngưỡng độ trễ — bốn con số khác nhau giữa các nguồn | `product-discovery.md` §6 |
-| `C-3` | Ai duyệt đề `DRAFT` → `ACTIVE` | `product-discovery.md` §6 |
-| `C-10` | `Question.visibility` là cột set tay hay giá trị dẫn xuất | `product-discovery.md` §6 · `glossary.md` |
+Bốn nguồn đưa **bốn con số khác nhau** cho số viewer đồng thời; ngưỡng **độ trễ chấp nhận được** cũng chưa thống nhất.
 
-Bốn mục này thuộc **phạm vi sản phẩm**, không phải luật chơi — chúng không chặn đặc tả luật hay máy trạng thái.
+**Vì sao không suy ra được.** Đây là **mục tiêu phi chức năng**, phụ thuộc sức chứa hội trường và phần cứng máy chủ. Không luật chơi nào, không quyết định nào trong sổ này hàm ý một con số — mọi cách *"suy ra"* ở đây đều là bịa.
+
+**Vì sao không chặn.** Con số này chỉ đi vào **hai** chỗ, cả hai đều là **cấu hình**, không phải luật: ngưỡng **rate-limit** của cổng viewer, và **mục tiêu load-test**. Không transition nào, không rule nào đọc nó.
+
+**Để trả lời rẻ, chỉ cần chốt hai điều**: (a) số viewer đồng thời tối đa cần đỡ ở hồ sơ **portable LAN** — suy từ hội trường lớn nhất dự kiến; (b) hồ sơ **compose** có cần con số cao hơn không, và cao bao nhiêu. Phần còn lại để mặc định cấu hình được.
+
+*Thay cho*: `C-2`, `C-5`

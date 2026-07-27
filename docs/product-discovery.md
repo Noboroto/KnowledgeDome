@@ -210,7 +210,11 @@ Trainer tạo practice match từ đề public → pre-flight chỉ cảnh báo 
 
 ## 6. Requirement mơ hồ hoặc mâu thuẫn
 
-### C-1 `[CONFLICT]` — `revealAnswerAfterJudge` là per-contest hay per-match?
+### C-1 `[CHỐT 2026-07-27]` — `revealAnswerAfterJudge` là per-MATCH
+
+> **Phân xử**: cờ này thuộc **match**, lấy mặc định theo `matchPurpose`. Lý do và dẫn chứng: `decisions.md` `QĐ-062`. Phát biểu *"contest bật"* trong `PRD` NFR-4 là **câu chữ lạc hậu, phải sửa**.
+
+**Bối cảnh cũ:**
 
 | Nguồn | Phát biểu |
 |---|---|
@@ -233,7 +237,11 @@ Trainer tạo practice match từ đề public → pre-flight chỉ cảnh báo 
 
 → 75/480/500 là tàn dư trước D11. Ảnh hưởng thật: yêu cầu responsive "đa số viewer là điện thoại" (US-6.2) được biện minh bằng con số 500 đã bị bãi bỏ. Với <50 viewer/trận thì mức đầu tư cho viewer mobile cần định lại.
 
-### C-3 `[CONFLICT]` — Ai duyệt đề DRAFT→ACTIVE?
+### C-3 `[CHỐT 2026-07-27]` — ADMIN duyệt đề DRAFT→ACTIVE
+
+> **Phân xử**: vai **admin**, hàng chờ nằm trên dashboard admin; không có vai reviewer riêng. Lý do: `decisions.md` `QĐ-064`.
+
+**Bối cảnh cũ:**
 
 | Nguồn | Phát biểu |
 |---|---|
@@ -309,7 +317,11 @@ Bối cảnh gốc: D1 chốt **1-12 thí sinh**. Nhưng luật O26 (`P/research
 
 Chi tiết máy trạng thái: `game-state-machine.md` §`EVENT-046`, `T-086`, `T-087`.
 
-### C-10 `[MƠ HỒ]` — `Question.visibility` đổi nghĩa giữa 2 tài liệu
+### C-10 `[CHỐT 2026-07-27]` — `Question.visibility` là giá trị DẪN XUẤT
+
+> **Phân xử**: `visibility` là **derived, read-only**; setter làm câu thành public bằng cách đưa nó vào bộ đề public. Lý do: `decisions.md` `QĐ-063`.
+
+**Bối cảnh cũ:**
 
 D16 chốt *"thêm sẵn **cột** `visibility: PRIVATE|PUBLIC` vào Question"* (cột set được).
 Spec §9 định nghĩa lại: *"`Question.visibility` … **derived, read-only** = PUBLIC nếu câu đang thuộc ≥1 set public, else PRIVATE — **không phải cột set tay** (vá H-v2-10)"*.
