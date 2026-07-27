@@ -895,23 +895,25 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 | `Đ-31` | `QĐ-003`, `QĐ-042` | `GRR-077` vế 2 | `QĐ-038` |
 | `Đ-32` | `QĐ-059` | `GRR-120` | `QĐ-037` *(bác)* |
 | `C-1`, `K-4` | `QĐ-062` | `U-7`, `U-34`, `U-36` | `QĐ-066` |
-| `C-3` | `QĐ-064` | `C-2`, `C-5` | **còn treo** — §N |
+| `C-3` | `QĐ-064` | `C-2`, `C-5` | `QĐ-067` |
 | `C-10`, `K-10` | `QĐ-063` | `D16` *(vế "cột set tay")* | `QĐ-063` *(bị thay thế)* |
 
 ---
 
-# N. Còn treo
+# N. Đã hoãn có chủ đích
 
-**Đúng MỘT mục, và nó không chặn đặc tả nào.**
+**Không còn mục treo nào.** Mục dưới đây **không phải câu hỏi chưa trả lời** — nó là một câu hỏi chủ dự án đã quyết là **chưa cần trả lời lúc này**.
 
-### Quy mô viewer và ngưỡng độ trễ — cần con số của chủ dự án
+### QĐ-067 — Quy mô viewer và ngưỡng độ trễ: HOÃN, không phải treo
 
-Bốn nguồn đưa **bốn con số khác nhau** cho số viewer đồng thời; ngưỡng **độ trễ chấp nhận được** cũng chưa thống nhất.
+**Quyết định.** Không chốt con số viewer đồng thời và ngưỡng độ trễ ở giai đoạn này. Mọi chỗ cần một con số dùng **mặc định cấu hình được**; không rule, không transition, không đặc tả nào được viết dựa trên một con số cụ thể.
 
-**Vì sao không suy ra được.** Đây là **mục tiêu phi chức năng**, phụ thuộc sức chứa hội trường và phần cứng máy chủ. Không luật chơi nào, không quyết định nào trong sổ này hàm ý một con số — mọi cách *"suy ra"* ở đây đều là bịa.
+**Vì sao.** Đây là **mục tiêu phi chức năng**, phụ thuộc sức chứa hội trường và phần cứng máy chủ thật. Không luật chơi nào và không quyết định nào trong sổ này hàm ý được một con số — mọi cách *"suy ra"* ở đây đều là bịa. Bốn tài liệu cũ đưa **bốn con số khác nhau**, và sự khác nhau đó không phản ánh tranh luận nào, chỉ phản ánh việc chưa ai đo.
 
-**Vì sao không chặn.** Con số này chỉ đi vào **hai** chỗ, cả hai đều là **cấu hình**, không phải luật: ngưỡng **rate-limit** của cổng viewer, và **mục tiêu load-test**. Không transition nào, không rule nào đọc nó.
+Chốt bừa một con số **đắt hơn** là để trống: nó biến một giá trị cấu hình thành một cam kết, và cam kết sai thì phải viết lại cả mục tiêu kiểm thử tải.
 
-**Để trả lời rẻ, chỉ cần chốt hai điều**: (a) số viewer đồng thời tối đa cần đỡ ở hồ sơ **portable LAN** — suy từ hội trường lớn nhất dự kiến; (b) hồ sơ **compose** có cần con số cao hơn không, và cao bao nhiêu. Phần còn lại để mặc định cấu hình được.
+**Hệ quả.** Con số này chỉ đi vào **hai** chỗ, cả hai đều là **cấu hình**: ngưỡng **rate-limit** của cổng viewer, và **mục tiêu load-test**. Cả hai để mặc định, sửa bằng biến môi trường.
 
-*Thay cho*: `C-2`, `C-5`
+Khi nào cần trả lời, chỉ phải chốt hai điều: **(a)** số viewer đồng thời tối đa ở hồ sơ **portable LAN** — suy từ hội trường lớn nhất dự kiến; **(b)** hồ sơ **compose** có cần con số cao hơn không, và cao bao nhiêu.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-2`, `C-5`

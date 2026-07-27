@@ -31,11 +31,11 @@ Bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia
 
 ### [`decisions.md`](decisions.md) — vì sao
 
-**66 quyết định `QĐ-001` → `QĐ-066`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
+**67 quyết định `QĐ-001` → `QĐ-067`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
 
 Chia theo chủ đề: nguyên tắc nền · phạm vi phiên bản · điểm và event log · hai mode trả lời · tín hiệu và hàng đợi · đồng hồ · điều khiển trận · kho đề · ghế và kết nối · hiển thị và bảo mật · theo vòng · mô hình dữ liệu và quyền.
 
-Có **bảng tra mã CŨ → MỚI** ở §M cho ai đang cầm mã `Đ-*`, `U-*`, `K-*`, `GRR-*` từ tài liệu cũ. Còn **một** mục treo ở §N.
+Có **bảng tra mã CŨ → MỚI** ở §M cho ai đang cầm mã `Đ-*`, `U-*`, `K-*`, `GRR-*` từ tài liệu cũ. §N ghi một mục **đã hoãn có chủ đích** — không còn mục treo nào.
 
 ### [`game-rules.md`](game-rules.md) — luật chơi
 
@@ -85,7 +85,7 @@ Biên bản rà soát và đề xuất `GRR-*` của giai đoạn 2026-07. **Kh�
 
 | Mã | Ở đâu | Là gì |
 |---|---|---|
-| `QĐ-001` → `QĐ-066` | `decisions.md` | Quyết định |
+| `QĐ-001` → `QĐ-067` | `decisions.md` | Quyết định |
 | `GR-001` → `GR-037` | `game-rules.md` | Rule luật chơi |
 | `TERM-001` → `TERM-056` | `glossary.md` | Thuật ngữ |
 | `STATE-*` `EVENT-*` `T-*` `INV-*` | `game-state-machine.md` | Trạng thái · sự kiện · chuyển tiếp · bất biến |

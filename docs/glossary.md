@@ -13,7 +13,7 @@
 | **Đừng nhầm với** | Khái niệm lân cận dễ lẫn. Đây là trường **hay cứu bug nhất** — phần lớn là những chỗ một từ từng mang nhiều nghĩa |
 | **Nguồn** | Luật gốc, hoặc `QĐ-*` trong `decisions.md` |
 
-**Mọi mục ở đây đều đã chốt.** Việc còn treo của cả dự án nằm ở `decisions.md` §N — hiện đúng một mục, và nó là con số phi chức năng, không phải một thuật ngữ.
+**Mọi mục ở đây đều đã chốt**, và cả dự án cũng không còn mục treo nào — thứ duy nhất ở `decisions.md` §N là một con số phi chức năng **đã hoãn có chủ đích**, không phải một thuật ngữ.
 
 **Nhãn phạm vi**: `[v1.5]` · `[v2]` — khái niệm đã có tên và có chỗ trong schema, nhưng luật chưa ship.
 
