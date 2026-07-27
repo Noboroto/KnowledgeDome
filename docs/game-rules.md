@@ -20,7 +20,7 @@ Tài liệu này vẫn giữ thói quen **kèm tên file khi trích một mã `G
 | File | Vai trò |
 |---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
-| `docs/glossary.md` | **Thuật ngữ chuẩn** TERM-001 → TERM-060; file này dùng đúng tên ở đó |
+| `docs/glossary.md` | **Thuật ngữ chuẩn** TERM-001 → TERM-059; file này dùng đúng tên ở đó |
 | `docs/game-rules-inventory.md` | Kiểm kê R-*, các mục chưa định nghĩa U-*, các mâu thuẫn K-* |
 | `docs/reviews/game-rules-decisions.md` | Quyết định **đã chốt** Đ-1 → Đ-36 |
 | `docs/reviews/game-rules-resolutions.md` | **Phân xử 2026-07-26** — hệ quả suy ra từ quyết định đã chốt, kèm mức tin cậy từng mã. Nguồn của đợt đóng 17 rule |
@@ -136,7 +136,7 @@ Mọi mục `U-*` và `K-*` từng chặn một rule đều đã có câu trả 
 
 > Hệ quả: mốc thời gian của luật (3s, 15s, 20s…) là **ràng buộc đối với thí sinh** và là **mốc tham chiếu đối với người điều khiển**. "Trong hạn hay quá hạn" ở phía phán quyết là đánh giá của MC và admin, hệ thống không phân xử.
 
-11. **KHÔNG tồn tại trạng thái "trận tạm dừng"** — mọi thao tác đều do admin thực hiện, nên khi trận cần dừng thì **admin ngừng thao tác**, hệ thống không cần biết. Không có đóng băng đồng hồ, không có tự động tạm dừng, không có trạng thái `PAUSED` trong máy trạng thái trận.
+11. **ĐỒNG HỒ CHẠY LIÊN TỤC; trận dừng bằng cách admin ngừng thao tác.** Mọi thao tác đều do admin thực hiện, nên khi trận cần dừng thì **admin ngừng bấm**, hệ thống không cần biết. Một cửa sổ thời gian đã mở thì **chạy hết theo server time**; hệ thống **không tự dừng** ở bất kỳ ngưỡng nào, kể cả khi admin hay thí sinh mất kết nối.
 
 > Nếu sự cố xảy ra **giữa lúc một cửa sổ có ràng buộc thời gian đang mở** (Tăng tốc, cướp quyền Về đích) thì thí sinh mất thời gian thật. Van thoát là cơ chế đã có sẵn: admin **bỏ hoặc chạy lại vòng** (`Đ-5.1`) — lưu ý câu đã dùng **không** trả lại kho đề.
 
@@ -452,7 +452,7 @@ Không còn điều kiện nào phải kiểm: sau khi admin bấm Đúng hoặc
 | `docs/reviews/game-rules-decisions.md` | §3.1 Đ-1 · §3.3 · §8.1 Đ-6 · §9.1 | Đ-1, Đ-6 |
 | `docs/reviews/game-rules-review.md` | — | — |
 | `docs/reviews/game-rules-review-old.md` | GRR-002 | — |
-| `docs/glossary.md` | TERM-035, TERM-039, TERM-049 | — |
+| `docs/glossary.md` | TERM-034, TERM-038, TERM-048 | — |
 
 ---
 
@@ -545,7 +545,7 @@ Không có thứ tự nào phải quy định: hết giờ **không** khoá nút
 
 ### Concurrency
 
-Không có xung đột: đồng hồ hết giờ không sinh kết quả và **không khoá thao tác nào của admin**, nên nó không tranh chấp với phán quyết. Trạng thái tạm dừng không tồn tại nên cũng không có nhánh xung đột với nó.
+Không có xung đột: đồng hồ hết giờ không sinh kết quả và **không khoá thao tác nào của admin**, nên nó không tranh chấp với phán quyết.
 
 ### Examples
 
@@ -690,7 +690,7 @@ Quy tắc *"cùng thời gian thì cùng mức điểm"* của Tăng tốc **kh�
 | `docs/reviews/game-rules-decisions.md` | §5.1 Đ-7 · §5.2 Đ-7.2 · §8.1 Đ-6 · §9.1 | Đ-7, Đ-7.2 |
 | `docs/reviews/game-rules-review-old.md` | GRR-002, GRR-005, GRR-007 | — |
 | `docs/reviews/game-rules-review.md` | — | — |
-| `docs/glossary.md` | TERM-031, TERM-032 | — |
+| `docs/glossary.md` | TERM-030, TERM-031 | — |
 
 ---
 
@@ -1177,7 +1177,7 @@ Hàng đợi chặn ở VCNV xử lý **thuần theo thứ tự tiếp nhận** 
 | `docs/reviews/game-rules-decisions.md` | §5.1 Đ-7 · §5.2 Đ-7.2 · §5.4 Đ-4.2 · §6.2 · §11.21 Đ-36 | Đ-7, Đ-7.2, Đ-4.2, Đ-36 |
 | `docs/reviews/game-rules-review-old.md` | GRR-016 | — |
 | `docs/reviews/game-rules-review.md` | GRR-143, GRR-144 | — |
-| `docs/glossary.md` | TERM-002, TERM-032, TERM-057 | — |
+| `docs/glossary.md` | TERM-002, TERM-031, TERM-056 | — |
 
 ---
 
@@ -1287,7 +1287,7 @@ Thứ tự **tất định**, suy ra từ ngưỡng *"≥1 người đúng"* đ�
 
 ### Concurrency
 
-Tín hiệu **"Mở chướng ngại vật" đến giữa lúc đồng hồ hàng ngang đang chạy**: hệ thống **ghi nhận ngay**, **đồng hồ vẫn chạy bình thường** (không tạm dừng, không kéo dài), và **không lộ gì thêm cho tới khi admin bấm hiển thị** — cả **đáp án chuẩn của chương trình** lẫn **bài làm của các thí sinh khác**.
+Tín hiệu **"Mở chướng ngại vật" đến giữa lúc đồng hồ hàng ngang đang chạy**: hệ thống **ghi nhận ngay**, **đồng hồ vẫn chạy bình thường** (không đóng băng, không kéo dài), và **không lộ gì thêm cho tới khi admin bấm hiển thị** — cả **đáp án chuẩn của chương trình** lẫn **bài làm của các thí sinh khác**.
 
 > Vế thứ ba là điều kiện để hai vế đầu an toàn. Phải ẩn **cả hai** nguồn dữ kiện: đáp án chuẩn cho người bấm CNV biết luôn hàng ngang đó là gì, còn bài làm của người khác cho họ suy ra hàng ngang qua phỏng đoán của đồng đối thủ. Ẩn một cái mà lộ cái kia thì cơ chế vẫn hỏng.
 
@@ -1306,7 +1306,7 @@ Tín hiệu **"Mở chướng ngại vật" đến giữa lúc đồng hồ hàn
 | `docs/reviews/game-rules-decisions.md` | §3.1 Đ-1 · §4.2 · §9.2 | Đ-1, Đ-4.X2 |
 | `docs/reviews/game-rules-review-old.md` | GRR-002, GRR-013, GRR-019 | — |
 | `docs/reviews/game-rules-review.md` | GRR-146 | — |
-| `docs/glossary.md` | TERM-057, TERM-058 | — |
+| `docs/glossary.md` | TERM-056, TERM-057 | — |
 
 ---
 
@@ -1433,7 +1433,7 @@ Khi một tín hiệu chọn hàng ngang đang chờ duyệt và một tín hi�
 | `docs/reviews/game-rules-decisions.md` | §5.2 Đ-7.2 · §5.3 Đ-4.3 · §9.2 | Đ-4.3, Đ-7.2 |
 | `docs/reviews/game-rules-review-old.md` | GRR-019, GRR-021, GRR-025 | — |
 | `docs/reviews/game-rules-review.md` | GRR-142, GRR-143, GRR-144, GRR-145, GRR-146 | — |
-| `docs/glossary.md` | TERM-059 | — |
+| `docs/glossary.md` | TERM-058 | — |
 
 ---
 
@@ -1551,7 +1551,7 @@ Hai tình huống đồng thời, cả hai đều đã có quy tắc:
 | `docs/game-rules-inventory.md` | §R-VCNV-04, §R-VCNV-07, §PHẦN 7 R-TEAM-03 | R-VCNV-04, U-24 |
 | `docs/reviews/game-rules-decisions.md` | §7.3 (hoàn nguyên trạng thái phi-điểm — **đề xuất chưa duyệt**) | — |
 | `docs/reviews/game-rules-review.md` | GRR-145, GRR-146 | — |
-| `docs/glossary.md` | TERM-036, TERM-046 | — |
+| `docs/glossary.md` | TERM-035, TERM-045 | — |
 
 ---
 
@@ -1679,7 +1679,7 @@ Tín hiệu giải Chướng ngại vật đến **đúng lúc admin đang đưa
 | `docs/reviews/game-rules-decisions.md` | §9.2 · §10 (cách đọc hai chủ ngữ) | Đ-12 |
 | `docs/reviews/game-rules-review-old.md` | GRR-002, GRR-013, GRR-025 | — |
 | `docs/reviews/game-rules-review.md` | GRR-142 | — |
-| `docs/glossary.md` | TERM-060 | — |
+| `docs/glossary.md` | TERM-059 | — |
 
 ---
 
@@ -1699,7 +1699,7 @@ Admin (thao tác thủ công) · Viewer (theo dõi) · Server.
 
 ### Related states
 
-`rounds[i]` = VCNV → `INTERMISSION`.
+`rounds[i]` = VCNV → `LOBBY` (cửa vào vòng).
 
 ### Trigger
 
@@ -1805,7 +1805,7 @@ Tín hiệu còn nằm trong hàng đợi khi vòng kết thúc: **vô hiệu, n
 | `docs/reviews/game-rules-decisions.md` | §5.1 Đ-7.b · §6.3 Đ-5.2f · §9.2 | Đ-7.b, Đ-5.2f |
 | `docs/reviews/game-rules-review-old.md` | GRR-027 | — |
 | `docs/reviews/game-rules-review.md` | GRR-163 | — |
-| `docs/glossary.md` | TERM-024, TERM-036, TERM-054 | — |
+| `docs/glossary.md` | TERM-023, TERM-035, TERM-053 | — |
 
 ---
 
@@ -3885,6 +3885,10 @@ Admin bấm "start trận" (LOBBY → vòng đầu) hoặc đầu mỗi turn khi
 | C3 — Pool cạn (pre-flight theo vòng) | Vòng cần 4 câu, kho còn 3 | **Không bắt đầu được vòng đó**; **các vòng khác vẫn bắt đầu bình thường** | Vòng không mở; admin thấy báo thiếu bao nhiêu câu | — |
 | C4 — Pool cạn giữa vòng | Đã bắt đầu vòng rồi mới thiếu câu | **KHÔNG TỒN TẠI** — nhu cầu của vòng là con số cố định (`Đ-30`) và được kiểm đủ tại cửa vào vòng; câu bị bỏ qua vẫn nằm trong con số đó | Không đổi | — |
 | C5 — Replay event log | Query: câu nào được rút ở lượt 1 match X? | Tra event `QUESTIONS_DRAWN` → danh sách qid | Read-only, không sinh event mới | — |
+| C6 — Admin sửa danh sách gán tại cửa vào vòng | Ở `LOBBY` (cửa vào vòng), admin thêm / bớt câu trong danh sách đã gán | **ĐƯỢC** (`Đ-37`) — đây là lối thoát cho ngưỡng chặn cứng của `Đ-31`. Pre-flight chạy lại sau khi sửa | Danh sách gán cập nhật · vào AuditLog · **cờ `usedInContest` KHÔNG đụng tới** | — |
+| C7 — Bớt một câu **đã hiển thị** | Câu đã lên màn thí sinh, admin gỡ khỏi danh sách gán | **KHÔNG TỒN TẠI** — câu đã tiêu (`GRR-085`) không còn là mục tiêu của thao tác gỡ; máy admin hiện **toast**, không ép được (`Đ-16`). Nếu cho gỡ thì gỡ-rồi-thêm-lại thành đường lách no-repeat | Không đổi | — |
+| C8 — Bớt một câu **đã rút, chưa hiển thị** | Câu đã rút ở đầu lượt nhưng admin chưa bấm hiển thị | **ĐƯỢC** — theo `GRR-118` câu này **chưa tiêu, trả lại kho** | Câu rời danh sách gán và quay về kho | — |
+| C9 — Sửa danh sách **giữa lúc một vòng đang chạy** | Vòng đã mở, đang hỏi câu | **KHÔNG** (`Đ-37`) — cửa sửa chỉ mở ở `LOBBY` — cửa vào vòng. Trong vòng không có nhu cầu: số câu của vòng là con số cố định (`Đ-30`) đã kiểm đủ tại cửa vào | Không đổi | — |
 
 ### Outcomes
 - **Câu rút được ghi dấu** `usedInContest = true` (mềm, không phải xoá)
@@ -3901,7 +3905,11 @@ Admin bấm "start trận" (LOBBY → vòng đầu) hoặc đầu mỗi turn khi
 ### No-change guarantees
 - **Cờ `usedInContest` KHÔNG reset** khi bỏ vòng / chạy lại (Đ-5.2f): mỗi câu rút = 1 lần, vĩnh viễn tiêu khỏi pool
 - **Event `QUESTIONS_DRAWN` không thay đổi** (append-only): dùng để replay trận
-- **Danh sách gán** (snapshot) **KHÔNG bị sửa** giữa trận
+- **Danh sách gán KHÔNG bị sửa TRONG LÚC MỘT VÒNG ĐANG CHẠY.** Trong suốt một vòng, tập câu khả dụng là **bất biến** ⇒ replay event log ra đúng kết quả cũ (`Đ-5.3`).
+
+> ⚠️ **Sửa 2026-07-27 (`Đ-37`)** — bản trước ghi *"Danh sách gán (snapshot) KHÔNG bị sửa **giữa trận**"*. Phát biểu đó là **tàn dư** từ thời pre-flight chạy **một lần trước trận**, và nó mâu thuẫn với hai chỗ khác đã có: `Đ-31` (*"admin thấy được thiếu bao nhiêu câu để **bổ sung rồi mở lại**"*) và **GR-025 Error outcomes** (*"**bổ sung đề rồi mở lại**"*).
+>
+> Phạm vi đúng là **VÒNG, không phải TRẬN**: sửa được ở `LOBBY` — cửa vào vòng (xem C6), không sửa được khi một vòng đang chạy (C9). Đây cũng là **lối thoát bắt buộc** cho `Đ-31` — một ngưỡng **chặn cứng không ép được** mà không có đường xử lý thì vòng thiếu đề sẽ mất hẳn.
 
 ### Error outcomes
 - **Pool cạn trước start** (pre-flight chặn): Người tạo contest chưa gán đủ câu hoặc contest dùng pool chia sẻ quá tải
@@ -3940,6 +3948,7 @@ Không có hai luồng điều khiển đồng thời (**một admin duy nhất 
 
 ### Source traceability
 - `docs/source/fandom-olympia-26-luat-choi.md` — không đề cập draw (repo mở rộng)
+- **Sửa danh sách gán tại cửa vào vòng**: ✅ chủ dự án chốt **2026-07-27** — `docs/reviews/game-rules-decisions.md` §11.22 `Đ-37`; hệ quả cấp sản phẩm ở `docs/product-discovery.md` **C-18**
 - `docs/game-rules-inventory.md` §R-KD-07 (rút đề, emit `QUESTIONS_DRAWN`) · §R-GEN-06 (no-repeat toàn contest)
 - `docs/game-rules-decisions.md` §6.3 (Đ-5.2f — câu đã dùng không trả lại)
 - `plans/260711-2340-olympia-contest-system/DEFERED.md` D22 (draw, no-repeat, snapshot danh sách)
@@ -4113,7 +4122,7 @@ Mọi thời điểm quan trọng trong trận mà luật gốc mô tả bằng 
 - **Server** — ghi nhận timestamp; không ai sửa được
 
 ### Related states
-- Timer: `running` / `paused` / `stopped`
+- Timer: `running` / `stopped` — đồng hồ **không bao giờ đóng băng** (`Đ-21`)
 - Câu hỏi: `hidden` / `displayed`
 - NSHV: `open` / `closed` (mốc đóng = admin bấm hiển thị)
 
@@ -4544,7 +4553,7 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 | C1 — Mất kết nối; kết nối lại < 120s | Thí sinh quay lại trong grace | Ghế restore state; banner "đã kết nối lại" | Seat state: quay về cũ | — |
 | C2 — Quá 120s grace period | Admin không can thiệp; thời gian quá 120s | **Ghế được TÔ NỔI BẬT trên màn admin** kèm thời lượng mất kết nối. **KHÔNG tự loại, KHÔNG tự xoá.** Ghế **giữ nguyên** trong trận cho tới khi admin bấm | Trạng thái ghế **không đổi**; chỉ thêm chỉ báo hiển thị | — |
 | C2b — Admin phán quyết sau khi quá grace | Admin bấm **giữ** / **gia hạn** / **kick** | Theo đúng lựa chọn của admin. **Kick** là thao tác **không hoàn tác được** ⇒ dialog Yes/No + AuditLog kèm lý do | Chỉ đổi khi admin bấm | — |
-| C3 — Rớt mạng đúng lượt riêng Khởi động | Disconnect xảy ra vòng Khởi động riêng | **Admin quyết** — không có trạng thái tạm dừng của hệ thống; admin ngừng thao tác và xử lý ngoài hệ thống | Không đổi | — |
+| C3 — Rớt mạng đúng lượt riêng Khởi động | Disconnect xảy ra vòng Khởi động riêng | **Admin quyết** — hệ thống chạy tiếp bình thường; admin ngừng thao tác và xử lý ngoài hệ thống | Không đổi | — |
 | C4 — Kết nối lại; trận đã chuyển vòng | Thí sinh kết nối lại ở vòng tiếp theo | Sync state toàn bộ vòng; restore tất cả UI | UI: full sync | — |
 | C5 — Admin can thiệp trước hết grace | Admin kick thí sinh hoặc cho phép giữ lâu hơn | **ĐƯỢC — cả hai.** Grace 120 giây là **khuyến nghị của hệ thống**, không phải ràng buộc cưỡng chế: đây không phải ngưỡng bất khả thi vật lý nên nó chỉ **cảnh báo**, admin ép được (nguyên tắc nền điểm 8) | Kick ⇒ ghế rời trận; gia hạn ⇒ ghế giữ tiếp. Cả hai là thao tác **không hoàn tác được** ⇒ dialog Yes/No + ghi AuditLog kèm lý do | — |
 | C6 — Hai thí sinh cùng mất kết nối | Cả A, B disconnect trong grace | Cả hai đều có 120s để quay lại độc lập | Seat A, B: both in grace | — |
@@ -4610,8 +4619,8 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 
 **Ví dụ 3 — Rớt vòng riêng Khởi động**:
 - Vòng Khởi động riêng; thí sinh C mất kết nối
-- Engine tự pause (D13.4); admin thấy cảnh báo
-- Admin quyết: resume (C giữ lượt) hay dropout (C mất lượt)
+- Engine dừng lại chờ admin (D13.4); admin thấy cảnh báo
+- Admin quyết: cho chạy tiếp (C giữ lượt) hay dropout (C mất lượt)
 
 **Ví dụ 4 — State-sync (quay lại vòng tiếp theo)**:
 - Thí sinh D quay lại lúc t=50s (trong grace)
@@ -4625,7 +4634,7 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 
 ### Source traceability
 - `game-rules-inventory.md` §R-GEN-09 — Reconnect grace 120 giây
-- `game-rules-decisions.md` D13.4 — Auto-pause khi thí sinh rớt mạng lượt riêng
+- `game-rules-decisions.md` §11.6 `Đ-21` — đồng hồ chạy liên tục, admin xử lý sự cố ngoài hệ thống
 - `CLAUDE.md` — State-sync khi quay lại
 
 ---
@@ -4638,6 +4647,16 @@ CONFIRMED
 
 ### Purpose
 Đáp án của các câu hỏi chỉ được phép hiển thị cho những kênh cụ thể tùy theo cấu hình `revealAnswerAfterJudge`. Mục đích: bảo vệ bí mật đề; admin + MC luôn được xem; viewer chỉ xem sau khi chấm xong (nếu bật).
+
+> ⚠️ **Phạm vi của rule này CHỈ là ĐÁP ÁN.** Đừng tổng quát hoá sang các loại thông tin khác — ba loại có ba chế độ khác nhau:
+>
+> | Loại | Chế độ | Quy định ở |
+> |---|---|---|
+> | **Đáp án chuẩn** | **MẬT** — chỉ admin + MC | **Rule này** |
+> | **Bài làm của thí sinh khác** | **ẨN TẠM THỜI** trong lúc câu còn mở; lộ khi admin bấm hiển thị | GR-008 C9 · nguyên tắc nền điểm 14 |
+> | **ĐIỂM SỐ** | **CÔNG KHAI, LUÔN LUÔN** — mọi vai, mọi lúc, gồm cả máy thí sinh | `product-discovery.md` **C-20** (chốt 2026-07-27) |
+>
+> Ba thứ độc lập nhau: điểm công khai **không** nới lỏng hai dòng trên.
 
 ### Actors
 - **Admin** — luôn được xem đáp án (authenticated, audit)

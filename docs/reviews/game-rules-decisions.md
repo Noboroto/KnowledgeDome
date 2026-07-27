@@ -300,7 +300,7 @@ Van thoát **không phải grace** mà là: lịch sử giữ đầy đủ để
 | Thời điểm | Diễn ra **TRƯỚC khi trả lời**, trong lúc câu còn mở `[Đ-6.4]` |
 | Ai quyết | **MC quyết bằng lời, admin bấm** `[Đ-6.4a]` |
 | Thứ tự sau khi gỡ | **Giữ timestamp gốc**; ai được quyền trả lời là **chuyện của BTC, không phải của hệ thống** `[Đ-6.4b]` |
-| Timer | **Chạy hết**, không pause `[Đ-6.4c]` |
+| Timer | **Chạy hết**, không dừng giữa chừng `[Đ-6.4c]` |
 | Sau khi câu kết thúc | **Kết quả đã chốt**, không quan tâm cấm hay không `[Đ-6.4d]` |
 
 **Phát biểu gọn**: lệnh cấm là **trạng thái theo CÂU**, **chết cùng câu**; cửa sổ gỡ cấm thực tế = **thời gian còn lại của câu**.
@@ -465,11 +465,17 @@ Cả hai đều thể hiện bằng **admin bấm Sai**. Hệ thống **không p
 
 ⇒ Đóng `game-rules-review.md` GRR-137. Đây cũng là **lý do** đứng sau Đ-16: giải thích vì sao phía thí sinh bị khoá mà phía admin thì không.
 
-### 11.6 KHÔNG tồn tại trạng thái "trận tạm dừng" `[Đ-21]`
+### 11.6 Đồng hồ chạy liên tục; trận dừng bằng cách admin ngừng thao tác `[Đ-21]`
 
-Mọi thao tác đều do admin thực hiện ⇒ trận cần dừng thì **admin ngừng thao tác**, hệ thống không cần biết. **Bãi bỏ** `R-GEN-08`: không đóng băng đồng hồ, không tự động tạm dừng, không có giá trị `PAUSED` trong máy trạng thái.
+Mọi thao tác đều do admin thực hiện ⇒ khi trận cần dừng thì **admin ngừng thao tác**, hệ thống không cần biết điều đó. **Bãi bỏ `R-GEN-08`.**
 
-Máy trạng thái trận còn **5 giá trị**: `LOBBY` · `rounds[i]` · `INTERMISSION` · `TIE_BREAK` · `FINISHED`.
+Ba điều hệ thống **không** làm:
+
+- **Không đóng băng đồng hồ.** Một cửa sổ thời gian đã mở thì chạy hết theo server time.
+- **Không tự dừng** khi admin hay thí sinh mất kết nối, ở bất kỳ ngưỡng nào.
+- **Không có cấu hình ngưỡng** nào cho hai việc trên.
+
+Máy trạng thái trận có **bốn** giá trị: `LOBBY` · `rounds[i]` · `TIE_BREAK` · `FINISHED`.
 
 **Van thoát khi sự cố rơi vào giữa một cửa sổ có ràng buộc thời gian** (Tăng tốc, cướp quyền Về đích): dùng cơ chế đã có — admin **bỏ hoặc chạy lại vòng** (`Đ-5.1`); lưu ý câu đã dùng **không** trả lại kho đề (`Đ-5.2f`).
 
@@ -480,7 +486,7 @@ Máy trạng thái trận còn **5 giá trị**: `LOBBY` · `rounds[i]` · `INTE
 Khi có người bấm **"Mở chướng ngại vật"** giữa lúc đồng hồ hàng ngang đang chạy:
 
 1. **Ghi nhận ngay** tín hiệu.
-2. **Đồng hồ vẫn chạy bình thường** — không tạm dừng, không kéo dài.
+2. **Đồng hồ vẫn chạy bình thường** — không đóng băng, không kéo dài.
 3. **Không lộ gì thêm cho tới khi admin bấm hiển thị** — ẩn **cả hai**: (a) **đáp án chuẩn của chương trình** cho hàng ngang đang chạy, (b) **bài làm của các thí sinh khác**.
 
 Vế 3 là điều kiện để hai vế đầu an toàn, và phải ẩn **cả hai** nguồn dữ kiện mới đủ:
@@ -492,7 +498,7 @@ Vế 3 là điều kiện để hai vế đầu an toàn, và phải ẩn **cả
 
 Ẩn một cái mà lộ cái kia thì cơ chế vẫn hỏng.
 
-⇒ Đóng `game-rules-inventory.md` U-16 (đề xuất *"pause timer hàng ngang"* — **bác bỏ**).
+⇒ Đóng `game-rules-inventory.md` U-16 (đề xuất *"dừng đồng hồ hàng ngang"* — **bác bỏ**).
 
 **Tiền lệ `Athena-Intelligent-Olympia`** — cùng cách xử lý, đã chạy thật:
 
@@ -798,6 +804,111 @@ Hai nhánh đều triệt tiêu tranh chấp: nhánh trên **không có bản g�
 
 ---
 
+### 11.22 Danh sách câu đã gán sửa được tại CỬA VÀO VÒNG `[Đ-37]`
+
+> **Admin thêm / bớt câu hỏi trong danh sách đã gán ở `LOBBY`** (cửa vào vòng) — tức **trước khi mở bất kỳ vòng nào**. Trong lúc một vòng đang chạy thì **không**.
+
+✅ **Chủ dự án chốt 2026-07-27.**
+
+**Đây là PHÂN XỬ, không phải luật mới.** Ba phát biểu đang có, hai cái đã giả định sẵn việc này và chỉ một cái nói ngược:
+
+| Nguồn | Phát biểu | Hàm ý |
+|---|---|---|
+| `Đ-31` (§11.16, câu cuối) | *"Admin thấy được thiếu bao nhiêu câu để **bổ sung rồi mở lại**."* | Sửa được **giữa trận** |
+| `game-rules.md` §GR-025 Error outcomes | *"vòng không mở được; admin chuyển sang phương án ngoài hệ thống hoặc **bổ sung đề rồi mở lại**"* | Sửa được **giữa trận** |
+| `game-rules.md` §GR-031 No-change guarantees | *"**Danh sách gán (snapshot) KHÔNG bị sửa** giữa trận"* | **Không** sửa được |
+
+⇒ Phát biểu thứ ba là **chỗ lệch**, và nó lệch vì được viết khi pre-flight còn chạy **một lần trước trận**. `Đ-31` đã chuyển pre-flight sang **cửa vào từng vòng** nhưng câu đó không được rà lại. **Sửa GR-031 cho khớp `Đ-31`**, không phải ngược lại.
+
+**Vì sao mốc là CỬA VÀO VÒNG, không phải "bất cứ lúc nào":**
+
+- `Đ-31` đặt điểm kiểm kho đề ở cửa vào vòng. Cho sửa **đúng ở nơi kiểm** thì việc kiểm mới có lối thoát; cho sửa ở giữa vòng thì phép kiểm mất nghĩa vì tài nguyên đổi sau khi đã kiểm.
+- `Đ-30` (*luật cho bao nhiêu câu thì đúng bấy nhiêu*) khiến nhu cầu của một vòng là **con số cố định, biết trước**. Đã qua được cửa vào thì trong vòng không cần thêm câu — nên **không có lý do nghiệp vụ** để sửa giữa vòng.
+- Giữ được tính **tái dựng**: trong suốt một vòng, tập câu khả dụng là bất biến, nên replay event log ra đúng kết quả cũ (`Đ-5.3`).
+
+**Bớt một câu ĐÃ ĐƯỢC HIỂN THỊ: KHÔNG cho phép** (chốt cùng ngày).
+
+- Câu đã hiển thị là câu **đã tiêu** (`GRR-085`) và **không bao giờ trả lại kho** (`Đ-5.2f`). Gỡ nó khỏi danh sách gán sẽ tạo ra một đường lách: gỡ ra rồi thêm lại ⇒ hỏi lại một câu đã lộ, phá quy tắc no-repeat toàn contest (`R-GEN-06`).
+- **Phân loại: INVALID STATE, không phải chặn cứng thứ tư.** Theo `Đ-16`, invalid state là *"thao tác không tồn tại ở trạng thái hiện tại"* — một câu đã tiêu **không còn là mục tiêu** của thao tác gỡ. Máy admin hiện **toast**, không ép được. ⇒ Số ngưỡng **chặn cứng vẫn là BA** (`Đ-15.3` hai ngưỡng số người + `Đ-31` cửa vào vòng); `NT-D` của `game-rules-resolutions.md` **không phải sửa**.
+- Câu **đã rút nhưng CHƯA hiển thị** thì **gỡ được** — theo `GRR-118` nó là câu **chưa tiêu, trả lại kho**.
+
+**Ranh giới với `Đ-5.2f`**: gỡ một câu khỏi danh sách gán chỉ có nghĩa **"không rút nữa"**. Nó **không** xoá cờ đã-dùng, **không** hoàn tác việc câu đã lộ, và **không** đụng no-repeat ở cấp contest.
+
+⇒ **Hệ quả cấp sản phẩm** (giao diện, phân quyền, audit) ghi ở `docs/product-discovery.md` **C-18**.
+
+---
+
+### 11.23 `LOBBY` là CỬA VÀO VÒNG — trạng thái nghỉ duy nhất của trận `[Đ-38]`
+
+> **Máy trạng thái trận có bốn giá trị**: `LOBBY` · `rounds[i]` · `TIE_BREAK` · `FINISHED`.
+> **`LOBBY` = cửa vào vòng**: trạng thái nghỉ của trận, dùng **cả trước vòng đầu tiên lẫn giữa hai vòng**.
+
+✅ **Chủ dự án chốt 2026-07-27.**
+
+**Điều kiện VÀO `LOBBY`:**
+
+| Đường vào | Ghi chú |
+|---|---|
+| Trận được tạo | Lần đầu, chưa vòng nào chạy |
+| **Mọi nút "Kết thúc vòng"** | **Mọi** vòng kết thúc đều về đây, không vòng nào là ngoại lệ |
+| Bỏ vòng · chạy lại vòng | `Đ-5.1` |
+
+**Điều kiện RA — ba nhánh:**
+
+| Đường ra | Điều kiện |
+|---|---|
+| Mở **bất kỳ vòng nào** | Cửa vào vòng đủ câu (`Đ-31`). Admin chọn vòng; playlist chỉ là gợi ý (`Đ-5`) |
+| → `TIE_BREAK` | Hết playlist **và** hoà ở `tieBreakPositions` |
+| → `FINISHED` | Hết playlist, không hoà |
+
+**Thao tác cho phép tại `LOBBY`:** sửa điểm qua event log (`Đ-11.B`) · sửa **danh sách câu hỏi và thông tin câu hỏi** (`Đ-37`) · mở bất kỳ vòng nào · mở công bố kết quả (`C-19`) · gán ghế và vị trí *(chỉ khi chưa vòng nào từng chạy)*.
+
+**Mốc đóng băng cấu hình là một GUARD TRÊN CẠNH RA, không phải một trạng thái riêng.**
+
+`NT-C` quy định RuleConfig, mode trả lời và danh sách câu được **snapshot vào trận lúc start**, một chiều. Cụ thể:
+
+> Khi admin mở một vòng từ `LOBBY`: **nếu chưa vòng nào từng chạy** thì cạnh đó **kèm việc đóng băng cấu hình**; ngược lại thì không.
+
+Điều kiện *"chưa vòng nào từng chạy"* **không phải một cờ lưu trữ** — nó suy ra từ event log, đúng `Đ-5.3`. Hệ quả: chỉ **một** chỗ trong toàn hệ thống cần hỏi câu đó.
+
+Hai ràng buộc phái sinh dùng **cùng** điều kiện ấy:
+
+- **Gán ghế / vị trí**: chỉ khi chưa start — `R-VD-02` và `TERM-002` quy định vị trí *"gán thủ công trước trận"*, *"không thay đổi trong trận"*.
+- **Bỏ vòng · chạy lại · hoàn nguyên**: không bị cấm khi chưa start, chỉ đơn giản là **rỗng** — chưa có event nào để hoàn nguyên. Không cần guard.
+
+**Nội dung trình diễn giữa hai vòng** (giao lưu, giải lao, video hình hiệu) **không cần** trạng thái riêng: nó là **lớp phủ** do admin bật/tắt (`C-19`), không phải một bước của luồng thi đấu.
+
+⇒ Đóng `GRR-077`. Hệ quả cấp sản phẩm ở `docs/product-discovery.md` **C-18**, **S-23**.
+
+---
+
+### 11.24 Pipeline vòng ĐỘC LẬP — khôi phục bằng sửa điểm + mở lại vòng `[Đ-39]`
+
+> **Không vòng nào phụ thuộc trạng thái nội bộ của vòng khác.** Toàn bộ trạng thái của một trận nằm ở **hai** thứ: **event log** (ra điểm) và **vòng nào đang mở**. Khôi phục sau bất kỳ sự cố nào = **sửa điểm** + **mở lại vòng cần chạy**. Không có bước thứ ba.
+
+✅ **Chủ dự án chốt 2026-07-27.** Mô hình lấy theo tiền lệ vận hành của Athena: một màn điều khiển, mọi vòng mở được từ đó, không ràng buộc thứ tự.
+
+**Ba hệ quả bắt buộc:**
+
+1. **Mở một vòng ⇒ vòng đó bắt đầu SẠCH.** Mọi trạng thái phạm vi vòng đều đặt lại tại mốc mở: cờ bị loại · lệnh cấm trả lời · lượt chọn đã dùng · khoá chuông · miếng ghép và hàng ngang · hàng đợi đang hoạt động · cửa sổ cướp quyền · gói câu đã chọn. **Không có trạng thái nào sống sót qua mốc mở vòng.**
+   > Đây là điều kiện để lời hứa *"khôi phục bằng hai thao tác"* đúng. Nếu một cờ nào đó sống sót thì phải có thao tác thứ ba để dọn nó, và pipeline không còn độc lập.
+   > **Ngoại lệ đúng một cái**: **Ngôi sao hy vọng** — phạm vi của nó là **một trận**, không phải một vòng (`R-VD-06`), nên nó **không** đặt lại. Xem `Đ-5.d` về phạm vi chính xác.
+
+2. **Mọi ràng buộc "sau vòng X" đọc thành "tại thời điểm MỞ vòng Y".** Luật gốc mô tả thứ tự bằng cụm *"sau phần thi Tăng tốc"*, *"sau phần thi Về đích"* — hiểu là **mốc mở vòng kế**, không phải một vòng cụ thể phải đã chạy:
+   - **Thứ tự lượt Về đích** = bảng điểm **tại thời điểm admin mở vòng Về đích** (tổng quát hoá `Đ-5.1d`).
+   - **Điều kiện kích hoạt Câu hỏi phụ** = bảng điểm **tại thời điểm admin mở Câu hỏi phụ**.
+   > ⇒ Bỏ vòng Tăng tốc hay bỏ vòng Về đích **không làm mất tiền đề** của vòng sau. Đóng nhánh *"bỏ Về đích thì tie-break mất tiền đề"*.
+
+3. **Cấm mọi phụ thuộc ẩn giữa các vòng.** Một vòng chỉ được đọc: RuleConfig đã snapshot · danh sách câu đã gán · **bảng điểm hiện tại**. Không được đọc trạng thái nội bộ của vòng khác (ai bị loại ở VCNV, ai đã bấm chuông ở Khởi động…).
+
+**Vì sao đây là quyết định về ĐỘ TIN CẬY, không phải về tiện dụng:** hồ sơ triển khai là **portable LAN, không có kỹ sư trực**. Khi sự cố xảy ra giữa buổi thi thật, thứ cứu được buổi thi là một mô hình mà người vận hành **giữ trọn trong đầu** — *"sửa điểm, mở lại vòng"*. Mọi trạng thái ẩn cần dọn thêm đều là một cách để buổi thi hỏng.
+
+> **Tiền lệ phản diện, có bằng chứng thực địa**: `bug.txt` của Athena ghi đúng một lỗi, và nó chính là lỗi vi phạm hệ quả (1) — chạy lại vòng Về đích mà trạng thái cửa sổ cướp quyền của lần chạy trước không được dọn ⇒ **treo toàn bộ nút giành quyền trả lời**. Athena đúng ở mô hình điều khiển nhưng sai ở chỗ này; hệ quả (1) tồn tại để không lặp lại.
+
+⇒ Đóng `Đ-7.3` (*hoàn nguyên trạng thái phi-điểm* — trước là đề xuất chưa duyệt), `GRR-115`, `GRR-116`, `GRR-117`, và tổng quát hoá `Đ-5.1d` / `Đ-5.1e`.
+
+---
+
 ## 12. Bảng tra mã quyết định
 
 | Mã | Nội dung | Mục |
@@ -845,7 +956,7 @@ Hai nhánh đều triệt tiêu tranh chấp: nhánh trên **không có bản g�
 | **Đ-18** | Mỗi contest chỉ có một admin duy nhất | §11.3 |
 | **Đ-19** | "Trả lời sai" và "không trả lời" là cùng một thao tác | §11.4 |
 | **Đ-20** | Đồng hồ khoá thí sinh, không khoá admin | §11.5 |
-| **Đ-21** | Không tồn tại trạng thái "trận tạm dừng" | §11.6 |
+| **Đ-21** | Đồng hồ chạy liên tục; trận dừng bằng cách admin ngừng thao tác | §11.6 |
 | **Đ-22** | Tín hiệu thí sinh không làm gián đoạn đồng hồ; hoãn HIỂN THỊ chứ không hoãn thời gian | §11.7 |
 | **Đ-23** | Hai tín hiệu cùng mốc thời gian: hàng đợi tự quyết định, ngẫu nhiên | §11.8 |
 | **Đ-24** | Nút chuông tự khoá ngay khi bấm (frontend, trước khi gửi) | §11.9 |
@@ -861,3 +972,6 @@ Hai nhánh đều triệt tiêu tranh chấp: nhánh trên **không có bản g�
 | **Đ-34** | Phán quyết chỉ nhị phân khi "Sai" trừ 0 điểm; có phạt thì thêm "Huỷ kết quả" | §11.19 |
 | **Đ-35** | Phán quyết của admin là quyết định cuối cùng; nút chấm khoá tới hết giờ ở vòng gõ máy | §11.20 |
 | **Đ-36** | Chọn hàng ngang: một đường vào mỗi mode; mode nhập liệu dedup bằng dialog phía thí sinh + khoá tạm | §11.21 |
+| **Đ-37** | Danh sách câu đã gán **sửa được tại cửa vào vòng**; **không** gỡ được câu đã hiển thị | §11.22 |
+| **Đ-38** | **`LOBBY` = cửa vào vòng** — trạng thái nghỉ duy nhất; enum 4 giá trị; snapshot cấu hình là guard trên cạnh ra. Đóng `GRR-077` | §11.23 |
+| **Đ-39** | **Pipeline vòng độc lập** — khôi phục = sửa điểm + mở lại vòng; mở vòng ⇒ vòng bắt đầu sạch; *"sau vòng X"* đọc thành *"tại mốc mở vòng Y"* | §11.24 |

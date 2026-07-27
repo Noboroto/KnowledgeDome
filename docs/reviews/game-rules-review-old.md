@@ -296,8 +296,8 @@ Ký hiệu nguồn giữ nguyên như `game-rules-inventory.md`: `F26` = Fandom 
 
 ### GRR-026 · ORDER_DEPENDENT · Cao
 - **Vị trí**: `game-rules-inventory.md` §R-VCNV-06 (U-16)
-- **Trích**: *"R26 §7 — nhãn đề xuất của Claude, KHÔNG có trong F26/W26"* · *"timer hàng ngang đang chạy; có người bấm chuông giải CNV… timer PAUSE… loại người bấm rồi RESUME timer"* · *"chưa được user chốt"*
-- **Vấn đề**: luật gốc chỉ định nghĩa trường hợp bấm chuông **trước khi lựa chọn** hàng ngang. Trường hợp bấm **giữa lúc timer hàng ngang chạy** phụ thuộc hoàn toàn vào thứ tự xử lý (xử CNV trước hay chấm hàng ngang trước; đáp án hàng ngang đã gửi trong lúc pause có tính không) và chưa được chốt.
+- **Trích**: *"R26 §7 — nhãn đề xuất của Claude, KHÔNG có trong F26/W26"* · *"timer hàng ngang đang chạy; có người bấm chuông giải CNV… dừng đồng hồ… loại người bấm rồi cho đồng hồ chạy tiếp"* · *"chưa được user chốt"*
+- **Vấn đề**: luật gốc chỉ định nghĩa trường hợp bấm chuông **trước khi lựa chọn** hàng ngang. Trường hợp bấm **giữa lúc timer hàng ngang chạy** phụ thuộc hoàn toàn vào thứ tự xử lý (xử CNV trước hay chấm hàng ngang trước; đáp án hàng ngang đã gửi trong lúc đồng hồ ngừng có tính không) và chưa được chốt.
 - **Câu hỏi**: Khi có người bấm chuông giải Chướng ngại vật trong lúc đồng hồ hàng ngang đang chạy, sự kiện nào được xử lý trước, và các đáp án hàng ngang đã gửi trước đó xử lý ra sao?
 
 ### GRR-027 · MISSING · Trung bình
@@ -616,15 +616,15 @@ Ký hiệu nguồn giữ nguyên như `game-rules-inventory.md`: `F26` = Fandom 
 
 ### GRR-076 · MISSING · Cao
 - **Vị trí**: `game-rules-inventory.md` §R-GEN-08, §Trạng thái game
-- **Trích**: *"đóng băng deadline (lưu remainingMs), khoá input, viewer thấy tạm dừng kỹ thuật"* · §Trạng thái: *"LOBBY · rounds[i] · INTERMISSION · TIE_BREAK · FINISHED · PAUSED"*
-- **Vấn đề**: không rule nào nói các sự kiện của thí sinh (bấm chuông, gửi đáp án) **đến trong lúc PAUSED hoặc sau khi trận đã FINISHED** được xử lý thế nào: loại bỏ, xếp hàng để xử lý khi resume, hay ghi nhận với timestamp lúc gửi. Với luật xếp hạng theo ms, ba cách này cho kết quả khác nhau.
-- **Câu hỏi**: Sự kiện bấm chuông hoặc gửi đáp án đến trong lúc trận đang PAUSED được loại bỏ hay được xử lý khi resume, và timestamp nào được dùng?
+- **Trích**: §Trạng thái game (bản 2026-07-24) — danh sách trạng thái trận không kèm điều kiện chuyển.
+- **Vấn đề**: không rule nào nói các sự kiện của thí sinh (bấm chuông, gửi đáp án) **đến sau khi trận đã `FINISHED`** được xử lý thế nào: loại bỏ, hay ghi nhận với timestamp lúc gửi. Với luật xếp hạng theo ms, hai cách cho kết quả khác nhau.
+- **Câu hỏi**: Sự kiện bấm chuông hoặc gửi đáp án đến sau khi trận đã `FINISHED` được loại bỏ hay được ghi nhận, và timestamp nào được dùng?
 
 ### GRR-077 · MISSING · Trung bình
 - **Vị trí**: `game-rules-inventory.md` §Trạng thái game dùng trong tài liệu này
-- **Trích**: *"LOBBY · rounds[i] (vòng theo playlist) · INTERMISSION · TIE_BREAK · FINISHED · PAUSED"*
-- **Vấn đề**: danh sách trạng thái không kèm điều kiện chuyển. `INTERMISSION` không có rule nào nói khi nào vào, khi nào ra, ai kích hoạt. Không có trạng thái nào cho trận bị **huỷ hoặc bỏ dở**, nên một trận đã bắt đầu mà không thể kết thúc không có đường thoát được đặc tả.
-- **Câu hỏi**: Điều kiện vào và ra của `INTERMISSION` là gì, và một trận đã bắt đầu nhưng không thể hoàn thành được kết thúc bằng trạng thái nào?
+- **Trích**: §Trạng thái game (bản 2026-07-24) — enum trạng thái trận.
+- **Vấn đề**: danh sách trạng thái không kèm điều kiện chuyển. **Trạng thái nghỉ giữa các vòng** không có rule nào nói khi nào vào, khi nào ra, ai kích hoạt. Không có trạng thái nào cho trận bị **huỷ hoặc bỏ dở**, nên một trận đã bắt đầu mà không thể kết thúc không có đường thoát được đặc tả.
+- **Câu hỏi**: Điều kiện vào và ra của **trạng thái nghỉ giữa các vòng** là gì, và một trận đã bắt đầu nhưng không thể hoàn thành được kết thúc bằng trạng thái nào?
 
 ### GRR-078 · CONFLICT · Thấp
 - **Vị trí**: `game-rules-inventory.md` §Trạng thái game dùng trong tài liệu này
@@ -634,21 +634,21 @@ Ký hiệu nguồn giữ nguyên như `game-rules-inventory.md`: `F26` = Fandom 
 
 ### GRR-079 · MISSING · Trung bình
 - **Vị trí**: `game-rules-inventory.md` §R-GEN-08
-- **Trích**: *"đóng băng deadline (lưu remainingMs)… Resume: đặt endsAt mới."*
+- **Trích**: §R-GEN-08 (bản 2026-07-24) — đóng băng deadline rồi đặt `endsAt` mới khi chạy tiếp.
 - **Vấn đề**: rule chỉ nói tới deadline của câu hỏi. Các cửa sổ thời gian khác (5 giây bấm chuông cướp, 3 giây cửa sổ chuông Khởi động, 15 giây ô trung tâm) có được đóng băng và khôi phục theo cùng cách không thì không nói.
-- **Câu hỏi**: Khi pause giữa cửa sổ bấm chuông (5 giây cướp hoặc 3 giây Khởi động), cửa sổ đó được khôi phục phần thời gian còn lại hay bắt đầu lại?
+- **Câu hỏi**: Nếu một cửa sổ bấm chuông (5 giây cướp hoặc 3 giây Khởi động) bị gián đoạn, nó được khôi phục phần thời gian còn lại hay bắt đầu lại?
 
 ### GRR-080 · MISSING · Trung bình
 - **Vị trí**: `game-rules-inventory.md` §R-GEN-08, §U-12
-- **Trích**: *"autoPauseOnHostDisconnect (default bật) + admin mất kết nối quá N giây"* · *"Default N giây (U-12)"*
-- **Vấn đề**: ngưỡng kích hoạt auto-pause không có giá trị.
-- **Câu hỏi**: Admin mất kết nối bao nhiêu giây thì trận tự động tạm dừng?
+- **Trích**: §R-GEN-08 (bản 2026-07-24) — ngưỡng N giây admin mất kết nối, `U-12`.
+- **Vấn đề**: ngưỡng phản ứng khi admin mất kết nối không có giá trị.
+- **Câu hỏi**: Admin mất kết nối bao nhiêu giây thì hệ thống phản ứng, và phản ứng đó là gì?
 
 ### GRR-081 · CONFLICT · Trung bình
 - **Vị trí**: `game-rules-inventory.md` §R-GEN-09, §U-13
-- **Trích**: *"Kết quả khi dưới 120s: giữ ghế + state-sync"* · *"DEF D13.4 — rớt đúng lượt riêng thì engine pause + admin quyết, ghi đè grace"* · *"danh sách đầy đủ giá trị dropoutPolicy (U-13)"*
-- **Vấn đề**: hai rule cùng match tình huống thí sinh mất kết nối đúng lượt riêng (grace 120s, hay pause chờ admin) và cho hai luồng khác nhau; đồng thời nhánh quá grace trỏ tới một tập giá trị chưa được liệt kê.
-- **Câu hỏi**: Khi thí sinh mất kết nối đúng lượt riêng, hệ thống áp grace 120 giây hay tạm dừng chờ admin, và các lựa chọn xử lý sau khi hết grace gồm những gì?
+- **Trích**: *"Kết quả khi dưới 120s: giữ ghế + state-sync"* · *"DEF D13.4 — rớt đúng lượt riêng thì engine dừng lại chờ admin quyết, ghi đè grace"* · *"danh sách đầy đủ giá trị dropoutPolicy (U-13)"*
+- **Vấn đề**: hai rule cùng match tình huống thí sinh mất kết nối đúng lượt riêng (grace 120s, hay dừng lại chờ admin) và cho hai luồng khác nhau; đồng thời nhánh quá grace trỏ tới một tập giá trị chưa được liệt kê.
+- **Câu hỏi**: Khi thí sinh mất kết nối đúng lượt riêng, hệ thống áp grace 120 giây hay dừng lại chờ admin, và các lựa chọn xử lý sau khi hết grace gồm những gì?
 
 ### GRR-082 · MISSING · Trung bình
 - **Vị trí**: `game-rules-inventory.md` §R-GEN-05, §U-14
@@ -756,9 +756,9 @@ Ký hiệu nguồn giữ nguyên như `game-rules-inventory.md`: `F26` = Fandom 
 
 ### GRR-098 · MISSING · Thấp
 - **Vị trí**: `game-rules-inventory.md` §PHẦN 7 R-TEAM-07
-- **Trích**: *"Đổi đại diện chỉ tại INTERMISSION"*
-- **Vấn đề**: rule phụ thuộc vào sự tồn tại của `INTERMISSION` giữa các vòng, nhưng điều kiện vào `INTERMISSION` chưa được định nghĩa (GRR-077). Nếu playlist không có `INTERMISSION` thì rule không có đường thực thi.
-- **Câu hỏi**: Nếu playlist không có giai đoạn `INTERMISSION` giữa hai vòng, đội có được đổi người đại diện không?
+- **Trích**: *"Đổi đại diện chỉ tại cửa vào vòng"*
+- **Vấn đề**: rule phụ thuộc vào sự tồn tại của một **trạng thái nghỉ giữa các vòng**, nhưng điều kiện vào trạng thái đó chưa được định nghĩa (GRR-077). Nếu playlist không có giai đoạn nghỉ thì rule không có đường thực thi.
+- **Câu hỏi**: Nếu playlist không có giai đoạn nghỉ giữa hai vòng, đội có được đổi người đại diện không?
 
 ---
 
@@ -876,9 +876,9 @@ Ký hiệu nguồn giữ nguyên như `game-rules-inventory.md`: `F26` = Fandom 
 
 ### GRR-110 · MISSING · Trung bình · *(biến thể của GRR-081)*
 - **Vị trí**: `game-rules-inventory.md` §R-GEN-09, §R-VD-05, §R-TB-02
-- **Trích**: R-GEN-09: *"Kết quả khi < 120s: giữ ghế + state-sync"* · `DEF` D13.4: *"rớt đúng lượt riêng thì engine pause + admin quyết"*
-- **Vấn đề**: GRR-081 chỉ xét mất kết nối **đúng lượt riêng**. Chưa có mục nào xét mất kết nối trong các **cửa sổ ngắn có tính tranh chấp**: cửa sổ cướp 5 giây ở Về đích, cửa sổ chuông 3 giây ở Khởi động lượt chung, câu hỏi phụ 15 giây. Grace 120 giây dài hơn toàn bộ các cửa sổ này, nên nhánh "giữ ghế + state-sync" không cho kết quả nào về việc cửa sổ đó được tạm dừng, chạy tiếp, hay chạy tiếp mà bỏ qua người mất kết nối.
-- **Câu hỏi**: Khi một thí sinh mất kết nối trong lúc cửa sổ cướp 5 giây hoặc câu hỏi phụ đang chạy, cửa sổ đó được tạm dừng, chạy tiếp, hay chạy tiếp mà loại người đó?
+- **Trích**: R-GEN-09: *"Kết quả khi < 120s: giữ ghế + state-sync"* · `DEF` D13.4: *"rớt đúng lượt riêng thì engine dừng lại chờ admin quyết"*
+- **Vấn đề**: GRR-081 chỉ xét mất kết nối **đúng lượt riêng**. Chưa có mục nào xét mất kết nối trong các **cửa sổ ngắn có tính tranh chấp**: cửa sổ cướp 5 giây ở Về đích, cửa sổ chuông 3 giây ở Khởi động lượt chung, câu hỏi phụ 15 giây. Grace 120 giây dài hơn toàn bộ các cửa sổ này, nên nhánh "giữ ghế + state-sync" không cho kết quả nào về việc cửa sổ đó được đóng băng, chạy tiếp, hay chạy tiếp mà bỏ qua người mất kết nối.
+- **Câu hỏi**: Khi một thí sinh mất kết nối trong lúc cửa sổ cướp 5 giây hoặc câu hỏi phụ đang chạy, cửa sổ đó được đóng băng, chạy tiếp, hay chạy tiếp mà loại người đó?
 
 ### GRR-111 · MISSING · Trung bình
 - **Vị trí**: `CLAUDE.md` §Luật chơi & đề thi (D23); `game-rules-inventory.md` §R-GEN-06, §R-GEN-12
@@ -1071,7 +1071,7 @@ Ký hiệu nguồn giữ nguyên như `game-rules-inventory.md`: `F26` = Fandom 
 | "build-upon" (undo) | event sau của cùng thí sinh · cùng câu · cùng vòng · bất kỳ event chấm nào sau đó | inventory §R-GEN-07 (GRR-073) |
 | "đơn vị điểm" (scoringUnit) | thí sinh cá nhân · đội · ghế | inventory §R-TT-01, §PHẦN 7 |
 | "trả lời sai" | đáp án sai nội dung · hết giờ không trả lời · bấm chuông rồi im lặng · thực hành không đạt | `F26` mọi phần; inventory §R-KD-01, §R-GEN-03 (GRR-006, GRR-008, GRR-068) |
-| "tạm dừng" | PAUSE toàn trận · pause cục bộ timer một hàng ngang | inventory §R-GEN-08 vs §R-VCNV-06 (GRR-026, GRR-079) |
+| "dừng" | dừng toàn trận · dừng cục bộ đồng hồ một hàng ngang | inventory §R-GEN-08 vs §R-VCNV-06 (GRR-026, GRR-079) |
 | "câu thực hành đạt yêu cầu" | đánh giá của admin · của ban cố vấn · tiêu chí ghi trong câu hỏi | `F26` §Về đích; inventory §R-VD-04 (GRR-050) |
 
 ---

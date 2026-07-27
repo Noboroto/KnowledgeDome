@@ -78,7 +78,7 @@ Cho phép admin dùng queue chuyển quyền. Athena chỉ có **một** loại 
 |---|---|---|
 | **S1** | Thí sinh **mất kết nối** tại thời điểm bấm hoặc ngay sau | Chuyển quyền sang tín hiệu kế tiếp |
 | **S2** | **Thiết bị thí sinh lỗi** (chuông kẹt, double-fire) | Bỏ tín hiệu đó, lấy tín hiệu kế tiếp |
-| **S3** | Tín hiệu đến trong lúc trận **`PAUSED`** hoặc giữa hai pha | Xác định lại tín hiệu nào hợp lệ |
+| **S3** | Tín hiệu đến **giữa hai pha**, ngoài mọi cửa sổ đang mở | Xác định lại tín hiệu nào hợp lệ |
 | **S4** | **Sự cố sân khấu**: MC đọc nhầm/thiếu, đề hiển thị sai, media hỏng | Huỷ kết quả câu, dùng lại queue sau khi khắc phục |
 | **S5** | **Bấm chuông trước hiệu lệnh** ở Câu hỏi phụ | **Gỡ lệnh cấm** *(đã chốt: Đ-6.3, Đ-6.4)* |
 | **S6** | **Khiếu nại tại chỗ** của BTC/BGK về thứ tự bấm | Xem lại lịch sử, phân xử *(Đ-6.4b: hệ thống giữ timestamp gốc, người phân xử)* |
@@ -185,12 +185,12 @@ Tiêu chí: **chặn khi vòng/pha đó về mặt vật lý không còn NGHĨA*
 
 | Mã | Đề xuất | Căn cứ |
 |---|---|---|
-| **GRR-076** | `PAUSED`/`FINISHED`: tín hiệu **ghi vào lịch sử, không có hiệu lực** (không drop) | Đ-7 |
-| **GRR-079** | Pause toàn trận ⇒ lưu `remainingMs` cho **mọi** cửa sổ, không chỉ deadline câu | — |
+| **GRR-076** | `FINISHED`: tín hiệu **ghi vào lịch sử, không có hiệu lực** (không drop) | Đ-7 |
+| **GRR-079** | Nếu một cửa sổ bị gián đoạn ⇒ thời gian còn lại được xử lý thế nào, cho **mọi** cửa sổ chứ không chỉ deadline câu | — |
 | **GRR-081 / GRR-084 / GRR-090** | **Cảnh báo cho admin**, không chặn cứng; điểm dừng của đệ quy *"câu thay thế cũng hỏng"* = **admin bỏ câu** | Mô hình advisory |
 | **GRR-085** | *"Đã được hỏi"* = **đã hiển thị cho thí sinh** | Khớp Đ-5.2f |
 | **GRR-089** | `Question.visibility` là **derived, read-only** | Tránh hai nguồn sự thật |
-| **GRR-110** | Mất kết nối trong cửa sổ ngắn ⇒ **cửa sổ chạy tiếp, không pause** | Tiền lệ Đ-6.4c |
+| **GRR-110** | Mất kết nối trong cửa sổ ngắn ⇒ **cửa sổ chạy tiếp, không đóng băng** | Tiền lệ Đ-6.4c |
 | **GRR-111** | `usedInContest` **reset** khi import (trạng thái theo contest); `everPublic` **PHẢI đi theo** (thuộc tính của câu) | Nếu không, hàng rào chống rò đề bị vô hiệu bằng một thao tác hợp lệ |
 | **GRR-112** | Câu không được chấm ⇒ **không tự đẩy đáp án**, nhưng **admin mở tay được** | C-11 |
 | **GRR-115** | Revert làm đổi số hàng đã mở ⇒ **event sau giữ nguyên**; admin dùng `SCORE_ADJUST` nếu muốn | Đ-5.3; máy không tự tính lại |
@@ -216,7 +216,7 @@ Tiêu chí: **chặn khi vòng/pha đó về mặt vật lý không còn NGHĨA*
 
 | Mã | Câu hỏi |
 |---|---|
-| **GRR-080** | Admin mất kết nối **bao nhiêu giây** thì trận tự động tạm dừng? |
+| **GRR-080** | Admin mất kết nối **bao nhiêu giây** thì hệ thống phản ứng, và phản ứng là gì? |
 | **GRR-087** | `reservePerField` = 2 dựa trên tình huống tiêu hao nào? |
 | **Đ-5.1g** | *"Còn câu hỏi"* đo ở mức nào — **đủ trọn vòng** hay **≥1 câu**? Theo **từng mức điểm / lĩnh vực** hay tổng số? |
 | **GRR-046 / Đ-3** | Admin nhập **giá trị câu lẻ** cho Về đích: **validation chặn** không cho nhập, hay cho nhập rồi định nghĩa **quy tắc làm tròn**? *(Dưới luật 2026 điểm lẻ **không tồn tại**: 20/30 → 10/15)* |

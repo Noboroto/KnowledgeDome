@@ -13,7 +13,7 @@
 | `NEEDS CLARIFICATION` | 20 | Từ có được dùng nhưng định nghĩa chưa đủ để viết spec |
 | `CONFLICT` | 9 | Cùng một từ mang **nhiều nghĩa khác nhau** trong tài liệu |
 
-**9 mục `CONFLICT` — đọc trước khi viết bất kỳ spec nào**: TERM-013 `game` · TERM-016 `lượt / turn` · TERM-017 `phase` · TERM-022 `state` · TERM-027 `event điểm` · TERM-038 `cancelled` · TERM-044 `result` · TERM-048 `draw` · TERM-055 `visibility / everPublic`.
+**9 mục `CONFLICT` — đọc trước khi viết bất kỳ spec nào**: TERM-013 `game` · TERM-016 `lượt / turn` · TERM-017 `phase` · TERM-022 `state` · TERM-026 `event điểm` · TERM-037 `cancelled` · TERM-043 `result` · TERM-047 `draw` · TERM-054 `visibility / everPublic`.
 
 > **Tỉ lệ `CONFIRMED` 31/60 không phải lỗi kiểm kê** — phần lớn mục `NEEDS CLARIFICATION` là thuật ngữ **có định nghĩa cốt lõi rõ ràng** nhưng còn một nhánh chưa chốt (thường là một mã U-x hoặc GRR-x đã ghi nhận). Trường Definition của các mục đó vẫn dùng được; chỉ nhánh nêu ở Status là chưa.
 
@@ -61,7 +61,7 @@
 
 - **Definition**: **cảm biến + cơ cấu chấp hành DUY NHẤT của hệ thống**. Máy không quan sát được sân khấu ⇒ mọi mốc thời gian mà luật gốc mô tả bằng hành vi của MC đều ánh xạ thành **một thao tác bấm của admin**. Admin bấm Đúng/Sai, start timer, mở đáp án/ô chữ, chọn vòng và lượt, duyệt tín hiệu trong hàng đợi.
 - **Alternative names**: người vận hành · operator · (trong tên config: `host` — xem TERM-006).
-- **Actor / entity liên quan**: MC (TERM-005), Server, Hàng đợi tín hiệu (TERM-032).
+- **Actor / entity liên quan**: MC (TERM-005), Server, Hàng đợi tín hiệu (TERM-031).
 - **Allowed values**: —
 - **Unit**: —
 - **Terms dễ nhầm**: **MC** — MC phán quyết bằng **lời**, admin thi hành bằng **bấm**; màn `/mc` là READ-ONLY.
@@ -88,7 +88,7 @@
 - **Actor / entity liên quan**: MC (TERM-005).
 - **Allowed values**: —
 - **Unit**: —
-- **Terms dễ nhầm**: từng có **nghĩa thứ hai trái ngược** — "host" = **admin** — nhưng nó chỉ tồn tại ở đúng một chỗ: tên cấu hình `autoPauseOnHostDisconnect`. `Đ-21` đã **bãi bỏ toàn bộ cơ chế tự động tạm dừng** và `R-GEN-08`, nên nghĩa đó không còn chỗ bám. Nếu gặp lại tên cấu hình này ở tài liệu cũ: đó là **admin**, và cấu hình đó nay không tồn tại.
+- **Terms dễ nhầm**: từng có **nghĩa thứ hai trái ngược** — "host" = **admin** — nhưng nó chỉ tồn tại ở đúng một chỗ: một tên cấu hình nay đã bị bãi bỏ cùng `R-GEN-08` (`Đ-21`), nên nghĩa đó không còn chỗ bám.
 - **Related rules**: Đ-6.1, Đ-21.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Câu hỏi phụ · `game-rules-decisions.md` §11.6 `Đ-21`.
 - **Status**: `CONFIRMED`
@@ -97,7 +97,7 @@
 
 - **Definition**: người soạn câu hỏi và bộ đề trong kho đề.
 - **Alternative names**: người soạn đề.
-- **Actor / entity liên quan**: Câu hỏi (TERM-051), Kho đề (TERM-053).
+- **Actor / entity liên quan**: Câu hỏi (TERM-050), Kho đề (TERM-052).
 - **Allowed values**: —
 - **Unit**: —
 - **Terms dễ nhầm**: **Admin** — setter không điều khiển trận; đề của setter phải qua duyệt DRAFT→ACTIVE.
@@ -149,7 +149,7 @@
 
 - **Definition**: đơn vị tổ chức **bao trùm**, gắn với một kho đề đã gán; phạm vi của quy tắc **no-repeat**: câu đã hỏi trong bất kỳ match nào của contest thì không xuất hiện lại.
 - **Alternative names**: cuộc thi.
-- **Actor / entity liên quan**: Match (TERM-012), Kho đề (TERM-053), RuleConfig (TERM-056).
+- **Actor / entity liên quan**: Match (TERM-012), Kho đề (TERM-052), RuleConfig (TERM-055).
 - **Allowed values**: —
 - **Unit**: —
 - **Terms dễ nhầm**: **Match** — no-repeat ở cấp **contest**; `revealAnswerAfterJudge` ở cấp **match** (K-4); mode trả lời ở cấp **contest** (Đ-4.a2).
@@ -279,59 +279,47 @@
 
 ## TERM-021 — Trạng thái trận
 
-- **Definition**: máy trạng thái của một trận: `LOBBY` · `rounds[i]` · `INTERMISSION` · `TIE_BREAK` · `FINISHED`. **Không có `PAUSED`** — xem TERM-023.
+- **Definition**: máy trạng thái của một trận: **`LOBBY` · `rounds[i]` · `TIE_BREAK` · `FINISHED`** — **bốn** giá trị. `LOBBY` = **cửa vào vòng** (TERM-023), dùng **cả trước vòng đầu tiên lẫn giữa hai vòng**.
 - **Alternative names**: match state · trạng thái game (nghĩa G1 của TERM-013).
 - **Actor / entity liên quan**: Match, Admin, Server.
-- **Allowed values**: 5 giá trị trên; demo dùng chuỗi phẳng `CHO / KHOI_DONG_RIENG / KHOI_DONG_CHUNG / VCNV / TANG_TOC / VE_DICH / TIE_BREAK / KET_THUC`.
+- **Allowed values**: 4 giá trị trên.
 - **Unit**: —
-- **Terms dễ nhầm**: **State** (TERM-022) — cùng từ, dùng cả cho trạng thái **cấp ghế**.
-- **Related rules**: §Trạng thái game, GRR-164.
-- **Source**: `game-rules-inventory.md` §Trạng thái game.
-- **Status**: `NEEDS CLARIFICATION` — còn một giá trị chưa đủ điều kiện vào/ra: `INTERMISSION` (GRR-077).
+- **Terms dễ nhầm**: **State** (TERM-022) — cùng từ, dùng cả cho trạng thái **cấp ghế** · **lớp phủ** (công bố kết quả, banner, dialog) **không** thuộc enum này: chúng chồng lên trạng thái đang chạy mà không huỷ nó (`docs/game-state-machine.md` §F, `INV-21`).
+- **Related rules**: §Trạng thái game, `Đ-38`, GRR-164.
+- **Source**: `game-rules-inventory.md` §Trạng thái game · `game-rules-decisions.md` §11.23 `Đ-38`.
+- **Status**: `CONFIRMED` — `Đ-38` (2026-07-27) đặc tả đủ điều kiện vào/ra của `LOBBY`.
 
 ## TERM-022 — State `⚠ CONFLICT`
 
 - **Definition**: dùng cho **hai thang bậc**:
-  - **(S1) Trạng thái cấp TRẬN** — enum 5 giá trị của TERM-021, tại một thời điểm chỉ một giá trị.
+  - **(S1) Trạng thái cấp TRẬN** — enum 4 giá trị của TERM-021, tại một thời điểm chỉ một giá trị.
   - **(S2) Trạng thái cấp GHẾ / cấp ván** — các cờ song song, nhiều cái cùng đúng: "đã bị loại khỏi VCNV", "NSHV đã tiêu", "miếng ghép đã mở", "gói câu đã chọn", "lượt chọn đã dùng", "đang bị cấm trả lời".
 - **Alternative names**: (S1) match state · (S2) trạng thái phi-điểm.
-- **Actor / entity liên quan**: Match, Ghế, Revert (TERM-029).
-- **Allowed values**: (S1) 5 giá trị · (S2) chưa liệt kê đầy đủ ở đâu.
+- **Actor / entity liên quan**: Match, Ghế, Revert (TERM-028).
+- **Allowed values**: (S1) 4 giá trị · (S2) xem `Đ-39` — mọi cờ phạm vi vòng đặt lại tại mốc mở vòng.
 - **Unit**: —
-- **Terms dễ nhầm**: nhầm lẫn cũ giữa hai thang bậc từng thể hiện rõ nhất ở `PAUSED` — giá trị này nay đã bị bỏ khỏi enum (TERM-023).
+- **Terms dễ nhầm**: hai thang bậc có **vòng đời khác nhau** — S1 đổi khi admin mở hoặc kết thúc một vòng; S2 đặt lại **toàn bộ** tại mốc mở vòng (`Đ-39`).
 - **Related rules**: §Trạng thái game, Đ-5.3.
 - **Source**: `game-rules-inventory.md` §Trạng thái game (S1) · `game-rules-decisions.md` §7.3 (S2).
 - **Status**: `CONFLICT`
 
-## TERM-023 — Tạm dừng trận `[ĐÃ BỎ]`
+## TERM-023 — Cửa vào vòng
 
-- **Definition**: **không tồn tại trong hệ thống.** Mọi thao tác của trận đều do admin thực hiện, nên khi trận cần dừng thì **admin ngừng thao tác**; hệ thống không có trạng thái nào ghi nhận việc đó. Không có đóng băng đồng hồ, không có tự động tạm dừng, không có giá trị `PAUSED` trong máy trạng thái.
-- **Alternative names**: PAUSED · auto-pause · tạm dừng kỹ thuật — **đều là khái niệm đã bỏ**, giữ lại đây để không ai tra cứu lại.
-- **Actor / entity liên quan**: Admin (người duy nhất quyết định dừng hay tiếp).
-- **Allowed values**: —
-- **Unit**: —
-- **Terms dễ nhầm**: **INTERMISSION** (TERM-024) là chuyển tiếp bình thường giữa hai vòng theo luật, **không** phải cơ chế xử lý sự cố · **bỏ / chạy lại vòng** (`Đ-5.1`) mới là van thoát khi sự cố xảy ra giữa một cửa sổ có ràng buộc thời gian.
-- **Related rules**: `Đ-5.1` (bỏ và chạy lại vòng).
-- **Source**: quyết định chủ dự án 2026-07-25 — bãi bỏ R-GEN-08 và mọi nhánh phái sinh (U-12, U-13 phần auto-pause, GRR-165, GRR-166, GRR-167).
-- **Status**: `CONFIRMED`
-
-## TERM-024 — INTERMISSION
-
-- **Definition**: trạng thái nghỉ giữa các vòng. Được liệt kê trong máy trạng thái; **điều kiện vào và ra chưa được phát biểu** ở bất kỳ nguồn nào.
-- **Alternative names**: nghỉ giữa vòng.
+- **Definition**: **trạng thái nghỉ của trận** — không vòng nào đang chạy. Dùng **cả trước vòng đầu tiên lẫn giữa hai vòng**; giá trị enum là **`LOBBY`** (TERM-021). **Vào**: trận được tạo · **mọi** nút *"Kết thúc vòng"* · bỏ vòng · chạy lại vòng. **Ra**: mở bất kỳ vòng nào · `TIE_BREAK` (hết playlist + hoà) · `FINISHED` (hết playlist, không hoà).
+- **Alternative names**: `LOBBY` · nghỉ giữa vòng.
 - **Actor / entity liên quan**: Match, Admin.
-- **Allowed values**: —
+- **Allowed values**: — (là một giá trị của TERM-021)
 - **Unit**: —
-- **Terms dễ nhầm**: INTERMISSION là chuyển tiếp bình thường theo luật; khái niệm "tạm dừng trận" đã bị bỏ (TERM-023).
-- **Related rules**: §Trạng thái game, R-VCNV-07, R-TEAM-07 (đổi đại diện chỉ tại INTERMISSION), GRR-077.
-- **Source**: `game-rules-inventory.md` §Trạng thái game, §R-VCNV-07.
-- **Status**: `NEEDS CLARIFICATION`
+- **Terms dễ nhầm**: **nội dung trình diễn giữa hai vòng** (giao lưu, giải lao, video hình hiệu) là **lớp phủ** do admin bật/tắt, **không** phải một trạng thái · đây cũng **không** phải cơ chế xử lý sự cố: van thoát khi sự cố rơi vào giữa một cửa sổ có ràng buộc thời gian là **bỏ / chạy lại vòng** (`Đ-5.1`).
+- **Related rules**: `Đ-38`, `Đ-39`, `Đ-31`, `Đ-37`, R-VCNV-07, R-TEAM-07 (*"đổi đại diện chỉ tại cửa vào vòng"*).
+- **Source**: `game-rules-decisions.md` §11.23 `Đ-38` · `game-rules-inventory.md` §Trạng thái game, §R-VCNV-07.
+- **Status**: `CONFIRMED` — mốc **đóng băng cấu hình** (`NT-C`) là **guard trên cạnh ra**: mở vòng khi **chưa vòng nào từng chạy** thì kèm snapshot; điều kiện đó suy ra từ event log, không phải cờ lưu trữ.
 
-## TERM-025 — TIE_BREAK
+## TERM-024 — TIE_BREAK
 
 - **Definition**: trạng thái chạy vòng **Câu hỏi phụ** để phân định thí sinh hoà điểm. Điều kiện vào theo F26: *"Sau phần thi Về đích, các thí sinh có cùng số điểm…"*; repo thu hẹp còn **chỉ vị trí NHẤT** (`tieBreakPositions` default `[1]`).
 - **Alternative names**: Câu hỏi phụ · vòng phụ · tie-break.
-- **Actor / entity liên quan**: Nhóm hoà, Admin, Bốc thăm (TERM-048).
+- **Actor / entity liên quan**: Nhóm hoà, Admin, Bốc thăm (TERM-047).
 - **Allowed values**: 3 câu × 15 giây; `tieBreakPositions` default `[1]`.
 - **Unit**: câu · giây.
 - **Terms dễ nhầm**: **Câu hỏi phụ ≠ câu hỏi dự phòng** (câu thay thế khi media hỏng).
@@ -339,11 +327,11 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Câu hỏi phụ · `game-rules-inventory.md` §R-TB-01.
 - **Status**: `NEEDS CLARIFICATION` — GRR-155: nếu vòng Về đích bị bỏ thì tiền đề *"sau phần thi Về đích"* không xảy ra, chưa có mốc thay thế.
 
-## TERM-026 — Event · MatchEvent
+## TERM-025 — Event · MatchEvent
 
 - **Definition**: bản ghi **append-only** của mọi việc xảy ra trong trận. **Điểm là hàm của event log**, không phải một con số bị sửa trực tiếp. Lịch sử **linear, không xoá**.
 - **Alternative names**: sự kiện trận · event log · MatchEvent.
-- **Actor / entity liên quan**: Server, Điểm (TERM-039), Revert (TERM-029).
+- **Actor / entity liên quan**: Server, Điểm (TERM-038), Revert (TERM-028).
 - **Allowed values**: các loại đã đặt tên: `QUESTIONS_DRAWN` · `QUESTION_USED` · `SCORE_ADJUST` · `MEDIA_KEY`.
 - **Unit**: —
 - **Terms dễ nhầm**: **Audit log** — bảng chung ghi mọi thao tác mọi role (auth, CRUD, xuất/nhập), khác event trận.
@@ -351,7 +339,7 @@
 - **Source**: `game-rules-inventory.md` §R-GEN-07, §R-GEN-06 · `game-rules-decisions.md` §7.1.
 - **Status**: `CONFIRMED`
 
-## TERM-027 — Event điểm `⚠ CONFLICT`
+## TERM-026 — Event điểm `⚠ CONFLICT`
 
 - **Definition**: đơn vị event sinh ra điểm. **Độ hạt được định nghĩa hai kiểu loại trừ nhau**:
   - **(E1) Theo thí sinh** — dedup ở server theo khoá `(câu, thí sinh, loại phán quyết)`; *"bấm Sai sau Đúng = revert + event mới"*.
@@ -365,38 +353,38 @@
 - **Source**: `game-rules-decisions.md` §3.3 (E1), §3.4 `[Đ-5.3.1]` (E2) · `docs/reviews/game-rules-review.md` GRR-147.
 - **Status**: `CONFLICT`
 
-## TERM-028 — Action
+## TERM-027 — Action
 
 - **Definition**: **không có định nghĩa nghiệp vụ**. Từ chỉ xuất hiện ở tầng UX: *"Toast/message thành công hoặc thất bại phải xuất hiện sau mỗi action"*, *"nút action chỉ hiện trạng thái loading, KHÔNG disable"*. Không nguồn nào định nghĩa tập action của trận, cũng không phân biệt action với event.
 - **Alternative names**: thao tác · nút hành động.
 - **Actor / entity liên quan**: mọi UI.
 - **Allowed values**: —
 - **Unit**: —
-- **Terms dễ nhầm**: **Event** (TERM-026) — event là cái đã xảy ra và được ghi; action là cái người dùng bấm và **có thể bị reject**.
+- **Terms dễ nhầm**: **Event** (TERM-025) — event là cái đã xảy ra và được ghi; action là cái người dùng bấm và **có thể bị reject**.
 - **Related rules**: Đ-7 (tín hiệu → hàng đợi → xác nhận).
 - **Source**: `CLAUDE.md` §UX BẮT BUỘC.
 - **Status**: `NEEDS CLARIFICATION`
 
-## TERM-029 — Revert
+## TERM-028 — Revert
 
 - **Definition**: hoàn nguyên điểm bằng cách **thêm event đảo ngược** (tương tự `git revert`, **KHÔNG phải** `git reset --hard`). Event cũ không bị xoá; lịch sử luôn linear, append-only.
 - **Alternative names**: reset điểm (cách gọi cũ) · hoàn nguyên.
-- **Actor / entity liên quan**: Admin, Event log, Bỏ vòng (TERM-038).
+- **Actor / entity liên quan**: Admin, Event log, Bỏ vòng (TERM-037).
 - **Allowed values**: —
 - **Unit**: —
-- **Terms dễ nhầm**: **`SCORE_ADJUST`** (TERM-030) — revert là hoàn nguyên máy móc một event đã có; `SCORE_ADJUST` là phán quyết mới của người và **KHÔNG tự revert** theo vòng · **Undo** — ràng buộc "chỉ event gần nhất" đã bị Đ-5.3 thay thế.
+- **Terms dễ nhầm**: **`SCORE_ADJUST`** (TERM-029) — revert là hoàn nguyên máy móc một event đã có; `SCORE_ADJUST` là phán quyết mới của người và **KHÔNG tự revert** theo vòng · **Undo** — ràng buộc "chỉ event gần nhất" đã bị Đ-5.3 thay thế.
 - **Related rules**: Đ-5.2, Đ-5.3, Đ-5.3.X, GRR-159, GRR-160.
 - **Source**: `game-rules-decisions.md` §6.3, §7.1, §7.2.
 - **Status**: `NEEDS CLARIFICATION` — GRR-160: chưa nói lần bấm revert thứ hai là no-op hay sinh bộ event đảo ngược thứ hai.
 
-## TERM-030 — SCORE_ADJUST
+## TERM-029 — SCORE_ADJUST
 
 - **Definition**: event điều chỉnh điểm thủ công `{delta, reason}` — **bắt buộc nhập lý do**, vào audit log. Là **phán quyết của người** nên **KHÔNG tự revert** khi vòng bị bỏ.
 - **Alternative names**: chỉnh điểm tay · điều chỉnh thủ công.
 - **Actor / entity liên quan**: Admin, Event log.
 - **Allowed values**: `delta` số nguyên (âm hoặc dương); `reason` bắt buộc.
 - **Unit**: điểm.
-- **Terms dễ nhầm**: **Revert** (TERM-029).
+- **Terms dễ nhầm**: **Revert** (TERM-028).
 - **Related rules**: R-GEN-07, Đ-11.B, GRR-153, GRR-159.
 - **Source**: `game-rules-inventory.md` §R-GEN-07 · `game-rules-decisions.md` §6.3.
 - **Status**: `NEEDS CLARIFICATION` — GRR-159: chưa nói `SCORE_ADJUST` gắn với một vòng hay là điều chỉnh cấp trận.
@@ -405,11 +393,11 @@
 
 # D. TÍN HIỆU VÀ THAO TÁC
 
-## TERM-031 — Chuông
+## TERM-030 — Chuông
 
 - **Definition**: tín hiệu thí sinh phát để **giành quyền trả lời**. **Chỉ nhận click chuột — không gán hotkey** (tránh bấm nhầm khi gõ đáp án). Phía thí sinh không có dialog, bấm là gửi ngay.
 - **Alternative names**: buzz · buzzer · nút bấm chuông.
-- **Actor / entity liên quan**: Thí sinh, Hàng đợi (TERM-032), Server time.
+- **Actor / entity liên quan**: Thí sinh, Hàng đợi (TERM-031), Server time.
 - **Allowed values**: các vòng có chuông: Khởi động lượt chung · VCNV ("Mở chướng ngại vật") · Về đích (cướp quyền) · Câu hỏi phụ.
 - **Unit**: —
 - **Terms dễ nhầm**: **Nút "Mở chướng ngại vật" ĐƯỢC XẾP LÀ CHUÔNG** ⇒ cũng chỉ nhận click chuột · **Nút gửi đáp án** không phải chuông, có hotkey Enter.
@@ -417,7 +405,7 @@
 - **Source**: `CLAUDE.md` §UX BẮT BUỘC · `game-rules-inventory.md` §R-GEN-01 · `game-rules-decisions.md` §5.3.
 - **Status**: `CONFIRMED`
 
-## TERM-032 — Hàng đợi tín hiệu
+## TERM-031 — Hàng đợi tín hiệu
 
 - **Definition**: mọi tín hiệu của thí sinh vào hàng đợi **theo thứ tự tới (server timestamp)**. **KHÔNG có cơ chế drop.** Hàng đợi **đang hoạt động** reset sau mỗi **vòng**; **LỊCH SỬ tín hiệu KHÔNG BAO GIỜ XOÁ** (append-only). Queue **chỉ CHẶN ở VCNV**; ở Khởi động lượt chung và cướp quyền Về đích thì **không chặn** — có chuông là tính ngay.
 - **Alternative names**: queue · hàng chờ duyệt.
@@ -429,19 +417,19 @@
 - **Source**: `game-rules-decisions.md` §5.1, §5.2 · `CLAUDE.md` §UX BẮT BUỘC.
 - **Status**: `CONFIRMED`
 
-## TERM-033 — Reject
+## TERM-032 — Reject
 
 - **Definition**: admin bấm **No** cho một tín hiệu trong hàng đợi ⇒ tín hiệu kế tiếp lên; **reject KHÔNG làm thí sinh mất lượt**. Đây là chỗ sửa lỗi bấm nhầm của thí sinh.
 - **Alternative names**: bấm No · từ chối tín hiệu · không duyệt.
 - **Actor / entity liên quan**: Admin, Hàng đợi, Thí sinh.
 - **Allowed values**: —
 - **Unit**: —
-- **Terms dễ nhầm**: **Bị loại** (TERM-036) — reject là từ chối một tín hiệu, không đụng tư cách dự thi.
+- **Terms dễ nhầm**: **Bị loại** (TERM-035) — reject là từ chối một tín hiệu, không đụng tư cách dự thi.
 - **Related rules**: Đ-7, GRR-143.
 - **Source**: `game-rules-decisions.md` §5.1.
 - **Status**: `NEEDS CLARIFICATION` — GRR-143: chưa nói các tác dụng phụ đã phát sinh (câu đã rút, hàng đã đánh dấu, timer đã chạy) có được hoàn nguyên khi reject không.
 
-## TERM-034 — Mốc admin
+## TERM-033 — Mốc admin
 
 - **Definition**: thời điểm do admin bấm, thay cho một mốc mà luật gốc mô tả bằng hành vi của MC. Ba mốc: *"MC đọc xong câu hỏi"* → **admin bấm start timer**; *"hiệu lệnh của MC"* (Câu hỏi phụ) → **admin bấm**; *"câu hỏi được đọc lên hoặc hiện lên màn hình"* (đóng cửa sổ NSHV) → **admin bấm hiển thị câu hỏi**. Mốc admin là **TUYỆT ĐỐI**: không có cửa sổ ân hạn, không trừ bù độ trễ tay người.
 - **Alternative names**: mốc thời gian của admin · admin là cảm biến.
@@ -453,54 +441,54 @@
 - **Source**: `game-rules-decisions.md` §8.1, §8.2.
 - **Status**: `CONFIRMED` — hai nhánh từng treo đã chốt: nút start timer **tự khoá sau lần bấm đầu** (`Đ-20`), và hai thao tác tạo mốc **tách rời theo thứ tự cố định** (`Đ-26`).
 
-## TERM-035 — Phán quyết của admin
+## TERM-034 — Phán quyết của admin
 
 - **Definition**: hành vi **admin bấm** để chốt kết quả một câu. **Máy KHÔNG tự chấm**: hệ thống chỉ (1) hiển thị đáp án thí sinh cạnh đáp án đúng, (2) **highlight ký tự khác** như gợi ý. Ở trận `official`, **`autoJudge` không tồn tại** dưới bất kỳ hình thức nào.
 - **Alternative names**: chấm · chấm điểm · judge · hotkey C/X.
 - **Actor / entity liên quan**: Admin, Server, MC (quyết bằng lời).
 - **Allowed values**: `Đúng` · `Sai` · **`Huỷ kết quả`**. Phán quyết **KHÔNG phải lúc nào cũng nhị phân**: chỉ nhị phân `Đúng`/`Sai` khi `Sai` trừ **0 điểm**; ở vòng mà `Sai` kéo theo hình phạt điểm, và ở câu chỉ có bản gửi quá hạn, có thêm lựa chọn thứ ba `Huỷ kết quả` (`Đ-34`, `Đ-32`).
 - **Unit**: —
-- **Terms dễ nhầm**: **Normalize / so khớp** (TERM-052 liên quan) — kết quả so khớp là **đầu vào của gợi ý**, KHÔNG phải phán quyết · **`autoJudge`** chỉ tồn tại ở `practice`.
+- **Terms dễ nhầm**: **Normalize / so khớp** (TERM-051 liên quan) — kết quả so khớp là **đầu vào của gợi ý**, KHÔNG phải phán quyết · **`autoJudge`** chỉ tồn tại ở `practice`.
 - **Related rules**: R-GEN-03, Đ-1, Đ-17, Đ-34, Đ-35, K-16.
 - **Source**: `game-rules-inventory.md` §R-GEN-03 · `game-rules-decisions.md` §3.1.
 - **Status**: `CONFIRMED`
 
-## TERM-036 — Bị loại
+## TERM-035 — Bị loại
 
 - **Definition**: **trạng thái của một thí sinh trong vòng VCNV** sau khi trả lời **sai Chướng ngại vật**: *"Nếu trả lời sai Chướng ngại vật, thí sinh sẽ bị loại khỏi phần thi này."* Chỉ mất quyền trong **vòng đó**, không rời trận.
 - **Alternative names**: loại khỏi phần thi · eliminated.
 - **Actor / entity liên quan**: Thí sinh, VCNV.
 - **Allowed values**: —
 - **Unit**: —
-- **Terms dễ nhầm**: **KHÔNG phải "loser"** (TERM-046) — người bị loại khỏi VCNV vẫn thi tiếp Tăng tốc và Về đích, vẫn có thể thắng trận · **Mất quyền trả lời** (TERM-037) là hình phạt khác, theo **câu**, chỉ ở Câu hỏi phụ.
+- **Terms dễ nhầm**: **KHÔNG phải "loser"** (TERM-045) — người bị loại khỏi VCNV vẫn thi tiếp Tăng tốc và Về đích, vẫn có thể thắng trận · **Mất quyền trả lời** (TERM-036) là hình phạt khác, theo **câu**, chỉ ở Câu hỏi phụ.
 - **Related rules**: R-VCNV-04, R-TEAM-03, U-24, Đ-16.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Vượt chướng ngại vật · `game-rules-inventory.md` §R-VCNV-04.
 - **Status**: `NEEDS CLARIFICATION` — còn **U-24**: người bị loại có giữ điểm hàng ngang đã kiếm không. Nhánh *"sự kiện đến từ ghế đã bị loại"* đã đóng bởi `Đ-16` (máy thí sinh không hiển thị gì, bấm không phản hồi).
 
-## TERM-037 — Mất quyền trả lời · Lệnh cấm
+## TERM-036 — Mất quyền trả lời · Lệnh cấm
 
 - **Definition**: hình phạt khi bấm chuông **trước hiệu lệnh của MC**; **chỉ áp ở Câu hỏi phụ**, phạm vi **theo CÂU**. Là một **TRẠNG THÁI CẤM** (không phải bỏ qua một lần bấm) và **gỡ được**: MC quyết bằng lời, admin bấm, trước khi trả lời và trong lúc câu còn mở. Lệnh cấm **chết cùng câu**.
 - **Alternative names**: lệnh cấm · cấm trả lời · mất quyền.
 - **Actor / entity liên quan**: Thí sinh, MC, Admin.
 - **Allowed values**: phạm vi = một câu.
 - **Unit**: —
-- **Terms dễ nhầm**: **Bị loại** (TERM-036) — phạm vi vòng, không gỡ được theo cơ chế này. Hai vòng khác quy định **NGƯỢC LẠI**: Khởi động cho bấm *"trong khi MC đang đọc"*, VCNV cho bấm *"bất cứ lúc nào"* (K-3).
+- **Terms dễ nhầm**: **Bị loại** (TERM-035) — phạm vi vòng, không gỡ được theo cơ chế này. Hai vòng khác quy định **NGƯỢC LẠI**: Khởi động cho bấm *"trong khi MC đang đọc"*, VCNV cho bấm *"bất cứ lúc nào"* (K-3).
 - **Related rules**: R-TB-03, K-3, Đ-6.2, Đ-6.4.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Câu hỏi phụ · `game-rules-decisions.md` §8.3.
 - **Status**: `CONFIRMED`
 
-## TERM-038 — Bỏ vòng · Chạy lại vòng · Huỷ `⚠ CONFLICT`
+## TERM-037 — Bỏ vòng · Chạy lại vòng · Huỷ `⚠ CONFLICT`
 
 - **Definition**: cụm khái niệm "cancelled" trong miền này gồm **ba thứ khác nhau**, không thay thế cho nhau:
   - **(C1) Bỏ vòng** — admin bỏ hẳn một vòng; điểm của vòng bị **revert**; biên bản giữ đầy đủ, vòng hiện **nhãn "đã bỏ"**; **câu đã dùng KHÔNG trả lại pool**.
   - **(C2) Chạy lại vòng** — cùng quy tắc với C1 rồi chạy mới, với điều kiện ngân hàng đề còn câu.
   - **(C3) Huỷ cửa sổ cướp** — câu bị skip khi đang mở cửa sổ cướp ⇒ huỷ cửa sổ, không ai cộng/trừ. **Còn nhãn "đề xuất", chưa chốt** (U-19).
-  - **(C4) Reject tín hiệu** (TERM-033) — từ chối một tín hiệu, không đụng vòng lẫn điểm.
+  - **(C4) Reject tín hiệu** (TERM-032) — từ chối một tín hiệu, không đụng vòng lẫn điểm.
 - **Alternative names**: skip vòng · reset vòng (cách gọi cũ, đã thay bằng **revert**) · huỷ cửa sổ.
 - **Actor / entity liên quan**: Admin, Event log, Pool đề.
 - **Allowed values**: —
 - **Unit**: —
-- **Terms dễ nhầm**: **"Reset" KHÔNG có nghĩa xoá** — reset điểm = revert (TERM-029) · C1 hoàn được **điểm** nhưng không hoàn được **đề đã lộ**.
+- **Terms dễ nhầm**: **"Reset" KHÔNG có nghĩa xoá** — reset điểm = revert (TERM-028) · C1 hoàn được **điểm** nhưng không hoàn được **đề đã lộ**.
 - **Related rules**: Đ-5.1, Đ-5.2, Đ-5.2d, Đ-5.2f, Đ-16, U-19, GRR-160.
 - **Source**: `game-rules-decisions.md` §6.3 · `game-rules-inventory.md` §R-VD-05 (U-19).
 - **Status**: `CONFLICT`
@@ -509,21 +497,21 @@
 
 # E. ĐIỂM VÀ KẾT QUẢ
 
-## TERM-039 — Điểm
+## TERM-038 — Điểm
 
 - **Definition**: đại lượng tích luỹ quyết định thứ hạng, tính bằng **reduce(event log)**. **Được phép ÂM, không có sàn.** Điểm âm tham gia bình thường vào xếp lượt Về đích và điều kiện hoà.
 - **Alternative names**: score · điểm số.
 - **Actor / entity liên quan**: Đơn vị điểm, Event log, Server.
 - **Allowed values**: số nguyên, âm hoặc dương, không chặn dưới. Giá trị **lẻ** chỉ phát sinh khi admin cấu hình mức điểm lẻ — dưới luật 2026 không tồn tại (20/30 → nửa là 10/15).
 - **Unit**: điểm.
-- **Terms dễ nhầm**: **Giá trị câu** (TERM-040) — một câu có `value`, khác với điểm tích luỹ của người · **Thứ hạng** — dẫn xuất từ điểm.
+- **Terms dễ nhầm**: **Giá trị câu** (TERM-039) — một câu có `value`, khác với điểm tích luỹ của người · **Thứ hạng** — dẫn xuất từ điểm.
 - **Related rules**: Đ-2, Đ-3, Đ-5.3, U-20.
 - **Source**: `game-rules-decisions.md` §3.2, §9.4 · `CLAUDE.md` §Hai mode trả lời.
 - **Status**: `CONFIRMED` (quy tắc làm tròn khi −½ giá trị lẻ vẫn treo — U-20)
 
-## TERM-040 — Giá trị câu · Mức điểm
+## TERM-039 — Giá trị câu · Mức điểm
 
-- **Definition**: số điểm gắn với một câu hỏi (`value`). Ở Về đích, thí sinh **chọn gói 3 câu từ 2 mức {20, 30}**. Thời gian **KHÔNG suy từ mức điểm** — `timeSeconds` là metadata **từng câu** (TERM-052).
+- **Definition**: số điểm gắn với một câu hỏi (`value`). Ở Về đích, thí sinh **chọn gói 3 câu từ 2 mức {20, 30}**. Thời gian **KHÔNG suy từ mức điểm** — `timeSeconds` là metadata **từng câu** (TERM-051).
 - **Alternative names**: value · mức điểm · điểm của câu hỏi.
 - **Actor / entity liên quan**: Câu hỏi, Về đích, Setter.
 - **Allowed values**: O26 Về đích: **{20, 30}**. Khởi động: 10 (đúng), −5 (sai, lượt chung). VCNV hàng ngang: 10. VCNV Chướng ngại vật: **60/50/40/30**, sau gợi ý cuối **20**; ô trung tâm 10. Tăng tốc: **40/30/20/10** theo thứ hạng tốc độ.
@@ -533,7 +521,7 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` (4 heading vòng) · `game-rules-inventory.md` §8A K-2, K-15.
 - **Status**: `CONFIRMED` cho 4 ghế · thang cho ≠4 ghế chưa có (U-2, U-3, K-11).
 
-## TERM-041 — Cướp quyền
+## TERM-040 — Cướp quyền
 
 - **Definition**: khi người thi chính ở Về đích trả lời **sai**, *"1 trong 3 thí sinh còn lại sẽ giành quyền trả lời bằng cách bấm chuông nhanh **trong 5 giây**"*. Cướp đúng **giành được điểm TỪ thí sinh trả lời sai** (`stealMode: 'transfer'` — người sai −value, người cướp +value). Cướp sai bị trừ **một nửa** giá trị câu.
 - **Alternative names**: steal · giành quyền trả lời · transfer.
@@ -545,7 +533,7 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích · `game-rules-inventory.md` §R-VD-05.
 - **Status**: `NEEDS CLARIFICATION` — còn **GRR-150** (tín hiệu đến trước khi cửa sổ cướp mở) và **GRR-152** (câu có Ngôi sao hy vọng: người cướp ăn giá trị gốc hay đã nhân đôi). Riêng U-5 (số người cướp khi ghế ≠ 4) là `[v1.5]`, ngoài phạm vi luật v1.
 
-## TERM-042 — Ngôi sao hy vọng (NSHV)
+## TERM-041 — Ngôi sao hy vọng (NSHV)
 
 - **Definition**: quyền đặt cược điểm ở Về đích, **1 lần / thí sinh / trận**. Đúng ⇒ **gấp đôi** giá trị câu. Sai ⇒ **trừ đi giá trị câu**, *"kể cả các thí sinh còn lại có giành quyền trả lời hay không"*. Phải đặt **trước khi câu được đọc lên hoặc hiện lên màn hình** — mốc đóng = **admin bấm hiển thị câu hỏi**.
 - **Alternative names**: NSHV · ngôi sao hy vọng · hope star.
@@ -557,7 +545,7 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Về đích · `game-rules-decisions.md` §9.4.
 - **Status**: `CONFIRMED` cho vế người đặt · vế người cướp `NEEDS CLARIFICATION` (GRR-152).
 
-## TERM-043 — Thứ hạng tốc độ
+## TERM-042 — Thứ hạng tốc độ
 
 - **Definition**: cơ chế tính điểm của **Tăng tốc**: điểm theo **thứ hạng nhanh trong số người trả lời ĐÚNG**, đo bằng **server-received timestamp của bản cuối**. Nhiều người cùng thời gian ⇒ **cùng nhận một mức điểm**.
 - **Alternative names**: ranked-speed · xếp hạng tốc độ.
@@ -569,7 +557,7 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Tăng tốc · `game-rules-inventory.md` §R-TT-01, §8A K-8.
 - **Status**: `CONFIRMED` cho 4 ghế · thang cho ≠4 ghế chưa có (U-2).
 
-## TERM-044 — Result · Kết quả `⚠ CONFLICT`
+## TERM-043 — Result · Kết quả `⚠ CONFLICT`
 
 - **Definition**: dùng cho **ba thứ khác nhau**:
   - **(R1) Kết quả chấm một câu** — Đúng / Sai do admin bấm.
@@ -584,7 +572,7 @@
 - **Source**: `game-rules-decisions.md` §9.5, §7.1 · `docs/reviews/game-rules-review.md` GRR-156.
 - **Status**: `CONFLICT`
 
-## TERM-045 — Người thắng
+## TERM-044 — Người thắng
 
 - **Definition**: F26 dùng cụm *"thí sinh thắng cuộc"* **chỉ trong ngữ cảnh Câu hỏi phụ** (*"Sau 3 câu hỏi, nếu không tìm được thí sinh thắng cuộc…"*). Luật gốc **không định nghĩa riêng người thắng trận**; mặc nhiên là người điểm cao nhất, nhưng phát biểu đó không tồn tại thành câu ở nguồn nào.
 - **Alternative names**: winner · thí sinh thắng cuộc · người vô địch · hạng nhất.
@@ -596,9 +584,9 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Câu hỏi phụ · `docs/reviews/game-rules-review.md` GRR-156.
 - **Status**: `NEEDS CLARIFICATION`
 
-## TERM-046 — Người thua
+## TERM-045 — Người thua
 
-- **Definition**: **không tồn tại như một khái niệm luật.** F26 không có phát biểu nào về "người thua"; không có hệ quả nào gắn với việc thua (không loại khỏi trận, không mất điểm). Hai khái niệm gần nhất là **bị loại khỏi VCNV** (TERM-036) và **mất quyền trả lời một câu** (TERM-037) — cả hai đều **theo phạm vi hẹp**, không phải thua trận.
+- **Definition**: **không tồn tại như một khái niệm luật.** F26 không có phát biểu nào về "người thua"; không có hệ quả nào gắn với việc thua (không loại khỏi trận, không mất điểm). Hai khái niệm gần nhất là **bị loại khỏi VCNV** (TERM-035) và **mất quyền trả lời một câu** (TERM-036) — cả hai đều **theo phạm vi hẹp**, không phải thua trận.
 - **Alternative names**: loser.
 - **Actor / entity liên quan**: —
 - **Allowed values**: —
@@ -608,24 +596,24 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` (rà toàn văn, không có) · `game-rules-inventory.md` §R-VCNV-04.
 - **Status**: `NEEDS CLARIFICATION`
 
-## TERM-047 — Hoà
+## TERM-046 — Hoà
 
 - **Definition**: **bằng điểm**. Là điều kiện kích hoạt Câu hỏi phụ (*"các thí sinh có cùng số điểm"*); repo thu hẹp còn **chỉ vị trí NHẤT**. Ở Tăng tốc còn có nghĩa hẹp hơn: **cùng server timestamp** ⇒ cùng nhận một mức điểm.
 - **Alternative names**: tie · bằng điểm · đồng hạng · "đồng thời gian" (nghĩa Tăng tốc).
 - **Actor / entity liên quan**: TIE_BREAK, Thứ hạng tốc độ.
 - **Allowed values**: điểm âm cũng tham gia điều kiện hoà bình thường.
 - **Unit**: điểm (hoà điểm) · ms (hoà thời gian).
-- **Terms dễ nhầm**: **hoà ĐIỂM** (kích hoạt tie-break) và **hoà THỜI GIAN** (chia cùng mức điểm Tăng tốc) là hai thứ khác nhau · tiếng Anh "draw" cũng nghĩa là hoà ⇒ xem TERM-048.
+- **Terms dễ nhầm**: **hoà ĐIỂM** (kích hoạt tie-break) và **hoà THỜI GIAN** (chia cùng mức điểm Tăng tốc) là hai thứ khác nhau · tiếng Anh "draw" cũng nghĩa là hoà ⇒ xem TERM-047.
 - **Related rules**: R-TB-01, R-TT-02, K-14, Đ-2.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Câu hỏi phụ, §Tăng tốc · `game-rules-inventory.md` §R-TB-01.
 - **Status**: `CONFIRMED`
 
-## TERM-048 — Draw `⚠ CONFLICT`
+## TERM-047 — Draw `⚠ CONFLICT`
 
 - **Definition**: từ này ứng với **ba khái niệm không liên quan nhau**:
   - **(D1) Rút đề ngẫu nhiên** — `Turn.drawConfig.mode = 'draw'`, server rút câu **trong danh sách đã gán**, phát event `QUESTIONS_DRAWN` để **replay được**.
   - **(D2) Bốc thăm phân định** — hết 3 câu tie-break vẫn hoà ⇒ *"các thí sinh sẽ phải **bốc thăm** để chọn ra thí sinh thắng cuộc"* (`exhaustedFallback: 'random-draw'`); hệ thống random, **admin xác nhận**.
-  - **(D3) Hoà** — nghĩa tiếng Anh thông dụng, ứng với TERM-047.
+  - **(D3) Hoà** — nghĩa tiếng Anh thông dụng, ứng với TERM-046.
 - **Alternative names**: (D1) rút đề, draw câu · (D2) bốc thăm, random-draw · (D3) tie.
 - **Actor / entity liên quan**: Server, Admin, Pool đề, TIE_BREAK.
 - **Allowed values**: (D1) `mode: 'draw'` · (D2) `exhaustedFallback: 'random-draw'`.
@@ -635,26 +623,26 @@
 - **Source**: `game-rules-inventory.md` §R-KD-07 (D1), §R-TB-04 (D2) · `docs/source/fandom-olympia-26-luat-choi.md` §Câu hỏi phụ (D2).
 - **Status**: `CONFLICT`
 
-## TERM-049 — Timeout · Hết giờ
+## TERM-048 — Timeout · Hết giờ
 
 - **Definition**: thời điểm server đóng cửa sổ nhận đáp án hoặc nhận chuông. **Server time là source of truth DUY NHẤT** — timeout, thứ tự chuông, thứ hạng tốc độ đều theo đồng hồ server; client chỉ hiển thị. Submission tới **sau server-timeout** bị loại.
 - **Alternative names**: hết giờ · server-timeout · deadline · `endsAt`.
 - **Actor / entity liên quan**: Server, Timer, mọi vòng.
 - **Allowed values**: Khởi động 3s · VCNV hàng ngang 15s · VCNV sau gợi ý cuối 15s · Tăng tốc 20/20/30/30s · Về đích 15s (câu 20đ) / 20s (câu 30đ) · cửa sổ cướp 5s · Câu hỏi phụ 15s.
 - **Unit**: giây (cấu hình) · ms (`remainingMs`).
-- **Terms dễ nhầm**: **reconnect grace 120s** cũng là mốc thời gian nhưng **không phải timeout của câu** (auto-pause đã bị bãi bỏ — `Đ-21`) · **Biên** t = đúng mốc **đã chốt là TRONG** (biên đóng, `Đ-27`/`Đ-28`), không còn là câu hỏi mở.
+- **Terms dễ nhầm**: **reconnect grace 120s** cũng là mốc thời gian nhưng **không phải timeout của câu** · **Biên** t = đúng mốc **đã chốt là TRONG** (biên đóng, `Đ-27`/`Đ-28`), không còn là câu hỏi mở.
 - **Related rules**: R-GEN-05, R-TT-03, R-GEN-09, Đ-21, Đ-28.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` (mọi heading vòng) · `game-rules-inventory.md` §R-GEN-05.
 - **Status**: `CONFIRMED`
 
-## TERM-050 — Reconnect grace
+## TERM-049 — Reconnect grace
 
 - **Definition**: cửa sổ **120 giây** giữ ghế cho thí sinh mất kết nối; trong grace: **giữ ghế + state-sync**, banner "đang kết nối lại". Quá grace ⇒ xử theo `dropoutPolicy`.
 - **Alternative names**: grace · thời gian giữ ghế.
 - **Actor / entity liên quan**: Thí sinh, Server, Admin.
 - **Allowed values**: **120 giây**; `dropoutPolicy` — **danh sách giá trị chưa đầy đủ** (U-13).
 - **Unit**: giây.
-- **Terms dễ nhầm**: rớt mạng **đúng lượt riêng** thì engine pause + admin quyết, **ghi đè** grace (D13.4).
+- **Terms dễ nhầm**: rớt mạng **đúng lượt riêng** thì engine dừng lại chờ admin quyết, **ghi đè** grace (D13.4).
 - **Related rules**: R-GEN-09, U-13, GRR-169.
 - **Source**: `game-rules-inventory.md` §R-GEN-09.
 - **Status**: `NEEDS CLARIFICATION` — còn **U-13** (tập giá trị `dropoutPolicy`) và **GRR-169** (số phận các submission đã nhận của ghế bị xử dropout). Riêng **biên** `t = 120.000s` đã đóng: biên **đóng**, vẫn trong grace (`Đ-28`).
@@ -663,7 +651,7 @@
 
 # F. ĐỀ VÀ KHO ĐỀ
 
-## TERM-051 — Câu hỏi
+## TERM-050 — Câu hỏi
 
 - **Definition**: đơn vị đề thi. Người tạo contest **PHẢI chọn danh sách câu hỏi trước khi start**; hệ thống KHÔNG tự lấy đề — draw chỉ random **trong danh sách đã gán**.
 - **Alternative names**: câu · question · đề.
@@ -675,7 +663,7 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Khởi động, §Tăng tốc, §Về đích · `game-rules-inventory.md` §PHẦN 9.
 - **Status**: `NEEDS CLARIFICATION`
 
-## TERM-052 — `timeSeconds`
+## TERM-051 — `timeSeconds`
 
 - **Definition**: thời gian suy nghĩ, là **metadata của TỪNG CÂU HỎI** — cùng mức 20đ có thể câu 15s và câu 40s. Hệ thống chọn câu theo **MỨC ĐIỂM**, thời gian lấy **theo câu**; preset chỉ đặt default (`defaultTimeByValue`).
 - **Alternative names**: thời gian suy nghĩ · thời gian câu.
@@ -687,7 +675,7 @@
 - **Source**: `game-rules-inventory.md` §R-GEN-02 · `CLAUDE.md` §Luật chơi & đề thi.
 - **Status**: `CONFIRMED`
 
-## TERM-053 — Kho đề · Pool
+## TERM-052 — Kho đề · Pool
 
 - **Definition**: tập câu hỏi khả dụng. **Pool đã gán cho contest** là snapshot admin chọn trước khi start; pre-flight **chặn start** khi thiếu (thuật toán 2 bước + `reservePerField` default 2).
 - **Alternative names**: pool · ngân hàng đề · bộ đề · danh sách đã gán.
@@ -699,7 +687,7 @@
 - **Source**: `game-rules-inventory.md` §R-KD-07, §R-GEN-06 · `CLAUDE.md` §Luật chơi & đề thi.
 - **Status**: `CONFIRMED` — U-9 và U-10 đã đóng bởi `Đ-31`: kho đề kiểm tại **cửa vào từng vòng**, thiếu thì không mở được vòng đó ⇒ không tồn tại cạn giữa vòng.
 
-## TERM-054 — `usedInContest` · No-repeat
+## TERM-053 — `usedInContest` · No-repeat
 
 - **Definition**: cờ đánh dấu câu **đã được hỏi** trong bất kỳ match/vòng nào của contest (event `QUESTION_USED`) ⇒ câu **không xuất hiện lại** trong contest, draw loại khỏi pool. **Câu đã dùng KHÔNG trả lại pool** ngay cả khi vòng bị bỏ — *"điểm hoàn được, đề đã lộ thì không"*.
 - **Alternative names**: no-repeat · câu đã dùng · đã lộ đề.
@@ -711,7 +699,7 @@
 - **Source**: `game-rules-inventory.md` §R-GEN-06 · `game-rules-decisions.md` §6.3.
 - **Status**: `NEEDS CLARIFICATION` — U-30.
 
-## TERM-055 — `everPublic` `⚠ CONFLICT`
+## TERM-054 — `everPublic` `⚠ CONFLICT`
 
 - **Definition**: cờ **một chiều** đánh dấu câu đã từng nằm trong bộ đề public. Câu `everPublic=true` ⇒ pre-flight **hard-block** mọi match; force cần confirm 2 bước + audit. Kiểm ở đơn vị **CÂU**, mỗi **match**. Ngoại lệ: match `practice` cho phép, gắn badge "đề public".
 - **Alternative names**: đề đã công khai · cờ chống rò đề.
@@ -723,12 +711,12 @@
 - **Source**: `game-rules-inventory.md` §R-GEN-12, §8B K-10.
 - **Status**: `CONFLICT` (ở nhánh `visibility` — K-10)
 
-## TERM-056 — RuleConfig · Preset `O26_DEFAULT@1`
+## TERM-055 — RuleConfig · Preset `O26_DEFAULT@1`
 
 - **Definition**: nơi khai **mọi** timer và điểm. **KHÔNG hard-code luật trong code/UI.** Preset `O26_DEFAULT@1` là bộ giá trị mặc định theo luật O26, áp bằng nút **"Áp dụng luật 2026"**; mọi giá trị vẫn config được per-contest.
 - **Alternative names**: cấu hình luật · preset luật 2026.
 - **Actor / entity liên quan**: Admin, Engine, Contest.
-- **Allowed values**: mọi giá trị số của TERM-040 và TERM-049.
+- **Allowed values**: mọi giá trị số của TERM-039 và TERM-048.
 - **Unit**: —
 - **Terms dễ nhầm**: hai option **hợp lệ về mặt hệ thống nhưng KHÔNG được dùng cho preset O26**: `stealMode: 'add'` (K-12) và `exhaustedFallback: 'admin-decides'` (K-13).
 - **Related rules**: K-12, K-13, R-GEN-02.
@@ -739,7 +727,7 @@
 
 # G. THUẬT NGỮ RIÊNG CỦA VCNV
 
-## TERM-057 — Hàng ngang
+## TERM-056 — Hàng ngang
 
 - **Definition**: một trong **4 từ** cần đoán, đồng thời là **4 gợi ý** liên quan đến Chướng ngại vật. Thời gian suy nghĩ mỗi hàng ngang **15 giây**; trả lời đúng **+10**. **Mọi thí sinh cùng trả lời bằng máy tính** khi một hàng ngang được chọn.
 - **Alternative names**: từ hàng ngang · row.
@@ -751,19 +739,19 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Vượt chướng ngại vật · `game-rules-decisions.md` §9.2.
 - **Status**: `NEEDS CLARIFICATION` — U-37 (ngưỡng số thí sinh đúng để mở miếng ghép) chưa chốt.
 
-## TERM-058 — Miếng ghép
+## TERM-057 — Miếng ghép
 
 - **Definition**: mảnh của hình ảnh Chướng ngại vật. **5 miếng**: 4 miếng ở 4 góc **đánh số cố định** tương ứng 4 hàng ngang, 1 miếng ở **ô trung tâm**. Trả lời đúng hàng ngang ⇒ miếng tương ứng **mở**; không trả lời được ⇒ **không mở**.
 - **Alternative names**: mảnh ghép · góc ảnh · piece.
 - **Actor / entity liên quan**: Hàng ngang, Chướng ngại vật, Admin.
 - **Allowed values**: 5 miếng (4 góc + 1 trung tâm) với luật O26.
 - **Unit**: miếng.
-- **Terms dễ nhầm**: xem TERM-057 — miếng ghép **không mở** vẫn không cản hàng ngang tiếp theo được hỏi.
+- **Terms dễ nhầm**: xem TERM-056 — miếng ghép **không mở** vẫn không cản hàng ngang tiếp theo được hỏi.
 - **Related rules**: R-VCNV-01, R-VCNV-05, `[GRR-013]`, U-37.
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Vượt chướng ngại vật.
 - **Status**: `CONFIRMED`
 
-## TERM-059 — Chướng ngại vật (CNV)
+## TERM-058 — Chướng ngại vật (CNV)
 
 - **Definition**: đáp án ẩn mà cả vòng đi tìm. Thí sinh **bấm chuông trả lời bất cứ lúc nào**. Điểm giảm dần theo số hàng ngang đã hỏi: **60 / 50 / 40 / 30**; sau gợi ý cuối chỉ còn **20**. **Trả lời sai ⇒ bị loại khỏi phần thi này.**
 - **Alternative names**: CNV · obstacle · từ khoá.
@@ -775,7 +763,7 @@
 - **Source**: `docs/source/fandom-olympia-26-luat-choi.md` §Vượt chướng ngại vật · `game-rules-decisions.md` §9.2.
 - **Status**: `NEEDS CLARIFICATION` — GRR-142 (mốc chốt băng điểm: lúc bấm hay lúc admin xác nhận).
 
-## TERM-060 — Ô trung tâm · Gợi ý cuối
+## TERM-059 — Ô trung tâm · Gợi ý cuối
 
 - **Definition**: miếng ghép thứ 5 kèm một câu hỏi, đưa ra **sau khi cả 4 hàng ngang đã được mở ra mà chưa ai trả lời CNV**. Trả lời đúng câu ô trung tâm **+10** và mở ô; sai thì ô **không mở**. Sau đó **15 giây** để đưa ra CNV, đúng chỉ được **20 điểm**.
 - **Alternative names**: gợi ý cuối cùng · ô giữa · center piece.
@@ -795,11 +783,11 @@
 
 | Từ | Có trong tài liệu? | Khái niệm gần nhất trong miền (chỉ để định hướng) |
 |---|---|---|
-| `bet` | Không | **Ngôi sao hy vọng** (TERM-042) — đặt trước khi biết câu hỏi, đúng thì gấp đôi, sai thì trừ. Là cơ chế **rủi ro có chủ đích**, nhưng không có tiền cược, không đặt được số lượng, chỉ dùng **1 lần/trận**. |
-| `balance` | Không | **Điểm** (TERM-039) — nhưng điểm **được phép âm không sàn**, không rút ra được, không chuyển tự do; ngoại lệ duy nhất là **cướp quyền transfer** (TERM-041) chuyển đúng giá trị câu giữa hai người. |
-| `reward` | Không | **Giá trị câu** (TERM-040) và **thang điểm theo thứ hạng tốc độ** (TERM-043). Không có phần thưởng nào ngoài điểm. |
-| `payout` | Không | **`stealMode: 'transfer'`** (TERM-041) — trường hợp duy nhất điểm đi từ chủ thể này sang chủ thể khác. |
-| `dealer` | Không | Vai chia bài không tồn tại. Việc **rút đề** do **server** làm (TERM-048 D1); việc **bốc thăm** do server random + **admin xác nhận** (TERM-048 D2); việc **điều khiển trận** do **admin** (TERM-004). Ba việc, ba chủ thể — không gom được vào một vai. |
+| `bet` | Không | **Ngôi sao hy vọng** (TERM-041) — đặt trước khi biết câu hỏi, đúng thì gấp đôi, sai thì trừ. Là cơ chế **rủi ro có chủ đích**, nhưng không có tiền cược, không đặt được số lượng, chỉ dùng **1 lần/trận**. |
+| `balance` | Không | **Điểm** (TERM-038) — nhưng điểm **được phép âm không sàn**, không rút ra được, không chuyển tự do; ngoại lệ duy nhất là **cướp quyền transfer** (TERM-040) chuyển đúng giá trị câu giữa hai người. |
+| `reward` | Không | **Giá trị câu** (TERM-039) và **thang điểm theo thứ hạng tốc độ** (TERM-042). Không có phần thưởng nào ngoài điểm. |
+| `payout` | Không | **`stealMode: 'transfer'`** (TERM-040) — trường hợp duy nhất điểm đi từ chủ thể này sang chủ thể khác. |
+| `dealer` | Không | Vai chia bài không tồn tại. Việc **rút đề** do **server** làm (TERM-047 D1); việc **bốc thăm** do server random + **admin xác nhận** (TERM-047 D2); việc **điều khiển trận** do **admin** (TERM-004). Ba việc, ba chủ thể — không gom được vào một vai. |
 
 # PHỤ LỤC B — Bảng tra 25 từ được yêu cầu
 
@@ -817,17 +805,17 @@
 | turn | Lượt — **4 nghĩa** | TERM-016 | `CONFLICT` |
 | phase | Pha trong câu **hoặc** giai đoạn phát hành | TERM-017 | `CONFLICT` |
 | state | Trạng thái trận **hoặc** trạng thái ghế | TERM-022 | `CONFLICT` |
-| action | *(chỉ là thuật ngữ UX)* | TERM-028 | `NEEDS CLARIFICATION` |
-| event | MatchEvent | TERM-026 | `CONFIRMED` |
-| — *(event điểm)* | Độ hạt event điểm | TERM-027 | `CONFLICT` |
+| action | *(chỉ là thuật ngữ UX)* | TERM-027 | `NEEDS CLARIFICATION` |
+| event | MatchEvent | TERM-025 | `CONFIRMED` |
+| — *(event điểm)* | Độ hạt event điểm | TERM-026 | `CONFLICT` |
 | bet | *(không tồn tại)* | Phụ lục A | — |
 | balance | *(không tồn tại)* | Phụ lục A | — |
-| score | Điểm | TERM-039 | `CONFIRMED` |
+| score | Điểm | TERM-038 | `CONFIRMED` |
 | reward | *(không tồn tại)* | Phụ lục A | — |
 | payout | *(không tồn tại)* | Phụ lục A | — |
-| result | Kết quả — **3 nghĩa** | TERM-044 | `CONFLICT` |
-| winner | Người thắng | TERM-045 | `NEEDS CLARIFICATION` |
-| loser | *(không tồn tại như khái niệm luật)* | TERM-046 | `NEEDS CLARIFICATION` |
-| draw | Rút đề · Bốc thăm · Hoà — **3 nghĩa** | TERM-048 | `CONFLICT` |
-| timeout | Hết giờ | TERM-049 | `CONFIRMED` |
-| cancelled | Bỏ vòng · Chạy lại · Huỷ cửa sổ · Reject | TERM-038 | `CONFLICT` |
+| result | Kết quả — **3 nghĩa** | TERM-043 | `CONFLICT` |
+| winner | Người thắng | TERM-044 | `NEEDS CLARIFICATION` |
+| loser | *(không tồn tại như khái niệm luật)* | TERM-045 | `NEEDS CLARIFICATION` |
+| draw | Rút đề · Bốc thăm · Hoà — **3 nghĩa** | TERM-047 | `CONFLICT` |
+| timeout | Hết giờ | TERM-048 | `CONFIRMED` |
+| cancelled | Bỏ vòng · Chạy lại · Huỷ cửa sổ · Reject | TERM-037 | `CONFLICT` |

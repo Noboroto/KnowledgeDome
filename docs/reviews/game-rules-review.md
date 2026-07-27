@@ -106,7 +106,7 @@ Lượt 1-2 (GRR-001→GRR-136) rà soát **nội dung luật**: giá trị, đi
 - **Rule**: R-VCNV-03, R-VCNV-04, R-VCNV-06.
 - **File nguồn**: F26 §VCNV (*"bấm chuông trả lời Chướng ngại vật bất cứ lúc nào"*) · `game-rules-decisions.md` §5.2 `Đ-7.2`, §9.2.
 - **Tác động**: sai băng điểm CNV; một tín hiệu **kết thúc-vòng** có thể nằm chờ sau một tín hiệu ít quan trọng hơn.
-- **Ranh giới**: GRR-026 / U-16 hỏi pause timer khi có người bấm CNV giữa timer hàng ngang, không hỏi trật tự giữa hai loại tín hiệu.
+- **Ranh giới**: GRR-026 / U-16 hỏi việc dừng đồng hồ khi có người bấm CNV giữa timer hàng ngang, không hỏi trật tự giữa hai loại tín hiệu.
 - **❓ Câu hỏi**: Hàng đợi VCNV xử lý thuần theo thứ tự tới cho cả hai loại tín hiệu, hay "Mở chướng ngại vật" được ưu tiên trước tín hiệu chọn hàng ngang đang chờ?
 
 ## GRR-145 · `IDEMPOTENCY_UNDEFINED` · Cao — bấm "Mở chướng ngại vật" nhiều lần
@@ -303,32 +303,32 @@ Lượt 1-2 (GRR-001→GRR-136) rà soát **nội dung luật**: giá trị, đi
 
 ---
 
-# PHẦN 7 — HẠ TẦNG TRẬN (PAUSE · RECONNECT · ADMIN)
+# PHẦN 7 — HẠ TẦNG TRẬN (GIÁN ĐOẠN · KẾT NỐI LẠI · ADMIN)
 
-## GRR-165 · `MISSING` · Cao — `PAUSED` không có đường thoát được đặc tả
+## GRR-165 · `MISSING` · Cao — admin mất kết nối và không quay lại: không có đường thoát
 
-- **Mô tả**: admin mất kết nối > N giây ⇒ auto-pause. Nếu admin không quay lại (máy hỏng) và phòng không có admin thứ hai, không rule nào nói **ai resume được**, có ai khác được cấp quyền không, hay trận kẹt vĩnh viễn ở `PAUSED`. Thêm: `PAUSED` được liệt kê **ngang hàng** với `rounds[i]` / `INTERMISSION` / `TIE_BREAK`, nên khi pause xảy ra giữa `TIE_BREAK`, không có phát biểu nào nói resume quay về `TIE_BREAK` (state cũ lưu ở đâu, có lưu cả pha nào trong luồng 8 phase của `Đ-9` không).
+- **Mô tả**: admin mất kết nối quá ngưỡng N giây. Nếu admin không quay lại (máy hỏng) và phòng không có admin thứ hai, không rule nào nói **ai điều khiển tiếp**, có ai khác được cấp quyền không, hay trận kẹt vĩnh viễn. Vì mọi thao tác đều chờ nút bấm của admin, mất admin là mất toàn bộ khả năng vận hành.
 - **Rule**: R-GEN-08, §Trạng thái game, `Đ-9`.
 - **File nguồn**: `game-rules-inventory.md` §Trạng thái game, §R-GEN-08.
 - **Tác động**: "state không có đường thoát" ở đúng cơ chế được thiết kế để **cứu sự cố**.
-- **Ranh giới**: GRR-077 hỏi `INTERMISSION`; GRR-076/GRR-079 hỏi event và timer **trong lúc** PAUSED. Chưa mục nào hỏi **cấu trúc lồng và điều kiện thoát**.
-- **❓ Câu hỏi**: `PAUSED` là một trạng thái riêng hay một cờ phủ lên trạng thái đang chạy, và ai được resume khi admin gây ra auto-pause không quay lại?
+- **Ranh giới**: GRR-077 hỏi trạng thái nghỉ giữa các vòng; GRR-076 / GRR-079 hỏi event và đồng hồ **trong lúc trận gián đoạn**. Chưa mục nào hỏi **ai giành lại được quyền điều khiển**.
+- **❓ Câu hỏi**: Ai giành lại được quyền điều khiển khi admin duy nhất của trận mất kết nối và không quay lại?
 
-## GRR-166 · `CONCURRENCY_UNDEFINED` · Cao — auto-pause kích hoạt đúng lúc timer hết giờ
+## GRR-166 · `CONCURRENCY_UNDEFINED` · Cao — phản ứng mất kết nối đụng đúng lúc timer hết giờ
 
-- **Mô tả**: cửa sổ cướp 5 giây còn **20 ms**; admin đã mất kết nối và ngưỡng N giây chạm đúng khoảnh khắc đó. Auto-pause *"đóng băng deadline, lưu `remainingMs`"*; timeout của server đáng lẽ đóng cửa sổ. Hai sự kiện server cùng mốc, không có thứ tự quy định ⇒ hoặc cửa sổ đóng (không ai cướp được), hoặc cửa sổ **được nối lại 20 ms sau khi resume vài phút sau** — lúc đó thí sinh đã biết đáp án.
+- **Mô tả**: cửa sổ cướp 5 giây còn **20 ms**; admin đã mất kết nối và ngưỡng N giây chạm đúng khoảnh khắc đó. Nếu hệ thống phản ứng bằng cách đóng băng deadline thì nó đụng với timeout của server, vốn đáng lẽ đóng cửa sổ. Hai sự kiện server cùng mốc, không có thứ tự quy định ⇒ hoặc cửa sổ đóng (không ai cướp được), hoặc cửa sổ **được nối lại 20 ms sau, vài phút sau đó** — lúc ấy thí sinh đã biết đáp án.
 - **Rule**: R-GEN-08, R-VD-05, R-GEN-05.
 - **File nguồn**: `game-rules-inventory.md` §R-GEN-08, §R-GEN-05.
-- **Tác động**: thay đổi trực tiếp điểm. Tiền lệ `Đ-6.4c` (*"timer chạy hết, không pause"*) mâu thuẫn ngầm với việc auto-pause đóng băng mọi timer.
-- **❓ Câu hỏi**: Khi auto-pause và một timeout cùng đến, sự kiện nào được áp trước, và cửa sổ đã hết giờ trước khi pause có được mở lại khi resume không?
+- **Tác động**: thay đổi trực tiếp điểm. Tiền lệ `Đ-6.4c` (*"timer chạy hết, không dừng giữa chừng"*) mâu thuẫn ngầm với bất kỳ cơ chế nào đóng băng đồng hồ.
+- **❓ Câu hỏi**: Khi phản ứng mất kết nối và một timeout cùng đến, sự kiện nào được áp trước, và một cửa sổ đã hết giờ có được mở lại không?
 
-## GRR-167 · `IDEMPOTENCY_UNDEFINED` · Trung bình — hai nguyên nhân pause chồng nhau
+## GRR-167 · `IDEMPOTENCY_UNDEFINED` · Trung bình — hai nguyên nhân gián đoạn chồng nhau
 
-- **Mô tả**: admin pause thủ công để xử lý khiếu nại, rồi rớt mạng ⇒ auto-pause kích hoạt trên một trận **đã** pause. Admin quay lại, hệ thống tự resume (vì nguyên nhân auto đã hết) ⇒ **trận chạy tiếp trong khi khiếu nại chưa xử xong**. Không rule nào nói pause là boolean hay bộ đếm nguyên nhân, resume có cần khớp nguyên nhân không.
+- **Mô tả**: admin chủ động ngừng thao tác để xử lý khiếu nại, rồi rớt mạng ⇒ một cơ chế tự động kích hoạt trên một trận **đã** đang gián đoạn. Admin quay lại, hệ thống tự cho chạy tiếp (vì nguyên nhân tự động đã hết) ⇒ **trận chạy tiếp trong khi khiếu nại chưa xử xong**. Không rule nào nói việc gián đoạn là một cờ hay một bộ đếm nguyên nhân.
 - **Rule**: R-GEN-08 (4 nguyên nhân a-d).
 - **File nguồn**: `game-rules-inventory.md` §R-GEN-08.
 - **Tác động**: trận chạy tiếp ngoài ý muốn khi thí sinh chưa sẵn sàng; input mở lại giữa lúc không ai điều khiển.
-- **❓ Câu hỏi**: Khi nhiều nguyên nhân pause cùng tồn tại, resume yêu cầu tất cả nguyên nhân đã hết hay một thao tác resume của admin là đủ?
+- **❓ Câu hỏi**: Khi nhiều nguyên nhân gián đoạn cùng tồn tại, việc cho chạy tiếp yêu cầu tất cả nguyên nhân đã hết hay một thao tác của admin là đủ?
 
 ## GRR-168 · `CONCURRENCY_UNDEFINED` · Cao — không rule nào nói chỉ có MỘT admin đang điều khiển
 
@@ -345,7 +345,7 @@ Lượt 1-2 (GRR-001→GRR-136) rà soát **nội dung luật**: giá trị, đi
 - **Rule**: R-GEN-09, R-TT-01, R-TT-03.
 - **File nguồn**: `game-rules-inventory.md` §R-GEN-09, §R-TT-03.
 - **Tác động**: thay đổi bậc điểm của **cả bảng** ở một câu, không chỉ của người rớt.
-- **Ranh giới**: GRR-110 đề xuất "cửa sổ chạy tiếp, không pause", không nói dữ liệu đã ghi của người rớt.
+- **Ranh giới**: GRR-110 đề xuất "cửa sổ chạy tiếp, không đóng băng", không nói dữ liệu đã ghi của người rớt.
 - **❓ Câu hỏi**: Khi hết grace, các submission đã nhận của thí sinh đó có bị vô hiệu không, và ghế đó còn tham gia xếp hạng của câu đang chạy dở không?
 
 ---
@@ -362,7 +362,7 @@ Lượt 1-2 (GRR-001→GRR-136) rà soát **nội dung luật**: giá trị, đi
 
 ## GRR-171 · `CONFLICT` · Thấp `[v2]` — ai chọn người thi Câu hỏi phụ khi thi đội
 
-- **Mô tả**: R-TEAM-06 nói **đội trưởng cử 1 người** bấm chuông ở `TIE_BREAK`; `Đ-9` phase 1 nói **admin chọn người tham gia**, `Đ-10.7` nói hệ thống recommend, admin chọn. Hai rule cùng match một thao tác và trao quyền cho **hai chủ thể khác nhau**; đội trưởng cử A còn admin đưa B vào thì không có quy tắc phân xử. R-TEAM-07 lại buộc *"đổi đại diện chỉ tại `INTERMISSION`"* — mà `TIE_BREAK` không đi qua `INTERMISSION` (điều kiện vào/ra của `INTERMISSION` còn treo ở GRR-077).
+- **Mô tả**: R-TEAM-06 nói **đội trưởng cử 1 người** bấm chuông ở `TIE_BREAK`; `Đ-9` phase 1 nói **admin chọn người tham gia**, `Đ-10.7` nói hệ thống recommend, admin chọn. Hai rule cùng match một thao tác và trao quyền cho **hai chủ thể khác nhau**; đội trưởng cử A còn admin đưa B vào thì không có quy tắc phân xử. R-TEAM-07 lại buộc *"đổi đại diện chỉ tại cửa vào vòng"* — mà `TIE_BREAK` không đi qua giai đoạn nghỉ nào (điều kiện vào/ra của giai đoạn nghỉ còn treo ở GRR-077).
 - **Rule**: R-TEAM-06, R-TEAM-07, `Đ-9`, `Đ-10.7`.
 - **File nguồn**: `game-rules-inventory.md` §PHẦN 7 · `game-rules-decisions.md` §9.5.
 - **Tác động**: hai chủ thể **cùng có quyền** trên một thao tác.
@@ -421,9 +421,9 @@ Những mục dưới đây từng bị nghi là khiếm khuyết, nhưng **ngu�
 | 162 | MISSING | Cao | Admin không bao giờ bấm |
 | 163 | IDEMPOTENCY | TB | Kết thúc vòng bấm hai lần |
 | 164 | INVALID_TRANSITION | TB | Vòng B bắt đầu khi A chưa xong |
-| 165 | MISSING | Cao | `PAUSED` không có đường thoát |
-| 166 | CONCURRENCY | Cao | Auto-pause đụng timeout |
-| 167 | IDEMPOTENCY | TB | Hai nguyên nhân pause chồng |
+| 165 | MISSING | Cao | Admin mất kết nối, không ai điều khiển tiếp |
+| 166 | CONCURRENCY | Cao | Phản ứng mất kết nối đụng timeout |
+| 167 | IDEMPOTENCY | TB | Hai nguyên nhân gián đoạn chồng |
 | 168 | CONCURRENCY | Cao | Nhiều admin cùng điều khiển |
 | 169 | CONCURRENCY | TB | Grace 120s vs đáp án đang tới |
 | 170 | MISSING | Thấp `[v2]` | NSHV 1 lần/đội vs all-members |

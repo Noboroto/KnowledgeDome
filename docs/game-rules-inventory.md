@@ -44,10 +44,10 @@ Nguồn web khác đã tra, **không dùng làm căn cứ luật**:
 
 ## Trạng thái game dùng trong tài liệu này
 
-Nguồn: `P06` §Architecture "Match state machine"; `DEMO` L59.
+Nguồn: `game-rules-decisions.md` §11.23 `Đ-38` (2026-07-27) — **đang có hiệu lực**.
 
-`LOBBY` · `rounds[i]` (vòng theo playlist) · `INTERMISSION` · `TIE_BREAK` · `FINISHED` · `PAUSED`
-Demo dùng chuỗi phẳng: `CHO / KHOI_DONG_RIENG / KHOI_DONG_CHUNG / VCNV / TANG_TOC / VE_DICH / TIE_BREAK / KET_THUC`
+**`LOBBY` · `rounds[i]` (vòng theo playlist) · `TIE_BREAK` · `FINISHED`** — bốn giá trị.
+`LOBBY` = **cửa vào vòng**: trạng thái nghỉ của trận, dùng cả **trước vòng đầu tiên** lẫn **giữa hai vòng**.
 
 ---
 
@@ -231,11 +231,11 @@ Demo dùng chuỗi phẳng: `CHO / KHOI_DONG_RIENG / KHOI_DONG_CHUNG / VCNV / TA
 
 - **Nguồn**: `R26` §7 — **nhãn "đề xuất của Claude"**, KHÔNG có trong `F26`/`W26`
 - **Điều kiện đầu vào**: timer hàng ngang đang chạy; có người bấm chuông giải CNV.
-- **Kết quả khi đúng**: timer **PAUSE** → xử lý CNV → đúng: kết thúc vòng.
-- **Kết quả khi sai**: loại người bấm → **RESUME** timer cho người còn lại.
-- **Trạng thái game**: `rounds[i]` VCNV ↔ pause cục bộ.
+- **Kết quả khi đúng**: **dừng đồng hồ** → xử lý CNV → đúng: kết thúc vòng.
+- **Kết quả khi sai**: loại người bấm → **cho đồng hồ chạy tiếp** với người còn lại.
+- **Trạng thái game**: `rounds[i]` VCNV ↔ dừng đồng hồ cục bộ.
 - **Actor**: Thí sinh, Admin, Server.
-- **Rule mâu thuẫn**: R-GEN-08 (PAUSE toàn trận) — nguồn không phân biệt rõ pause cục bộ timer với PAUSE trận.
+- **Rule mâu thuẫn**: R-GEN-08 (dừng toàn trận) — nguồn không phân biệt rõ việc dừng một đồng hồ cục bộ với việc dừng cả trận.
 - **Chưa định nghĩa**: **chưa được user chốt**. `F26` chỉ định nghĩa trường hợp bấm chuông **TRƯỚC KHI lựa chọn** hàng ngang (R-VCNV-03), không định nghĩa bấm **GIỮA** lúc timer chạy. *(U-16)*
 
 ## R-VCNV-07. Tất cả thí sinh bị loại khỏi VCNV
@@ -244,7 +244,7 @@ Demo dùng chuỗi phẳng: `CHO / KHOI_DONG_RIENG / KHOI_DONG_CHUNG / VCNV / TA
 - **Điều kiện đầu vào**: mọi thí sinh đều đã trả lời sai CNV.
 - **Kết quả khi thoả**: kết thúc lượt/vòng; **không ai được điểm CNV**; hàng ngang chưa hỏi bị bỏ; **mở toàn bộ miếng ghép + công bố CNV = NÚT THỦ CÔNG của admin** (không auto).
 - **Kết quả khi không thoả**: vòng chạy tiếp.
-- **Trạng thái game**: `rounds[i]` VCNV → `INTERMISSION`.
+- **Trạng thái game**: `rounds[i]` VCNV → `LOBBY` (cửa vào vòng).
 - **Actor**: Admin, Viewer.
 - **Rule mâu thuẫn**: —
 - **Chưa định nghĩa**: nếu admin không bấm nút mở, vòng có tự kết thúc không.
@@ -587,15 +587,6 @@ Mọi rule trong tài liệu này khi mô tả "Kết quả khi đúng / khi sai
 - **Rule mâu thuẫn**: R-VD-05 — undo một chấm điểm steal transfer phải hoàn nguyên **2 seat**; nguồn không nói reducer xử lý thế nào. *(U-15)*
 - **Chưa định nghĩa**: undo có giới hạn số lần không.
 
-## R-GEN-08. Pause / auto-pause
-
-- **Nguồn**: `P06` §Pause/resume, §Auto-pause · `US` US-4.4, US-4.7 · `red-team.md` H2, C3 · `DEF` D13.4
-- **Điều kiện đầu vào**: (a) admin bấm pause; (b) `autoPauseOnHostDisconnect` (default bật) + admin mất kết nối quá N giây; (c) mất Redis; (d) thí sinh rớt mạng đúng lượt riêng.
-- **Kết quả**: đóng băng deadline (lưu `remainingMs`), **khoá input**, viewer thấy "tạm dừng kỹ thuật". **Resume**: đặt `endsAt` mới.
-- **Actor**: Admin, Server.
-- **Rule mâu thuẫn**: R-VCNV-06 (pause cục bộ timer hàng ngang ≠ PAUSE trận; nguồn không phân biệt).
-- **Chưa định nghĩa**: giá trị default của N giây. *(U-12)*
-
 ## R-GEN-09. Reconnect grace
 
 - **Nguồn**: `PRD` FR-3.5 · `US` US-5.4 · `research/ux-gaps.md`
@@ -603,7 +594,7 @@ Mọi rule trong tài liệu này khi mô tả "Kết quả khi đúng / khi sai
 - **Kết quả khi < 120s**: **giữ ghế** + state-sync; banner "đang kết nối lại".
 - **Kết quả khi quá grace**: hệ thống **CHỈ TÔ NỔI BẬT** ghế trên màn admin kèm thời lượng mất kết nối; **admin quyết** giữ / gia hạn / kick. Không có hệ quả tự động nào.
 - **Actor**: Thí sinh, Server, Admin.
-- **Rule mâu thuẫn**: `DEF` D13.4 — rớt đúng lượt riêng thì engine pause + admin quyết, ghi đè grace.
+- **Rule mâu thuẫn**: `DEF` D13.4 — rớt đúng lượt riêng thì engine dừng lại chờ admin quyết, ghi đè grace.
 - **`U-13` ĐÃ ĐÓNG 2026-07-26** — ✅ chủ dự án chốt: *"chỉ highlight, admin là người quyết"*. ⇒ **KHÔNG cần kê danh sách giá trị `dropoutPolicy`**, vì **không có chính sách tự động nào** để kê. Cấu hình duy nhất còn lại là **ngưỡng grace** (mặc định **120 giây**) — mốc để bắt đầu tô nổi bật.
   - Cùng **một mẫu** với `Đ-1` (tô khác biệt ký tự, admin chấm) và `Đ-28` (tô đỏ bản quá hạn, admin phán quyết). Nguyên tắc nền điểm 1 áp nguyên: máy đo và hiển thị **sự kiện**, người giữ **phán quyết**.
   - **Kick** là thao tác không hoàn tác được ⇒ dialog Yes/No + AuditLog kèm lý do (`CLAUDE.md` §UX, `S-2`).
@@ -648,7 +639,7 @@ Mọi rule trong tài liệu này khi mô tả "Kết quả khi đúng / khi sai
 | **R-TEAM-04** | NSHV 1 lần/đội | Vòng Về đích | 1 lần/đơn vị điểm/trận | — | Thí sinh | — |
 | **R-TEAM-05** | Cấm cùng đội cướp | Cửa sổ steal | Chỉ đơn vị điểm khác được bấm | Server **reject** (hard-code) | Thí sinh, Server | Exploit: same-team steal = trả lời lại miễn phí |
 | **R-TEAM-06** | Tie-break đội | `TIE_BREAK` với đội | Mỗi đội cử **1 người** bấm chuông | — | Thí sinh, Đội trưởng | Chưa định nghĩa: đội trưởng không chỉ định kịp |
-| **R-TEAM-07** | Chế độ lượt cá nhân | `individualTurnMode` | `all-members`: mỗi TV 1 lượt · `representative`: 1 lượt/đội | — | Đội trưởng, Admin | Đổi đại diện chỉ tại `INTERMISSION` |
+| **R-TEAM-07** | Chế độ lượt cá nhân | `individualTurnMode` | `all-members`: mỗi TV 1 lượt · `representative`: 1 lượt/đội | — | Đội trưởng, Admin | Đổi đại diện chỉ tại **cửa vào vòng** (`LOBBY`) |
 
 ---
 
@@ -723,7 +714,6 @@ Mọi rule trong tài liệu này khi mô tả "Kết quả khi đúng / khi sai
 | U-9 | Pool cạn **giữa trận** do skip nhiều | R-KD-07, R-GEN-06 |
 | U-10 | Pool câu phụ cạn **giữa** tie-break | R-TB-04 |
 | U-11 | Câu thay thế cũng hỏng media | R-GEN-11 |
-| U-12 | Default N giây của `autoPauseOnHostDisconnect` | R-GEN-08 |
 | ~~U-13~~ ✅ | **ĐÃ ĐÓNG 26/07** — quá grace thì **chỉ tô nổi bật, admin quyết**; không có `dropoutPolicy` tự động nên không có gì để kê. Chỉ còn cấu hình **ngưỡng grace** (120s) | R-GEN-09 |
 | U-14 | Lệch clock ở profile portable (không NTP) | R-GEN-05 |
 | U-15 | Undo một chấm điểm **steal transfer** (2 seat) | R-GEN-07, R-VD-05 |
@@ -732,7 +722,7 @@ Mọi rule trong tài liệu này khi mô tả "Kết quả khi đúng / khi sai
 
 | # | Mục | Nguồn |
 |---|---|---|
-| U-16 | Bấm chuông CNV giữa timer hàng ngang → pause/resume | `R26` §7 (R-VCNV-06) |
+| U-16 | Bấm chuông CNV giữa timer hàng ngang → có dừng đồng hồ không | `R26` §7 (R-VCNV-06) |
 | U-17 | Tie-break nhiều nhóm hoà | `R26` §7 (R-TB-05) |
 | U-18 | NSHV áp sang câu thay thế khi skip | `R26` §7 (R-VD-06) |
 | U-19 | Câu skip khi đang mở cướp → huỷ cửa sổ | `R26` §7 (R-VD-05) |

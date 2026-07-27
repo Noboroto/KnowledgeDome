@@ -15,21 +15,21 @@
 
 ## Mục lục
 
-- [0. Tóm tắt — 4 nguyên tắc phái sinh](#0-tóm-tắt--4-nguyên-tắc-phái-sinh)
-- [0.5. Bảng gộp — mục đã được quyết định SẴN CÓ trả lời](#05-bảng-gộp--mục-đã-được-quyết-định-sẵn-có-trả-lời)
-- [0.6. Cập nhật 26/07 chiều — game-rules.md đã đóng toàn bộ 37 rule](#06-cập-nhật-2026-07-26-chiều--game-rulesmd-đã-đóng-toàn-bộ-37-rule)
-- [**0.7. 25 đề xuất CHƯA DUYỆT — danh sách đầy đủ**](#07-25-đề-xuất-chưa-duyệt--danh-sách-đầy-đủ)
-- [1. Mục ĐÃ CHẾT vì quyết định sau đè lên](#1-mục-đã-chết-vì-quyết-định-sau-đè-lên)
-- [2. Tầng 2 — Quy ước biên thời gian](#2-tầng-2--quy-ước-biên-thời-gian)
-- [3. Tầng 3 — Phạm vi v1](#3-tầng-3--phạm-vi-v1)
-- [4. Tầng 1 — Ba danh sách đang chặn](#4-tầng-1--ba-danh-sách-đang-chặn)
-- [5. Tầng 4 — Duyệt các đề xuất chờ](#5-tầng-4--duyệt-các-đề-xuất-chờ)
-- [6. Tầng 5 — Con số và chính sách](#6-tầng-5--con-số-và-chính-sách)
-- [7. Tầng 7 — Câu hỏi nhỏ đi kèm quyết định đã chốt](#7-tầng-7--câu-hỏi-nhỏ-đi-kèm-quyết-định-đã-chốt)
-- [8. product-discovery §6 — C-1 → C-17](#8-product-discovery-6--c-1--c-17)
-- [9. product-discovery — S-1 → S-20](#9-product-discovery--s-1--s-20)
-- [10. KHÔNG QUYẾT — cần chủ dự án](#10-không-quyết--cần-chủ-dự-án)
-- [11. Căn cứ UX bên ngoài](#11-căn-cứ-ux-bên-ngoài)
+- [[#0. Tóm tắt — 4 nguyên tắc phái sinh|0. Tóm tắt — 4 nguyên tắc phái sinh]]
+- [[#0.5. Bảng gộp — mục đã được quyết định SẴN CÓ trả lời|0.5. Bảng gộp — mục đã được quyết định SẴN CÓ trả lời]]
+- [[#0.6. Cập nhật 2026-07-26 (chiều) — game-rules.md đã đóng TOÀN BỘ 37 rule|0.6. Cập nhật 2026-07-26 (chiều) — game-rules.md đã đóng TOÀN BỘ 37 rule]]
+- **[[#0.7. 25 đề xuất CHƯA DUYỆT — danh sách đầy đủ|0.7. 25 đề xuất CHƯA DUYỆT — danh sách đầy đủ]]**
+- [[#1. Mục ĐÃ CHẾT vì quyết định sau đè lên|1. Mục ĐÃ CHẾT vì quyết định sau đè lên]]
+- [[#2. Tầng 2 — Quy ước biên thời gian|2. Tầng 2 — Quy ước biên thời gian]]
+- [[#3. Tầng 3 — Phạm vi v1|3. Tầng 3 — Phạm vi v1]]
+- [[#4. Tầng 1 — Ba danh sách đang chặn|4. Tầng 1 — Ba danh sách đang chặn]]
+- [[#5. Tầng 4 — Duyệt các đề xuất chờ|5. Tầng 4 — Duyệt các đề xuất chờ]]
+- [[#6. Tầng 5 — Con số và chính sách|6. Tầng 5 — Con số và chính sách]]
+- [[#7. Tầng 7 — Câu hỏi nhỏ đi kèm quyết định đã chốt|7. Tầng 7 — Câu hỏi nhỏ đi kèm quyết định đã chốt]]
+- [[#8. product-discovery §6 — C-1 → C-17|8. product-discovery §6 — C-1 → C-17]]
+- [[#9. product-discovery — S-1 → S-20|9. product-discovery — S-1 → S-20]]
+- [[#10. KHÔNG QUYẾT — cần chủ dự án|10. KHÔNG QUYẾT — cần chủ dự án]]
+- [[#11. Căn cứ UX bên ngoài|11. Căn cứ UX bên ngoài]]
 
 ---
 
@@ -130,7 +130,7 @@ Ba mục khác được **nâng** căn cứ (vẫn giữ kết luận cũ, nhưn
 
 ---
 
-## 0.6. Cập nhật 2026-07-26 (chiều) — `game-rules.md` đã đóng TOÀN BỘ 37 rule
+## 0.6. Cập nhật 2026-07-26 (chiều) — game-rules.md đã đóng TOÀN BỘ 37 rule
 
 > Sau khi áp file này vào `docs/game-rules.md`, cộng **năm quyết định của chủ dự án trong cùng ngày**, tài liệu luật **không còn nhánh treo nào**: `CONFIRMED 37 / NEEDS CLARIFICATION 0 / CONFLICT 0`.
 
@@ -176,7 +176,7 @@ Ba mục khác được **nâng** căn cứ (vẫn giữ kết luận cũ, nhưn
 |---|---|---|
 | 14 | `Đ-15.a` | **Bổ sung 4 loại conflict**: `L6` ghế trống/mất kết nối · `L7` hai thể thức lượt riêng · `V6` mở vòng không theo playlist mà chưa đánh dấu bỏ · `Đ3` rút câu đã dùng trong contest |
 | 15 | `Đ-15.b` | Cảnh báo **tắt được theo VÒNG** cho 14 loại thường trực; **KHÔNG bao giờ tắt** cho 6 loại phá huỷ (`V1` `V2` `V5` `E1` `E2` `Đ2`) |
-| 16 | `Đ-15.2` | Sửa `S3` (bỏ `PAUSED`, viết lại thành *"giữa hai pha"*) · thêm **`S8`** thí sinh vắng mặt giữa vòng |
+| 16 | `Đ-15.2` | Sửa `S3` thành *"tín hiệu đến giữa hai pha"* · thêm **`S8`** thí sinh vắng mặt giữa vòng |
 | 17 | `GRR-113` | Quy **ba** cụm từ hình phạt về **một** thang phạm vi: `CÂU` / `VÒNG` / `TRẬN` (cần sửa `glossary.md`) |
 | 18 | `GRR-120` | Chạy lại vòng sau `FINISHED`: **cho phép**, cảnh báo hạng phá huỷ, PDF in nhãn *"bản sửa đổi lần N"*; thu hẹp `Đ-6.4d` về đúng cấp **CÂU** |
 
@@ -208,10 +208,10 @@ Ba mục khác được **nâng** căn cứ (vẫn giữ kết luận cũ, nhưn
 
 | Mã | Vì sao chết | Việc cần làm |
 |---|---|---|
-| `GRR-080` — admin mất kết nối bao nhiêu giây thì tự tạm dừng | `Đ-21`: **không tồn tại trạng thái tạm dừng**. Không có cơ chế để đặt ngưỡng cho | Xoá. Rủi ro thật chuyển sang **S-17** |
-| `GRR-079` — pause ⇒ lưu `remainingMs` cho mọi cửa sổ | Cùng lý do | Xoá |
-| `GRR-076` — tín hiệu đến khi `PAUSED`/`FINISHED` | Nhánh `PAUSED` chết; nhánh `FINISHED` **giữ** (ghi lịch sử, không hiệu lực) | Viết lại chỉ còn `FINISHED` |
-| `§1.2 S3` — *"tín hiệu đến trong lúc trận `PAUSED`"* | Cùng lý do | Viết lại thành *"tín hiệu đến **giữa hai pha**, ngoài mọi cửa sổ đang mở"* |
+| `GRR-080` — ngưỡng phản ứng khi admin mất kết nối | `Đ-21`: **đồng hồ chạy liên tục, hệ thống không tự dừng**. Không có cơ chế để đặt ngưỡng cho | Xoá. Rủi ro thật chuyển sang **S-17** |
+| `GRR-079` — thời gian còn lại của một cửa sổ bị gián đoạn | Cùng lý do — không có cơ chế nào đóng băng đồng hồ | Xoá |
+| `GRR-076` — tín hiệu đến khi trận đã `FINISHED` | **Giữ**: ghi lịch sử, không có hiệu lực | Đã thu hẹp về đúng nhánh `FINISHED` |
+| `§1.2 S3` — tín hiệu đến ngoài mọi cửa sổ đang mở | Cùng lý do | Đã viết lại thành *"tín hiệu đến **giữa hai pha**, ngoài mọi cửa sổ đang mở"* |
 | `GRR-034` — thí sinh rút lại đáp án để nộp trống | `Đ-20.1` đã chốt: **bản rỗng không phải một đáp án**, bỏ qua, giữ bản hợp lệ trước. Vậy "không rút được" là **chủ đích**, không phải hệ quả phụ | Xoá, ghi câu trả lời vào `Đ-20.1` |
 | `Đ-4.e2` — mode nhập liệu cho cả thí sinh click và admin click, ai quyết | `Đ-36`: **một đường vào mỗi mode**; nhập liệu ⇒ chỉ thí sinh, admin **không** chọn thay | Xoá |
 | `Đ-5.g` / `S-12` — pre-flight một lần hay theo vòng | `Đ-31`: **theo vòng** | Xoá |
@@ -347,7 +347,7 @@ Không có đề xuất nào ở Tầng 4 mâu thuẫn với nguyên tắc nền
 | **GRR-028** — gợi ý ký tự hiển thị lúc nào | **Khi admin bấm** — một nút mốc, cùng mẫu `Đ-26`/`Đ-33` | `SUY RA` (NT-B) | — |
 | **GRR-054** — hạn chót đổi gói Về đích | **Tới khi admin bấm "hiển thị câu đầu tiên của gói"** (mốc `Đ-26`) | `SUY RA` (NT-B) | Mốc này đã tồn tại và đã có nghĩa "đề đã ra khỏi server" |
 | **GRR-057 / Đ-10.7a** — admin không phân định nhóm hoà | **Đồng hạng** | `SUY RA` | `GRR-032` đã duyệt standard competition ranking; đồng hạng là mặc định của thang đó |
-| **GRR-077** — trận không hoàn thành kết thúc bằng trạng thái nào | **Thêm trạng thái `ABANDONED`** — do admin bấm, **bắt nhập lý do**, PDF in kèm nhãn *"trận không hoàn thành"* | `ĐỀ XUẤT` | `Đ-21` xoá `PAUSED` ⇒ máy trạng thái chỉ còn *đang chạy* và `FINISHED`. Không có `ABANDONED` thì một trận hỏng hoặc phải bị đánh dấu `FINISHED` sai sự thật, hoặc treo mãi — cả hai đều làm hỏng thống kê (`SM-11` đếm match `official` `FINISHED`) |
+| **GRR-077** — trận không hoàn thành kết thúc bằng trạng thái nào | **Thêm trạng thái `ABANDONED`** — do admin bấm, **bắt nhập lý do**, PDF in kèm nhãn *"trận không hoàn thành"* | `ĐỀ XUẤT` | `Đ-21` ⇒ máy trạng thái chỉ còn *đang chạy* và `FINISHED`. Không có `ABANDONED` thì một trận hỏng hoặc phải bị đánh dấu `FINISHED` sai sự thật, hoặc treo mãi — cả hai đều làm hỏng thống kê (`SM-11` đếm match `official` `FINISHED`) |
 | **GRR-088** — khôi phục `everPublic` bị đánh dấu nhầm | **KHÔNG khôi phục được, với bất kỳ ai.** Cách khắc phục: tạo câu mới | `ĐỀ XUẤT` | `everPublic` là **hàng rào một chiều** chống rò đề. `GRR-111` đã duyệt nguyên tắc *"`everPublic` phải đi theo câu khi import, nếu không hàng rào bị vô hiệu bằng một thao tác hợp lệ"* — cho phép gỡ cờ là mở lại đúng lỗ hổng đó bằng đường khác |
 | **GRR-091** — câu hỏi phụ lấy từ pool nào | **Từ chính snapshot của contest**, gán trước khi start như mọi vòng, kiểm tại cửa vào vòng (`Đ-31`, ngưỡng 3 câu) | `SUY RA` | `CLAUDE.md`: *"hệ thống KHÔNG tự lấy đề"*. Không có đường nào khác |
 | **GRR-104** — miền giá trị hợp lệ + đổi cấu hình giữa contest | **(a)** Mỗi trường RuleConfig khai kèm `min`/`max` như **metadata của chính RuleConfig** (không hard-code trong code hay UI). **(b)** Đổi cấu hình **không** áp cho match đã chạy | `SUY RA` (NT-C) | (a) là cách duy nhất để có validation mà không vi phạm *"không hard-code luật"*. (b) là NT-C |
@@ -442,7 +442,7 @@ Không có đề xuất nào ở Tầng 4 mâu thuẫn với nguyên tắc nền
 | **C-11 Q-A1** — thao tác **đóng** có dialog không | **KHÔNG.** Chỉ **mở** mới có dialog | `SUY RA` | `CLAUDE.md` §UX đã giới hạn dialog phía admin cho *"mọi thao tác **không hoàn tác được**"*. Mở là không thu hồi được (khán giả đã thấy); **đóng thì mở lại được** ⇒ rule sẵn có tự loại nó ra, không cần quyết định mới. *(NN/g về dialog fatigue chỉ là xác nhận độc lập, không phải căn cứ)* |
 | **C-11 Q-A2** — miếng ghép admin mở tay có tính vào thang điểm CNV không | **CÓ tính** | `ĐỀ XUẤT` | Thang điểm CNV đo **lượng thông tin đã lộ**, không đo **cách nó lộ ra**. Thí sinh nhận đúng chừng ấy dữ kiện dù nguồn là engine hay tay admin. Không tính sẽ tạo lỗ hổng: mở tay để giữ thang điểm cao |
 | **C-11 Q-A3** — đóng lại có đổi điểm không | **Không đổi điểm, chỉ đổi hiển thị.** Bước thang CNV **không lùi lại** khi đóng | `SUY RA` | Hệ quả trực tiếp của Q-A2: thông tin đã lộ thì không thu hồi được. Điểm 6: muốn đổi điểm phải qua event đảo ngược |
-| **C-11 Q-A4** — có chặn khi `PAUSED`/`FINISHED` không | `PAUSED` **không tồn tại** (`Đ-21`). `FINISHED`: **cho phép**, kèm cảnh báo | `SUY RA` | Xem lại trận đã kết thúc là nhu cầu thật (phân xử khiếu nại); thao tác này không sinh điểm |
+| **C-11 Q-A4** — có chặn khi trận đã `FINISHED` không | **Cho phép**, kèm cảnh báo | `SUY RA` | Xem lại trận đã kết thúc là nhu cầu thật (phân xử khiếu nại); thao tác này không sinh điểm |
 | **C-11 Q-A5** — mở tay có ghi đè `revealAnswerAfterJudge` không | **CÓ ghi đè** | `SUY RA` | `GRR-112` đã duyệt **đúng pattern này**: *"câu không được chấm ⇒ không tự đẩy đáp án, **nhưng admin mở tay được**"*. Tức thao tác tay của admin **đã** được công nhận là thắng chính sách tự động — Q-A5 chỉ là cùng một câu hỏi ở một trường cấu hình khác |
 | **C-11 Q-A6** — AuditLog phân biệt mở-do-admin và mở-do-engine | **CÓ** | `SUY RA` | Không phân biệt thì Q-A2 không kiểm toán được, và khiếu nại *"vì sao đáp án hiện sớm"* không tra được |
 | **C-11 Q-A7** — role nào ngoài ADMIN | **Chỉ ADMIN** | `SUY RA` | `S-13`: `/mc` read-only. `Đ-18`: một admin cho mỗi contest |
@@ -467,7 +467,7 @@ Không có đề xuất nào ở Tầng 4 mâu thuẫn với nguyên tắc nền
 | **S-10** — retention vs biên bản | Job retention **tự xuất PDF vào kho lưu trữ trước khi xoá**, và **từ chối xoá** nếu xuất thất bại | `SUY RA` | `GRR-136` đã duyệt và nêu thẳng hệ quả: *"sau retention điểm không tái tính được, biên bản/PDF thành hồ sơ duy nhất"*. Nếu hồ sơ duy nhất đó chưa từng được tạo thì retention là **mất dữ liệu**, không phải dọn dữ liệu |
 | **S-11** — viewer thấy trận quay ngược | Banner *"Vòng X đang được tổ chức lại"* trong lúc chạy lại; bảng điểm đổi **không animation** | `SUY RA` | `GRR-130` đã duyệt mapping *"không animation"*. Banner là bù lại đúng chỗ `Đ-21` bỏ đi (viewer mất mọi tín hiệu về việc trận đang bất thường) |
 | **S-16** — `Đ-18` *"một admin"* là ràng buộc tầng nào | **Nhiều tài khoản có quyền, nhưng MỘT PHIÊN điều khiển tại một thời điểm.** Phiên chuyển giao được, có dialog xác nhận ở cả hai đầu, ghi AuditLog | `ĐỀ XUẤT` | Gắn cứng một tài khoản vào contest sẽ **hỏng trận** khi máy admin chết — không có đường vào lại. Khoá theo phiên giữ đúng ý *"một người điều khiển tại một thời điểm"* mà vẫn cho đổi máy, đổi người. Đây cũng là câu trả lời cho **S-17** |
-| **S-17** — mất phương án dự phòng khi admin rớt mạng | **Giải bằng S-16**: admin dự phòng **giành quyền điều khiển**. Trận không cần đóng băng vì không có gì tự chạy — mọi thứ chờ nút bấm | `SUY RA` | `Đ-21` bỏ auto-pause là hợp lý **với điều kiện** có đường vào lại. S-16 cung cấp đường đó. Thiệt hại còn lại chỉ là thời gian thật của cửa sổ đang mở — van thoát vẫn là `Đ-5.1` |
+| **S-17** — mất phương án dự phòng khi admin rớt mạng | **Giải bằng S-16**: admin dự phòng **giành quyền điều khiển**. Trận không cần đóng băng vì không có gì tự chạy — mọi thứ chờ nút bấm | `SUY RA` | `Đ-21` không cho hệ thống tự dừng, điều đó hợp lý **với điều kiện** có đường vào lại. S-16 cung cấp đường đó. Thiệt hại còn lại chỉ là thời gian thật của cửa sổ đang mở — van thoát vẫn là `Đ-5.1` |
 | **S-18** — bộ thông điệp toast cho invalid state | Mẫu **hai vế**: *"[không làm được gì] — [vì trạng thái nào]"*. Ví dụ: *"Chưa chấm được — câu chưa hiển thị"* · *"Chưa mở được vòng — kho đề thiếu 3 câu mức 30"* · *"Không chuyển câu được — câu này chưa có phán quyết"*. Cấm toast chung chung kiểu *"Thao tác không hợp lệ"* | `ĐỀ XUẤT` | Chuẩn UX cho trạng thái không khả dụng: điều tệ nhất là người dùng **không biết vì sao** không bấm được. Trong trận trực tiếp, một toast mơ hồ khiến admin tưởng hệ thống treo. Vế thứ hai (lý do) cũng là thứ chỉ cho admin **bước tiếp theo** |
 | **S-19** — có khoá ô nhập hàng ngang của người vừa bấm CNV không | **KHÔNG khoá** | `SUY RA` | Tiền lệ Athena **nghiêm hơn luật gốc**: luật chỉ loại người đó khi họ trả lời **sai** CNV. Khoá ngay lúc bấm là trừng phạt trước khi có phán quyết — trái thẳng nguyên tắc nền điểm 1 (*"mọi outcome là kết quả SAU KHI admin bấm"*). Nếu BTC muốn hành vi Athena, đó là một **tuỳ chọn RuleConfig**, không phải mặc định |
 | **S-20** — nút chọn hàng ngang có hiện trên máy thí sinh chưa tới lượt không | **KHÔNG hiện.** Mâu thuẫn `Đ-16` vs `Đ-5` là **biểu kiến** | `SUY RA` | Hai rule tác động ở **hai thời điểm khác nhau**: `Đ-5` cho admin ép **ở khâu gán lượt** (trước khi mở cửa sổ chọn); `Đ-16` chi phối **sau khi cửa sổ đã mở**. Khi cửa sổ mở thì "ai đang tới lượt" đã là quyết định của admin rồi ⇒ tín hiệu sai lượt **không cần tồn tại**. Ghi dòng này vào bảng quyết định `GR-007` |

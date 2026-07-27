@@ -101,7 +101,7 @@ Người tổ chức một trận Olympia ở quy mô trường/CLB **không có
 | G-4 | **Điểm độc lập thời gian**: `timeSeconds` là metadata TỪNG CÂU, không suy ra từ mức điểm | `[CHỐT]` D8 |
 | G-5 | **Kho đề tập trung, bảo mật cao** — đáp án không bao giờ tới client trước công bố; metadata đầy đủ; import/export | `[CHỐT]` `P/PRD.md` §2 mục 2 |
 | G-6 | **Thi đấu realtime công bằng**: chuông xếp hạng theo server-timestamp, timer server-authoritative | `[CHỐT]` `P/PRD.md` §2 mục 3 |
-| G-7 | **Vận hành trận tin cậy**: pause/resume, undo chấm điểm, phục hồi sau sự cố, audit log phân xử khiếu nại | `[CHỐT]` `P/PRD.md` §2 mục 4 |
+| G-7 | **Vận hành trận tin cậy**: hoàn nguyên chấm điểm, phục hồi sau sự cố, audit log phân xử khiếu nại | `[CHỐT]` `P/PRD.md` §2 mục 4 |
 | G-8 | **Trình diễn**: viewer animation + overlay OBS + màn MC; theming per contest; âm thanh tuỳ chỉnh mọi thành phần | `[CHỐT]` `P/PRD.md` §2 mục 5 |
 | G-9 | **Chuyển trọn gói giữa 2 môi trường**: soạn trên bản Internet → import vào bản portable ngày thi | `[CHỐT]` D23 |
 | G-10 | **2 hình thức triển khai**: Docker compose trên server Internet; portable Windows LAN không Docker | `[CHỐT]` `P/PRD.md` NFR-7 |
@@ -155,12 +155,12 @@ Admin phát mã phòng 6 số → thí sinh đăng nhập username+password + nh
 
 ### J-5. Thi đấu & điều khiển
 **Actor**: Admin (A-1) chính; Thí sinh (A-4), MC (A-5) phụ
-Admin điều khiển tuần tự: mở vòng → hiện câu → chạy timer → thí sinh bấm chuông/gõ đáp án → admin chấm Đúng/Sai (hotkey C/X) → câu tiếp. Xen kẽ: pause/resume, chỉnh điểm kèm lý do, undo, skip/thay câu, chỉnh timer, khoá cổng/kick viewer. MC đọc câu hỏi từ màn `/mc` (thấy đáp án).
+Admin điều khiển tuần tự: mở vòng → hiện câu → chạy timer → thí sinh bấm chuông/gõ đáp án → admin chấm Đúng/Sai (hotkey C/X) → câu tiếp. Xen kẽ: chỉnh điểm kèm lý do, hoàn nguyên, skip/thay câu, chỉnh timer, khoá cổng/kick viewer. MC đọc câu hỏi từ màn `/mc` (thấy đáp án).
 **Nguồn**: US-4.1 → US-4.8, US-5.1 → US-5.5, US-8.10, US-3.7, US-3.8
 
 ### J-6. Xử lý sự cố giữa trận
 **Actor**: Admin (A-1), Thí sinh (A-4)
-Thí sinh rớt mạng → grace 120s giữ ghế + state-sync; rớt đúng lượt riêng → engine pause + admin quyết. Admin rớt → tự pause. Media hỏng → skip/thay câu dự phòng. VCNV cả 4 bị loại → admin bấm nút mở miếng ghép thủ công.
+Thí sinh rớt mạng → grace 120s giữ ghế + state-sync; rớt đúng lượt riêng → engine dừng lại chờ admin quyết. Admin rớt → hệ thống **không** tự phản ứng (`Đ-21`); xem **S-17**. Media hỏng → skip/thay câu dự phòng. VCNV cả 4 bị loại → admin bấm nút mở miếng ghép thủ công.
 **Nguồn**: US-5.4, US-4.4, US-4.7, D13.1, D13.4, FR-3.5
 
 ### J-7. Sau trận
@@ -326,7 +326,7 @@ Phân loại: đây là **điều khiển hệ thống**, không phải luật g
 | Q-A1 | Thao tác **đóng** có dialog xác nhận không, hay chỉ **mở** mới có? |
 | Q-A2 | Miếng ghép do admin **mở tay** có tính vào mốc "số hàng ngang đã mở" của thang điểm Chướng ngại vật không? (giao với luật game — GRR-019) |
 | Q-A3 | Đóng lại một đáp án/ô chữ đã mở có làm thay đổi **điểm đã ghi nhận** không, hay chỉ đổi hiển thị? |
-| Q-A4 | Mở/đóng tay có bị chặn khi trận đang `PAUSED` hoặc `FINISHED` không? |
+| Q-A4 | Mở/đóng tay có bị chặn khi trận đã `FINISHED` không? |
 | Q-A5 | "Đáp án" ở đây gồm cả đáp án **đẩy tới viewer/thí sinh** không — tức có ghi đè `revealAnswerAfterJudge` (C-1) không? |
 | Q-A6 | Có ghi **AuditLog** riêng để phân biệt "mở do admin" với "mở do engine" không? |
 | Q-A7 | Ngoài ADMIN, role nào khác có quyền này (MC? Host?) — hay độc quyền ADMIN? |
@@ -529,7 +529,7 @@ Phần luật + rà soát "lượt thi" theo nguồn: `docs/reviews/game-rules-r
 | **Đ-24** | **Nút chuông tự khoá ngay khi bấm** (frontend, trước khi gửi) | Quy tắc render nút chuông: khoá đồng bộ trong handler, mở lại khi sang câu mới. Cần ghi rõ trong hướng dẫn UI đây là **khoá-theo-luật-chơi**, không phải vi phạm quy tắc "không disable nút" — nếu không, người implement sau sẽ gỡ mất. Áp cho cả nút "Mở chướng ngại vật"; **không** áp cho click chọn hàng ngang | E-7, E-8 |
 | **Đ-23** | Hai tín hiệu **cùng mốc thời gian** ⇒ hàng đợi tự quyết định, **ngẫu nhiên** | Bỏ được nhu cầu thiết kế quy tắc ưu tiên (theo ghế/vị trí) và giao diện giải thích nó. Đổi lại: khi có khiếu nại *"vì sao là bạn ấy chứ không phải tôi"*, câu trả lời **chỉ có thể** là "hàng đợi ghi nhận thế" ⇒ màn admin cần **xem lại được thứ tự hàng đợi kèm timestamp** để đối chất, và BTC nên biết trước rằng hệ thống không có tiêu chí ưu tiên nào | E-7, E-11 |
 | **Đ-22** | Tín hiệu thí sinh **không làm gián đoạn đồng hồ**; hoãn **hiển thị** chứ không hoãn thời gian | Màn admin cần **nút hiển thị đáp án** tách khỏi sự kiện hết giờ — hết giờ chỉ khoá ô nhập của thí sinh, không tự bung gì cả. Màn thí sinh và viewer phải ẩn **hai** thứ cho tới khi admin bấm: **đáp án chuẩn của chương trình** và **bài làm của các thí sinh khác** — kể cả khi đồng hồ đã về 0. **Tiền lệ Athena**: `ShowAnswer_Click` là nút riêng cho bài làm; đáp án chuẩn thì ẩn theo vai ngay ở tầng hiển thị (`ObstacleUI.cs` dòng 104: ghế thí sinh `Collapsed`, chỉ màn MC thấy) | E-7, E-8, E-9 |
-| **Đ-21** | **Không tồn tại** trạng thái "trận tạm dừng" | **Bỏ khỏi phạm vi sản phẩm**: nút pause/resume, banner "tạm dừng kỹ thuật" cho viewer, cơ chế tự động tạm dừng khi admin mất kết nối, và mọi cấu hình ngưỡng đi kèm. Viewer **không** có tín hiệu nào cho biết trận đang dừng | E-7, E-9 |
+| **Đ-21** | **Đồng hồ chạy liên tục**; trận dừng bằng cách admin ngừng thao tác | **Bỏ khỏi phạm vi sản phẩm**: nút dừng/tiếp, banner báo gián đoạn cho viewer, cơ chế tự dừng khi admin mất kết nối, và mọi cấu hình ngưỡng đi kèm. Viewer **không** có tín hiệu nào cho biết trận đang gián đoạn | E-7, E-9 |
 | **Đ-36** | **Chọn hàng ngang: một đường vào mỗi mode**; mode nhập liệu dedup bằng **dialog phía thí sinh** + khoá tạm | **Phá vỡ một quy ước UI tưởng là tuyệt đối**: `CLAUDE.md` §UX ghi *"dialog xác nhận KHÔNG BAO GIỜ ở phía thí sinh"*, nay có đúng **một** ngoại lệ. Cần ghi tiêu chí vào hướng dẫn UI — **đua tốc độ thì không dialog, không đua tốc độ thì có** — nếu không, người implement sau hoặc gỡ mất dialog này, hoặc nhân bản nó sang chuông. Kéo theo: màn VCNV của thí sinh **khác nhau theo mode** (sân khấu: không render nút chọn; nhập liệu: render + dialog), nên đây là **hai layout**, không phải một layout bật/tắt một nút. Nút chọn cần **ba trạng thái** (sống · khoá chờ duyệt · mở lại sau khi admin từ chối) — trạng thái thứ ba dễ bị bỏ sót và sẽ khiến thí sinh mất lượt trái luật | E-7, E-8 |
 
 **Khoảng trống mới phát sinh — cần quyết:**
@@ -537,10 +537,106 @@ Phần luật + rà soát "lượt thi" theo nguồn: `docs/reviews/game-rules-r
 | ID | Vấn đề | Epic |
 |---|---|---|
 | **S-16** | **Đ-18 chưa nói "một admin" là ràng buộc ở tầng nào**: một tài khoản duy nhất cho mỗi contest, hay nhiều tài khoản nhưng khoá còn một phiên điều khiển? Hai cách cho hai thiết kế permission khác nhau, và ảnh hưởng luôn kịch bản admin đổi máy giữa trận | E-1, E-7 |
-| **S-17** | **Đ-21 bỏ auto-pause ⇒ mất luôn phương án dự phòng khi admin mất kết nối giữa trận.** Trước đây hệ thống tự đóng băng; nay trận cứ chạy còn thí sinh vẫn bị đồng hồ khoá. Van thoát duy nhất là bỏ / chạy lại vòng (`Đ-5.1`), mà cách đó **tiêu đề** (câu đã dùng không trả lại kho). Có cần quy trình vận hành riêng cho tình huống này không? | E-7, E-12 |
+| **S-17** | **Không có phương án dự phòng khi admin mất kết nối giữa trận** (`Đ-21`): trận cứ chạy, thí sinh vẫn bị đồng hồ khoá. Van thoát duy nhất là bỏ / chạy lại vòng (`Đ-5.1`), mà cách đó **tiêu đề** (câu đã dùng không trả lại kho). Có cần quy trình vận hành riêng cho tình huống này không? | E-7, E-12 |
 | **S-19** | **Athena tự khoá ô nhập hàng ngang của chính người vừa bấm "Mở chướng ngại vật"** (`ObstacleUI.cs` `Obstacle_Click`) — coi như người đó đã dồn hết vào CNV. `Đ-22` **không nói** tới điểm này. Người bấm CNV, trong lúc chờ admin duyệt, **có còn được trả lời hàng ngang không**? Luật gốc chỉ loại họ khi trả lời **sai** CNV, nên khoá ngay lúc bấm là **nghiêm hơn luật** | E-7, E-8 |
 | **S-18** | **Đ-16 cần bộ thông điệp toast chuẩn** — mỗi loại invalid state nói gì. Nếu chỉ hiện một câu chung chung thì admin không biết vì sao thao tác bị chặn, giữa lúc đang phải xử lý nhanh | E-7, E-8 |
 | **S-20** | **Đ-36 chưa nói nút chọn hàng ngang có hiện trên máy thí sinh CHƯA TỚI LƯỢT không** (mode nhập liệu). `Đ-16` (invalid state → máy thí sinh không render gì) đẩy về "không hiện" ⇒ tín hiệu sai lượt **không tồn tại**; còn `Đ-5` (cảnh báo, không chặn cứng) giả định tín hiệu sai lượt **tới được** server và admin ép được. Hai rule cho hai thiết kế màn thí sinh khác nhau, và quyết định luôn một hàng trong bảng quyết định GR-007 | E-7, E-8 |
+
+---
+
+### C-18 `[CHỐT 2026-07-27]` — Admin sửa danh sách câu đã gán tại cửa vào vòng
+
+> Phần **luật** ghi ở `docs/reviews/game-rules-decisions.md` §11.22, mã **Đ-37**. Mục này chỉ ghi **hệ quả cấp sản phẩm**.
+>
+> **Quyết định**: admin **thêm / bớt câu hỏi** trong danh sách đã gán ở **`LOBBY`** — **cửa vào vòng**, tức trước khi mở bất kỳ vòng nào. Đang trong một vòng thì **không**. Câu **đã hiển thị** cho thí sinh thì **không gỡ được** (invalid state, toast, không ép được).
+
+**Đây là phân xử một mâu thuẫn đã tồn tại, không phải mở rộng phạm vi.** `Đ-31` và GR-025 đều đã viết *"bổ sung đề rồi mở lại"*; chỉ GR-031 nói ngược (*"snapshot không bị sửa giữa trận"*) và câu đó là tàn dư từ thời pre-flight chạy một lần trước trận.
+
+| Hệ quả cấp sản phẩm | Epic |
+|---|---|
+| **Màn điều khiển cần một lối vào "sửa danh sách đề" ở **cửa vào vòng** (`LOBBY`). Đây là lối thoát cho ngưỡng chặn cứng của `Đ-31` — nếu không có nó, một vòng thiếu đề là **mất hẳn vòng đó**, mà `Đ-31` lại là ngưỡng **không ép được**. Chặn cứng mà không có đường xử lý là lỗi thiết kế, không phải tính năng an toàn | E-5, E-7 |
+| **Thông điệp thiếu đề của `Đ-31` phải dẫn thẳng sang thao tác này.** `Đ-31` yêu cầu nói rõ *vòng nào thiếu bao nhiêu câu*; nay thông điệp đó cần kèm lối đi tới màn sửa danh sách, nếu không admin phải tự mò giữa lúc đang chạy chương trình | E-5, E-7 |
+| **Ba trạng thái câu phải phân biệt được trên giao diện chọn đề**: *chưa rút* (gỡ được) · *đã rút, chưa hiển thị* (gỡ được — `GRR-118`: chưa tiêu, trả lại kho) · *đã hiển thị* (**không gỡ được**). Nếu UI chỉ có hai trạng thái thì hoặc admin gỡ nhầm câu đã lộ, hoặc mất quyền dọn câu chưa dùng | E-5, E-7 |
+| **Gỡ khỏi danh sách ≠ hoàn tác việc đã dùng.** Nhãn trên nút phải nói đúng nghĩa *"không rút nữa"*. Nếu người dùng hiểu là "trả câu về kho" thì sẽ trông đợi hỏi lại được câu đó — trái no-repeat toàn contest (`R-GEN-06`) | E-5, E-7 |
+| **Thao tác này vào AuditLog** như mọi thao tác khác (`CLAUDE.md` §Quy ước: *audit log MỌI thao tác, MỌI role*). Nó đổi tập tài nguyên của trận đang chạy nên là dữ liệu phân xử khiếu nại | E-11 |
+| **Phân quyền**: cùng họ với S-1 (bỏ vòng / chạy lại vòng / override). Sửa danh sách đề giữa trận **đổi được kết quả trận**, nên phải nằm trong permission catalog, không mặc định theo vai | E-1, E-7 |
+| **Pre-flight chạy lại sau khi sửa.** Sửa xong mà không kiểm lại thì admin vẫn không biết vòng đã mở được chưa. Kết quả kiểm nên hiện **ngay tại màn sửa**, không đợi tới lúc bấm mở vòng | E-5, E-7 |
+
+**Khoảng trống mới phát sinh — cần quyết:**
+
+| ID | Vấn đề | Epic |
+|---|---|---|
+| **S-21** | **Thêm câu vào danh sách gán có bị hàng rào `everPublic` chặn không?** `R-GEN-12` quy định câu `everPublic` **hard-block mọi match**, force cần confirm 2 bước + audit — nhưng hàng rào đó được đặc tả ở **pre-flight trước trận**. Nay có đường thêm câu **giữa trận**, cần chốt hàng rào có áp ở đó không. Nếu không áp thì đây là **đường vòng qua toàn bộ cơ chế chống rò đề** | E-5, E-11 |
+| **S-22** | **Viewer có thấy gì khi admin sửa danh sách đề giữa trận không?** `Đ-5.2e` đã chốt viewer thấy điểm đổi đột ngột khi bỏ vòng, `S-11` hỏi về việc chạy lại vòng. Đây là trường hợp thứ ba: trận đứng yên nhưng tài nguyên bên dưới đổi. Nhiều khả năng là **không hiện gì** — nhưng chưa ai nói | E-9 |
+| ~~**S-23**~~ | ✅ **ĐÃ CHỐT 2026-07-27 (`Đ-38`).** `Đ-38` đặc tả đủ điều kiện vào/ra của `LOBBY` — **cửa vào vòng**. **Vào**: trận được tạo · **mọi** nút *"Kết thúc vòng"* · bỏ / chạy lại vòng. **Ra**: mở bất kỳ vòng nào · `TIE_BREAK` · `FINISHED`. ⇒ Cửa sửa đề mở **đúng khi không vòng nào đang chạy**. Đóng luôn `GRR-077` và `UNRES-01` | E-7 |
+
+---
+
+### C-19 `[CHỐT 2026-07-27]` — Màn công bố kết quả
+
+> **Quyết định**: hệ thống có một **lớp hiển thị công bố bảng xếp hạng**. Hệ thống **gợi ý mở** ở hai mốc — **sau mỗi vòng** và **khi trận kết thúc** — nhưng **admin mở/đóng được tuỳ ý, bất cứ lúc nào**. Cùng họ với **C-11** (quyền mở/đóng hiển thị của admin).
+>
+> Máy trạng thái ghi ở `docs/game-state-machine.md` **§F**, mã **STATE-036** + **EVENT-039/040**. **Không** phát sinh `GR-` mới: quyền hiển thị xưa nay nằm ở tài liệu này, `game-rules.md` chỉ trích dẫn (tiền lệ: GR-012 Evaluation order trích `C-11`).
+
+**Vì sao cần chốt**: tài liệu chuẩn **im lặng** về việc công bố, và tiền lệ hiện thực duy nhất thì đi xa hơn những gì tài liệu mô tả.
+
+| Nguồn | Có gì | Hạng nguồn |
+|---|---|---|
+| **Athena** (`AIServer/ScoreResulting.cs`, `AICtrlLib/ResultUI.cs`) | `ResultUI` là giá trị **first-class** trong enum chuyển màn, ngang hàng 5 vòng thi; **mọi** vòng đều điều hướng tới nó khi xong ⇒ công bố **sau mỗi vòng** | Tiền lệ hiện thực, **không phải requirement** |
+| `docs/glossary.md` TERM-043 (R2) | *"Kết quả trận — bảng điểm cuối + thứ hạng, xuất biên bản/PDF"* | Tài liệu chuẩn — nhưng mô tả một **hiện vật dữ liệu**, không phải luồng công bố |
+| ~~Demo `public/`~~ | — | ❌ **KHÔNG dùng làm căn cứ** — xem **AS-8** |
+
+> **Demo tĩnh `public/` không có giá trị tham chiếu** (chủ dự án xác nhận 2026-07-27): bản xem thử làm vội. Đây chính là **AS-8** — giả định *"demo là design reference đủ tin cậy"* — nay đã **bác bỏ dứt khoát**. Mọi chỗ demo lệch với tài liệu là **demo sai**, không phải một ý kiến thứ hai cần cân nhắc.
+
+**Bốn ràng buộc suy ra từ quyết định sẵn có** — không phát minh thêm:
+
+| Ràng buộc | Suy ra từ |
+|---|---|
+| **Thứ hạng do SERVER tính và đẩy xuống.** Client **không** tự suy ra từ bản sao điểm của mình | `CLAUDE.md` §Quy ước (server-authoritative tuyệt đối) · INV-04 |
+| **Hoà điểm ⇒ ĐỒNG HẠNG**, theo standard competition ranking (hạng kế nhảy qua số người đồng hạng) | `GRR-032` (đã duyệt) · `GRR-057` / `Đ-10.7a` |
+| **Nhịp lộ từng người là ANIMATION, không phải engine.** Engine emit **một** sự kiện công bố kèm bảng xếp hạng; cách trình bày (lộ dần, bục, confetti) là config client-side | `D22` (animation là module độc lập với engine/rule) |
+| **Không tự đóng.** Mở và đóng đều là **thao tác bấm của admin**; không có bộ đếm tự quay về | Nguyên tắc nền điểm 2 · `Đ-11` / **C-11** |
+
+| Hệ quả cấp sản phẩm | Epic |
+|---|---|
+| **Màn viewer và overlay cần một lớp phủ công bố**, bật/tắt theo lệnh admin — không phải một trang riêng thay thế sân khấu. Vì admin mở được **giữa lúc một vòng đang chạy**, lớp này phải chồng lên được mọi màn mà không huỷ trạng thái vòng bên dưới | E-9 |
+| **Màn admin cần nút mở/đóng công bố**, kèm **gợi ý** ở hai mốc mặc định (hết vòng · hết trận). Gợi ý theo đúng mô hình advisory của `Đ-5`: hệ thống nhắc, admin quyết | E-7, E-9 |
+| **Công bố là READ-ONLY tuyệt đối**: không sinh event điểm, không đổi trạng thái trận, không lộ đáp án (GR-037 giữ nguyên). Nó chỉ **trình bày** kết quả của `reduce(event log)` | E-7, E-10 |
+| **Bảng xếp hạng phải chịu được điểm ÂM và ĐỒNG HẠNG**, và **không hard-code số ghế** — hạ tầng UI làm cho 1-12 ghế ngay từ v1 (`CLAUDE.md` §Lộ trình version) | E-9 |
+| **`sound-cue` slot mới** cho thao tác công bố — cùng danh sách với **S-5** (revert, bỏ vòng, chạy lại, override). Athena có nhạc riêng (`Sounds\ShowingResult.mp3`), nên slot này gần như chắc chắn sẽ cần | E-9 |
+
+**Khoảng trống mới phát sinh — cần quyết:**
+
+| ID | Vấn đề | Epic |
+|---|---|---|
+| ~~**S-24**~~ | ✅ **ĐÃ CHỐT 2026-07-27 — xem C-20.** Tiền đề của câu hỏi này **không đứng**: điểm số **luôn hiển thị** cho thí sinh, nên "lộ bảng điểm giữa vòng" không phải là việc lộ thêm gì. Lớp phủ công bố áp cho **mọi vai**, gồm cả máy thí sinh | E-8, E-9 |
+| **S-25** | **Công bố ở `TIE_BREAK` hiển thị thế nào?** Nhóm hoà chưa phân định thì bảng xếp hạng chưa có thứ tự thật. Hiện đồng hạng, hay ẩn cho tới khi phân định xong? | E-9 |
+
+---
+
+### C-20 `[CHỐT 2026-07-27]` — Điểm số là thông tin CÔNG KHAI với mọi vai
+
+> **Quyết định**: thí sinh **không hề bị che giấu** điểm số — của chính mình **lẫn của mọi thí sinh khác**. Điểm **luôn hiển thị trên màn hình**, ở mọi vòng, mọi thời điểm.
+
+**Vì sao cần phát biểu tường minh**: repo đang trộn **ba loại thông tin rất khác nhau** vào chung một chữ *"hiển thị"*, và mới chỉ có hai loại được quy định. Người đọc `GR-037` (*"Phạm vi hiển thị đáp án"*) rất dễ tổng quát hoá nhầm sang điểm.
+
+| Loại thông tin | Chế độ | Nguồn |
+|---|---|---|
+| **Đáp án chuẩn của chương trình** | **MẬT** — chỉ admin + MC. Ngoại lệ duy nhất: `revealAnswerAfterJudge` bật **và** câu đã chấm. Overlay **không bao giờ** thấy | GR-037 · `CLAUDE.md` §Zero-trust |
+| **Bài làm của thí sinh khác** | **ẨN TẠM THỜI** trong lúc câu còn mở; lộ khi **admin bấm hiển thị**. Không phải bí mật vĩnh viễn — là cơ chế chống nhìn bài trong cửa sổ trả lời | GR-008 C9 · nguyên tắc nền điểm 14 |
+| **ĐIỂM SỐ** | **CÔNG KHAI, LUÔN LUÔN** — mọi vai, mọi lúc, gồm cả máy thí sinh | **C-20** (mục này) |
+
+**Ba thứ này độc lập nhau.** Việc điểm luôn công khai **không** nới lỏng hai dòng trên: đáp án vẫn mật, bài làm vẫn ẩn trong cửa sổ trả lời.
+
+| Hệ quả cấp sản phẩm | Epic |
+|---|---|
+| **Màn thí sinh phải có bảng điểm của TẤT CẢ các ghế**, không chỉ điểm của mình. Đây là chỗ dễ cài thiếu nhất: bản năng thiết kế màn thí sinh là chỉ hiện "điểm của tôi" | E-8 |
+| **Điểm cập nhật realtime cho máy thí sinh** như cho viewer. Mọi sự kiện đổi điểm — gồm cả **revert khi bỏ vòng** (`Đ-5.2e`: *"viewer thấy số đột ngột thay đổi"*) — đẩy tới máy thí sinh y như tới viewer | E-8, E-9 |
+| **Lớp phủ công bố (C-19) áp cho cả máy thí sinh**, không riêng viewer/overlay. Đóng **S-24** | E-8, E-9 |
+| **Không có cấu hình "ẩn điểm".** Đây là quy tắc cứng, không phải RuleConfig — nếu để cấu hình được thì lại sinh nhánh "trận ẩn điểm" mà không luật nào đặc tả | E-7 |
+| **Điểm ÂM cũng hiển thị bình thường** trên máy thí sinh (`Đ-2`: điểm được phép âm, không sàn) | E-8 |
+
+**Không phát sinh `GR-` mới**: cùng họ với `C-11`/`C-19` — quyền và phạm vi hiển thị nằm ở tài liệu này; `game-rules.md` §GR-037 chỉ được bổ sung **một dòng phân biệt** để không bị đọc lấn sang điểm.
 
 ---
 
@@ -590,7 +686,7 @@ Nguyên tắc: **một đường đi hoàn chỉnh từ soạn đề tới xuấ
 | E-4 Contest builder | Preset `O26_DEFAULT@1` + sửa số; QuestionPicker | Round playlist tuỳ ý; biến thể vòng (4 turn kinds → giữ 2; VCNV cố định 4 hàng; tăng tốc chỉ ranked-speed; về đích chỉ preset package) |
 | E-5 Phòng thi | Mã 6 số, lobby/tech-check, reconnect grace | — |
 | E-6 Engine | Đúng 4 vòng chuẩn O26 + tie-break, **4 ghế** | 1-12 ghế → giữ schema, chỉ mở 4 ở UI (né C-7 hoàn toàn) |
-| E-7 Admin control | Stepper, chấm, chỉnh điểm, undo, pause, skip, timer | Control lock 2 admin (US-4.8) → sau |
+| E-7 Admin control | Stepper, chấm, chỉnh điểm, hoàn nguyên, skip, timer | Control lock 2 admin (US-4.8) → sau |
 | E-8 Thí sinh | Chuông click, gõ đáp án, last-wins, reconnect | — |
 | E-9 Trình diễn | Viewer + overlay OBS | Màn MC, theming, soundboard → sau (**xem cảnh báo dưới**) |
 | E-10 Sau trận | PDF kết quả | Thống kê ghi ngược, replay → sau |
@@ -641,7 +737,7 @@ Nguyên tắc: **một đường đi hoàn chỉnh từ soạn đề tới xuấ
 | ID | Metric | Cách đo | Ngưỡng gợi ý |
 |---|---|---|---|
 | SM-5 | Số lần admin phải can thiệp ngoài luật/trận | Đếm event `SCORE_ADJUST` + `UNDO` + `SUBSTITUTE` trong event log | ≤ 3/trận |
-| SM-6 | Số lần trận bị dừng vì lỗi hệ thống (không phải sự cố ngoài) | Đếm PAUSE có nguyên nhân kỹ thuật | 0/trận |
+| SM-6 | Số lần trận bị gián đoạn vì lỗi hệ thống (không phải sự cố ngoài) | Đếm lần admin phải bỏ hoặc chạy lại vòng vì nguyên nhân kỹ thuật | 0/trận |
 | SM-7 | Tỉ lệ thí sinh reconnect thành công trong grace | (reconnect OK)/(số lần rớt) | ≥ 95% |
 | SM-8 | ~~Khiếu nại "em bấm trước" giải quyết được tại chỗ bằng log~~ → **sửa 2026-07-24**: **Log cung cấp đầy đủ dữ liệu THỜI GIAN và THAO TÁC** cho mọi sự kiện bị khiếu nại — log là **nguồn tham khảo tối đa có thể** của hệ thống, KHÔNG phải nguồn phân xử duy nhất. **Việc AI quyết định được ghi ở BIÊN BẢN VIẾT TAY** (ngoài hệ thống). | (sự kiện bị khiếu nại có đủ timestamp + chuỗi thao tác trong log)/(tổng sự kiện bị khiếu nại) | 100% |
 
