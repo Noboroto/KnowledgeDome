@@ -483,11 +483,14 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 
 ### TERM-049 — `everPublic`
 
-**Định nghĩa.** Cờ **một chiều** đánh dấu câu đã từng nằm trong bộ đề public. Câu `everPublic = true` ⇒ pre-flight **hard-block** mọi trận official; ép cần xác nhận hai bước + audit. Kiểm ở đơn vị **CÂU**, mỗi **trận**.
+**Định nghĩa.** Cờ **một chiều** đánh dấu câu đã từng nằm trong bộ đề public. Câu `everPublic = true` bị **chặn cứng** khỏi trận official; ép được với **xác nhận hai bước + audit**. Kiểm ở đơn vị **CÂU**.
 
-- **Giá trị**: `true` / `false`, **một chiều vĩnh viễn**
-- **Đừng nhầm với**: **`Question.visibility`** (TERM-050) là cờ **khác** — nó là **trạng thái hiện tại**, còn cờ này là **dấu vết lịch sử**. Pre-flight chặn theo **`everPublic`**, không theo `visibility`, vì thứ nguy hiểm là *"đã từng lộ"* chứ không phải *"đang lộ"*
-- **Nguồn**: `QĐ-040`, `QĐ-063`
+Hàng rào gắn với **THAO TÁC, không gắn với mốc thời gian**: nó chạy ở **mọi** cửa đưa câu vào danh sách gán của một trận official — pre-flight, sửa danh sách ở `LOBBY`, hay import. **Không** áp cho trận `practice`.
+
+- **Giá trị**: `true` / `false`, **một chiều vĩnh viễn** — đánh dấu nhầm thì phải tạo câu mới
+- **Đi theo CÂU qua import/export** — khác `usedInContest`, vốn thuộc **contest** nên đặt lại khi nhập vào contest khác
+- **Đừng nhầm với**: **`Question.visibility`** (TERM-050) là cờ **khác** — nó là **trạng thái hiện tại**, còn cờ này là **dấu vết lịch sử**. Chặn theo **`everPublic`**, không theo `visibility`, vì thứ nguy hiểm là *"đã từng lộ"* chứ không phải *"đang lộ"*
+- **Nguồn**: `QĐ-040`, `QĐ-063`, `QĐ-071`
 
 ### TERM-050 — `Question.visibility`
 

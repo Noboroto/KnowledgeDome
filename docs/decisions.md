@@ -573,6 +573,26 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu Đ�
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5.2f`, `GRR-085`, `GRR-118`, `U-30`
 
+### QĐ-071 — Hàng rào `everPublic` gắn với THAO TÁC, không gắn với MỐC THỜI GIAN
+
+**Quyết định.** Bất cứ khi nào một câu được **đưa vào danh sách gán của một trận official** — ở pre-flight trước trận, ở `LOBBY` qua `QĐ-043`, hay bằng bất kỳ đường nào về sau — hàng rào `everPublic` **chạy y hệt**: chặn cứng, **ép được** với **xác nhận hai bước**, vào `AuditLog`.
+
+**`everPublic` là thuộc tính của CÂU, đi theo câu qua import/export.** `usedInContest` thuộc về **contest** nên đặt lại khi nhập vào contest khác; `everPublic` **không** — nó là dấu vết *"câu này đã từng lộ"*, và sự lộ đó không mất đi vì đổi contest.
+
+**Không áp cho trận `practice`**: kho của practice contest **cố ý** là đề public.
+
+**Vì sao.** Hàng rào cũ được viết khi chỉ có **một** cửa vào — pre-flight. `QĐ-043` mở cửa thứ hai, import mở cửa thứ ba. Cả ba quyết định đều đúng trong phạm vi của mình, nhưng chỗ hở giữa chúng cho một chuỗi **ba bước hợp lệ** vô hiệu hoá toàn bộ cơ chế chống rò đề: tạo trận với danh sách sạch → bấm start → ở `LOBBY` thêm câu đã lộ vào. Không ép, không audit, vì hàng rào không được gọi ở đó.
+
+Gắn hàng rào vào **thao tác** thì mọi cửa mở về sau **tự được bảo vệ**, không phải nhớ vá từng cái.
+
+**Đây là bài học của `QĐ-042` lặp lại**: ở đó, kiểm kho đề **một lần trước trận** là sai vì vòng mở ở nhiều thời điểm; lời giải là kiểm **tại từng cửa vào vòng**. Cùng dạng lỗi, cùng cách sửa.
+
+Và là **cùng lỗ hổng với `QĐ-063`** nhìn từ hướng khác: ở đó là *gỡ nhãn public khỏi câu đã lộ*, ở đây là *đưa câu đã lộ vào bằng cửa sau*. Một kết cục, hai đường.
+
+**Hệ quả.** Không viết nhánh mới — cửa của `QĐ-043` và luồng import **gọi lại đúng** hàng rào đã có. Không thêm chỗ chặn cứng nào: `QĐ-003` giữ nguyên **ba** chỗ, vì đây vẫn là **cùng một** hàng rào, chỉ được gọi ở nhiều điểm hơn. Vẫn ép được — chỉ là ép có dấu vết.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `S-21`, `GRR-111`
+
 ---
 
 # I. Ghế, kết nối, và quyền thao tác
