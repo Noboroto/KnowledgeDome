@@ -878,7 +878,7 @@ Hai ràng buộc phái sinh dùng **cùng** điều kiện ấy:
 
 **Nội dung trình diễn giữa hai vòng** (giao lưu, giải lao, video hình hiệu) **không cần** trạng thái riêng: nó là **lớp phủ** do admin bật/tắt (`C-19`), không phải một bước của luồng thi đấu.
 
-⇒ Đóng `GRR-077`. Hệ quả cấp sản phẩm ở `docs/product-discovery.md` **C-18**, **S-23**.
+⇒ Đóng **vế (1)** của `GRR-077` — *"điều kiện vào và ra của trạng thái nghỉ giữa các vòng"*. **Vế (2) — *"trận đã bắt đầu nhưng không thể hoàn thành kết thúc bằng trạng thái nào"* — VẪN TREO**, theo dõi ở `game-state-machine.md` mục Unresolved (đề xuất `ABANDONED`, chưa duyệt). Hệ quả cấp sản phẩm ở `docs/product-discovery.md` **C-18**, **S-23**.
 
 ---
 
@@ -973,5 +973,5 @@ Hai ràng buộc phái sinh dùng **cùng** điều kiện ấy:
 | **Đ-35** | Phán quyết của admin là quyết định cuối cùng; nút chấm khoá tới hết giờ ở vòng gõ máy | §11.20 |
 | **Đ-36** | Chọn hàng ngang: một đường vào mỗi mode; mode nhập liệu dedup bằng dialog phía thí sinh + khoá tạm | §11.21 |
 | **Đ-37** | Danh sách câu đã gán **sửa được tại cửa vào vòng**; **không** gỡ được câu đã hiển thị | §11.22 |
-| **Đ-38** | **`LOBBY` = cửa vào vòng** — trạng thái nghỉ duy nhất; enum 4 giá trị; snapshot cấu hình là guard trên cạnh ra. Đóng `GRR-077` | §11.23 |
+| **Đ-38** | **`LOBBY` = cửa vào vòng** — trạng thái nghỉ duy nhất; enum 4 giá trị; snapshot cấu hình là guard trên cạnh ra. Đóng **vế (1)** của `GRR-077`; vế (2) (*trận bỏ dở*) vẫn treo | §11.23 |
 | **Đ-39** | **Pipeline vòng độc lập** — khôi phục = sửa điểm + mở lại vòng; mở vòng ⇒ vòng bắt đầu sạch; *"sau vòng X"* đọc thành *"tại mốc mở vòng Y"* | §11.24 |

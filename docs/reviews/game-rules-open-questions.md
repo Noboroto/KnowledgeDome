@@ -230,7 +230,7 @@ Tiêu chí: **chặn khi vòng/pha đó về mặt vật lý không còn NGHĨA*
 | **GRR-034** | Thí sinh có được **rút lại đáp án** đã gửi để nộp trống không? Rule *"submission rỗng thì SKIP"* khiến không rút được — đây là **chủ đích** hay **hệ quả phụ**? |
 | **GRR-054** | Thí sinh có được **đổi gói** sau khi đã xác nhận không? Hạn chót là mốc nào? |
 | **GRR-057 / Đ-10.7a** | Nếu admin **KHÔNG** chọn phân định một nhóm hoà, thứ hạng cuối của nhóm đó ghi thế nào — **đồng hạng**, hay tiêu chí khác? |
-| **GRR-077** | Một trận đã bắt đầu nhưng **không thể hoàn thành** được kết thúc bằng **trạng thái nào**? (chưa có trạng thái cho trận huỷ) |
+| ~~**GRR-077**~~ | ✅ **ĐÃ TRẢ LỜI 2026-07-27.** Vế *"trạng thái nghỉ giữa các vòng"* → `Đ-38` (`LOBBY`). Vế *"trận không thể hoàn thành"* → `Đ-47`: **`FINISHED` + nhãn `matchClosedReason = "bỏ dở"`**, không thêm state mới; admin bấm **"Huỷ trận"** (`EVENT-044`), điểm giữ nguyên, không phân định thứ hạng |
 | **GRR-088** | Câu bị đánh dấu `everPublic` **do nhầm lẫn** có được khôi phục không? Ai có quyền? |
 | **GRR-091** | **Câu hỏi phụ lấy từ pool nào**, và có phải gán trước khi start như các vòng khác không? |
 | **GRR-104** | **Miền giá trị hợp lệ** của các tham số luật khi admin tự cấu hình là gì? Đổi cấu hình giữa contest có áp cho trận đã diễn ra không? |

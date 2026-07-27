@@ -1241,7 +1241,7 @@ Admin **bấm hiển thị đáp án** sau khi hết thời gian suy nghĩ, rồ
 
 - **Được chấm đúng**: +10 cho từng người đúng, miếng ghép mở.
 - **Không ai đúng**: không ai được điểm, miếng ghép không mở.
-- Hàng ngang vẫn **được coi là đã hỏi** dù miếng ghép có mở hay không — đây là căn cứ đếm băng điểm ở GR-009.
+- Hàng ngang vẫn **được coi là đã hỏi** dù miếng ghép có mở hay không — đây là căn cứ đếm băng điểm ở GR-009. **Admin đánh dấu một hàng ngang là "đã hỏi" bằng tay cũng vào cùng con số đó** (`Đ-44`) — đường mở tay tồn tại để **dựng lại bàn cờ sau sự cố**, nên nó phải nuôi đúng biến đếm mà băng điểm đọc.
 
 ### State changes
 
@@ -1341,7 +1341,7 @@ Thí sinh bấm nút "Mở chướng ngại vật".
 ### Inputs
 
 - Tín hiệu kèm server timestamp.
-- **Số hàng ngang đã hỏi** tại thời điểm xét — đây là biến quyết định băng điểm, **không phải** số miếng ghép đã mở.
+- **Số hàng ngang đã hỏi** tại thời điểm xét — đây là biến quyết định băng điểm, **không phải** số miếng ghép đã mở. Con số này tăng ở **cả ba** lối vào (`Đ-44`, chủ dự án chốt 27/07 — duyệt `Q-A2`): hàng ngang **được hỏi thật** · hàng ngang **admin đánh dấu đã hỏi bằng tay**, ngoài luồng hỏi · **gợi ý cuối** được đưa ra. Thao tác **lộ đáp án** của một hàng ngang **không** làm nó tăng — nó không đổi *"đã hỏi"*, và nhờ vậy mở tay trọn một hàng chỉ tính **đúng một lần**.
 - Trạng thái: gợi ý cuối đã được đưa ra hay chưa.
 
 ### Conditions
@@ -1367,6 +1367,9 @@ Thí sinh bấm nút "Mở chướng ngại vật".
 | C9 — invalid state: bấm sau khi đã bị loại | Thí sinh đã bị loại tiếp tục bấm | Máy thí sinh **không hiển thị gì**, bấm **không phản hồi** ⇒ không có tín hiệu nào được tạo | Không đổi | — |
 | C10 — invalid state: đã có người giải đúng | Vòng đã kết thúc vì có người giải đúng | Máy thí sinh **không hiển thị gì**, bấm **không phản hồi** ⇒ không có tín hiệu nào được tạo | Không đổi | — |
 | C11 — số hàng ngang khác 4 | Cấu hình 5-8 hàng ngang | **Băng điểm lấy từ cấu hình, không suy ra từ luật.** `rowCount` **không bị khoá cứng ở 4**; đổi lại, thang điểm Chướng ngại vật là **mảng cấu hình BẮT BUỘC dài bằng `rowCount`** mà người dựng contest phải điền. Thiếu mảng đó là **thiếu cấu hình** ⇒ chặn tại contest builder, **không** phải tình huống lúc chạy. Đóng `U-3` bằng cách chuyển nó từ *"luật chưa định nghĩa"* sang *"giá trị do người dựng khai"*, đúng `CLAUDE.md` (*"mọi timer/điểm là RuleConfig — KHÔNG hard-code luật"*) | Băng điểm đọc từ mảng cấu hình theo số hàng đã mở | — |
+| C12 — admin **đánh dấu đã hỏi** một hàng ngang bằng tay, ngoài luồng hỏi | Admin dùng quyền mở/đóng của `Đ-11` — thường là để **dựng lại bàn cờ sau sự cố** | **Băng điểm tụt một bậc y như một lượt hỏi thật** (`Đ-44`). **Không ai được cộng điểm** từ thao tác này | *Số hàng ngang đã hỏi* **+1**; AuditLog ghi **do-admin** để phân biệt với do-luồng | — |
+| C13 — admin **lộ đáp án** một hàng ngang | Hàng ngang đã ở trạng thái *đã hỏi* | **Băng điểm KHÔNG đổi** — biến đếm là *đã hỏi*, không phải *đã lộ* (`Đ-44`). Nhờ vậy mở tay trọn một hàng (đánh dấu **rồi** lộ) chỉ tính **một lần** | Không đổi băng điểm | — |
+| C14 — cần cộng điểm cho một tình huống ngoài luật | Admin phán quyết rằng tình huống đáng được điểm | **Admin tự cộng tay** qua event điều chỉnh điểm (`EVENT-020`) — có event, có tên người bấm, **revert được**. Engine **không** sinh điểm nào từ thao tác mở tay (`Đ-44`) | Sinh event điều chỉnh điểm | — |
 
 ### Outcomes
 
@@ -1384,6 +1387,7 @@ Thí sinh bấm nút "Mở chướng ngại vật".
 - Điểm hàng ngang đã kiếm được trước đó của người giải sai: **GIỮ NGUYÊN, không bị trừ** (`GRR-022`/`GRR-023` — *"bị loại khỏi phần thi này"* = mất mọi **quyền** trong vòng VCNV; nguồn không có mệnh đề trừ điểm nào). Đóng `U-24`.
 - **Từ chối không làm thí sinh mất lượt.**
 - **Lịch sử tín hiệu không bao giờ bị xoá.**
+- **Thao tác mở/đóng bằng tay của admin KHÔNG tự sinh điểm cho ai** (`Đ-44`) — nó đổi **giá** của Chướng ngại vật, không phải **điểm** của thí sinh. Mọi điểm ở VCNV chỉ đến từ **hai** đường: câu hàng ngang được chấm Đúng, và **chuông "Mở chướng ngại vật"** được chấm Đúng — cộng thêm event **điều chỉnh điểm thủ công** của admin.
 
 ### Error outcomes
 
@@ -1726,7 +1730,7 @@ Mọi thí sinh đều đã ở trạng thái bị loại khỏi vòng VCNV.
 |---|---|---|---|---|
 | C1 — happy path | Mọi thí sinh đã bị loại | Vòng kết thúc; không ai được điểm Chướng ngại vật | Vòng chuyển sang kết thúc; hàng ngang chưa hỏi bị bỏ | — |
 | C2 — admin công bố Chướng ngại vật | Admin bấm thao tác mở toàn bộ | Mở mọi miếng ghép và hiện Chướng ngại vật cho viewer | Trạng thái hiển thị thay đổi | — |
-| C3 — admin không bấm công bố | Admin bỏ qua thao tác này | **Không** phải trạng thái tắc — admin luôn chuyển vòng được | Vòng vẫn kết thúc được | — |
+| C3 — admin không bấm công bố | Admin bỏ qua thao tác này | **Không** phải trạng thái tắc — admin luôn chuyển vòng được, qua `LOBBY` (`Đ-46a`) | Vòng vẫn kết thúc được | — |
 | C4 — hàng ngang chưa hỏi | Còn 2 hàng ngang chưa được chọn | Bị bỏ; câu tương ứng vẫn tính là **đã dùng** | Câu không trả lại kho đề | — |
 | C5 — repeated action: bấm công bố hai lần | Đã mở toàn bộ, bấm lại | **KHÔNG TỒN TẠI** — nút một chiều, tự tắt sau khi bấm (`Đ-29`) | Không đổi. Server bỏ qua lệnh trùng (`CLAUDE.md` §Zero-trust) | — |
 | C6 — invalid state: tín hiệu đến sau khi vòng đã kết thúc | Thí sinh vẫn bấm chuông | Máy thí sinh **không hiển thị gì**, bấm **không phản hồi** ⇒ không có tín hiệu nào được tạo | Không đổi | — |
@@ -2724,7 +2728,7 @@ Admin bấm "Sai" cho người thi chính (hoặc timeout tự động) → **m�
 - **Cửa sổ = 5 giây**: cứng per O26 (R-VD-05)
 - **Người cướp ∈ {3 TS khác, không team cùng}**: cứng (R-TEAM-05 chỉ thi đội)
 - **Giá trị ∈ {20, 30}**: chỉ Về đích preset O26
-- **Nửa giá trị = 10 (20/2) / 15 (30/2)**: đều là số nguyên. Giá trị lẻ **không phát sinh dưới luật 2026** (`Đ-3`); chỉ xuất hiện nếu admin cấu hình mức điểm lẻ, và quy tắc làm tròn cho trường hợp đó vẫn chưa chốt (U-20).
+- **Nửa giá trị = 10 (20/2) / 15 (30/2)**: đều là số nguyên. Giá trị lẻ **không phát sinh dưới luật 2026** (`Đ-3`); nó chỉ xuất hiện nếu admin cấu hình mức điểm lẻ, và trường hợp đó **đã chốt** — `U-20` đóng **2026-07-26**: `phạt = value / 2` bằng **phép chia số nguyên**, làm tròn xuống theo **độ lớn** hình phạt (xem Error outcomes). Ví dụ `value = 25` ⇒ phạt **12**.
 
 ### Idempotency
 Chấm người cướp Đúng 2 lần → 1 event transfer. Chấm Sai → Đúng → revert + event mới.
@@ -2793,7 +2797,7 @@ Nút NSHV được bấm trước mốc đóng cửa sổ — **sân khấu**: a
 1. **Chỉ 1 lần / TS / LẦN CHẠY VÒNG** (`Đ-42`, 27/07): sau khi bấm lần 1 → nút NSHV disabled. **Chạy lại vòng Về đích (`EVENT-004`) hoặc bỏ vòng (`EVENT-003`) ⇒ cờ ĐẶT LẠI**, ngôi sao dùng được lại. Luồng thường vẫn đúng *"1 lần / TS / trận"* của luật gốc, vì Về đích chạy một lần trong một trận và NSHV chỉ tồn tại ở vòng này. Đề xuất `Đ-5.d` (phạm vi contest, không hồi sinh) **bị bác**
 2. **Mốc đóng**: admin bấm "hiển thị câu" (`game-rules-review-old.md` GRR-048 — mốc "đọc lên hoặc hiện lên")
 3. **Bấm trước mốc**: là hợp lệ; bấm sau → không hợp lệ (queue reject ngoài cửa sổ)
-4. **Queue**: Về đích là vòng hàng đợi **KHÔNG chặn** (`Đ-7.2`) ⇒ tín hiệu đặt Ngôi sao hy vọng **có hiệu lực ngay**, không chờ admin xác nhận. **Chỉ áp cho mode nhập liệu** — ở mode sân khấu admin là người bấm nên không có tín hiệu để duyệt (`Đ-41`; xem `game-state-machine.md` `UNRES-13`).
+4. **Queue**: Về đích là vòng hàng đợi **KHÔNG chặn** (`Đ-7.2`) ⇒ tín hiệu đặt Ngôi sao hy vọng **có hiệu lực ngay**, không chờ admin xác nhận. **Chỉ áp cho mode nhập liệu** — ở mode sân khấu admin là người bấm nên không có tín hiệu để duyệt (`Đ-41`). **`Đ-54` (27/07) chốt dứt điểm vế này**: mode nhập liệu **cũng không cần admin duyệt**, tín hiệu có hiệu lực ngay khi tới.
 5. **Mode sân khấu**: máy TS **không có** nút NSHV ⇒ không tồn tại đường phát tín hiệu từ phía TS; server **từ chối** nếu vẫn nhận được (Zero-trust).
 
 ### Decision table
@@ -2841,14 +2845,16 @@ Nút NSHV được bấm trước mốc đóng cửa sổ — **sân khấu**: a
 ### Error outcomes
 - **Bấm lần 2**: không được chấp nhận (nút disabled hoặc server reject)
 - **Bấm ngoài cửa sổ**: không tồn tại — nút không hiển thị và không phản hồi sau khi cửa sổ đóng (`Đ-16`); ngôi sao vẫn chưa dùng.
-- **NSHV × cướp transfer Đúng**: số học khi cả hai áp dụng chưa chốt (U-8)
+- **NSHV × cướp transfer Đúng**: **đã chốt** — `U-8` đóng **2026-07-26** bằng **đọc nguồn** (dòng 90 luật gốc), xem C5 / C5b / C5c. Người thi chính mất giá trị câu **ĐÚNG MỘT LẦN**: hình phạt NSHV **thay thế** phần nợ của transfer, **không cộng dồn**. Câu 30đ ⇒ **A −30 · B +30**, không phải −60
 
 ### Evaluation order
 1. TS nhìn thấy câu sắp được hỏi (chuẩn bị trước)
 2. TS bấm NSHV nút
 3. Tín hiệu vào hàng đợi **không chặn** của vòng Về đích (`Đ-7.2`)
-4. Admin duyệt (Yes = chấp nhận, No = từ chối) — hoặc **auto** nếu không trong queue
-5. Nút disable nếu admin Yes
+4. Tín hiệu **có hiệu lực NGAY, KHÔNG chờ admin duyệt** (`Đ-54`, chốt 27/07) — hàng đợi Về đích **không chặn**, queue chỉ ghi nhận thứ tự làm lưới an toàn
+5. Nút NSHV disable ngay tại mốc đó
+
+> **Câu chữ cũ của hai bước này (*"Admin duyệt Yes = chấp nhận, No = từ chối"* · *"Nút disable nếu admin Yes"*) là LỖI DIỄN ĐẠT, đã sửa ngày 27/07.** Nó mô tả **mode sân khấu** — nơi **admin là người bấm** (`Đ-41`), nên dialog Yes/No ở đó là **chống bấm nhầm**, không phải duyệt tín hiệu của thí sinh. Về sau bị đọc thành *"admin duyệt tín hiệu"*, tạo ra một mâu thuẫn với Conditions điểm 4 vốn không có thật. `Đ-54` chốt vế *"có hiệu lực ngay"*; xem `game-state-machine.md` `T-055`.
 6. Admin bấm "hiển thị câu" → mốc đóng cửa sổ NSHV
 7. TS trả lời → admin chấm → tính × 2 (đúng) hoặc −value (sai)
 
@@ -2867,13 +2873,14 @@ Nếu 2 TS cùng bấm NSHV trong cùng câu: mỗi TS độc lập, không ản
 
 ### Examples
 **Hợp lệ:**
-- Câu 20đ, TS bấm NSHV, admin Yes, TS trả lời Đúng → +40.
-- Câu 30đ, TS bấm NSHV, admin Yes, TS trả lời Sai → −30 (kể cả có người cướp Đúng).
-- TS bấm NSHV lần 1 (admin Yes), lần 2 (nút disable) → lần 2 không được bấm.
+- Câu 20đ, TS bấm NSHV (**có hiệu lực ngay**, `Đ-54`), TS trả lời Đúng → +40.
+- Câu 30đ, TS bấm NSHV, TS trả lời Sai → −30 (kể cả có người cướp Đúng).
+- TS bấm NSHV lần 1, lần 2 (nút disable) → lần 2 không được bấm.
+- **TS đặt NSHV rồi trả lời Sai + có người cướp Đúng** (`U-8` đóng 26/07, C5b): câu 30đ ⇒ **A −30 · B +30**. A mất giá trị câu **đúng một lần** — **không** cộng dồn thành −60.
 
 **Không hợp lệ:**
 - TS thao tác đặt ngôi sao sau khi admin đã bấm "hiển thị câu" → nút đã tắt, không có tín hiệu nào được tạo; ngôi sao vẫn chưa dùng.
-- TS NSHV sai + có người cướp Đúng → số học chưa chốt (U-8).
+- **[mode sân khấu]** máy thí sinh render nút NSHV → không tồn tại; thí sinh **nói miệng**, admin bấm (`Đ-41`).
 
 ### Source traceability
 - **Quyền đặt cược**: `game-rules-inventory.md` R-VD-06 · `game-rules-decisions.md` §9.4
@@ -2897,7 +2904,7 @@ Xác định thời điểm và điều kiện bắt đầu vòng Câu hỏi ph�
 - Admin
 
 ### Related states
-- Match state: `FINISHED` (không hoà) | `TIE_BREAK` (có hoà)
+- Match state: **`LOBBY`** (đã xong Về đích, **chưa chốt**) → `FINISHED` (không hoà) | `TIE_BREAK` (có hoà) — rẽ nhánh **tại cú bấm *"Chốt trận"*** (`EVENT-045`, `Đ-48`), không tự động
 - Round: nằm ở cuối playlist
 
 ### Trigger
@@ -2922,10 +2929,12 @@ Hoàn thành vòng Về đích (About-Finish, All-Seas)
 
 | Case | Conditions | Expected outcome | State change | Error |
 |---|---|---|---|---|
-| C1 — Hoà ở vị trí NHẤT (default) | 2+ TS cùng điểm cao nhất, vị trí 1 ∈ `tieBreakPositions` | Chuyển `TIE_BREAK` | Match state: `FINISHED` → `TIE_BREAK` · Gán `tiedSeats` = [2+ ghế hoà] | — |
-| C2 — Hoà ở vị trí khác | 2+ TS cùng điểm, vị trí ≠ 1 và ∈ config | Chuyển `TIE_BREAK` | Cùng C1 | — |
-| C3 — Không hoà | 1 TS điểm cao nhất | Kết thúc trận | Match state: `FINISHED` · Admin xác nhận hoặc di chuyển (nếu có nút "Xem kết quả") | — |
-| C4 — Hoà ngoài phạm vi | 2+ TS cùng điểm, vị trí ∉ `tieBreakPositions` | Kết thúc trận, đồng hạng | Match state: `FINISHED` · Ghi nhận cả nhóm cùng hạng trong biên bản | — |
+| C1 — Hoà ở vị trí NHẤT (default) | Admin bấm **Chốt trận** ở `LOBBY`; 2+ TS cùng điểm cao nhất, vị trí 1 ∈ `tieBreakPositions` | Chuyển `TIE_BREAK` | Match state: **`LOBBY` → `TIE_BREAK`** (`Đ-48` — **không** đi qua `FINISHED`) · Gán `tiedSeats` = [2+ ghế hoà] | — |
+| C2 — Hoà ở vị trí khác | Như C1; 2+ TS cùng điểm, vị trí ≠ 1 và ∈ config | Chuyển `TIE_BREAK` | Cùng C1 | — |
+| C3 — Không hoà | Admin bấm **Chốt trận**; 1 TS điểm cao nhất | Kết thúc trận | Match state: **`LOBBY` → `FINISHED`**, `matchClosedReason = "hoàn thành"`. Đóng sổ là **cú bấm của admin**, không tự động (`Đ-48`) | — |
+| C4 — Hoà ngoài phạm vi | Như C3; 2+ TS cùng điểm, vị trí ∉ `tieBreakPositions` | Kết thúc trận, đồng hạng | Match state: **`LOBBY` → `FINISHED`** · Ghi nhận cả nhóm cùng hạng trong biên bản | — |
+| C6 — **Chưa bấm Chốt trận** (`Đ-48`, chốt 27/07) | Vòng Về đích đã xong, admin **chưa** bấm gì | **Trận đứng ở `LOBBY`** — chưa tính hoà, chưa đóng sổ, chưa có thứ hạng | Không đổi. Admin **vẫn sửa điểm được** (`GR-029`), và điểm sửa **được tính vào** phép phân định hoà khi bấm chốt | — |
+| C5 — **Trận không thể hoàn thành** (`Đ-47`, chủ dự án chốt 27/07) | Mất điện, hỏng thiết bị, huỷ buổi thi — admin bấm **"Huỷ trận"** (`EVENT-044`) từ **bất kỳ** trạng thái nào, kể cả giữa một vòng | Trận **đóng sổ** với nhãn **`matchClosedReason = "bỏ dở"`**. **Điểm giữ nguyên, không revert**; **KHÔNG phân định thứ hạng, không người thắng** | Match state: `FINISHED` — **enum vẫn 4 giá trị**, `Đ-38` không mở lại; đề xuất state `ABANDONED` của `GRR-077` **bị bác ở dạng state, giữ ở dạng nhãn**. Ghi `closedBy` / `closedAt` / `reason` · biên bản in nhãn *"trận bỏ dở"* kèm đủ các vòng đã chạy · thống kê (`SM-11`) không đếm vào trận hoàn thành | Dialog **hạng phá huỷ** + **lý do bắt buộc** |
 
 ### Outcomes
 - **Kích hoạt tie-break**: Chuyển trạng thái trận sang `TIE_BREAK`, gọi admin chọn nhóm người tham gia (hoặc auto-select theo recommendation)
@@ -2933,8 +2942,13 @@ Hoàn thành vòng Về đích (About-Finish, All-Seas)
 - **Đồng hạng lưu biên bản**: Ghi rõ vị trí hoà và các thí sinh cùng hạng
 
 ### State changes
-- Match: `FINISHED` ← hoàn thành vòng Về đích nhưng chưa phân định
-- Match: `TIE_BREAK` ← kích hoạt tie-break
+
+> **Sửa 27/07 theo `Đ-48` / `Đ-51`.** Trước đó mục này ghi *"`FINISHED` ← hoàn thành vòng Về đích nhưng chưa phân định"* rồi C1 ghi *"`FINISHED` → `TIE_BREAK`"* — đọc như thể **rời được** `FINISHED`. Trạng thái *"đã hết vòng Về đích nhưng chưa phân định"* **có tên riêng và tên đó là `LOBBY`**: mọi vòng ra qua `LOBBY` (`Đ-46a`), trận **đợi ở đó** cho tới khi admin bấm *"Chốt trận"* (`EVENT-045`), và phép tính hoà (`EVENT-037`) chạy **tại cú bấm đó** — nên điểm admin sửa ở `LOBBY` **được tính vào**. `FINISHED` là **terminal và niêm phong** (`Đ-51`).
+
+- Match: `LOBBY` ← hoàn thành vòng Về đích (`Đ-46a`) — **chưa đóng sổ, chưa tính hoà**
+- Match: `LOBBY` → `TIE_BREAK` ← admin bấm **Chốt trận** (`EVENT-045`) và `EVENT-037` cho ra **có hoà** trong `tieBreakPositions`
+- Match: `LOBBY` → `FINISHED` ← admin bấm **Chốt trận** và **không hoà** (hoặc hoà ngoài phạm vi); `matchClosedReason = "hoàn thành"`
+- Match: `FINISHED` + `matchClosedReason = "bỏ dở"` ← admin huỷ trận (`Đ-47`, `EVENT-044`)
 - Queue (Đ-7.b): Reset sau vòng Về đích, sẵn sàng cho vòng Câu hỏi phụ
 
 ### No-change guarantees
@@ -2960,7 +2974,7 @@ Hoàn thành vòng Về đích (About-Finish, All-Seas)
 - **Hoà ở vị trí 2, 3, 4**: Kích hoạt nếu config mở rộng
 
 ### Idempotency
-Mỗi khi hoàn thành vòng Về đích, server **tính toán lại** điều kiện hoà; kết quả quyết định **trạng thái chuyên biệt** (TIE_BREAK hoặc FINISHED), không phụ thuộc vào bấm lặp.
+Phép tính điều kiện hoà chạy **tại cú bấm *"Chốt trận"*** (`EVENT-045`, `Đ-48`), trên bảng điểm **tại đúng mốc đó** — không phải lúc vòng Về đích kết thúc. Kết quả quyết định trạng thái kế (`TIE_BREAK` hoặc `FINISHED`) và **không phụ thuộc vào bấm lặp**: nút chốt một chiều, tự tắt.
 
 ### Concurrency
 Nếu server đang tính điểm và admin bấm "kết thúc vòng" đồng thời, server hoàn tất tính toán trước, sau đó gọi admin chọn tie-break.
@@ -3016,6 +3030,8 @@ Bắt đầu vòng Câu hỏi phụ (admin bấm start TIE_BREAK)
 - **Trả lời miệng** (mode sân khấu) hoặc **gõ máy** (mode nhập liệu — Đ-10.6)
 - **Chuông chỉ nhận click chuột** (R-GEN-01)
 - **Queue không chặn**: Tín hiệu chuông **tính ngay** theo server timestamp
+- **Có người giành quyền ⇒ đồng hồ 15 giây DỪNG NGAY và không chạy tiếp** (`Đ-53`, chốt 27/07). Cửa sổ 15 giây là cửa sổ **suy nghĩ + giành quyền**; sai thì **cả nhóm sang câu kế** (C2) nên không còn ai để đếm giờ cho
+- **KHÔNG có đồng hồ trả lời riêng sau khi giành quyền** — luật gốc im lặng **có chủ ý**: nó nói rõ *"tính từ lúc giành được quyền"* ở Khởi động lượt chung và *"suy nghĩ **và trả lời**"* ở Về đích, nhưng ở Câu hỏi phụ **chỉ ghi** *"Thời gian suy nghĩ cho mỗi câu hỏi là 15 giây"*, và **không** có chế tài cho việc bấm chuông rồi im lặng (khác −5 của Khởi động). Bấm rồi im ⇒ admin chấm **Sai** ⇒ sang câu kế. **Không phát minh cửa sổ trả lời cho vòng này**
 
 ### Decision table
 
@@ -3085,7 +3101,17 @@ Bắt đầu vòng Câu hỏi phụ (admin bấm start TIE_BREAK)
 
 ### Status
 
-CONFIRMED
+**CONFIRMED — nhưng `Đ-55` (27/07) làm rule này KHÔNG CÒN ĐƯỜNG PHÁT SINH trong v1.**
+
+> **Máy KHỬ tình huống thay vì PHẠT nó.** Nút chuông ở Câu hỏi phụ **không sống trước mốc admin bấm start timer**, nên **không tồn tại** tín hiệu bấm sớm để mà phạt. Toàn bộ C1 → C3 và cơ chế gỡ cấm vì thế **không đạt tới được**; `STATE-023` và `EVENT-019` của `game-state-machine.md` là **trạng thái/event không có đường vào**.
+>
+> **Rule KHÔNG sai và KHÔNG bị bác.** Mục đích của nó — *không ai được lợi thế do bấm trước hiệu lệnh* — **vẫn được bảo đảm**, và bảo đảm **mạnh hơn**: chặn thì tuyệt đối, phạt thì chỉ răn đe. Luật gốc buộc phải phạt vì trên trường quay nút chuông là **phần cứng, lúc nào cũng sống**; ở bản phần mềm ràng buộc đó **không tồn tại**.
+>
+> **Giữ nguyên văn rule** để truy nguyên về luật gốc, và để nếu sau này có cấu hình cho phép chuông sống sớm thì đã có sẵn thể thức xử lý.
+>
+> **Zero-trust**: disable nút chỉ là UX — **server vẫn phải từ chối** mọi tín hiệu chuông tới trước mốc start ở vòng này (cùng khuôn `GR-034` C6).
+>
+> **KHÔNG áp cho Khởi động lượt chung**: ở đó luật gốc cho phép *"bấm chuông trong khi người dẫn chương trình đang đọc câu hỏi"* — chuông vẫn sống từ mốc **hiển thị câu**. Xem `game-state-machine.md` `EVENT-005`.
 
 ### Purpose
 Định nghĩa hình phạt và cơ chế khi thí sinh bấm chuông trước khi MC phát hiệu lệnh bắt đầu.
@@ -3476,7 +3502,7 @@ Thí sinh gửi đáp án (submission)
 - **acceptedAnswers KHÔNG bị sửa** động (cấu hình lúc tạo câu, không đổi giữa trận)
 
 ### Error outcomes
-- **stripDiacritics = ON mâu thuẫn với F26** (K-6): Không phải lỗi logic, mà là **mâu thuẫn luật** (chưa phân xử)
+- **stripDiacritics = ON vs F26** (`K-6`): **KHÔNG còn là mâu thuẫn — `K-6` ĐÃ TAN**, xem C3. F26 (*"dấu sai → không công nhận"*) nói về **PHÁN QUYẾT**; `stripDiacritics` chỉ đổi **CÁCH TÔ MÀU**. Máy không phán quyết (nguyên tắc nền điểm 1) nên hai phát biểu **không cùng đối tượng**: bỏ dấu ON nghĩa là *"đừng tô đỏ chỗ khác dấu"*, **không** nghĩa là *"công nhận đúng"* — admin vẫn chấm Sai theo F26 nếu muốn
 - **Ngoại lệ "ý nghĩa tương đồng"** (U-35): Không có cơ chế mã hoá → admin tự đánh giá (chỉ gợi ý text-match được)
 - **Trường dữ liệu "câu miệng"** (U-7): Không có → normalize text-based chỉ áp câu gõ được
 
@@ -3524,7 +3550,7 @@ Không có — normalize là server-side, chỉ đọc config (không write)
 ### Source traceability
 - `docs/game-rules-inventory.md` §R-GEN-04 (normalize — TRIM, case-insensitive, collapse space, tuỳ chọn bỏ dấu)
 - `docs/game-rules-decisions.md` §3.1 (Đ-1: máy hiển thị + gợi ý, không tự chấm)
-- `docs/reviews/game-rules-review-old.md` GRR-027 (nếu có — hoặc K-6 mâu thuẫn chính tả)
+- `docs/reviews/game-rules-review-old.md` GRR-027 · `K-6` (**đã tan**, xem C3 và Error outcomes)
 - `docs/source/fandom-olympia-26-luat-choi.md` §VCNV *"bất kỳ sai sót về kí tự, dấu câu, ngữ pháp → không được công nhận"* · §Tăng tốc *"đúng chính tả; ý nghĩa tương đồng được chấp nhận"*
 
 ---
@@ -3646,7 +3672,7 @@ CONFIRMED
 
 ### Related states
 - MatchEvent: event SCORE_ADJUST là loại độc lập
-- Match state: mọi lúc (không bị ràng buộc ở vòng nào)
+- Match state: mọi lúc **khi trận chưa đóng sổ** (không bị ràng buộc ở vòng nào) — **`Đ-51` (27/07) loại `FINISHED`**: trận đã chốt thì **niêm phong**, không điều chỉnh được nữa. Vế *"không ràng buộc ở vòng nào"* giữ nguyên: điều chỉnh vẫn làm được ở `LOBBY` lẫn giữa một vòng đang chạy.
 
 ### Trigger
 Admin chọn "Chỉnh điểm tay" hoặc tương tự (nút thủ công)
@@ -3676,6 +3702,7 @@ Admin chọn "Chỉnh điểm tay" hoặc tương tự (nút thủ công)
 | C3 — Chỉnh delta=0 | Admin nhập delta=0, reason="..." | **SINH EVENT** | Điểm không đổi, nhưng event **vẫn được ghi**: lịch sử là append-only và không bao giờ xoá (nguyên tắc nền điểm 6), còn ô **lý do** là **kênh duy nhất** ghi được xuất xứ một quyết định (`S-14` chốt AuditLog không có trường *"người yêu cầu"*). Một điều chỉnh delta=0 kèm lý do chính là **một ghi chú chính thức vào biên bản trận** — vứt nó đi là vứt mất dữ liệu phân xử | — |
 | C4 — Chỉnh ngay sau bỏ vòng | Admin chỉnh +3 cho A sau khi bỏ VCNV | **Chỉnh vẫn có hiệu lực** — không tự revert theo bỏ vòng (Đ-11.B) | MatchEvent: vòng bị revert + event chỉnh riêng · Điểm được tính lại từ event log | — |
 | C5 — Bỏ vòng **sau** chỉnh | Admin chỉnh +5 cho A, sau đó bỏ vòng Khởi động | **Chỉnh vẫn giữ**: bỏ vòng revert sự kiện Khởi động nhưng **không revert SCORE_ADJUST** (Đ-11.B) | MatchEvent: revert KĐ events, SCORE_ADJUST vẫn ở | **Điều chỉnh "mồ côi" là hành vi ĐÚNG, không phải lỗi** (`GRR-159`). `GRR-117` chốt: bỏ/chạy lại vòng hoàn nguyên **các trạng thái sinh bởi event CỦA VÒNG ĐÓ**; `SCORE_ADJUST` là event **của admin**, không thuộc vòng nào ⇒ nằm ngoài phạm vi hoàn nguyên. Muốn bỏ nó thì hoàn nguyên **chính nó**, như mọi event khác |
+| C6 — Chỉnh **sau khi trận đã chốt** | Trận ở `FINISHED` — **cả hai nhãn**, `hoàn thành` lẫn `bỏ dở` | **KHÔNG thực hiện được** — nút không bật; admin thấy toast *invalid state*, **không ép được** | Không sinh event nào | `Đ-51` (27/07) — trận **niêm phong** tại mốc chốt. Cửa sổ điều chỉnh là `LOBBY` **trước** khi bấm *"Chốt trận"* (`Đ-48`); phát hiện sai sót **sau** khi chốt thì ghi ở **trận mới** (`Đ-49`), **không** sửa ngược biên bản đã đóng |
 
 ### Outcomes
 - **Event vào MatchEvent** với delta + reason + admin ID
@@ -3767,13 +3794,14 @@ Admin chọn "Bỏ vòng" hoặc "Chạy lại vòng" (nút thủ công)
 
 ### Inputs
 - Vòng ID (KHOI_DONG, VCNV, TANG_TOC, VE_DICH, TIE_BREAK)
-- Hành động: "bỏ" hoặc "chạy lại"
+- Hành động: **"bỏ"** · **"chạy lại"** · **"kết thúc sớm"** (`Đ-46b`) — ba cửa ra chủ động của một vòng đang chạy, bên cạnh nút *"Kết thúc vòng"* thường (chỉ hiện khi đã đủ câu)
 
 ### Conditions
 - **Vòng phải tồn tại** trong playlist
 - **Danh sách event của vòng** phải được xác định rõ (theo vòng)
 - **Nếu chạy lại**: pool đề phải còn đủ câu (pre-flight check)
 - **Nếu bỏ hẳn**: điểm revert, biên bản vẫn giữ với nhãn "đã bỏ" (Đ-5.2d)
+- **Nếu kết thúc sớm** (`Đ-46b`): **điểm KHÔNG revert**; biên bản nhãn **"kết thúc sớm"**; **không** có guard về số câu đã hỏi
 
 ### Decision table
 
@@ -3782,12 +3810,14 @@ Admin chọn "Bỏ vòng" hoặc "Chạy lại vòng" (nút thủ công)
 | C1 — Bỏ vòng Khởi động | Admin bấm "Bỏ vòng KĐ" → dialog Yes | Điểm KĐ revert (REVERT event cho tất cả event KĐ) | MatchEvent: +N event đảo ngược · Điểm recalc · Biên bản: vòng KĐ = "đã bỏ" | — |
 | C2 — Chạy lại vòng VCNV | Admin bấm "Chạy lại VCNV" → dialog Yes | Pool check OK → reset queue, mở lại VCNV, admin chọn lại từ đầu | MatchEvent: REVERT VCNV events + reset queue · Playlist: vòng VCNV "đã chạy lại" | Nếu pool không đủ → pre-flight chặn |
 | C3 — Bỏ vòng nhưng SCORE_ADJUST ở vòng đó | Admin bỏ KĐ (KĐ events revert), nhưng có +5 SCORE_ADJUST gắn KĐ | **SCORE_ADJUST KHÔNG tự revert** (Đ-11.B) | MatchEvent: revert KĐ events, SCORE_ADJUST vẫn ở | Ví dụ `game-rules-review.md` GRR-159 |
-| C4 — Bỏ vòng B khi vòng A chưa xong (`game-rules-review.md` GRR-164) | Admin mở vòng B khi vòng A còn tín hiệu chờ duyệt | **Advisory**: cảnh báo "vòng A chưa kết thúc", admin bấm Yes/No ⇒ vẫn thực hiện | Match state: A → B (admin quyết định thứ tự) | Không hard-block (advisory mode, Đ-1.2) |
+| C4 — Muốn sang vòng B khi vòng A chưa xong (`game-rules-review.md` GRR-164) | Admin đang ở giữa vòng A, còn tín hiệu chờ duyệt | **Không có đường vòng → vòng** (`Đ-46a`): admin **rời vòng A trước** — kết thúc sớm (C6, giữ điểm) · bỏ (C1) · chạy lại (C2) — về `LOBBY`, rồi mở B. **Thứ tự vòng vẫn do admin quyết**, không hệ thống nào ép (`INV-20`) | Match state: A → `LOBBY` → B | Trong màn vòng **không có nút mở vòng khác** (INVALID STATE, không phải hard-block) |
+| C6 — **Kết thúc vòng khẩn cấp** (`Đ-46b`, chủ dự án chốt 27/07) | Vòng hỏng giữa chừng, **chưa hỏi đủ câu**, admin muốn đi tiếp mà **giữ điểm** | Vòng khép **ngay tại chỗ** → `LOBBY`. **Điểm GIỮ NGUYÊN, KHÔNG revert** — đây là khác biệt duy nhất và cũng là toàn bộ lý do tồn tại của cửa này. Câu đang mở khép bằng **Huỷ kết quả**, không sinh điểm cho ai (`Đ-43` **không** áp: kết thúc khẩn cấp không phải phán quyết về đáp án) | Không sinh event đảo ngược nào · dọn cờ phạm vi vòng (`Đ-39`) · biên bản: vòng = **"kết thúc sớm"** · câu **đã hiển thị** không trả lại kho, câu **chưa hiển thị** vẫn còn trong danh sách gán | Dialog **hạng phá huỷ** (không tắt được) + **bắt nhập lý do**, cùng khuôn C1 |
 | C5 — Bỏ vòng hai lần (lag) | Admin bấm "Bỏ VCNV" lần 1, bấm lại lần 2 | **NO-OP — điểm KHÔNG tụt gấp đôi** (`GRR-160`) | Ba lớp chặn độc lập: **(1)** nút "Bỏ vòng" là nút một chiều, **tự tắt sau khi bấm** (`Đ-29`); **(2)** bỏ vòng thuộc **hạng phá huỷ** ⇒ dialog Yes/No **không tắt được** và **bắt nhập lý do**, nên không thể là cú bấm phản xạ; **(3)** server từ chối lệnh bỏ vòng cho một vòng **đã ở trạng thái đã bỏ** — đây là **INVALID STATE**, không phải dedup (`CLAUDE.md` §Zero-trust) | — |
 
 ### Outcomes
 - **Bỏ vòng**: Điểm bị revert (event đảo ngược), biên bản nhãn "đã bỏ", câu đã dùng KHÔNG trả lại (Đ-5.2f)
 - **Chạy lại**: Vòng reset, queue reset (Đ-7.b), mở lại từ đầu với câu mới (từ pool)
+- **Kết thúc sớm** (`Đ-46b`): vòng khép về `LOBBY`, **điểm giữ nguyên**, biên bản nhãn "kết thúc sớm", câu đã dùng KHÔNG trả lại
 - **Lịch sử**: Vòng bị bỏ vẫn ghi trong biên bản (dấu vết)
 - **Viewer/overlay**: Số điểm thay đổi đột ngột, không hiệu ứng (Đ-5.2e)
 
@@ -3795,7 +3825,7 @@ Admin chọn "Bỏ vòng" hoặc "Chạy lại vòng" (nút thủ công)
 - MatchEvent: +N event đảo ngược (vòng bị bỏ)
 - Điểm tích luỹ: recalculate từ reduce(event còn lại)
 - Queue: reset (nếu chạy lại) hoặc giữ nguyên (nếu chỉ bỏ)
-- Biên bản vòng: thêm nhãn "đã bỏ" hoặc "đã chạy lại"
+- Biên bản vòng: thêm nhãn "đã bỏ" · "đã chạy lại" · **"kết thúc sớm"** (`Đ-46b`)
 - Pool đề: `usedInContest` cờ **KHÔNG reset** (Đ-5.2f)
 
 ### No-change guarantees
@@ -3896,6 +3926,7 @@ Admin bấm "start trận" (LOBBY → vòng đầu) hoặc đầu mỗi turn khi
 ### Conditions
 - **No-repeat toàn contest**: Câu đã hỏi (qua bất kỳ match nào) → cờ `usedInContest = true` → loại khỏi pool
 - **No-repeat chỉ trong danh sách gán**: Server rút **TRONG danh sách đã gán** (snapshot), loại câu `usedInContest`
+- **⚠ Trận `practice` trong một contest THẬT thì phép lọc ĐẢO CHIỀU** (`Đ-57`, chốt 27/07): pool của nó = **CHỈ những câu `usedInContest = true`** — tức chỉ câu **đã lộ** ở các trận thật trước đó. Hệ quả: trận practice **không tiêu thêm câu nào** (mọi câu nó chạm đã tiêu rồi) và **không thể nhìn thấy đề chưa thi** ⇒ **không dùng contest thật để tổng duyệt trước trận được**. Contest chưa chạy trận nào thì pool này **rỗng** và pre-flight tự chặn — đó là dạng chính xác của *"contest thật phải chạy ≥1 lần mới practice được"*. Trong một **practice contest** thì không có phép đảo nào: mọi trận ở đó lọc bình thường, trong phạm vi `usedInContest` của riêng nó
 - **Bỏ qua vẫn tiêu câu**, nhưng không gây cạn giữa vòng: câu bị bỏ qua nằm trong đúng con số cố định của vòng (`Đ-30`), và con số đó đã được kiểm đủ tại cửa vào vòng
 - **Cấu hình 2 bước** (Đ-5 advisory): Algorithm pre-flight 2 bước + `reservePerField`
 
@@ -4529,7 +4560,15 @@ CONFIRMED
 ### Purpose
 Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết nối lại và giữ ghế. Trong khoảng grace, trạng thái của ghế được giữ nguyên (state-sync khi quay lại).
 
-**Quá grace, hệ thống CHỈ HIGHLIGHT — ADMIN là người quyết** *(✅ chủ dự án chốt 2026-07-26, đóng `U-13`)*: không có chính sách tự động nào, không tự loại, không tự xoá ghế. Ghế được **tô nổi bật trên màn admin** kèm thời lượng đã mất kết nối; admin chọn **giữ · gia hạn · kick**.
+**Quá grace, hệ thống CHỈ HIGHLIGHT — ADMIN là người quyết** *(✅ chủ dự án chốt 2026-07-26, đóng `U-13`)*: không có chính sách tự động nào, không tự loại, không tự xoá ghế. Ghế được **tô nổi bật trên màn admin** kèm thời lượng đã mất kết nối; admin chọn **giữ · gia hạn**.
+
+**v1 KHÔNG có kick — thay bằng VÔ HIỆU HOÁ / KÍCH HOẠT LẠI** *(✅ `Đ-52`, chốt 2026-07-27, thay cho `Đ-45a`)*. Trước đó `Đ-45a` cho kick nhưng **chỉ ở `LOBBY`**, vì rời một ghế khỏi trận giữa lúc câu đang mở làm hỏng thứ đang tính dở — xếp hạng Tăng tốc, băng điểm Chướng ngại vật, cửa sổ chấm của `Đ-43`.
+
+Vô hiệu hoá **không rời ai khỏi trận**: ghế vẫn có mặt trong mọi bảng, điểm nguyên vẹn, chỉ mất quyền thao tác — nên **không phép tính nào bị hụt đầu vào**, và ràng buộc `LOBBY` **không còn lý do tồn tại**. Thao tác dùng được **mọi lúc**, kể cả giữa một câu đang mở, và **đảo ngược được**. Xem C2d.
+
+**Vô hiệu hoá là quyết định RIÊNG, không phải hệ quả của mất kết nối**: quá grace **không** tự vô hiệu hoá ghế nào. Hai chuyện độc lập, hai nút khác nhau.
+
+**Ghế quay lại được khôi phục kể cả giữa câu** *(✅ `Đ-45b`, cùng ngày)*: server đẩy đủ dữ kiện để client dựng lại đúng màn đang thi — xem C4b.
 
 > Đây **cùng một mẫu** với `Đ-1` (máy tô khác biệt ký tự, admin chấm) và với `Đ-28` (máy tô đỏ bản quá hạn, admin phán quyết). Nguyên tắc nền điểm 1 áp nguyên: **máy độc quyền SỰ KIỆN** (đo và hiển thị thời gian mất kết nối), **người độc quyền PHÁN QUYẾT**.
 >
@@ -4538,7 +4577,7 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 ### Actors
 - **Thí sinh** — mất kết nối, kết nối lại
 - **Server** — theo dõi kết nối, quản lý grace period
-- **Admin** — có thể can thiệp trước khi hết grace (hoặc tự động xử lý)
+- **Admin** — người **duy nhất** đổi được trạng thái ghế; can thiệp được cả trước lẫn sau khi hết grace
 
 ### Related states
 - Ghế: `connected` / `disconnected` / `reconnected` / `dropped_out`
@@ -4567,7 +4606,8 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 
 **Quá grace (>= 120s)**:
 - Ghế được **tô nổi bật** trên màn admin; trạng thái ghế **không tự đổi**
-- Ghế có thể bị loại khỏi vòng, mất quyền, hoặc xoá từ trận
+- Thứ duy nhất đổi được trạng thái ghế là **một cú bấm của admin**: **giữ / gia hạn** (mọi lúc). Không có chính sách tự động nào — `dropoutPolicy` **không tồn tại** (`U-13` đóng 26/07)
+- **`Đ-52` (27/07) — v1 KHÔNG có kick.** Nhánh *kick* của `Đ-45a` bị gỡ khỏi rule này. Thay thế là **vô hiệu hoá / kích hoạt lại ghế** (`EVENT-048`): **đảo ngược được**, dùng **mọi lúc** (không ràng buộc `LOBBY`), ghế **giữ nguyên điểm và vị trí**, chỉ mất quyền thao tác. **Vô hiệu hoá KHÔNG phải hệ quả của mất kết nối** — hai chuyện độc lập, admin phải bấm riêng
 
 ### Decision table
 
@@ -4575,10 +4615,13 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 |---|---|---|---|---|
 | C1 — Mất kết nối; kết nối lại < 120s | Thí sinh quay lại trong grace | Ghế restore state; banner "đã kết nối lại" | Seat state: quay về cũ | — |
 | C2 — Quá 120s grace period | Admin không can thiệp; thời gian quá 120s | **Ghế được TÔ NỔI BẬT trên màn admin** kèm thời lượng mất kết nối. **KHÔNG tự loại, KHÔNG tự xoá.** Ghế **giữ nguyên** trong trận cho tới khi admin bấm | Trạng thái ghế **không đổi**; chỉ thêm chỉ báo hiển thị | — |
-| C2b — Admin phán quyết sau khi quá grace | Admin bấm **giữ** / **gia hạn** / **kick** | Theo đúng lựa chọn của admin. **Kick** là thao tác **không hoàn tác được** ⇒ dialog Yes/No + AuditLog kèm lý do | Chỉ đổi khi admin bấm | — |
+| C2b — Admin phán quyết sau khi quá grace (`Đ-52`, chốt 27/07) | Admin bấm **giữ** / **gia hạn** — **hai** lựa chọn, không còn *kick* | Theo đúng lựa chọn của admin. Cả hai đều **không phá gì**, chỉ nói *"chờ tiếp"* | Chỉ đổi khi admin bấm | — |
+| C2c — **Ghế quá grace giữa một vòng đang chạy** | Vòng chưa kết thúc | Ghế **ở lại trạng thái tô nổi bật**; admin **giữ / gia hạn**. Vòng **chạy tiếp bình thường** — hệ thống không dừng vì một ghế mất kết nối (`Đ-21`) | Không đổi | — |
+| C2d — **Vô hiệu hoá / kích hoạt lại một ghế** (`Đ-52`, chốt 27/07) | Admin bấm `EVENT-048` + dialog Yes/No + lý do. **Mọi lúc** trong một trận chưa đóng sổ; ghế đang online hay mất kết nối đều được | Ghế **mất quyền thao tác** nhưng **ở lại trong trận**: giữ nguyên điểm, giữ nguyên vị trí, vẫn trên bảng điểm và bảng xếp hạng. Tín hiệu lỡ tới vào lịch sử nhưng **TRƠ**, không drop. **Kích hoạt lại KHÔNG hoàn nguyên gì** — điểm ghi trong lúc bị vô hiệu hoá giữ nguyên | Seat: `disabled` ⇄ bình thường; vào AuditLog | Giữa một câu đang mở, ghế bị vô hiệu hoá được xử **y như ghế không trả lời** (`Đ-43` mặc định SAI khi admin chốt câu). Thấy bất công ⇒ admin **cộng tay** (`GR-029`) |
 | C3 — Rớt mạng đúng lượt riêng Khởi động | Disconnect xảy ra vòng Khởi động riêng | **Admin quyết** — hệ thống chạy tiếp bình thường; admin ngừng thao tác và xử lý ngoài hệ thống | Không đổi | — |
 | C4 — Kết nối lại; trận đã chuyển vòng | Thí sinh kết nối lại ở vòng tiếp theo | Sync state toàn bộ vòng; restore tất cả UI | UI: full sync | — |
-| C5 — Admin can thiệp trước hết grace | Admin kick thí sinh hoặc cho phép giữ lâu hơn | **ĐƯỢC — cả hai.** Grace 120 giây là **khuyến nghị của hệ thống**, không phải ràng buộc cưỡng chế: đây không phải ngưỡng bất khả thi vật lý nên nó chỉ **cảnh báo**, admin ép được (nguyên tắc nền điểm 8) | Kick ⇒ ghế rời trận; gia hạn ⇒ ghế giữ tiếp. Cả hai là thao tác **không hoàn tác được** ⇒ dialog Yes/No + ghi AuditLog kèm lý do | — |
+| C4b — **Kết nối lại khi câu đang mở, đồng hồ đang chạy** (`Đ-45b`, chốt 27/07) | Thí sinh quay lại giữa một câu | **Client dựng lại đúng màn đang thi**: câu đang mở, **hạn chót theo server time**, bản gửi gần nhất của chính ghế đó, các cờ ghế còn hiệu lực, bàn cờ VCNV, điểm công khai, lớp phủ đang bật. **Đồng hồ KHÔNG reset** — mất kết nối không mua thêm thời gian. Gói khôi phục **không chứa đáp án** và **không chứa bài của ghế khác** | UI: full sync giữa câu; **không sinh event nào** | Ký tự đang gõ dở **chưa gửi** thì mất — chưa từng tới server |
+| C5 — Admin can thiệp trước hết grace | Admin **gia hạn** cho giữ lâu hơn | **ĐƯỢC.** Grace 120 giây là **khuyến nghị của hệ thống**, không phải ràng buộc cưỡng chế: đây không phải ngưỡng bất khả thi vật lý nên nó chỉ **cảnh báo**, admin ép được (nguyên tắc nền điểm 8). **Vô hiệu hoá sớm cũng được** và không phụ thuộc grace — nó là thao tác độc lập (`Đ-52`, C2d) | Gia hạn ⇒ ghế giữ tiếp. Thao tác của admin đi qua dialog Yes/No + ghi AuditLog kèm lý do | — |
 | C6 — Hai thí sinh cùng mất kết nối | Cả A, B disconnect trong grace | Cả hai đều có 120s để quay lại độc lập | Seat A, B: both in grace | — |
 | C7 — Mất kết nối ở cuối câu hỏi phụ | Disconnect t=0; hết grace t=120; trận đã xong | **Ghế được GIỮ** | Grace chỉ chi phối **quyền thao tác trong trận**; khi trận đã kết thúc thì không còn gì để thao tác nên hết grace **không có hệ quả nào**. Bản ghi ghế thuộc **contest** và sống theo **retention của match** (`official` 12 tháng · `practice` 3 tháng), không bị grace xoá | — |
 | C8 — Grace deadline vs timeout cùng ms | t=119.999s: submission tới, grace hết ở t=120 | Submission được tính vì tới trong grace | Submission: `accepted` | — |
@@ -4622,9 +4665,9 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 - Mọi lần mất và nối lại đều vào **lịch sử, không bao giờ xoá** (nguyên tắc nền điểm 3) để admin phân xử.
 
 ### Concurrency
-**Disconnect ở biên grace**: submission tới ở 119.999s, grace hết ở 120.000s ⇒ **trong grace, được nhận** (biên đóng, `Đ-28`). Câu còn mở là **số phận của các submission đã nhận sau khi ghế bị xử dropout** (`game-rules-review.md` GRR-169):
-- Submission được tính hay bỏ?
-- Ghế vẫn ở trận hay đã dropped?
+**Disconnect ở biên grace**: submission tới ở 119.999s, grace hết ở 120.000s ⇒ **trong grace, được nhận** (biên đóng, `Đ-28`).
+
+**Số phận của các submission đã nhận khi ghế bị kick** — `GRR-169` từng để treo, **`Đ-45a` đóng bằng cách loại bỏ tình huống**: kick chỉ hợp lệ ở `LOBBY`, mà ở `LOBBY` **không câu nào đang mở, không đồng hồ nào chạy** ⇒ tại mốc kick **không tồn tại submission đang treo**. Mọi bài đã nhận đều thuộc một vòng **đã khép và đã chấm** ⇒ **GIỮ NGUYÊN, không revert**; chúng là lịch sử append-only (`INV-01`), in đủ trong biên bản. **Kick chỉ chặn tương lai.** Muốn gỡ điểm của một vòng thì đường đúng là **bỏ / chạy lại vòng**, hoặc điều chỉnh điểm thủ công — không phải kick.
 
 ### Examples
 
@@ -4634,21 +4677,30 @@ Thí sinh bị mất kết nối có thời gian grace **120 giây** để kết
 - Kết nối lại ở t=60s (còn 60s grace)
 - Ghế A restore; tiếp tục thi
 
-**Ví dụ 2 — Quá grace (tự động dropout)**:
+**Ví dụ 2 — Quá grace giữa một vòng đang chạy**:
 - Thí sinh B mất kết nối t=0
-- t=120s: quá grace → ghế **tô nổi bật** trên màn admin, vẫn ở trong trận; chờ admin bấm giữ / gia hạn / kick
-- Nếu policy = `remove_from_round` → B loại khỏi vòn hiện tại
-- B không thể quay lại vòng này
+- t=120s: quá grace → ghế **tô nổi bật** trên màn admin, vẫn ở trong trận; vòng **chạy tiếp bình thường**
+- Admin có **giữ / gia hạn** — và nếu muốn chặn hẳn B thao tác thì bấm **vô hiệu hoá** (`EVENT-048`), **được phép ngay giữa vòng** (`Đ-52`)
+- Mọi bài B đã gửi trong vòng vừa rồi **giữ nguyên**, đã chấm thì đã chấm
+- B quay lại và admin đổi ý ⇒ **kích hoạt lại**, ghế thi tiếp bình thường, điểm không đổi
 
-**Ví dụ 3 — Rớt vòng riêng Khởi động**:
-- Vòng Khởi động riêng; thí sinh C mất kết nối
-- Engine dừng lại chờ admin (D13.4); admin thấy cảnh báo
-- Admin quyết: cho chạy tiếp (C giữ lượt) hay dropout (C mất lượt)
+**Ví dụ 3 — Rớt giữa lượt riêng Khởi động**:
+- Vòng Khởi động lượt riêng; thí sinh C mất kết nối
+- **Engine KHÔNG tự dừng** — đồng hồ chạy tiếp theo server time (`Đ-21`, `INV-16`). Ghế C được **tô nổi bật** trên màn admin
+- Admin là người quyết và là người bấm: ngừng thao tác chờ C quay lại, hoặc chạy tiếp, hoặc **bỏ / chạy lại vòng** nếu lượt đã hỏng
+- Cần chặn C thao tác thì **vô hiệu hoá** ngay tại chỗ (`Đ-52`) — không phải đợi về `LOBBY`, và bật lại được bất cứ lúc nào
 
 **Ví dụ 4 — State-sync (quay lại vòng tiếp theo)**:
 - Thí sinh D quay lại lúc t=50s (trong grace)
 - Nhưng trận đã chuyển từ Khởi động sang VCNV
 - Server sync trạng thái VCNV cho D; D tiếp tục từ VCNV
+
+**Ví dụ 4b — State-sync giữa một câu đang chạy** (`Đ-45b`):
+- Câu hàng ngang VCNV mở lúc t=0, hạn chót server t=15s
+- Thí sinh E mất kết nối t=4s, quay lại t=9s
+- Server đẩy: câu đang mở · **hạn chót t=15s** (không phải *"còn 15 giây"*) · bản E đã gửi lúc t=3s · cờ E chưa bị loại · bàn cờ VCNV hiện tại
+- E thấy đồng hồ **còn 6 giây**, không phải 15 — mất kết nối **không mua thêm thời gian**
+- Ký tự E gõ dở lúc t=4s mà chưa bấm gửi thì **mất**; bản gửi lúc t=3s thì còn
 
 **Ví dụ 5 — Boundary grace 120s**:
 - Disconnect ở t=0

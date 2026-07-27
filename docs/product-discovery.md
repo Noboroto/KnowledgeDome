@@ -289,10 +289,25 @@ Bối cảnh gốc: D1 chốt **1-12 thí sinh**. Nhưng luật O26 (`P/research
 `P/research/rules-2026.md` §1 ghi *"3s (từ lúc MC đọc xong)"*. Hệ thống không biết MC đọc xong lúc nào.
 `[NEEDS CLARIFICATION: Ai bấm để bắt đầu đếm 3 giây — admin, MC, hay tự động khi hiện câu? Nếu admin bấm thì độ trễ tay người có được trừ vào 3s không?]` Không nguồn nào định nghĩa. Ảnh hưởng trực tiếp tới công bằng vì 3s là rất ngắn.
 
-### C-9 `[MƠ HỒ]` — Ranh giới Contest vs Match
+### C-9 `[CHỐT 2026-07-27]` — Ranh giới Contest vs Match
 
-`P/research/red-team.md` M6 ghi *"thêm model `Match` (Contest 1-n)"*. Spec §13 P13 nói *"room code thuộc **contest đang mở** — match FINISHED không giết mã nếu contest còn match khác"*. Nhưng `P/PRD.md` và `P/user-stories.md` gần như luôn nói "contest"/"trận" lẫn lộn (vd US-3.3 "mã phòng để vào đúng phòng", FR-3.2 "pre-flight trước khi start").
-`[NEEDS CLARIFICATION: Một contest có nhiều match trong hoàn cảnh nào? Người dùng tạo match ở đâu trong luồng UI? Không journey nào mô tả.]`
+> **Nguồn**: phát biểu của chủ dự án 2026-07-27 — *"cho phép tạo trận mới khi câu hỏi còn đủ"*. Ghi ở `game-state-machine.md` mã **`Đ-49`**.
+
+**Bối cảnh cũ**: `P/research/red-team.md` M6 ghi *"thêm model `Match` (Contest 1-n)"*. Spec §13 P13 nói *"room code thuộc **contest đang mở** — match FINISHED không giết mã nếu contest còn match khác"*. Nhưng `P/PRD.md` và `P/user-stories.md` gần như luôn nói "contest"/"trận" lẫn lộn (vd US-3.3 "mã phòng để vào đúng phòng", FR-3.2 "pre-flight trước khi start").
+
+**Phân xử**: giữ nguyên ranh giới **Contest = bản thiết kế · Match = một lần chạy**, và **mã phòng thuộc CONTEST**.
+
+| Câu hỏi cũ | Trả lời |
+|---|---|
+| Một contest có nhiều match trong hoàn cảnh nào? | Bất cứ khi nào **kho đề còn đủ** — thi nhiều trận trên cùng bộ đề, hoặc **chạy lại buổi thi** sau một trận `bỏ dở` (`Đ-47`) |
+| Người dùng tạo match ở đâu trong luồng UI? | Nút *"Bắt đầu trận mới"* ở màn trận đã đóng sổ — `EVENT-046`, guard **kho đề còn lại đủ pre-flight** |
+| Mã phòng thuộc về đâu? | **Contest** ⇒ viewer/overlay **không phải join lại** giữa hai trận |
+| Cái gì reset theo trận? | Điểm · event log · ghế đã gán · biên bản · cấu hình đóng băng (`NT-C` đóng băng lại ở vòng đầu **của trận mới**) |
+| Cái gì đi xuyên qua? | Cờ **no-repeat**: câu đã hiển thị **không bao giờ** trả về kho (`INV-11`) |
+
+**Ràng buộc suy ra** `[SUY RA]`: **một contest chỉ có MỘT trận đang chạy tại một thời điểm** — vì mã phòng thuộc contest, hai trận song song sẽ đụng nhau ở cùng một phòng. `EVENT-046` vì vậy đòi trận trước **đã ở `FINISHED`**.
+
+Chi tiết máy trạng thái: `game-state-machine.md` §`EVENT-046`, `T-086`, `T-087`.
 
 ### C-10 `[MƠ HỒ]` — `Question.visibility` đổi nghĩa giữa 2 tài liệu
 
@@ -324,7 +339,7 @@ Phân loại: đây là **điều khiển hệ thống**, không phải luật g
 | ID | Câu hỏi |
 |---|---|
 | Q-A1 | Thao tác **đóng** có dialog xác nhận không, hay chỉ **mở** mới có? |
-| Q-A2 | Miếng ghép do admin **mở tay** có tính vào mốc "số hàng ngang đã mở" của thang điểm Chướng ngại vật không? (giao với luật game — GRR-019) |
+| ~~Q-A2~~ | ✅ **ĐÃ TRẢ LỜI 2026-07-27 (`Đ-44`): CÓ.** Hàng ngang admin **đánh dấu đã hỏi** bằng tay **có** vào *số hàng ngang đã hỏi* ⇒ băng điểm CNV tụt bậc — lý do là **khôi phục trạng thái**; bước **lộ đáp án** thì không tính. Thao tác **không tự cộng điểm** cho ai; ngoại lệ thì admin **tự cộng tay**. Xem `game-rules.md` §GR-009 C12→C14 · `game-state-machine.md` `Đ-44` |
 | Q-A3 | Đóng lại một đáp án/ô chữ đã mở có làm thay đổi **điểm đã ghi nhận** không, hay chỉ đổi hiển thị? |
 | Q-A4 | Mở/đóng tay có bị chặn khi trận đã `FINISHED` không? |
 | Q-A5 | "Đáp án" ở đây gồm cả đáp án **đẩy tới viewer/thí sinh** không — tức có ghi đè `revealAnswerAfterJudge` (C-1) không? |
@@ -415,7 +430,7 @@ Không tồn tại luồng v1 nào chạy không có admin. Hệ quả:
 | C-12 Q-B6 / Đ-4.h | **ĐÓNG cho v1** — câu hỏi "ai chấm khi không có admin" chỉ còn là vấn đề của **practice (v1.5)**. GRR-070 chuyển sang v1.5. |
 | E-13 Practice (v1.5) | Trở thành nơi tập trung toàn bộ rủi ro "không người chấm". Khi mở v1.5, phải quyết: practice chỉ dùng mode nhập liệu? có `autoJudge` riêng cho practice? — chưa quyết. |
 | AS-4 (§7) — *"1 admin đủ vận hành 1 trận"* | **Chưa được đóng.** C-14 nói *có* người điều khiển, không nói *bao nhiêu* người. `product-gaps.md` §2.4 vẫn giảm thiểu bằng "runbook crew ≥2". `[NEEDS CLARIFICATION: v1 giả định 1 người hay ≥2 người vận hành?]` |
-| GRR-027, GRR-062, GRR-077 (`game-rules-review`) | **KHÔNG đóng.** "Có người điều khiển" ≠ "người đó luôn bấm". Các trạng thái chỉ thoát được bằng thao tác admin (mở Chướng ngại vật, xác nhận bốc thăm, kết thúc trận dở) vẫn không có đường thoát nếu admin không thao tác. |
+| GRR-027, GRR-062, ~~GRR-077~~ (`game-rules-review`) | **KHÔNG đóng** — trừ `GRR-077`, ✅ **đã đóng 2026-07-27** (`Đ-38` + `Đ-47`). "Có người điều khiển" ≠ "người đó luôn bấm". Hai mục còn lại (mở Chướng ngại vật, xác nhận bốc thăm) vẫn không có đường thoát nếu admin không thao tác. Riêng *"kết thúc trận dở"* nay có: **"Huỷ trận"** → `FINISHED` + nhãn `bỏ dở` (`EVENT-044`). |
 
 #### (b) Mode trả lời cấu hình ở cấp contest
 
@@ -568,7 +583,7 @@ Phần luật + rà soát "lượt thi" theo nguồn: `docs/reviews/game-rules-r
 |---|---|---|
 | **S-21** | **Thêm câu vào danh sách gán có bị hàng rào `everPublic` chặn không?** `R-GEN-12` quy định câu `everPublic` **hard-block mọi match**, force cần confirm 2 bước + audit — nhưng hàng rào đó được đặc tả ở **pre-flight trước trận**. Nay có đường thêm câu **giữa trận**, cần chốt hàng rào có áp ở đó không. Nếu không áp thì đây là **đường vòng qua toàn bộ cơ chế chống rò đề** | E-5, E-11 |
 | **S-22** | **Viewer có thấy gì khi admin sửa danh sách đề giữa trận không?** `Đ-5.2e` đã chốt viewer thấy điểm đổi đột ngột khi bỏ vòng, `S-11` hỏi về việc chạy lại vòng. Đây là trường hợp thứ ba: trận đứng yên nhưng tài nguyên bên dưới đổi. Nhiều khả năng là **không hiện gì** — nhưng chưa ai nói | E-9 |
-| ~~**S-23**~~ | ✅ **ĐÃ CHỐT 2026-07-27 (`Đ-38`).** `Đ-38` đặc tả đủ điều kiện vào/ra của `LOBBY` — **cửa vào vòng**. **Vào**: trận được tạo · **mọi** nút *"Kết thúc vòng"* · bỏ / chạy lại vòng. **Ra**: mở bất kỳ vòng nào · `TIE_BREAK` · `FINISHED`. ⇒ Cửa sửa đề mở **đúng khi không vòng nào đang chạy**. Đóng luôn `GRR-077` và `UNRES-01` | E-7 |
+| ~~**S-23**~~ | ✅ **ĐÃ CHỐT 2026-07-27 (`Đ-38`).** `Đ-38` đặc tả đủ điều kiện vào/ra của `LOBBY` — **cửa vào vòng**. **Vào**: trận được tạo · **mọi** nút *"Kết thúc vòng"* · bỏ / chạy lại vòng. **Ra**: mở bất kỳ vòng nào · `TIE_BREAK` · `FINISHED`. ⇒ Cửa sửa đề mở **đúng khi không vòng nào đang chạy**. Đóng **vế (1)** của `GRR-077` (trạng thái nghỉ giữa các vòng); **vế (2) — trận bỏ dở — vẫn treo** | E-7 |
 
 ---
 
@@ -773,7 +788,7 @@ Theo thứ tự chặn:
 | 2b | Trả lời **C-11 Q-A1→Q-A7** (quyền mở/đóng của admin) | Epic E-7 — chưa có FR nào cho quyền này; Q-A2/Q-A5 còn giao với E-6 và C-1 |
 | 3 | Chủ dự án chốt hoặc đóng **D26/D27** (C-4) | Epic E-3, journey J-3, và có/không journey "portable → central" |
 | 4 | Trả lời **C-8** (ai bấm bắt đầu 3s) | Acceptance criteria vòng Khởi động |
-| 5 | Làm rõ **C-9** (Contest vs Match trong UI) | Journey J-2, J-4; mã phòng thuộc về đâu |
+| 5 | ~~Làm rõ **C-9** (Contest vs Match trong UI)~~ → **ĐÃ CHỐT 27/07** (`Đ-49`): mã phòng thuộc **contest**, nút *"Bắt đầu trận mới"* khi kho đề còn đủ, một trận chạy tại một thời điểm | Journey J-2, J-4 nay viết được |
 | 6 | Đồng bộ **C-2, C-3, C-6, C-10** (tài liệu cũ chưa sync) | Chất lượng nguồn — nên sửa ngay khi migrate vào `docs/source/` |
 | 7 | Quyết định về **NG chưa chốt**: bản quyền format Olympia + license repo | Có thể chặn phát hành, không chặn viết PRD |
 | 8 | Chạy gate người thật (`product-gaps.md` §6.1) | Kiểm chứng AS-1, AS-3, AS-4, AS-8 |

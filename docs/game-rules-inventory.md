@@ -592,12 +592,12 @@ Mọi rule trong tài liệu này khi mô tả "Kết quả khi đúng / khi sai
 - **Nguồn**: `PRD` FR-3.5 · `US` US-5.4 · `research/ux-gaps.md`
 - **Điều kiện đầu vào**: thí sinh mất kết nối.
 - **Kết quả khi < 120s**: **giữ ghế** + state-sync; banner "đang kết nối lại".
-- **Kết quả khi quá grace**: hệ thống **CHỈ TÔ NỔI BẬT** ghế trên màn admin kèm thời lượng mất kết nối; **admin quyết** giữ / gia hạn / kick. Không có hệ quả tự động nào.
+- **Kết quả khi quá grace**: hệ thống **CHỈ TÔ NỔI BẬT** ghế trên màn admin kèm thời lượng mất kết nối; **admin quyết** giữ / gia hạn. Không có hệ quả tự động nào.
 - **Actor**: Thí sinh, Server, Admin.
 - **Rule mâu thuẫn**: `DEF` D13.4 — rớt đúng lượt riêng thì engine dừng lại chờ admin quyết, ghi đè grace.
 - **`U-13` ĐÃ ĐÓNG 2026-07-26** — ✅ chủ dự án chốt: *"chỉ highlight, admin là người quyết"*. ⇒ **KHÔNG cần kê danh sách giá trị `dropoutPolicy`**, vì **không có chính sách tự động nào** để kê. Cấu hình duy nhất còn lại là **ngưỡng grace** (mặc định **120 giây**) — mốc để bắt đầu tô nổi bật.
   - Cùng **một mẫu** với `Đ-1` (tô khác biệt ký tự, admin chấm) và `Đ-28` (tô đỏ bản quá hạn, admin phán quyết). Nguyên tắc nền điểm 1 áp nguyên: máy đo và hiển thị **sự kiện**, người giữ **phán quyết**.
-  - **Kick** là thao tác không hoàn tác được ⇒ dialog Yes/No + AuditLog kèm lý do (`CLAUDE.md` §UX, `S-2`).
+  - **`Đ-52` (27/07) — v1 KHÔNG ship kick.** Thay bằng **vô hiệu hoá / kích hoạt lại ghế** (`EVENT-048`): **đảo ngược được**, dùng **mọi lúc** trong trận chưa đóng sổ, ghế giữ nguyên điểm và vị trí. Vẫn qua dialog Yes/No + AuditLog kèm lý do (`CLAUDE.md` §UX, `S-2`). **Không** phải hệ quả của quá grace — hai chuyện độc lập. Chi tiết: `game-state-machine.md` `STATE-026`, `EVENT-048`.
 
 ## R-GEN-10. Phạm vi đáp án (bảo mật — quy tắc sản phẩm)
 

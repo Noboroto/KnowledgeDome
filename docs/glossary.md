@@ -13,7 +13,7 @@
 | `NEEDS CLARIFICATION` | 20 | Từ có được dùng nhưng định nghĩa chưa đủ để viết spec |
 | `CONFLICT` | 9 | Cùng một từ mang **nhiều nghĩa khác nhau** trong tài liệu |
 
-**9 mục `CONFLICT` — đọc trước khi viết bất kỳ spec nào**: TERM-013 `game` · TERM-016 `lượt / turn` · TERM-017 `phase` · TERM-022 `state` · TERM-026 `event điểm` · TERM-037 `cancelled` · TERM-043 `result` · TERM-047 `draw` · TERM-054 `visibility / everPublic`.
+**8 mục `CONFLICT` — đọc trước khi viết bất kỳ spec nào**: TERM-013 `game` · TERM-016 `lượt / turn` · TERM-017 `phase` · TERM-022 `state` · TERM-037 `cancelled` · TERM-043 `result` · TERM-047 `draw` · TERM-054 `visibility / everPublic`. *(TERM-026 `event điểm` đã **RESOLVED** ngày 2026-07-27 bởi `Đ-56`.)*
 
 > **Tỉ lệ `CONFIRMED` 31/60 không phải lỗi kiểm kê** — phần lớn mục `NEEDS CLARIFICATION` là thuật ngữ **có định nghĩa cốt lõi rõ ràng** nhưng còn một nhánh chưa chốt (thường là một mã U-x hoặc GRR-x đã ghi nhận). Trường Definition của các mục đó vẫn dùng được; chỉ nhánh nêu ở Status là chưa.
 
@@ -339,19 +339,23 @@
 - **Source**: `game-rules-inventory.md` §R-GEN-07, §R-GEN-06 · `game-rules-decisions.md` §7.1.
 - **Status**: `CONFIRMED`
 
-## TERM-026 — Event điểm `⚠ CONFLICT`
+## TERM-026 — Event điểm
 
-- **Definition**: đơn vị event sinh ra điểm. **Độ hạt được định nghĩa hai kiểu loại trừ nhau**:
-  - **(E1) Theo thí sinh** — dedup ở server theo khoá `(câu, thí sinh, loại phán quyết)`; *"bấm Sai sau Đúng = revert + event mới"*.
-  - **(E2) Theo câu, cho toàn bảng** — *"một câu = MỘT event điểm cho TOÀN BỘ người chơi"* ở vòng xếp hạng (Tăng tốc); revert = revert **cả bảng xếp hạng** của câu đó.
+- **Definition**: đơn vị event sinh ra điểm. Có **hai HÌNH DẠNG**, dùng ở hai chỗ khác nhau — **không phải hai định nghĩa tranh nhau** (`Đ-56`, chốt 2026-07-27):
+  - **(E1) Theo thí sinh** — dedup ở server theo khoá `(câu, thí sinh, loại phán quyết)`. Dùng ở **mọi vòng trừ Tăng tốc**.
+  - **(E2) Theo câu, cho toàn bảng** — *"một câu = MỘT event điểm cho TOÀN BỘ người chơi"*, dùng ở **vòng xếp hạng (Tăng tốc)**, vì điểm ở đó là hàm của **thứ hạng** — một quan hệ giữa những người được chấm Đúng, không tách rời từng người được.
 - **Alternative names**: score event · event chấm điểm.
 - **Actor / entity liên quan**: Admin, Server, Tăng tốc.
 - **Allowed values**: —
 - **Unit**: điểm.
-- **Terms dễ nhầm**: E1 có chiều **thí sinh**, E2 **không có** ⇒ không tồn tại một khoá dedup dùng chung cho cả hai; đổi phán quyết một người ở Tăng tốc rơi vào vùng chưa định nghĩa.
-- **Related rules**: R-TT-01, R-GEN-03, R-GEN-07, Đ-18.
-- **Source**: `game-rules-decisions.md` §3.3 (E1), §3.4 `[Đ-5.3.1]` (E2) · `docs/reviews/game-rules-review.md` GRR-147.
-- **Status**: `CONFLICT`
+- **Terms dễ nhầm**: E1 có chiều **thí sinh**, E2 **không có** ⇒ **không tồn tại** khoá dedup dùng chung. Trước `Đ-56` đây bị coi là `CONFLICT` vì tưởng cần sửa **một người** trong một event E2.
+- **Related rules**: R-TT-01, R-GEN-03, R-GEN-07, Đ-18, **Đ-56**.
+- **Source**: `game-rules-decisions.md` §3.3 (E1), §3.4 `[Đ-5.3.1]` (E2) · `docs/reviews/game-rules-review.md` GRR-147 · **`Đ-56`**.
+- **Status**: **RESOLVED** (2026-07-27)
+
+> **`Đ-56` làm mâu thuẫn TAN, không phải phân xử nó.** Khoá dedup dùng chung **chỉ cần thiết nếu tồn tại thao tác sửa từng phần một event E2**. Nguyên tắc nền điểm 12 đã cấm *"đổi phán quyết tại chỗ"* ở **mọi** vòng, và `Đ-56` áp nó vào ca Tăng tốc: **câu đã chốt thì bảng điểm của câu là chung cuộc**. Sai thì admin **cộng tay** (`GR-029`), mỗi ghế một `SCORE_ADJUST` kèm lý do — kể cả phần dây chuyền khi thang điểm xê dịch.
+>
+> ⇒ E1 và E2 **không bao giờ phải nói chuyện với nhau**, nên không cần khoá chung, nên không còn vùng chưa định nghĩa.
 
 ## TERM-027 — Action
 
@@ -695,9 +699,11 @@
 - **Allowed values**: —
 - **Unit**: —
 - **Terms dễ nhầm**: **"đã được hỏi" chưa định nghĩa rõ** = đã hiện màn hình hay đã chấm; câu skip vì media hỏng có set cờ không (U-30).
-- **Related rules**: R-GEN-06, Đ-5.2f, U-30, GRR-143.
-- **Source**: `game-rules-inventory.md` §R-GEN-06 · `game-rules-decisions.md` §6.3.
+- **Related rules**: R-GEN-06, Đ-5.2f, U-30, GRR-143, **Đ-57**.
+- **Source**: `game-rules-inventory.md` §R-GEN-06 · `game-rules-decisions.md` §6.3 · **`Đ-57`**.
 - **Status**: `NEEDS CLARIFICATION` — U-30.
+
+> **`Đ-57` (27/07) — cờ này được dùng theo HAI chiều ngược nhau, tuỳ `matchPurpose`.** Trận **`official`**: pool = câu có `usedInContest = false`. Trận **`practice` trong một contest THẬT**: pool = **CHỈ** câu có `usedInContest = true` — nó **chỉ được luyện trên đề đã lộ**. Vì thế trận practice **không bao giờ set thêm cờ nào** (mọi câu nó chạm đã `true`), và `INV-11` **không cần ngoại lệ cho `practice`**. Trong một **practice contest** thì không có chiều đảo — phạm vi `usedInContest` per-contest đã tự tách nó khỏi contest thật.
 
 ## TERM-054 — `everPublic` `⚠ CONFLICT`
 
@@ -807,7 +813,7 @@
 | state | Trạng thái trận **hoặc** trạng thái ghế | TERM-022 | `CONFLICT` |
 | action | *(chỉ là thuật ngữ UX)* | TERM-027 | `NEEDS CLARIFICATION` |
 | event | MatchEvent | TERM-025 | `CONFIRMED` |
-| — *(event điểm)* | Độ hạt event điểm | TERM-026 | `CONFLICT` |
+| — *(event điểm)* | Độ hạt event điểm | TERM-026 | **`RESOLVED`** (`Đ-56`) |
 | bet | *(không tồn tại)* | Phụ lục A | — |
 | balance | *(không tồn tại)* | Phụ lục A | — |
 | score | Điểm | TERM-038 | `CONFIRMED` |
