@@ -1253,7 +1253,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | T-005 | `STATE-002` | `EVENT-003` Kết thúc lượt | Đã chấm xong câu thứ 6 của thí sinh cuối | `STATE-003` | — | `GR-001`, `GR-002` |
 | T-006 | `STATE-003` | `EVENT-003` Kết thúc lượt chung | Đã xử lý xong câu thứ 12 | `STATE-001` | Xoá hàng đợi đang hoạt động; giữ lịch sử | `GR-004`, `GR-005` |
 | T-007 | `STATE-004` | `EVENT-012` Chấm Đúng (Chướng ngại vật) | Tín hiệu đã được admin xác nhận | `STATE-001` | Cộng điểm theo băng 60/50/40/30/20; vòng kết thúc | `GR-009` |
-| T-008 | `STATE-004` | `EVENT-013` Chấm Sai (Chướng ngại vật) | Người bị chấm là thí sinh **cuối cùng** chưa bị loại | `STATE-001` | Đặt cờ bị loại; hàng ngang chưa hỏi bị bỏ (câu vẫn tiêu) | `GR-010`, `GR-012` |
+| T-008 | `STATE-004` | `EVENT-013` Chấm Sai (Chướng ngại vật) | Người bị chấm là thí sinh **cuối cùng** chưa bị loại | `STATE-001` | Đặt cờ bị loại; hàng ngang chưa hỏi bị bỏ — câu của nó **chưa hiển thị cho ai ⇒ CHƯA TIÊU, trả lại kho** | `GR-010`, `GR-012` |
 | T-009 | `STATE-010` | `EVENT-044` Hết giờ | Hết 15 giây, không ai giải đúng | `STATE-001` | Vòng khép lại; không ai được điểm Chướng ngại vật | `GR-011` |
 | T-010 | `STATE-005` | `EVENT-003` Kết thúc vòng | Đã chốt câu thứ 4 | `STATE-001` | — | `GR-013`, `GR-014` |
 | T-011 | `STATE-006` | `EVENT-003` Kết thúc vòng | Mọi thí sinh đã hoàn thành lượt | `STATE-001` | Xoá hàng đợi; dọn cờ ghế phạm vi vòng. **KHÔNG tính điều kiện hoà, KHÔNG đóng sổ trận** | `GR-016` |
@@ -1488,7 +1488,7 @@ Sau khi admin bấm, nút chấm khoá và nút *"Câu kế tiếp"* hiện lên
 
 ### INV-011 — Câu đã hiển thị thì không bao giờ trả lại kho
 
-*"Đã dùng"* = **đã hiển thị cho thí sinh**, không phải *"đã chấm"*. Câu bị bỏ qua, câu của vòng bị bỏ, câu của hàng ngang chưa hỏi khi cả sân bị loại — **đều tiêu**. Câu **đã rút nhưng chưa hiển thị** là **chưa tiêu, trả lại kho**.
+*"Đã dùng"* = **đã hiển thị cho thí sinh**, không phải *"đã chấm"*. Câu **bị bỏ qua sau khi đã hiển thị** và câu **của vòng bị bỏ** đều **tiêu**. Câu **đã rút nhưng chưa hiển thị** là **chưa tiêu, trả lại kho** — gồm cả câu của một **hàng ngang không bao giờ được chọn** khi cả sân bị loại: chưa ai thấy nó thì chưa lộ.
 
 **Gỡ một câu khỏi danh sách gán không phải là trả nó về kho**: gỡ chỉ có nghĩa *"không rút nữa"*. Câu **đã hiển thị** thì **không gỡ được** — nếu gỡ được thì gỡ-rồi-thêm-lại là đường lách chính bất biến này.
 
