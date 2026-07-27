@@ -16,7 +16,7 @@ Thư mục này là **nguồn sự thật của dự án**. Mọi thứ ngoài n
 | Tra **một thuật ngữ** | [`glossary.md`](glossary.md) |
 | Truy nguyên *"điều này từ đâu ra?"* | [`traceability.md`](traceability.md) |
 | Đọc **luật gốc nguyên văn** | [`source/`](source/) |
-| Xem câu hỏi **cấp sản phẩm** ngoài phạm vi luật chơi | [`product-discovery.md`](product-discovery.md) |
+| Biết **giao diện phải làm gì** để đúng các quyết định | [`product-discovery.md`](product-discovery.md) §6 |
 | Lục lại **quá trình thảo luận** | [`reviews/`](reviews/) — **kho lưu, không phải nguồn** |
 
 ---
@@ -31,7 +31,7 @@ Bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia
 
 ### [`decisions.md`](decisions.md) — vì sao
 
-**71 quyết định `QĐ-001` → `QĐ-071`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
+**79 quyết định `QĐ-001` → `QĐ-079`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
 
 Chia theo chủ đề: nguyên tắc nền · phạm vi phiên bản · điểm và event log · hai mode trả lời · tín hiệu và hàng đợi · đồng hồ · điều khiển trận · kho đề · ghế và kết nối · hiển thị và bảo mật · theo vòng · mô hình dữ liệu và quyền.
 
@@ -63,7 +63,9 @@ Còn giữ hai danh sách quan trọng: **biến thể bị loại** (để khô
 
 ### [`product-discovery.md`](product-discovery.md) — cấp sản phẩm
 
-Vấn đề, người dùng, mục tiêu, hành trình, epic, và những chỗ requirement còn mơ hồ. Đây là nơi chứa câu hỏi **không thuộc luật chơi** — vận hành, triển khai, quyền hạn, phạm vi MVP.
+Vấn đề, người dùng, mục tiêu, hành trình, epic.
+
+Phần đáng dùng nhất là **§6 — giao diện phải làm gì**: danh sách kiểm cho màn admin, màn thí sinh và viewer, mỗi dòng dẫn về `QĐ-*` ràng buộc nó. Đây cũng là nơi giữ giả định chưa kiểm chứng và cách đo thành công.
 
 ### [`reviews/`](reviews/) — kho lưu
 
@@ -85,7 +87,7 @@ Biên bản rà soát và đề xuất `GRR-*` của giai đoạn 2026-07. **Kh�
 
 | Mã | Ở đâu | Là gì |
 |---|---|---|
-| `QĐ-001` → `QĐ-071` | `decisions.md` | Quyết định |
+| `QĐ-001` → `QĐ-079` | `decisions.md` | Quyết định |
 | `GR-001` → `GR-037` | `game-rules.md` | Rule luật chơi |
 | `TERM-001` → `TERM-056` | `glossary.md` | Thuật ngữ |
 | `STATE-*` `EVENT-*` `T-*` `INV-*` | `game-state-machine.md` | Trạng thái · sự kiện · chuyển tiếp · bất biến |

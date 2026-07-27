@@ -11,7 +11,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
-| `decisions.md` | **Vì sao** — 71 quyết định `QĐ-001` → `QĐ-071`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 79 quyết định `QĐ-001` → `QĐ-079`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; file này dùng đúng tên ở đó |
 | `game-state-machine.md` | Máy trạng thái: `STATE-*` · `EVENT-*` · `T-*` · `INV-*`. Mọi rule ở đây phải khớp với một hoặc nhiều transition ở đó |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -483,10 +483,11 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | C7 | Bấm khi đã hỏi 1 hàng, admin xác nhận muộn hơn | **Băng chốt theo trạng thái tại mốc ADMIN XÁC NHẬN.** Tình huống *"số hàng đổi giữa hai mốc"* **không dựng được**: hàng đợi **chặn**, nên chừng nào tín hiệu còn chờ duyệt thì **không hàng ngang nào mở thêm được** | Băng chốt tại mốc xác nhận |
 | C8 | Admin bấm **No** | Tín hiệu kế tiếp lên; **thí sinh không mất lượt** | **Chưa tác dụng phụ nào** — cùng lập luận `GR-007` C2 |
 | C9 · C10 | Ghế **đã bị loại** bấm tiếp · **đã có người giải đúng** | Nút **không hiển thị**, bấm **không phản hồi** | Không đổi |
-| C11 | Cấu hình 5-8 hàng ngang | **Băng điểm lấy từ cấu hình, không suy ra từ luật.** `rowCount` **không khoá cứng ở 4**; đổi lại thang điểm là **mảng cấu hình BẮT BUỘC** dài bằng `rowCount`. Thiếu mảng đó là **thiếu cấu hình** ⇒ chặn tại contest builder, **không** phải tình huống lúc chạy | Băng đọc từ mảng cấu hình |
+| C11 | Cấu hình 5-8 hàng ngang | **Không dựng được ở v1** — `rowCount` **khoá cứng ở 4** (`QĐ-068`), cửa tạo contest không cho chọn giá trị khác. Mô hình dữ liệu vẫn nhận 5-8 để phiên bản sau chỉ việc mở khoá; khi mở, băng điểm là **mảng cấu hình BẮT BUỘC** dài bằng `rowCount` — không suy ra từ luật, vì nguồn không có thang cho ≠ 4 | Không đổi ở v1 |
 | C12 | Admin **đánh dấu đã hỏi** một ô bằng tay | **Băng tụt một bậc y như một lượt hỏi thật.** **Không ai được cộng điểm** từ thao tác này | Ô sang *đã hỏi*; `AuditLog` ghi **do-admin** để phân biệt với do-luồng |
 | C13 | Admin **lộ đáp án** một ô | **Băng KHÔNG đổi** — biến đếm là *đã hỏi*, không phải *đã lộ*. Nhờ vậy mở tay trọn một ô chỉ tính **một lần** | Ô sang *mở* |
-| C14 | Cần cộng điểm cho tình huống ngoài luật | **Admin tự cộng tay** qua điều chỉnh điểm — có event, có tên người bấm, **hoàn nguyên được** | Sinh event điều chỉnh điểm |
+| C14 | Người vừa bấm *"Mở chướng ngại vật"* trả lời một hàng ngang trong lúc chờ duyệt | **ĐƯỢC, bình thường.** Nguồn chỉ loại thí sinh khi trả lời **SAI Chướng ngại vật**; khoá ngay lúc bấm là **nghiêm hơn luật**. Và nếu admin bấm **No**, người đó phải **không mất gì** (`QĐ-022`) — khoá sớm sẽ vi phạm chính điều đó | Không đổi |
+| C15 | Cần cộng điểm cho tình huống ngoài luật | **Admin tự cộng tay** qua điều chỉnh điểm — có event, có tên người bấm, **hoàn nguyên được** | Sinh event điều chỉnh điểm |
 
 **Không đổi gì.**
 

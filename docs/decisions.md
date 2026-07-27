@@ -667,7 +667,11 @@ Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài kho�
 
 **Nhịp lộ từng người là ANIMATION client-side**, không phải engine.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-19`, `GRR-032`, `GRR-057`
+**Mở ở `TIE_BREAK`**: nhóm chưa phân định hiện **ĐỒNG HẠNG** — đúng như trạng thái thật lúc đó. Không ẩn bảng, không bịa thứ tự tạm: bảng xếp hạng là **ảnh chụp** của `reduce(event log)`, và ở mốc đó hai người **đang** bằng điểm nhau thật.
+
+**Lớp phủ áp cho MỌI vai, gồm cả máy thí sinh** — điểm vốn đã công khai với mọi vai (`QĐ-015`) nên không lộ thêm gì.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-19`, `S-24`, `S-25`, `GRR-032`, `GRR-057`
 
 ### QĐ-050 — Banner tạm dừng: chặn toàn cục, KHÔNG CHỮ
 
@@ -686,6 +690,100 @@ Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài kho�
 **Hệ quả.** Mọi kênh đều đi qua cùng một bộ lọc theo vai — kể cả gói khôi phục kết nối (`QĐ-046`) và lớp công bố (`QĐ-049`).
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-072 — Ba hạng cảnh báo giao diện, phân biệt bằng thứ chúng bảo vệ
+
+**Quyết định.** Đúng **ba** hạng, không hơn:
+
+| Hạng | Dùng khi | Hình thức | Bắt lý do |
+|---|---|---|---|
+| **Toast** | Thao tác ở **invalid state** — không tồn tại đường thực hiện | Thông báo trôi, **nói rõ vì sao** | Không |
+| **Dialog Yes/No** | Thao tác **không hoàn tác được** nhưng hợp lệ — mở đáp án, xác nhận tín hiệu, điều chỉnh điểm | Hộp thoại hai nút | Chỉ điều chỉnh điểm |
+| **Dialog phá huỷ** | Bỏ vòng · chạy lại vòng · kết thúc sớm · huỷ trận | **Không tắt được** bằng `Esc` hay click ra ngoài | **Có** |
+
+**Thao tác ĐÓNG hiển thị không có dialog.** Dialog chống thứ **không thu hồi được**; đóng lại thì mở lại được và không lộ thêm gì.
+
+**Cảnh báo lệch luật là dialog Yes/No, không bắt lý do.** Nó **nêu tên luật đang bị lệch** và **không tự đóng** — admin có thể đang nhìn chỗ khác.
+
+**Vì sao.** Toast và dialog trông giống nhau với người dùng nhưng khác nhau ở chỗ **ép được hay không**: toast là *"không có đường này"*, dialog là *"có đường, bạn chắc chưa"*. Trộn hai thứ thì admin học sai mô hình và sẽ hoảng khi gặp toast giữa trận.
+
+Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chung chung giữa lúc đang chạy chương trình thì vô dụng.
+
+**`Esc` ở màn thí sinh mode sân khấu**: **không làm gì** — ba vòng đó không có ô nhập để xoá, và `Esc` không bao giờ là nút quay lại ở màn thi đấu.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-004`, `QĐ-005` · *Thay cho*: `Q-A1`, `S-3`, `S-7`, `S-18`
+
+### QĐ-073 — Màn chấm của admin
+
+**Quyết định.**
+
+- **Tô so với đáp án GẦN NHẤT** trong `acceptedAnswers` — ít khác biệt nhất — và cho xem **cả danh sách**. Tô theo đáp án đầu sẽ báo động giả khi thí sinh dùng một biến thể hợp lệ khác.
+- **Giữ `wordCount`** như gợi ý phụ: nguồn có ngoại lệ *"cùng tổng số chữ cái"*, admin cần con số đó để áp.
+- **Tăng tốc chấm trên MỘT màn, cả bốn ghế cạnh nhau** — xếp hạng là phép tính trên toàn bảng (`QĐ-013`), chấm từng người một thì admin không thấy được thứ mình đang xếp.
+- **Admin xem được lịch sử bài gửi** của một ghế, không chỉ bản đang tính. Cần cho phân xử khiếu nại; và `QĐ-029` đã giao cho admin quyền sửa, nên phải cho admin dữ liệu để sửa đúng.
+- **Bản hợp lệ và bản quá hạn hiện CẠNH NHAU**, bản quá hạn tô đỏ, và **nút chấm bật được cho cả hai**. Khoá cứng bản quá hạn là lấy mất quyền phán quyết mà `QĐ-010` đã giao.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-010`, `QĐ-013`, `QĐ-029` · *Thay cho*: `Q-B2`, `Q-B4`, `Q-B5`, `S-8`, `S-9`
+
+### QĐ-074 — Thao tác tay của admin THẮNG mọi cờ tự động
+
+**Quyết định.** Admin bấm mở đáp án ⇒ đáp án ra tới **mọi vai đang xem**, kể cả khi `revealAnswerAfterJudge` **TẮT**. Cờ đó là **mặc định tự động**; cú bấm là **quyết định thủ công**, và thủ công thắng. Mỗi lần mở vào `AuditLog`.
+
+**Mở/đóng hiển thị KHÔNG đụng tới điểm.** Hai trục khác nhau: điểm chỉ đổi qua event (`QĐ-011`). Đóng lại một ô đã mở là đổi hiển thị, không hoàn nguyên gì.
+
+**Độc quyền admin** — chính xác hơn: **phiên đang giữ quyền điều khiển** (`QĐ-008`). MC không có nút nào; màn MC là read-only.
+
+**Không có khái niệm "engine tự mở".** Engine không bao giờ tự mở gì, nên `AuditLog` **không cần** phân biệt *do-admin* với *do-engine* — mọi lần mở đều do admin. Chỗ **cần** phân biệt là khác: ô VCNV chuyển sang *đã hỏi* do **luồng** hay do **admin đánh dấu tay** (`GR-009` C12), vì hai đường đó cùng đổi băng điểm.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-048`, `QĐ-051`, `QĐ-062` · *Thay cho*: `Q-A3`, `Q-A5`, `Q-A6`, `Q-A7`
+
+### QĐ-075 — Mode trả lời: chụp vào trận, không thuộc preset luật
+
+**Quyết định.**
+
+- **Mode được CHỤP vào trận lúc start.** Sửa mode ở contest về sau **không** đụng trận đã chạy — cùng khuôn `QĐ-062`. Nhờ vậy sửa mode khi contest đã có trận `FINISHED` là **hợp lệ**, không cần chặn.
+- **Mode KHÔNG nằm trong preset `O26_DEFAULT@1`.** Preset chứa **giá trị luật**; mode là **điều kiện sân khấu** — có micro không, thí sinh có bàn phím không. Nút *"Áp dụng luật 2026"* **không đụng** mode.
+- **Mode CÓ đi theo contest bundle** export/import, nhưng **sửa được sau khi nhập**: nơi nhận có thể có sân khấu khác.
+- **Một mode chung cho cả trận official lẫn trận practice** của cùng contest — mode là thuộc tính của **phòng**, không của **mục đích trận**. Đây là chỗ nó khác `revealAnswerAfterJudge` (`QĐ-062`), và khác **có lý do**, không phải thiếu nhất quán.
+- **Biên bản ở mode sân khấu ghi Đúng/Sai, không ghi nội dung** — không có bài làm dạng chữ để ghi. Mode nhập liệu thì ghi cả nội dung.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-016`, `QĐ-017`, `QĐ-062` · *Thay cho*: `Q-C1b`, `Q-C1c`, `Q-C2`, `Q-C3`, `Q-C4`
+
+### QĐ-076 — Viewer KHÔNG được báo về can thiệp của admin
+
+**Quyết định.** Bỏ vòng, chạy lại vòng, sửa danh sách đề, gỡ lệnh cấm — viewer **không thấy thông báo nào**. Điểm và bàn cờ đổi **đột ngột, không hiệu ứng, không giải thích**. Không khoá cổng phòng, không màn chờ.
+
+**Khuyến nghị lượt cũng chỉ tới admin và MC.** Đẩy xuống viewer là lộ **thứ tự sắp tới** — hỏng trình diễn, và trao một lợi thế mà luật không định trao.
+
+**Vì sao.** Viewer xem một **buổi thi**, không xem một **bảng điều khiển**. Mọi thông báo kiểu *"admin vừa bỏ vòng 2"* đều biến sự cố hậu trường thành sự kiện trên sân khấu. Người giải thích chuyện đang xảy ra là **MC**, không phải giao diện.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-035`, `QĐ-051` · *Thay cho*: `S-4`, `S-11`, `S-22`
+
+### QĐ-077 — Biên bản trận ghi theo LẦN CHẠY
+
+**Quyết định.** Một vòng chạy nhiều lần thì biên bản in **nhiều khối**, theo thứ tự thời gian, mỗi khối một **số lần chạy** và một **nhãn**: *đã bỏ* · *đã chạy lại* · *kết thúc sớm* · *hoàn thành*. Không gộp, không giấu lần hỏng.
+
+**Event hoàn nguyên hiện trong biên bản** như mọi event khác — nó là một dòng có tên người bấm và lý do, không phải một phép trừ thầm lặng.
+
+**Xuất biên bản trước khi dọn dữ liệu.** Job dọn theo retention **cảnh báo trước**, và **không** đụng biên bản đã xuất — hiện vật đã xuất nằm ngoài vòng đời của dữ liệu thô.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-011`, `QĐ-035` · *Thay cho*: `S-6`, `S-10`
+
+### QĐ-078 — Thao tác phá huỷ có permission RIÊNG, không mặc định theo vai
+
+**Quyết định.** Bỏ vòng · chạy lại vòng · kết thúc sớm · huỷ trận · điều chỉnh điểm · sửa danh sách đề · ép qua hàng rào `everPublic` — mỗi thứ là **một permission riêng** trong catalog, không suy ra từ *"là admin"*.
+
+**Vì sao.** Đây là các thao tác **đổi được kết quả trận**. Zero-trust bắt server kiểm quyền cho **mọi** request; nếu quyền chỉ là *"vai admin"* thì không có cách nào cấp một tài khoản chạy trận mà không đồng thời cho nó xoá vòng. Tách permission cũng là thứ làm cho `QĐ-008` — nhiều tài khoản, một phiên — dùng được thật.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-008` · *Thay cho*: `S-1`
+
+### QĐ-079 — Danh sách `sound-cue` phủ cả sự kiện điều khiển
+
+**Quyết định.** Ngoài các mốc thi đấu, danh sách slot có thêm: **hoàn nguyên · bỏ vòng · chạy lại vòng · kết thúc sớm · ép qua cảnh báo · mở màn công bố**. Slot trống = **im lặng**; không có bộ âm mặc định.
+
+**Vì sao.** Thiếu slot thì không thêm được về sau mà không sửa engine. Có slot mà để trống thì **không tốn gì**.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-049` · *Thay cho*: `S-5`
 
 ---
 
@@ -879,7 +977,11 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 
 **Hệ quả.** Ràng buộc gắn với **contest**, không với hệ thống: cùng một người có thể là thí sinh ở contest này và admin ở contest khác.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-051` + `CLAUDE.md` §Mô hình truy cập
+**Setter kiêm MC là ĐƯỢC PHÉP.** Cả hai vai đều vốn đã thấy đáp án, nên ghép chúng **không lộ thêm gì** — khác hẳn ca thí sinh ở trên. Xung đột lợi ích *"người ra đề dẫn trận dùng đề của mình"* là **rủi ro quy trình**, và ở quy mô một trường thì cấm nó thường đồng nghĩa với không tổ chức được. Hệ thống **cảnh báo** ở cửa gán vai và ghi `AuditLog`, **không chặn** — đúng mô hình advisory (`QĐ-002`).
+
+**Vai hệ thống ≠ vai vận hành.** `User` mang **vai hệ thống** (tài khoản có gì trong catalog); *MC*, *trainer*, *host* là **quyền gán theo contest**, không phải vai seed. Trộn hai khái niệm là cách nhanh nhất để đếm sai số role và cấp thừa quyền.
+
+*Nguồn*: `[SUY RA]` từ `QĐ-051` + `CLAUDE.md` §Mô hình truy cập · *Thay cho*: `A-12`
 
 ### QĐ-066 — Ba kiểu NHẬP đáp án; đáp án luôn là CHUỖI
 
@@ -905,6 +1007,44 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 # M. Bảng tra mã CŨ → MỚI
 
 > Dùng khi đọc tài liệu chưa dọn hoặc `reviews/`. Mã cũ **không còn xuất hiện** trong đặc tả.
+
+> Bảng này liệt kê các họ mã chính. Nguồn chuẩn là dòng ***Thay cho*** của từng mục — có mã cũ nào không thấy ở đây thì tìm trong đó.
+
+### Mã cấp sản phẩm đã ngừng dùng
+
+| Mã cũ | Mã mới |
+|---|---|
+| `A-12` | `QĐ-065` |
+| `Q-A1` | `QĐ-051` |
+| `Q-A3` | `QĐ-074` |
+| `Q-A5` | `QĐ-074` |
+| `Q-A6` | `QĐ-074` |
+| `Q-A7` | `QĐ-074` |
+| `Q-B2` | `QĐ-073` |
+| `Q-B4` | `QĐ-073` |
+| `Q-B5` | `QĐ-073` |
+| `Q-C2` | `QĐ-075` |
+| `Q-C3` | `QĐ-075` |
+| `Q-C4` | `QĐ-075` |
+| `Q-C1b` | `QĐ-075` |
+| `Q-C1c` | `QĐ-075` |
+| `S-1` | `QĐ-078` |
+| `S-3` | `QĐ-051` |
+| `S-4` | `QĐ-076` |
+| `S-5` | `QĐ-079` |
+| `S-6` | `QĐ-077` |
+| `S-7` | `QĐ-051` |
+| `S-8` | `QĐ-073` |
+| `S-9` | `QĐ-073` |
+| `S-10` | `QĐ-077` |
+| `S-11` | `QĐ-076` |
+| `S-16` | `QĐ-008` |
+| `S-17` | `QĐ-070` |
+| `S-18` | `QĐ-051` |
+| `S-21` | `QĐ-071` |
+| `S-22` | `QĐ-076` |
+| `S-24` | `QĐ-049` |
+| `S-25` | `QĐ-049` |
 
 | Mã cũ | Mã mới | Mã cũ | Mã mới |
 |---|---|---|---|
