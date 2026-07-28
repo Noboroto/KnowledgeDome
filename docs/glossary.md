@@ -213,9 +213,10 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 **Định nghĩa.** Bản ghi **append-only** của mọi việc xảy ra trong trận. **Điểm là hàm của event log**, không phải một con số bị sửa trực tiếp. Lịch sử **linear, không bao giờ xoá**.
 
 - **Tên khác**: sự kiện trận · event log
-- **Giá trị**: các loại đã đặt tên — `QUESTIONS_DRAWN` · `QUESTION_USED` · `SCORE_ADJUST` · `MEDIA_KEY`
+- **Giá trị**: các loại đã đặt tên — `QUESTIONS_DRAWN` · `QUESTION_USED` · `SCORE_ADJUST` · `MEDIA_KEY` · `TIE_BREAK_RESOLVED`
+- **Không phải mọi event đều là event điểm.** `TIE_BREAK_RESOLVED` là **event thứ hạng**: nó nằm trong cùng nhật ký nhưng **không tham gia** `reduce` ra bảng điểm (`QĐ-083`)
 - **Đừng nhầm với**: **AuditLog** — bảng chung ghi mọi thao tác của mọi vai (auth, CRUD, xuất/nhập), khác event trận · **thao tác của người dùng** — thao tác là cái được bấm và **có thể bị từ chối**; event là cái **đã xảy ra và được ghi**
-- **Nguồn**: `QĐ-011`
+- **Nguồn**: `QĐ-011`, `QĐ-083`
 
 ### TERM-022 — Event điểm
 
@@ -385,10 +386,10 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 |---|---|
 | **Phán quyết** | Kết quả chấm **một câu** — Đúng / Sai / Huỷ kết quả (TERM-029) |
 | **Kết quả trận** | Bảng điểm cuối + thứ hạng, chốt tại mốc **chốt trận**; xuất biên bản/PDF |
-| **Kết quả tie-break** | Người thắng Câu hỏi phụ — **không cộng điểm**, chỉ đổi thứ hạng |
+| **Kết quả tie-break** | Người thắng Câu hỏi phụ — **không cộng điểm**, chỉ đổi thứ hạng. Ghi bằng event `TIE_BREAK_RESOLVED`; hoàn nguyên bằng **bỏ vòng `TIE_BREAK`** trước cú Chốt trận cuối, và **tự mất đối tượng** khi nhóm không còn bằng điểm (`QĐ-083`) |
 
-- **Đừng nhầm với**: hai cái sau **không thể mâu thuẫn nhau**: tie-break chạy **trước** khi trận đóng sổ, và sau khi đóng sổ thì trận **niêm phong** — không có đường sửa điểm để tạo ra tình huống *"người thắng tie-break lại thua điểm"*
-- **Nguồn**: `QĐ-036`, `QĐ-037`, `QĐ-055`
+- **Đừng nhầm với**: hai cái sau **không thể mâu thuẫn nhau**, nhưng **không phải vì không có đường sửa điểm** — tie-break xong thì trận về `LOBBY` và admin **vẫn sửa điểm được**. Chúng không mâu thuẫn được là vì kết quả tie-break **chỉ sắp thứ tự trong nhóm bằng điểm**: sửa điểm làm nhóm hết bằng nhau ⇒ kết quả tie-break **mất đối tượng** và phép phân định chạy lại (`GR-022` C8). Tình huống *"người thắng tie-break lại thua điểm"* vì thế **không tồn tại được**, chứ không phải bị chặn
+- **Nguồn**: `QĐ-036`, `QĐ-037`, `QĐ-055`, `QĐ-083`
 
 ### TERM-039 — Người thắng
 

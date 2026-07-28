@@ -1120,20 +1120,24 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 
 | Ca | Điều kiện | Kết quả | Thay đổi trạng thái |
 |---|---|---|---|
-| C1 | Bấm Chốt trận; 2+ người cùng điểm cao nhất, vị trí 1 ∈ `tieBreakPositions` | Vào vòng Câu hỏi phụ | `LOBBY` → `TIE_BREAK`; gán `tiedSeats` |
+| C1 | Bấm Chốt trận; 2+ người cùng điểm cao nhất, vị trí 1 ∈ `tieBreakPositions`; nhóm đó **chưa** có `TIE_BREAK_RESOLVED` còn hiệu lực | Vào vòng Câu hỏi phụ | `LOBBY` → `TIE_BREAK`; gán `tiedSeats` |
 | C2 | Như C1 nhưng hoà ở vị trí khác, vẫn ∈ config | Như C1 | Như C1 |
 | C3 | Bấm Chốt trận; **một** người điểm cao nhất | Đóng sổ | `LOBBY` → `FINISHED`, `matchClosedReason = "hoàn thành"` |
 | C4 | Bấm Chốt trận; có hoà nhưng vị trí **∉** `tieBreakPositions` | Đóng sổ, ghi **đồng hạng** | `LOBBY` → `FINISHED`; biên bản ghi cả nhóm cùng hạng |
 | C5 | Admin bấm **Huỷ trận** từ **bất kỳ** trạng thái nào — mất điện, hỏng thiết bị, huỷ buổi thi | Đóng sổ với nhãn **`matchClosedReason = "bỏ dở"`**. **Điểm giữ nguyên, không revert**; **không** phân định thứ hạng, **không** có người thắng | `FINISHED`. Ghi `closedBy` / `closedAt` / `reason`; biên bản in nhãn *"trận bỏ dở"* kèm đủ các vòng đã chạy; thống kê không đếm vào trận hoàn thành. Dialog hạng **phá huỷ** + **lý do bắt buộc** |
 | C6 | Vòng Về đích xong, admin **chưa bấm gì** | Trận **đứng ở `LOBBY`** — chưa tính hoà, chưa đóng sổ | Không đổi. Admin vẫn sửa điểm được (`GR-029`) |
+| **C7** | Bấm Chốt trận **lần hai**, sau khi `TIE_BREAK` đã phân định; điểm **không đổi** ⇒ nhóm hoà trùng khớp một `TIE_BREAK_RESOLVED` **còn hiệu lực** | **Không** vào `TIE_BREAK` nữa. Đóng sổ với thứ hạng đã phân định | `LOBBY` → `FINISHED`, `matchClosedReason = "hoàn thành"` |
+| **C8** | Bấm Chốt trận **lần hai**, nhưng admin đã sửa điểm ⇒ nhóm hoà **khác đi** | Event tie-break cũ **mất đối tượng**, không áp dụng. Phép phân định chạy lại trên bảng điểm mới | Theo kết quả mới: `FINISHED` nếu hết hoà, hoặc `TIE_BREAK` **lần nữa** nếu cửa vào vòng còn đủ 3 câu |
+
+**Còn hiệu lực nghĩa là gì.** Một `TIE_BREAK_RESOLVED` còn hiệu lực khi và chỉ khi nhóm `tiedSeats` của nó **vẫn đang bằng điểm nhau** và **vẫn ở đúng `position`** đó, đo **tại mốc đọc**. Không thoả ⇒ **mất đối tượng**: không xoá, không đánh dấu vô hiệu, không cảnh báo — nó chỉ đơn giản không có gì để sắp. Sửa điểm rồi sửa ngược lại thì event **sống lại**, vì tiêu chí là *trạng thái hiện tại*, không phải *đã từng bị đụng*.
 
 **Không đổi gì.** Điểm khi vào `TIE_BREAK` — chỉ ghi nhận trạng thái hoà · danh sách câu chưa dùng · cài đặt playlist.
 
-**Thứ tự đánh giá.** **(1)** admin bấm Chốt trận → **(2)** server tính điểm tích luỹ tại mốc đó → **(3)** tìm nhóm cao nhất → **(4)** đối chiếu `tieBreakPositions` và số người ≥ 2 → **(5)** rẽ `TIE_BREAK` hoặc `FINISHED`.
+**Thứ tự đánh giá.** **(1)** admin bấm Chốt trận → **(2)** server tính điểm tích luỹ tại mốc đó → **(3)** tìm nhóm cao nhất → **(4)** đối chiếu `tieBreakPositions` và số người ≥ 2 → **(5)** kiểm nhóm đó đã có `TIE_BREAK_RESOLVED` còn hiệu lực chưa → **(6)** rẽ `TIE_BREAK` *(chưa có)* hoặc `FINISHED` *(đã có, hoặc không hoà)*.
 
 **Biên.** Nhóm hoà **2** người: kích hoạt. Nhóm hoà **4** người (toàn sân): kích hoạt nếu config mở. Không hoà: không kích hoạt.
 
-**Bấm trùng.** Nút Chốt trận **một chiều, tự tắt** ⇒ không có lần bấm thứ hai.
+**Bấm trùng.** Nút Chốt trận **tắt trong lúc một vòng đang chạy** — gồm cả `TIE_BREAK` — và **sống lại khi trận về `LOBBY`**. *"Một chiều"* ở đây nghĩa là **mỗi cú bấm chỉ được phân giải một lần**, **không** phải *"đúng một lần trong đời một trận"*: trận có tie-break cần **hai** cú bấm — một để kích hoạt phân định, một để đóng sổ.
 
 **Ví dụ.**
 
@@ -1141,8 +1145,11 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - A=100, B=100, C=100, D=85 với `tieBreakPositions=[1,2]` ⇒ `TIE_BREAK` cho A, B, C.
 - A=110, B=100, C=90 ⇒ `FINISHED`.
 - A=B=C=100 nhưng config `[1]` ⇒ `FINISHED`, ghi 3 người đồng hạng.
+- A=100, B=100 ⇒ `TIE_BREAK`, A thắng ⇒ về `LOBBY`. Bấm Chốt trận lần hai, điểm không đổi ⇒ **C7**: `FINISHED`, A nhất.
+- Như trên nhưng admin sửa **A 100→110** ở `LOBBY` ⇒ **C8**: nhóm {A,B} tan, event mất đối tượng ⇒ `FINISHED`, A nhất **theo điểm**.
+- Như trên nhưng admin sửa **C 90→100** ⇒ **C8**: nhóm mới {A,B,C} ≠ {A,B} ⇒ vào `TIE_BREAK` **lần hai**, tiêu thêm 3 câu.
 
-**Nguồn**: luật gốc §Câu hỏi phụ *"các thí sinh có cùng số điểm sẽ bước vào phần thi Câu hỏi phụ"* · `QĐ-036`, `QĐ-037`, `QĐ-038`, `QĐ-042`
+**Nguồn**: luật gốc §Câu hỏi phụ *"các thí sinh có cùng số điểm sẽ bước vào phần thi Câu hỏi phụ"* · `QĐ-036`, `QĐ-037`, `QĐ-038`, `QĐ-042`, `QĐ-083`
 
 ---
 
@@ -1156,7 +1163,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 
 - **Ba câu**, mỗi câu **15 giây** suy nghĩ — cả hai con số **cố định**, không cấu hình.
 - Bấm chuông giành quyền; chuông **chỉ nhận click chuột**. Hàng đợi **không chặn** — tính ngay theo server timestamp.
-- **Không cộng, không trừ điểm.** Kết quả chỉ đổi **thứ hạng**.
+- **Không cộng, không trừ điểm.** Kết quả chỉ đổi **thứ hạng**, và được ghi bằng event **`TIE_BREAK_RESOLVED`** — event **thứ hạng**, không tham gia phép tính điểm (`QĐ-083`). Nó chỉ sắp thứ tự **bên trong nhóm bằng điểm**, không bao giờ đảo được thứ tự hai người khác điểm.
 - **Có người giành được quyền ⇒ đồng hồ 15 giây DỪNG NGAY**, không chạy tiếp. Cửa sổ 15 giây là cửa sổ **suy nghĩ + giành quyền**; trả lời sai thì **cả nhóm sang câu kế**, không còn ai để đếm giờ cho.
 - **Không có đồng hồ trả lời riêng sau khi giành quyền.** Nguồn im lặng **có chủ ý**: nó nói rõ *"tính từ lúc giành được quyền"* ở Khởi động lượt chung và *"suy nghĩ **và trả lời**"* ở Về đích, nhưng ở Câu hỏi phụ **chỉ ghi** *"Thời gian suy nghĩ cho mỗi câu hỏi là 15 giây"*, và **không** có chế tài cho việc bấm chuông rồi im lặng — khác hẳn −5 của Khởi động. Bấm rồi im ⇒ admin chấm **Sai** ⇒ sang câu kế. **Không phát minh cửa sổ trả lời cho vòng này.**
 
@@ -1179,7 +1186,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 
 | Ca | Điều kiện | Kết quả | Thay đổi trạng thái |
 |---|---|---|---|
-| C1 | A bấm sớm nhất, admin chấm **Đúng** | A **thắng** phân định | `TIE_BREAK` → `LOBBY`; A giữ vị trí đang tranh |
+| C1 | A bấm sớm nhất, admin chấm **Đúng** | A **thắng** phân định | `TIE_BREAK` → **`LOBBY`**; sinh `TIE_BREAK_RESOLVED` với `method = 'answer'`; A giữ vị trí đang tranh. Admin bấm **Chốt trận** lần nữa để đóng sổ (`GR-022` C7) |
 | C2 | A bấm, admin chấm **Sai** | **Cả nhóm sang câu kế** | Hàng đợi reset; câu kế mở |
 | C3 | Hết 15 giây, không ai bấm | Sang câu kế | Câu đóng, không ai đúng |
 | C4 | Hết cả **3 câu**, chưa ai đúng | **Bốc thăm** — `GR-025` | Chuyển pha bốc thăm |
@@ -1198,7 +1205,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - Câu 1 hết giờ không ai bấm → câu 2, C bấm ở giây 7, chấm **Đúng** ⇒ C thắng.
 - Câu 1 A bấm sai → câu 2 B bấm đúng ⇒ B thắng.
 - Cả 3 câu không ai đúng ⇒ bốc thăm.
-- Admin chấm **Sai** nhầm: nút chấm **tự khoá sau lần bấm đầu**; muốn sửa thì đi qua hoàn nguyên (`GR-028`) hoặc điều chỉnh thủ công (`GR-029`).
+- Admin chấm **Sai** nhầm: nút chấm **tự khoá sau lần bấm đầu**. `GR-028` và `GR-029` **không dùng được** ở đây — cả hai là đường **điểm**, mà vòng này không sinh điểm. Đường đúng là **bỏ vòng `TIE_BREAK`** (`GR-030`), làm được cả trong lúc vòng chạy lẫn ở `LOBBY` **trước** cú Chốt trận cuối. Sau khi trận `FINISHED` thì hết cửa. Xem `QĐ-083`.
 
 **Nguồn**: luật gốc §Câu hỏi phụ *"Các thí sinh trả lời 3 câu hỏi. Thời gian suy nghĩ cho mỗi câu hỏi là 15 giây… Nếu trả lời sai, các thí sinh sẽ bước sang câu hỏi tiếp theo."* · `QĐ-020`, `QĐ-025`, `QĐ-031`, `QĐ-055`, `QĐ-060`, `QĐ-081`
 
@@ -1251,14 +1258,15 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - Đủ **3 câu** đã hỏi; **0** người đúng — sai hết, hết giờ hết, hoặc pha trộn cả hai.
 - Nhóm hoà **≥ 2** người.
 - `exhaustedFallback = 'random-draw'` — giá trị hợp lệ duy nhất ở v1.
-- Kết quả bốc thăm là **event trong log**, không có khái niệm *"huỷ"*: sửa chỉ bằng cách **thêm event sau**.
+- Kết quả bốc thăm là **event trong log**, không có khái niệm *"huỷ"*: trước khi xác nhận, sửa bằng cách **bốc lại** — một event mới ghi đè lần trước.
+- Cú **xác nhận** sinh `TIE_BREAK_RESOLVED` và đưa trận về **`LOBBY`** — **chưa đóng sổ**. Muốn gỡ thì **bỏ vòng `TIE_BREAK`** (`GR-030`) trước khi bấm Chốt trận lần cuối (`QĐ-083`).
 
 **Bảng quyết định**
 
 | Ca | Điều kiện | Kết quả |
 |---|---|---|
 | C1 | 3 câu chưa ai đúng, nhóm ≥ 2 người | Server đề xuất **một** người bằng bốc thăm ngẫu nhiên |
-| C2 | Admin bấm **Yes** trên kết quả | Người đó nhận vị trí đang tranh; vòng đóng, trận về `LOBBY` |
+| C2 | Admin bấm **Yes** trên kết quả | Người đó nhận vị trí đang tranh; sinh `TIE_BREAK_RESOLVED` với `method = 'random-draw'`; vòng đóng, trận về **`LOBBY`** |
 | C3 | Admin bấm **Bốc lại** | Bốc thăm lần nữa. **Cả hai lần đều là event thật** trong log append-only; **lần cuối cùng có hiệu lực**, lần trước **không** bị đánh dấu vô hiệu — nó chỉ bị một event sau ghi đè |
 | C4 | **Không đủ 3 câu khả dụng** từ ba kho nguồn | **Vòng không mở được** — chặn ở cửa vào vòng. Không tồn tại ca cạn giữa vòng. Ca này **gần như không chạm tới**: kho Về đích luôn dư đúng 12 câu sau vòng Về đích (`GR-017`, `QĐ-081`) |
 | C5 | Admin **không** phân định một nhóm | Các thành viên nhóm đó ghi **đồng hạng**, theo standard competition ranking |
@@ -1399,6 +1407,8 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 **Thứ tự đánh giá.** **(1)** admin thao tác → **(2)** sinh event, nối vào nhật ký → **(3)** tính lại điểm → **(4)** phát cho client hiển thị.
 
 **Biên.** Không có **sàn** — điểm âm hợp lệ. Không có **trần**.
+
+**Không phải mọi event đều tham gia phép tính này.** `TIE_BREAK_RESOLVED` (`GR-023`, `GR-025`) nằm trong cùng nhật ký nhưng là **event thứ hạng**: `reduce` bỏ qua nó. Hoàn nguyên nó **không** đi qua event đảo ngược mà đi qua **bỏ vòng `TIE_BREAK`** (`GR-030`); và nó **tự mất đối tượng** khi nhóm của nó không còn bằng điểm (`GR-022`, `QĐ-083`).
 
 **Bấm trùng.** `reduce` trên cùng mảng event luôn cho cùng kết quả; gọi lại bao nhiêu lần cũng không đổi gì.
 

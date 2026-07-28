@@ -205,7 +205,7 @@ Không lặp vòng, không đổi thứ tự, không bớt vòng ở **thiết k
 
 **Hệ quả.** Không cần khoá chống trùng dùng chung cho E1 và E2 — vì `QĐ-014` bỏ hẳn thao tác sửa từng phần một event E2. Hai hình dạng **không bao giờ phải nói chuyện với nhau**.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5.3.1`, `GRR-071`, `TERM-026` (hết `CONFLICT`)
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5.3.1`, `GRR-071`, `TERM-026`
 
 ### QĐ-014 — Một câu đi qua ĐÚNG MỘT phán quyết; sai thì admin cộng tay
 
@@ -222,6 +222,44 @@ Không lặp vòng, không đổi thứ tự, không bớt vòng ở **thiết k
 **Quyết định.** Bảng điểm hiển thị cho viewer, overlay, thí sinh, MC, admin. Chỉ **đáp án** mới bị giới hạn (`QĐ-051`).
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-20`
+
+### QĐ-083 — Kết quả Câu hỏi phụ là EVENT THỨ HẠNG, không phải event điểm
+
+**Quyết định.** Bốn vế:
+
+1. **Vật ghi là một event cấp trận, loại riêng — `TIE_BREAK_RESOLVED`**, nằm trong cùng nhật ký append-only với mọi event khác. **Một loại event cho cả hai đường thắng**: được chấm Đúng ở một trong ba câu, hoặc thắng bốc thăm. Trường `method` phân biệt hai đường.
+2. **Nó KHÔNG phải event điểm.** Không cộng, không trừ, không xuất hiện trong `reduce(event log)` ra bảng điểm. Bảng điểm sau tie-break **y hệt** bảng điểm trước tie-break.
+3. **Độ ưu tiên: chỉ sắp trong nhóm BẰNG ĐIỂM.** Thứ hạng là `f(điểm, các event tie-break)`, trong đó vế sau chỉ được phép sắp thứ tự **bên trong** một nhóm cùng điểm. Nó **không bao giờ** đảo được thứ tự hai người khác điểm.
+4. **Hoàn nguyên được, bằng đúng cơ chế chung** — vòng `TIE_BREAK` xong thì trận về **`LOBBY`**, chưa niêm phong. Muốn gỡ kết quả thì **bỏ vòng `TIE_BREAK`** như bỏ bất kỳ vòng nào khác (`QĐ-034`). Không có cơ chế hoàn nguyên riêng cho vòng này.
+5. **Một event tie-break chỉ CÒN HIỆU LỰC khi nhóm của nó vẫn đang bằng điểm** và vẫn ở đúng `position`, đo tại **mốc đọc**. Không còn thoả ⇒ event **mất đối tượng**, tự động không áp dụng — không xoá, không đánh dấu vô hiệu, không cảnh báo. Vì thế event mang thêm `scoreAtResolution`.
+
+**Vì sao không cộng 1 điểm cho người thắng.** Phương án *"+1đ"* từng được cân nhắc và bị loại. Nó có ba ưu điểm thật — nằm gọn trong mô hình `QĐ-011`, tự khử mọi tình huống hoà, và giữ thứ hạng là hàm của **một** nguồn duy nhất. Nhưng nó hỏng ở bốn chỗ:
+
+- **Nó sửa LUẬT chứ không sửa mô hình dữ liệu.** `QĐ-055` chốt *"không cộng điểm"* với lý do đọc thẳng từ luật gốc.
+- **Biên bản nói dối.** Bảng điểm cuối in `101 – 100`, một con số **chưa từng xảy ra trên sân khấu**. Cả ý nghĩa của vòng này là *"hai người bằng điểm"*.
+- **Đẻ ra hoà mới.** Với `tieBreakPositions = [1,2]`, nhóm vị trí 2 đang ở 99 thắng tie-break rồi lên 100 — bằng nhóm vị trí 1 vừa phân định xong.
+- **`+1` là số ma** trong một hệ mà mọi giá trị điểm đều là bội của mức và `scoringUnit` cấu hình được; và ở nhánh bốc thăm nó thành *"trúng thăm được 1 điểm"*.
+
+**Vì sao chốt `TIE_BREAK` → `LOBBY`, không thẳng `FINISHED`.** Hai tài liệu từng nói ngược nhau: `GR-023` C1 và `GR-025` C2 ghi *về `LOBBY`*, còn `STATE-007`, `STATE-016`, `T-017`, `T-019` ghi *thẳng `FINISHED`*. Chọn **`LOBBY`** vì nó giữ được **cửa sửa sai cho đúng cái vòng quyết định người vô địch**: `FINISHED` niêm phong ngay, nên một cú chấm nhầm ở câu tie-break là chung cục, không đường gỡ. Giá phải trả là **hai** cú bấm Chốt trận thay vì một, cộng một mệnh đề guard — và guard đó **không phải luật mới**, nó suy ra thẳng từ vế 3.
+
+**Hai hệ quả của `LOBBY`, và cách vế 5 giải cả hai.**
+
+- **Vòng lặp tái nhập.** Tie-break không đổi điểm ⇒ cú Chốt trận thứ hai lại thấy nhóm hoà cũ và lại vào `TIE_BREAK`. **Giải:** `GR-022` **bỏ qua** nhóm đã có `TIE_BREAK_RESOLVED` **còn hiệu lực** ⇒ đóng sổ theo thứ hạng đã phân định.
+- **Admin sửa điểm sau tie-break** (`QĐ-035` mở ở `LOBBY`) ⇒ nguy cơ *"người thắng tie-break lại thua điểm"* mà `TERM-038` khẳng định không thể có. **Giải:** sửa điểm làm nhóm không còn bằng điểm ⇒ event **mất đối tượng** ⇒ phép phân định chạy lại trên bảng điểm mới. Đây là hành vi **đúng**, không phải ca lỗi: điểm mới là điểm đúng, thứ hạng phải theo nó.
+
+**Ba ca biên đã kiểm.** Sửa điểm làm **hết hoà** ⇒ đóng sổ theo điểm · sửa điểm làm **hoà nhóm khác** ⇒ vào `TIE_BREAK` lần hai, tiêu thêm 3 câu *(kho dư 12 câu ⇒ tối đa 4 lần, cửa vào vòng vẫn kiểm như thường)* · sửa điểm rồi **sửa ngược lại** ⇒ event **sống lại**, vì tiêu chí là *trạng thái hiện tại* chứ không phải *đã từng bị đụng* — nhất quán với `QĐ-011`.
+
+**Hệ quả.**
+
+- **`GR-023` C1 và `GR-025` C2 giữ nguyên đích `LOBBY`**; ngược lại `STATE-007`, `STATE-016`, `T-017`, `T-019` phải sửa từ `FINISHED` sang `LOBBY`.
+- **`GR-022` phải thêm guard** và hai ca cho cú bấm Chốt trận thứ hai.
+- **`GR-022` §Bấm trùng phải viết lại.** Câu *"nút Chốt trận một chiều, tự tắt ⇒ không có lần bấm thứ hai"* **mâu thuẫn trực tiếp** với hướng này. Đúng phải là: nút **tắt trong lúc một vòng đang chạy** *(gồm `TIE_BREAK`)* và **sống lại khi trận về `LOBBY`**. *"Một chiều"* nghĩa là **mỗi cú bấm chỉ được phân giải một lần**, không phải *"đúng một lần trong đời một trận"*.
+- **Ví dụ cuối của `GR-023` trỏ sai và phải sửa**: *"admin chấm Sai nhầm ⇒ đi qua hoàn nguyên (`GR-028`) hoặc điều chỉnh thủ công (`GR-029`)"* — cả hai đều là đường **điểm**, không dùng được cho một vòng không sinh điểm. Đường đúng là **bỏ vòng `TIE_BREAK`**, làm được cả trong lúc vòng chạy lẫn ở `LOBBY` **trước** cú Chốt trận cuối.
+- **Sau khi trận `FINISHED` thì hết cửa** — niêm phong áp cho kết quả tie-break y như mọi thứ khác (`QĐ-037`).
+- **`TERM-021` bổ sung `TIE_BREAK_RESOLVED`** vào danh sách loại event đã đặt tên. Đây chính là chỗ trống mà `GRR-156` chỉ ra.
+- **Nhánh bốc thăm không phải làm lại gì**: `EVENT-027` *(xác nhận kết quả bốc thăm)* là cái sinh ra `TIE_BREAK_RESOLVED` với `method = 'random-draw'`. Các lần bốc trước vẫn nằm nguyên trong log theo `QĐ-011`.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `GRR-156`, và mâu thuẫn `LOBBY` / `FINISHED` giữa `game-rules.md` và `game-state-machine.md`
 
 ---
 
@@ -573,7 +611,7 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu Đ�
 
 **Phạm vi.** No-repeat tính **theo từng contest**, đi xuyên qua mọi trận của contest đó.
 
-**No-repeat KHÔNG cấu hình được.** Nó là một **phạm vi**, không phải một **cờ** — không tồn tại giá trị tắt, không cửa nào trong giao diện bật/tắt nó, và không rule nào đọc một tham số điều khiển nó. Chữ *"cờ no-repeat"* từng xuất hiện trong bảng ranh giới của `QĐ-039` là **câu chữ lạc hậu, đã sửa**; hệ mã cũ có `noRepeatInMatch: true` thì **đã bị thay thế** bởi mục này.
+**No-repeat KHÔNG cấu hình được.** Nó là một **phạm vi**, không phải một **cờ** — không tồn tại giá trị tắt, không cửa nào trong giao diện bật/tắt nó, và không rule nào đọc một tham số điều khiển nó.
 
 *Vì sao không cho tắt.* Tắt no-repeat là mở lại đúng ba thứ mà cả cụm quyết định kho đề dựng lên để chặn: hỏi lại câu đã lộ trên sóng · vô hiệu hoá hàng rào `everPublic` *(`QĐ-071`)* bằng một công tắc trông vô hại · và làm phép suy số trận từ kho đề mất nghĩa. Nếu về sau thật sự cần *"cho phép lặp"*, đó phải là một quyết định riêng có lý do riêng, **không phải một cờ nằm sẵn chờ ai đó bật**.
 
@@ -623,6 +661,49 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 - **Import/export đi theo bộ** — tách một hàng ngang khỏi bộ khi xuất là tạo ra dữ liệu không dùng được ở nơi nhận.
 
 *Nguồn*: luật gốc §Vượt chướng ngại vật, hai câu đầu · `[SUY RA]` từ chính hai câu đó · *Thay cho*: chỗ trống trong `GR-031`
+
+### QĐ-084 — BỐN loại gói xuất, có đủ ở CẢ HAI hồ sơ triển khai
+
+**Quyết định.** Sản phẩm xuất được **bốn** loại gói, và **cả hồ sơ máy chủ lẫn hồ sơ portable đều có đủ bốn** — đây là chức năng của lõi, không phải tính năng riêng của bản có Internet.
+
+| | Gói | Nội dung | Chiều |
+|---|---|---|---|
+| **X1** | **Gói contest** | Câu hỏi · metadata media · media theo vòng · cấu hình luật | **Ra và vào** — nhập thành contest **nháp** |
+| **X2** | **Toàn bộ kết quả + nhật ký sự kiện** | Mọi trận của contest: nhật ký sự kiện đầy đủ, điểm, thứ hạng, hoàn nguyên, người bấm, lý do | **Chỉ ra** |
+| **X3** | **Bản kê câu đã dùng** | `questionId` · `usedAt` · `matchId` | **Ra và vào** — hợp vào cờ đã dùng |
+| **X4** | **Kết quả rút gọn** | Bảng điểm cuối · thứ hạng · người thắng, theo từng trận | **Chỉ ra** |
+
+**Chỉ X1 và X3 nhập lại được.** Không có đường mang **kết quả** từ portable về máy chủ trung tâm — đó là **ranh giới chấp nhận có chủ đích**, không phải chỗ thiếu đặc tả. Thứ duy nhất cần quay ngược là *"câu nào đã lộ"*, và X3 gánh trọn việc đó.
+
+**Một nguồn, ba phép chiếu.** X2, X3, X4 **đều sinh từ nhật ký sự kiện**; X3 và X4 là **phép chiếu của X2**, không phải ba đường sinh dữ liệu độc lập. Chỉ X1 đọc nguồn khác — cấu hình contest và kho đề — vì contest là **bản thiết kế**, không phải lần chạy (`QĐ-039`).
+
+**Vì sao ràng buộc "một nguồn".** Ba đường tính riêng nghĩa là **ba** chỗ tính điểm và **hai** chỗ định nghĩa *"đã dùng"*. Đủ để bốn gói nói ba con số khác nhau về cùng một trận, mà không phép kiểm nào bắt được.
+
+**X3 là phép HỢP, không phải ghi đè.** Nhập bản kê chỉ đặt cờ `usedInContest` từ `false` sang `true`, **không bao giờ** ngược lại — vì `TERM-048` khai cờ này **một chiều vĩnh viễn**. Chiều `true → false` chính là lỗ hổng chống rò đề mà `GRR-111` đã chỉ ra với `everPublic`. Đổi lại được ba tính chất miễn phí: **idempotent** *(nhập lại cùng file là no-op)*, **trộn được nhiều nguồn** *(hai máy portable, nhập theo thứ tự nào cũng ra một kết quả)*, và **không tồn tại ca "nhập nhầm file làm mất cờ"**.
+
+**Đánh dấu "đã dùng" hàng loạt bằng tay là ĐƯỜNG VÀO THỦ CÔNG của cùng cơ chế đó** — không phải một đường ghi thứ hai. Admin lọc trong danh sách gán, chọn nhiều, xác nhận; nhập X3 chỉ là *cùng thao tác ấy nhưng danh sách do máy điền sẵn*. Nhờ vậy khi file hỏng vẫn còn đường tay, và cờ `usedInContest` chỉ có **một** cửa ghi.
+
+**Ranh giới đáp án — X2 là một đường rò đề nếu không gác.** Ba biện pháp **bắt buộc**:
+
+- **X2 xuất theo `questionId`**, chỉ nhúng nội dung câu khi người xuất có quyền đọc kho đề;
+- **mỗi lần xuất X2 vào `AuditLog`** — nó là một lần *"xem đáp án"* ở quy mô lớn;
+- **X4 không chứa đáp án, và không chứa cả `questionId`** — chỉ điểm, thứ hạng, người thắng.
+
+**Thời điểm xuất.** X4 **chỉ từ trận đã `FINISHED`** — chưa chốt thì chưa có thứ hạng (`GR-022`), gọi là *"kết quả"* là sai. X2 xuất được **mọi lúc**, kể cả giữa trận, nhưng gói phải đóng dấu **"trận chưa đóng sổ"**.
+
+**Ranh giới với biên bản PDF (`QĐ-077`).** Biên bản là **một trận, cho người đọc**, in theo lần chạy kèm nhãn *đã bỏ / đã chạy lại / kết thúc sớm*. X2 và X4 là **cấp contest, cho máy đọc**, gộp mọi trận. Không cái nào thay cái nào — nhưng **sinh từ cùng nguồn**, nếu không biên bản và gói sẽ trôi khỏi nhau.
+
+**Điều kiện cần: định danh câu ổn định.** X3 ghép được và X2 đọc lại được **chỉ khi** `questionId` sống sót qua xuất → nhập của X1. Gói contest **mang định danh ổn định của câu** và nhập **giữ nguyên**. Điều này vốn đã ngầm cần cho `QĐ-071` *(`everPublic` đi theo câu qua import/export)*, nhưng chưa từng được viết ra.
+
+**Hệ quả.**
+
+- **`RISK-010` đổi hạng**: từ *"chưa quyết"* thành **ranh giới chấp nhận có chủ đích**, cùng loại với `RISK-009`.
+- **Thống kê ghi ngược kho đề (`PRD-REQ-081`) chỉ áp cho trận chạy trên CÙNG bản cài.** Trận chạy trên portable đóng góp đúng **một bit** *"đã dùng"*, không đóng góp số liệu. Đây là cái giá đã biết của việc bỏ đồng bộ kết quả.
+- **X2 là van thoát của hạn lưu trữ.** `QĐ-077` yêu cầu job dọn không đụng biên bản đã xuất; với X2 câu đó có nghĩa vật lý — gói đã xuất nằm **ngoài** hệ thống. Xuất trước khi hết hạn thì bằng chứng phân xử còn nguyên mà dữ liệu trong máy vẫn dọn đúng hạn.
+- **Nhập X3 phải có bản xem trước ba nhóm** trước khi cho bấm: *sẽ chuyển sang đã dùng* · *đã ở trạng thái đó, bỏ qua* · **không thuộc danh sách gán của contest đích** — nhóm thứ ba **báo rõ và không tự áp**, vì cờ này gắn với contest chứ không gắn với câu.
+- **Cả hai đường ghi đều qua dialog Yes/No** (`QĐ-072`, không hoàn tác được) và ghi `AuditLog` kèm nguồn là *tay* hay *bản kê nào*. **Không** sinh `MatchEvent` — đây là thao tác cấp contest, không thuộc trận nào.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **gói kết quả chiều ngược** *(nay đã đóng)*, `RISK-010`
 
 ---
 

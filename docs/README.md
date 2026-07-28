@@ -10,6 +10,8 @@ Thư mục này là **nguồn sự thật của dự án**. Mọi thứ ngoài n
 
 | Bạn muốn... | Đọc |
 |---|---|
+| Biết **v1 phải làm gì** — mục tiêu, actor, epic, yêu cầu | [`PRD.md`](PRD.md) |
+| Biết **cái gì để lại cho v1.5 / v2** | [`roadmap-post-v1.md`](roadmap-post-v1.md) |
 | Hiểu **luật chơi** hệ thống thực thi | [`game-rules.md`](game-rules.md) |
 | Biết **vì sao** một điều được quyết như vậy | [`decisions.md`](decisions.md) |
 | Cài đặt **luồng vận hành** — trạng thái, sự kiện, chuyển tiếp | [`game-state-machine.md`](game-state-machine.md) |
@@ -66,6 +68,20 @@ Còn giữ hai danh sách quan trọng: **biến thể bị loại** (để khô
 Vấn đề, người dùng, mục tiêu, hành trình, epic.
 
 Phần đáng dùng nhất là **§6 — giao diện phải làm gì**: danh sách kiểm cho màn admin, màn thí sinh và viewer, mỗi dòng dẫn về `QĐ-*` ràng buộc nó. Đây cũng là nơi giữ giả định chưa kiểm chứng và cách đo thành công.
+
+### [`PRD.md`](PRD.md) — yêu cầu cấp sản phẩm cho **phiên bản 1.0**
+
+Mục tiêu sản phẩm, actor, hành trình, epic, **98 yêu cầu `PRD-REQ-001` → `098`**, NFR, ma trận truy nguyên, và **8 câu hỏi mở** còn chặn.
+
+**Đặc tả đúng bằng phiên bản 1.0** — không nói về phiên bản nào khác.
+
+**Mục đã chốt thì bị XOÁ, không giữ làm ghi chú lịch sử.** Câu hỏi đã đóng, mâu thuẫn đã sửa, giả định đã bác, rủi ro đã xử lý — tất cả rời tài liệu, và dãy số liên quan được **đánh lại cho liền**. Hệ quả: mã định danh là **chỉ mục của bản hiện hành**, nên trích dẫn `PRD-REQ-*` / `QUESTION-*` / `METRIC-*` từ nơi khác phải **kèm tên** hạng mục. Lịch sử tra ở `git log` và [`reviews/`](reviews/).
+
+### [`roadmap-post-v1.md`](roadmap-post-v1.md) — hạng mục ngoài phạm vi phiên bản 1.0
+
+`ACTOR-007`, `JOURNEY-008`, `EPIC-013` luyện tập, `EPIC-014` thi đội, `PRD-REQ-099` → `103`, ba câu hỏi mở `QUESTION-009` → `011`, và danh sách hạng mục **chưa gắn mốc**. Đánh số **nối tiếp** PRD nên hai tài liệu không bao giờ trùng mã.
+
+**Không phải requirement đang thi hành.** Không mục nào ở đây vào `/speckit.specify` cho tới khi chủ dự án mở phạm vi phiên bản tương ứng — khi đó mục chuyển ngược về `PRD.md`.
 
 ### [`reviews/`](reviews/) — kho lưu
 

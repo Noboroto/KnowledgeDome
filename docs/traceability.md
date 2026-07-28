@@ -141,8 +141,6 @@ Engine hỗ trợ, preset O26 **không** dùng. Ghi ở đây để chúng khôn
 
 # Không còn mục treo
 
-**Mọi câu hỏi đã được trả lời hoặc đã được hoãn có chủ đích.**
-
 **Quy mô viewer và ngưỡng độ trễ** — chủ dự án đã quyết là **chưa cần trả lời ở giai đoạn này** (`QĐ-067`). Đây là con số phi chức năng, chỉ đi vào hai chỗ và cả hai đều là **cấu hình**: ngưỡng rate-limit của cổng viewer, và mục tiêu kiểm thử tải. Không rule, không transition nào đọc nó.
 
 **Luật cho số ghế ≠ 4** không nằm ở đây vì nó **không phải câu hỏi còn treo** mà là **phạm vi phiên bản**: v1 đặc tả luật cho **đúng 4 thí sinh**; schema, mô hình ghế và giao diện làm cho **1-12** ngay từ đầu; luật đa ghế thuộc **v1.5**. Xem `QĐ-007`.

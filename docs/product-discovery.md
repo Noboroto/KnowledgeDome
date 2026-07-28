@@ -111,10 +111,10 @@ Không stream video (chỉ đẩy dữ liệu cho OBS) · không giải đấu n
 | **J-4** Vào phòng | Thí sinh · khán giả · OBS | Admin phát mã 6 số → thí sinh đăng nhập rồi nhập mã → thử chuông, thử âm thanh, báo sẵn sàng → khán giả và overlay nhập cùng mã |
 | **J-5** Thi đấu | Admin chính; thí sinh và MC phụ | Mở vòng → hiển thị câu → start timer → thí sinh bấm chuông hoặc gõ → admin chấm → câu kế. Xen kẽ: chỉnh điểm, hoàn nguyên, mở màn công bố |
 | **J-6** Xử lý sự cố | Admin | Thí sinh rớt mạng: giữ ghế 120 giây rồi tô nổi bật, admin quyết · **admin rớt mạng: quay lại và khôi phục từ server** (`QĐ-070`) · vòng hỏng: bỏ, chạy lại, hoặc kết thúc sớm · thiếu đề: sửa danh sách ở `LOBBY` |
-| **J-7** Sau trận | Admin | Chốt trận → xuất biên bản PDF → thống kê ghi ngược kho đề → job dọn dữ liệu theo hạn |
+| **J-7** Sau trận | Admin | Chốt trận → xuất biên bản PDF → thống kê ghi ngược kho đề → **xuất gói** *(kết quả + nhật ký · bản kê câu đã dùng · kết quả rút gọn)* → job dọn dữ liệu theo hạn |
 | **J-8** Luyện tập `[v1.5]` | Người phụ trách · thí sinh | Tạo trận practice → luyện tập → chạy lại nhanh, giữ ghế và mã phòng |
 
-**Hai hành trình chưa có**: **kết quả từ portable quay về máy chủ trung tâm** — trận chạy trên portable sinh ra kết quả và thống kê, hiện không có đường mang về; và **cài đặt lần đầu** — mới có giải pháp kỹ thuật tạo admin bằng dòng lệnh, chưa có trải nghiệm.
+**Một hành trình chưa có**: **cài đặt lần đầu** — mới có giải pháp kỹ thuật tạo admin bằng dòng lệnh, chưa có trải nghiệm.
 
 ---
 
@@ -137,7 +137,7 @@ Không stream video (chỉ đẩy dữ liệu cho OBS) · không giải đấu n
 | E-13 | Luyện tập | **v1.5** |
 | E-14 | Thi đội | **v2** |
 
-**Hai epic chưa có yêu cầu nguồn**: **danh sách thí sinh trong gói contest** (mã hoá, hợp nhất tài khoản trùng, phiếu tài khoản) và **gói kết quả chiều ngược**. Cả hai chỉ tồn tại trong bản nháp.
+**Một epic chưa có yêu cầu nguồn**: **danh sách thí sinh trong gói contest** (mã hoá, hợp nhất tài khoản trùng, phiếu tài khoản) — chỉ tồn tại trong bản nháp. *(**Gói kết quả chiều ngược** đã có yêu cầu nguồn: `QĐ-084` → `PRD-REQ-094` → `PRD-REQ-098`.)*
 
 ---
 
@@ -202,13 +202,11 @@ Các quyết định ở `decisions.md` ràng buộc giao diện. Bảng dưới
 | AS-1 | **Có nhu cầu thị trường thực** | Không có nghiên cứu người dùng, không có người dùng đầu tiên cam kết |
 | AS-2 | **Năm trận song song là nhu cầu thật** | Con số được chốt mà không dẫn nguồn nhu cầu. Với mô hình một bản cài cho một đơn vị, năm trận cùng lúc là bất thường |
 | AS-3 | **Admin chấp nhận chọn tay toàn bộ đề trước mỗi trận** | Hệ thống cố ý không tự lấy đề. Chưa ai ước lượng số câu phải chọn cho một trận chuẩn |
-| AS-5 | **Preload mã hoá qua service worker chạy ổn định** | Chính nguồn xếp nó là hạng mục phức tạp nhất phía client, và đã phải chuẩn bị phương án lui |
-| AS-6 | **Mã 6 số công khai là chấp nhận được về quyền riêng tư** | Ai có mã đều thấy tên và trường lớp của học sinh vị thành niên. Chỉ có tuỳ chọn dùng biệt danh, không bật mặc định |
-| AS-7 | **Người tổ chức có sẵn nhạc và hiệu ứng âm thanh** | Slot trống là im lặng, không có bộ mặc định ⇒ sản phẩm ra mắt sẽ **hoàn toàn im lặng** nếu admin không chuẩn bị |
-| AS-9 | **Wiki nguồn chính xác và ổn định** | Wiki cộng đồng, sửa được bất kỳ lúc nào, không có phiên bản. Đối phó: dùng **bản lưu trong `source/`**, không dùng URL sống |
-| AS-10 | **Thí sinh có thiết bị riêng để gõ** | VCNV và Tăng tốc **luôn** gõ máy ⇒ mỗi ghế cần một thiết bị nhập liệu đầy đủ cho cả trận, kể cả ở mode sân khấu. Chưa nguồn nào nêu yêu cầu phần cứng tối thiểu |
-
-**Hai giả định đã được trả lời**: *"một admin đủ vận hành một trận"* — nay quyền gắn với **phiên** nên có người thay thế (`QĐ-008`), số người vận hành là khuyến nghị quy trình, không phải ràng buộc hệ thống. Và *"demo tĩnh `public/` là tham chiếu thiết kế tin cậy"* — **đã bác**: demo lệch tài liệu thì demo sai.
+| AS-4 | **Preload mã hoá qua service worker chạy ổn định** | Chính nguồn xếp nó là hạng mục phức tạp nhất phía client, và đã phải chuẩn bị phương án lui |
+| AS-5 | **Mã 6 số công khai là chấp nhận được về quyền riêng tư** | Ai có mã đều thấy tên và trường lớp của học sinh vị thành niên. Chỉ có tuỳ chọn dùng biệt danh, không bật mặc định |
+| AS-6 | **Người tổ chức có sẵn nhạc và hiệu ứng âm thanh** | Slot trống là im lặng, không có bộ mặc định ⇒ sản phẩm ra mắt sẽ **hoàn toàn im lặng** nếu admin không chuẩn bị |
+| AS-7 | **Wiki nguồn chính xác và ổn định** | Wiki cộng đồng, sửa được bất kỳ lúc nào, không có phiên bản. Đối phó: dùng **bản lưu trong `source/`**, không dùng URL sống |
+| AS-8 | **Thí sinh có thiết bị riêng để gõ** | VCNV và Tăng tốc **luôn** gõ máy ⇒ mỗi ghế cần một thiết bị nhập liệu đầy đủ cho cả trận, kể cả ở mode sân khấu. Chưa nguồn nào nêu yêu cầu phần cứng tối thiểu |
 
 ---
 
@@ -256,7 +254,7 @@ Một trận thử với người thật, trọn bốn vòng kèm livestream, kh
 | SM-7 | Tỉ lệ thí sinh nối lại thành công trong ngưỡng chờ | ≥ 95% |
 | SM-8 | Sự kiện bị khiếu nại có **đủ timestamp và chuỗi thao tác** trong log | 100% |
 | SM-9 | Số đáp án rò ra kênh không có quyền | 0 |
-| SM-10 | Thời điểm sớm nhất thí sinh có thể thấy nội dung đề trước lúc công bố | Không bao giờ — kiểm chứng `AS-5` |
+| SM-10 | Thời điểm sớm nhất thí sinh có thể thấy nội dung đề trước lúc công bố | Không bao giờ — kiểm chứng `AS-4` |
 | SM-11 | Số trận thật trong ba tháng đầu | ≥ 3 — kiểm chứng `AS-1` |
 | SM-12 | Nhân sự tối thiểu vận hành được một trận | Ghi nhận thực tế |
 
@@ -271,9 +269,9 @@ Một trận thử với người thật, trọn bốn vòng kèm livestream, kh
 | # | Việc | Chặn cái gì |
 |---|---|---|
 | 1 | **Migrate các phát biểu ở đây vào `docs/PRD.md`** — nhiều yêu cầu ở §6 chưa có yêu cầu chức năng tương ứng, đặc biệt nhóm điều khiển của admin | Viết PRD |
-| 2 | **Chốt hoặc đóng** danh sách thí sinh trong gói contest, và gói kết quả chiều ngược | E-3, và có hay không hành trình *portable → trung tâm* |
-| 3 | **Chạy gate người thật** — một giáo viên và hai học sinh thử 30 phút | Kiểm chứng `AS-1`, `AS-3`, `AS-10` |
-| 4 | **Cơ chế phát hiện wiki nguồn thay đổi**, hoặc chấp nhận bản lưu là chốt chặn cuối | `AS-9` |
+| 2 | **Chốt hoặc đóng** danh sách thí sinh trong gói contest | E-3 *(vế gói kết quả chiều ngược đã xong — `QĐ-084`)* |
+| 3 | **Chạy gate người thật** — một giáo viên và hai học sinh thử 30 phút | Kiểm chứng `AS-1`, `AS-3`, `AS-8` |
+| 4 | **Cơ chế phát hiện wiki nguồn thay đổi**, hoặc chấp nhận bản lưu là chốt chặn cuối | `AS-7` |
 
 ---
 

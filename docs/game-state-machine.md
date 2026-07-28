@@ -76,9 +76,9 @@ stateDiagram-v2
   S004 --> S001: EVENT-003 kết thúc vòng
   S005 --> S001: EVENT-003 kết thúc vòng
   S006 --> S001: EVENT-003 kết thúc vòng
-  S001 --> S007: EVENT-007 chốt trận<br/>(server tính ra CÓ hoà)
-  S001 --> S008: EVENT-007 chốt trận<br/>(không hoà) · EVENT-008 huỷ trận
-  S007 --> S008: phân định xong<br/>(chấm Đúng hoặc bốc thăm)
+  S001 --> S007: EVENT-007 chốt trận<br/>(CÓ hoà chưa phân định)
+  S001 --> S008: EVENT-007 chốt trận<br/>(không hoà · hoà ngoài phạm vi<br/>· hoà ĐÃ phân định) · EVENT-008 huỷ trận
+  S007 --> S001: phân định xong<br/>(chấm Đúng hoặc bốc thăm)<br/>EVENT-048 · CHƯA đóng sổ
   S008 --> [*]
 ```
 
@@ -87,6 +87,8 @@ stateDiagram-v2
 > **Mọi vòng vào và ra qua `LOBBY`** (`QĐ-034`) — không có đường vòng → vòng. Bốn cửa ra khỏi một vòng: kết thúc vòng · kết thúc khẩn cấp · bỏ vòng · chạy lại vòng. Ba cửa sau không vẽ để sơ đồ khỏi rối.
 >
 > **Hai cạnh rời `S001` sang `S007`/`S008` là NÚT BẤM, không phải guard tự động** (`QĐ-036`): hết playlist chỉ làm hệ thống **gợi ý** chốt. Trận nằm lại ở `S001` bao lâu cũng được, và **admin sửa điểm được suốt khoảng đó**.
+>
+> **`S007` quay về `S001`, không đi thẳng `S008`** (`QĐ-083`): phân định xong thì trận **chưa đóng sổ**, và cần **cú bấm chốt trận thứ hai**. Nhờ vậy còn cửa **bỏ vòng `TIE_BREAK`** để sửa một phán quyết nhầm. Cú bấm thứ hai **không** vào lại `S007` — `EVENT-047` bỏ qua nhóm đã có `EVENT-048` còn hiệu lực.
 >
 > Mọi cạnh `S001 → vòng` mang guard **cửa vào vòng đủ câu** (`QĐ-042`); riêng cạnh **đầu tiên trong đời một trận** mang thêm side effect **đóng băng cấu hình**.
 >
@@ -280,7 +282,8 @@ stateDiagram-v2
 - **Vào**: trận được tạo · **mọi** nút kết thúc vòng · kết thúc vòng khẩn cấp · bỏ vòng · chạy lại vòng. **Bốn đường sau là TOÀN BỘ cửa ra của một vòng** — không có đường vòng → vòng.
 - **Cho phép**: mở bất kỳ vòng nào (`EVENT-001` / `EVENT-002`) · sửa danh sách câu đã gán (`EVENT-031`) · điều chỉnh điểm (`EVENT-028`) · mở công bố kết quả (`EVENT-032`) · **chốt trận** (`EVENT-007`) · chạy pre-flight · viewer/overlay join bằng mã phòng · **gán ghế và vị trí — chỉ khi chưa vòng nào từng chạy**.
 - **Cấm**: mọi thao tác thi đấu của thí sinh — không câu nào đang mở · đổi vị trí ghế sau khi trận đã start · **hệ thống tự đưa trận sang `FINISHED` hoặc `TIE_BREAK` khi hết playlist** — không có bộ đếm nào, không có guard tự động nào.
-- **Ra**: **ba nhánh, cả ba đều do admin bấm** — (a) mở một vòng, guard **cửa vào vòng đủ câu** · (b) **chốt trận** và server tính ra **có hoà** trong `tieBreakPositions` ⇒ `TIE_BREAK` · (c) **chốt trận** và **không hoà** ⇒ `FINISHED`.
+- **Ra**: **ba nhánh, cả ba đều do admin bấm** — (a) mở một vòng, guard **cửa vào vòng đủ câu** · (b) **chốt trận** và server tính ra **có hoà chưa phân định** trong `tieBreakPositions` ⇒ `TIE_BREAK` · (c) **chốt trận** và **không hoà**, hoà ngoài phạm vi, **hoặc hoà đã phân định** ⇒ `FINISHED`.
+- **`LOBBY` là nơi trận quay về SAU tie-break**, không chỉ giữa các vòng: `TIE_BREAK` phân định xong thì về đây, chưa đóng sổ. Admin còn sửa điểm được ở mốc này — và nếu sửa làm nhóm hết bằng điểm thì kết quả tie-break **mất đối tượng** (`GR-022` C8).
 - **Nguồn**: `QĐ-032` · `QĐ-034` · `QĐ-036` · `GR-031`, `GR-035`
 
 > **Một guard duy nhất phân biệt "trước trận" với "giữa hai vòng"**: khi admin mở một vòng, **nếu chưa vòng nào từng chạy** thì cạnh đó **kèm đóng băng cấu hình** — RuleConfig · mode trả lời · danh sách câu · `revealAnswerAfterJudge`. Một chiều, đúng một lần. Điều kiện *"chưa vòng nào từng chạy"* **không phải cờ lưu trữ** — nó suy ra từ event log.
@@ -353,8 +356,8 @@ stateDiagram-v2
 - **Vào**: admin bấm **chốt trận** ở `LOBBY` **và** ≥2 thí sinh cùng điểm cao nhất **và** vị trí hoà nằm trong `tieBreakPositions` (mặc định `[1]`) **và** cửa vào vòng đủ 3 câu.
 - **Cho phép**: admin hiển thị câu → bấm mốc hiệu lệnh (= start timer) → chấm · thí sinh bấm chuông **từ mốc start timer trở đi**.
 - **Cấm**: cộng/trừ điểm trận · **chuông sống trước mốc hiệu lệnh** — nút **không render**, server **từ chối** tín hiệu tới sớm · **cho đồng hồ chạy tiếp sau khi đã có người giành quyền**.
-- **Ra**: (a) một thí sinh được chấm **Đúng** ⇒ thắng tie-break · (b) hết 3 câu chưa phân định ⇒ `STATE-016` (bốc thăm) · (c) admin bỏ vòng.
-- **Nguồn**: luật gốc §Câu hỏi phụ · `QĐ-031`, `QĐ-054`, `QĐ-055` · `GR-022` → `GR-025`
+- **Ra**: (a) một thí sinh được chấm **Đúng** ⇒ thắng tie-break, sinh `EVENT-048` và trận về `STATE-001` — **chưa đóng sổ**, cần thêm một cú `EVENT-007` · (b) hết 3 câu chưa phân định ⇒ `STATE-016` (bốc thăm) · (c) admin bỏ vòng — cũng là **cửa hoàn nguyên** kết quả tie-break, dùng được cả ở `STATE-001` trước cú chốt cuối.
+- **Nguồn**: luật gốc §Câu hỏi phụ · `QĐ-031`, `QĐ-054`, `QĐ-055`, `QĐ-083` · `GR-022` → `GR-025`
 
 > **Cửa sổ 15 giây là cửa sổ GIÀNH QUYỀN, không phải cửa sổ TRẢ LỜI.** Có người bấm chuông ⇒ đồng hồ **dừng ngay** tại server timestamp của tín hiệu và **không bao giờ chạy tiếp**; **không có đồng hồ nào thay thế**, mốc kế tiếp là **admin chấm**. Bấm rồi im lặng ⇒ admin chấm Sai ⇒ cả nhóm sang câu kế. Chi tiết và bằng chứng nguồn: `QĐ-031`.
 >
@@ -363,7 +366,7 @@ stateDiagram-v2
 ### STATE-008 — FINISHED
 
 - **Mô tả**: **trận đã ĐÓNG SỔ và NIÊM PHONG** — chỉ đọc. Đóng sổ có **hai lý do, phân biệt bằng NHÃN chứ không phải bằng trạng thái**: `hoàn thành` (bảng điểm cuối và **thứ hạng đã chốt**) · `bỏ dở` (**không phân định thứ hạng**).
-- **Vào**: (a) admin bấm **chốt trận** và **không** có nhóm hoà trong `tieBreakPositions` · (b) tie-break đã phân định · (c) kết quả bốc thăm đã xác nhận · (d) admin bấm **huỷ trận** — từ **bất kỳ** trạng thái nào của một trận đang chạy. **Không đường vào nào là tự động.**
+- **Vào**: (a) admin bấm **chốt trận** và **không** có nhóm hoà trong `tieBreakPositions` · (b) admin bấm **chốt trận lần hai** và nhóm hoà đã có `EVENT-048` **còn hiệu lực** *(dù thắng bằng chấm Đúng hay bằng bốc thăm)* · (c) admin bấm **huỷ trận** — từ **bất kỳ** trạng thái nào của một trận đang chạy. **Không đường vào nào là tự động**, và **tie-break tự nó KHÔNG đóng sổ trận** — nó trả trận về `STATE-001`.
 - **Cho phép**: **chỉ đọc** — mở công bố kết quả (hệ thống **gợi ý** mở tại đây) · xem lại biên bản và toàn bộ lịch sử · xuất PDF · **tạo trận mới trong cùng contest** (`EVENT-036`, thao tác **cấp CONTEST**, không đụng trận này).
 - **Cấm**: **điều chỉnh điểm** · chạy lại / bỏ một vòng · mọi tín hiệu của thí sinh (vào lịch sử nhưng **không có hiệu lực**) · xoá hoặc sửa event cũ.
 - **Ra**: **không có**. Terminal.
@@ -452,8 +455,8 @@ stateDiagram-v2
 - **Vào**: đã hỏi hết **3** câu tie-break **và** 0 thí sinh được chấm Đúng **và** nhóm hoà ≥2 người.
 - **Cho phép**: admin bấm bốc thăm · **bốc lại** (thao tác riêng, có dialog, sinh event mới) · xác nhận kết quả.
 - **Cấm**: xoá hoặc đánh dấu vô hiệu lần bốc trước — **cả hai lần đều là event thật trong log**, lần cuối cùng có hiệu lực.
-- **Ra**: admin xác nhận kết quả ⇒ `STATE-008`.
-- **Nguồn**: luật gốc §Câu hỏi phụ câu cuối · `QĐ-011`, `QĐ-055` · `GR-025`
+- **Ra**: admin xác nhận kết quả ⇒ sinh `EVENT-048` và trận về `STATE-001` — **chưa đóng sổ**; admin bấm Chốt trận lần nữa mới niêm phong.
+- **Nguồn**: luật gốc §Câu hỏi phụ câu cuối · `QĐ-011`, `QĐ-055`, `QĐ-083` · `GR-025`
 
 ---
 
@@ -860,8 +863,9 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 ### EVENT-007 — Chốt trận
 
 - **Actor**: Admin
-- **Mô tả**: **đóng sổ một trận đã thi xong** — mốc duy nhất biến bảng điểm đang chạy thành **kết quả có thứ hạng**. Server chạy phép tính điều kiện hoà **ngay tại đây** rồi rẽ: có hoà trong `tieBreakPositions` ⇒ `STATE-007`; không hoà (hoặc hoà **ngoài** phạm vi) ⇒ `STATE-008` với nhãn `hoàn thành`.
-- **Hợp lệ ở**: **chỉ `STATE-001`**. Dialog Yes/No — **không** hạng phá huỷ, **không** bắt nhập lý do, **nhưng hộp thoại PHẢI nói rõ hệ quả**: *"chốt xong sẽ không sửa được điểm nữa"*.
+- **Mô tả**: **đóng sổ một trận đã thi xong** — mốc duy nhất biến bảng điểm đang chạy thành **kết quả có thứ hạng**. Server chạy phép tính điều kiện hoà **ngay tại đây** rồi rẽ: có hoà **chưa phân định** trong `tieBreakPositions` ⇒ `STATE-007`; không hoà, hoà **ngoài** phạm vi, hoặc hoà **đã phân định** bằng `EVENT-048` còn hiệu lực ⇒ `STATE-008` với nhãn `hoàn thành`.
+- **Bấm ĐƯỢC nhiều lần.** Trận có tie-break cần **hai** cú: cú đầu kích hoạt phân định *(trận về `STATE-001`)*, cú sau đóng sổ. Nút **tắt trong lúc một vòng đang chạy** — gồm `STATE-007` — và **sống lại** khi trận về `STATE-001`.
+- **Hợp lệ ở**: **chỉ `STATE-001`**. Dialog Yes/No — **không** hạng phá huỷ, **không** bắt nhập lý do, **nhưng hộp thoại PHẢI nói rõ hệ quả của ĐÚNG nhánh sắp xảy ra**: server đã biết bảng điểm hiện tại nên xem trước được. Nhánh đóng sổ ⇒ *"chốt xong sẽ không sửa được điểm nữa"*; nhánh tie-break ⇒ *"sẽ vào vòng Câu hỏi phụ, trận CHƯA đóng sổ"*. Dùng chung một câu cho cả hai nhánh là **nói sai** với nhánh tie-break.
 - **Không hợp lệ ở**: mọi vòng đang chạy ⇒ toast, không ép được — muốn chốt thì kết thúc vòng trước · `STATE-008`.
 - **Nguồn**: `QĐ-036`, `QĐ-037` · `GR-022`, `GR-028`
 
@@ -1236,9 +1240,19 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 ### EVENT-047 — Tính điều kiện hoà
 
 - **Actor**: Server
-- **Mô tả**: tính bảng điểm và tìm nhóm hoà ở vị trí thuộc `tieBreakPositions`. Chạy **tại cú bấm chốt trận**, trên bảng điểm tại **đúng mốc đó** — không phải lúc vòng Về đích kết thúc.
+- **Mô tả**: tính bảng điểm và tìm nhóm hoà ở vị trí thuộc `tieBreakPositions`. Chạy **tại cú bấm chốt trận**, trên bảng điểm tại **đúng mốc đó** — không phải lúc vòng Về đích kết thúc. **Bỏ qua nhóm đã có `TIE_BREAK_RESOLVED` còn hiệu lực** (`GR-022` C7) — đây là guard chống tái nhập `STATE-007`.
 - **Hợp lệ ở**: trong lòng `EVENT-007` — không phải một nút, không gọi độc lập được.
 - **Nguồn**: `QĐ-036` · `GR-022`
+
+### EVENT-048 — Chốt kết quả Câu hỏi phụ
+
+- **Actor**: Server
+- **Mô tả**: ghi `TIE_BREAK_RESOLVED { position, tiedSeats, scoreAtResolution, winnerSeatId, method, questionId?, drawEventId?, ts }`. Là **event THỨ HẠNG, không phải event điểm** — không tham gia `reduce` ra bảng điểm, và chỉ sắp thứ tự **bên trong nhóm bằng điểm**. **Một loại event cho cả hai đường thắng**; `method` phân biệt `answer` và `random-draw`.
+- **Hợp lệ ở**: trong lòng `EVENT-012` khi trận đang ở `STATE-007`, hoặc trong lòng `EVENT-027` ở `STATE-016` — **không phải một nút riêng**, không gọi độc lập được. Sinh xong thì trận về `STATE-001`, **chưa đóng sổ**.
+- **Không hợp lệ ở**: mọi trạng thái khác · nhóm hoà <2 người.
+- **Còn hiệu lực có điều kiện**: chỉ áp dụng khi nhóm `tiedSeats` **vẫn đang bằng điểm** và vẫn ở đúng `position`, đo tại **mốc đọc**. Không thoả ⇒ **mất đối tượng**, không xoá và không cảnh báo. Vì thế event mang `scoreAtResolution`.
+- **Hoàn nguyên bằng `EVENT-005` bỏ vòng** — làm được cả lúc `STATE-007` đang chạy lẫn ở `STATE-001` **trước** cú `EVENT-007` cuối. Sau `STATE-008` thì niêm phong.
+- **Nguồn**: `QĐ-083` · `GR-023`, `GR-025`
 
 ---
 
@@ -1264,9 +1278,11 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | T-014 | Mọi vòng | `EVENT-006` Chạy lại vòng | Như `T-013` **và** kho đề còn đủ câu | **Chính vòng đó, chạy mới** | Event đảo ngược + đặt lại hàng đợi + **dọn toàn bộ cờ phạm vi vòng**; biên bản nhãn **"đã chạy lại"** | `GR-030`, `GR-031` |
 | T-015 | `STATE-001` | `EVENT-007` Chốt trận | Dialog đã xác nhận **và** `EVENT-047` cho ra: ≥2 thí sinh cùng điểm cao nhất, vị trí ∈ `tieBreakPositions`, cửa vào vòng đủ 3 câu | `STATE-007` | Gán nhóm hoà; đặt lại hàng đợi. Nhóm hoà tính trên **điểm tại mốc bấm** | `GR-022` |
 | T-016 | `STATE-001` | `EVENT-007` Chốt trận | Dialog đã xác nhận **và** không hoà, **hoặc** hoà ngoài `tieBreakPositions` | `STATE-008`, nhãn `hoàn thành` | Chốt thứ hạng; ghi `closedBy` / `closedAt`; ghi **đồng hạng** nếu hoà ngoài phạm vi. **Không** sinh event điểm | `GR-022` |
-| T-017 | `STATE-007` | `EVENT-012` Chấm Đúng | Thí sinh giành chuông được chấm Đúng | `STATE-008` | Đổi **thứ hạng**, **không** cộng điểm | `GR-023` |
+| **T-016b** | `STATE-001` | `EVENT-007` Chốt trận **lần hai** | Dialog đã xác nhận **và** nhóm hoà trùng khớp một `TIE_BREAK_RESOLVED` **còn hiệu lực** | `STATE-008`, nhãn `hoàn thành` | Đóng sổ với **thứ hạng đã phân định**; **không** vào lại `STATE-007`. Đây là **guard chống tái nhập** | `GR-022` C7 |
+| **T-016c** | `STATE-001` | `EVENT-007` Chốt trận **lần hai** | Admin đã sửa điểm ⇒ nhóm hoà **khác đi** ⇒ event tie-break cũ **mất đối tượng** | `STATE-008` **hoặc** `STATE-007` | Phép phân định chạy lại trên bảng điểm mới. Vào `STATE-007` lần nữa **chỉ khi** cửa vào vòng còn đủ 3 câu | `GR-022` C8 |
+| T-017 | `STATE-007` | `EVENT-012` Chấm Đúng | Thí sinh giành chuông được chấm Đúng | `STATE-001` | Sinh `EVENT-048` `TIE_BREAK_RESOLVED` (`method = 'answer'`) ⇒ đổi **thứ hạng**, **không** cộng điểm. Trận **chưa đóng sổ** — admin bấm `EVENT-007` lần nữa để chốt (`T-016b`) | `GR-023` |
 | T-018 | `STATE-007` | `EVENT-044` Hết giờ (câu 3) | Đã hỏi hết 3 câu, 0 người được chấm Đúng | `STATE-016` | — | `GR-023`, `GR-025` |
-| T-019 | `STATE-016` | `EVENT-027` Xác nhận kết quả | Kết quả bốc gần nhất đã hiện cho admin | `STATE-008` | Ghi event bốc thăm; cập nhật thứ hạng | `GR-025` |
+| T-019 | `STATE-016` | `EVENT-027` Xác nhận kết quả | Kết quả bốc gần nhất đã hiện cho admin | `STATE-001` | Ghi event bốc thăm **và** sinh `EVENT-048` `TIE_BREAK_RESOLVED` (`method = 'random-draw'`); cập nhật thứ hạng. Trận **chưa đóng sổ** | `GR-025` |
 | T-020 | **Mọi** trạng thái của trận đang chạy | `EVENT-008` Huỷ trận | Dialog hạng phá huỷ + lý do | `STATE-008`, nhãn `bỏ dở` | **Điểm GIỮ NGUYÊN**; **không phân định thứ hạng, không người thắng**; ghi `closedBy` / `closedAt` / `reason`; biên bản in nhãn **"trận bỏ dở"** kèm đủ các vòng đã chạy | `GR-022` |
 | T-021 | `STATE-008` (trận **cũ**) | `EVENT-036` Tạo trận mới, `official` | Trận cũ đã đóng sổ (nhãn nào cũng được) **và** kho đề **còn lại** đủ pre-flight | **Trận MỚI ở `STATE-001`** — trận cũ **không đổi trạng thái** | Match mới: điểm rỗng, event log rỗng, ghế gán lại, cấu hình **chưa đóng băng**. Phạm vi no-repeat **đi xuyên qua** — cờ đã-dùng của contest không đặt lại. Mã phòng **giữ nguyên** | `GR-030`, `GR-031` |
 | T-022 | `STATE-008` (contest **thật**) | `EVENT-036` Tạo trận mới, `practice` | Pool **ĐÃ HIỂN THỊ** của contest đủ pre-flight — **phép kiểm ĐẢO CHIỀU** so với `T-021` | **Trận practice MỚI ở `STATE-001`** | Chỉ gán được câu **đã lộ** ⇒ **không tiêu thêm câu nào**. `revealAnswerAfterJudge` mặc định **BẬT**; retention **3 tháng** | `GR-031` |
