@@ -13,7 +13,7 @@
 | **Version** | 1.2.0 — *`QĐ-080` công bố đáp án tại mốc câu khép cho cả overlay · `QĐ-081` Câu hỏi phụ không có kho riêng · `QĐ-082` VCNV chọn theo bộ · §19.3 sàn kho đề 69 câu/trận* |
 | **Status** | Bản đầu tiên — chờ chủ dự án phê duyệt |
 | **Last updated** | 2026-07-28 |
-| **Open conflict count** | **0** — *ba mâu thuẫn phát hiện được đã được sửa trong tài liệu nguồn, xem §22.1* |
+| **Open conflict count** | **0** |
 | **Open clarification count** | **14** |
 
 ### Source documents
@@ -1708,7 +1708,7 @@ Tổng **98 yêu cầu**, phân bố theo độ ưu tiên:
 
 *(P1 nay **63** — thêm **097**.)*
 
-Trong 98 yêu cầu, **93 ở trạng thái `CONFIRMED`** và **5 mang `NEEDS CLARIFICATION`** — PRD-REQ-019, 083, 087, 090, 092. Không yêu cầu nào ở trạng thái `CONFLICT`: cả ba mâu thuẫn phát hiện được đều đã có nguồn phân xử và **văn bản đã được sửa** (§22.1).
+Trong 98 yêu cầu, **93 ở trạng thái `CONFIRMED`** và **5 mang `NEEDS CLARIFICATION`** — PRD-REQ-019, 083, 087, 090, 092. Không yêu cầu nào ở trạng thái `CONFLICT`.
 
 ### 20.3 Lý do ưu tiên
 
@@ -1758,31 +1758,9 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 
 > Tổng hợp mọi `CONFLICT`, `NEEDS CLARIFICATION`, `MISSING`, `BOUNDARY_UNDEFINED`, `ORDER_DEPENDENT`, `INVALID_TRANSITION_UNDEFINED` phát hiện được khi đọc toàn bộ nguồn.
 >
-> **Ghi chú quan trọng về `docs/reviews/`.** Đợt rà soát lượt 3 (`GRR-137`→`GRR-171`, ngày **2026-07-25**) nêu 35 mục ở dạng câu hỏi mở, trong đó có các loại `IDEMPOTENCY_UNDEFINED`, `CONCURRENCY_UNDEFINED`, `ORDER_DEPENDENT`, `INVALID_TRANSITION_UNDEFINED`, `MISSING`, `CONFLICT`. Đối chiếu với `decisions.md` *(chốt tới `QĐ-079`, ngày **2026-07-27**)*, `game-rules.md` và `game-state-machine.md` cho thấy **`GRR-137` → `GRR-169` đã được trả lời** — bảng đối chiếu ở §22.3. Chỉ **bốn** mục còn mở, nằm trong danh sách dưới.
+> **Ghi chú quan trọng về `docs/reviews/`.** Đợt rà soát lượt 3 (`GRR-137`→`GRR-171`, ngày **2026-07-25**) nêu 35 mục ở dạng câu hỏi mở, trong đó có các loại `IDEMPOTENCY_UNDEFINED`, `CONCURRENCY_UNDEFINED`, `ORDER_DEPENDENT`, `INVALID_TRANSITION_UNDEFINED`, `MISSING`, `CONFLICT`. Đối chiếu với `decisions.md`, `game-rules.md` và `game-state-machine.md` cho thấy **`GRR-137` → `GRR-169` đã được trả lời** — bảng đối chiếu ở §22.2. Chỉ **bốn** mục còn mở, nằm trong danh sách dưới.
 
-### 22.1 CONFLICT — đã phát hiện và ĐÃ SỬA trong tài liệu nguồn
-
-> **Không còn mâu thuẫn nào mở.** Cả ba mục dưới đây là mâu thuẫn ở **tầng câu chữ và tham chiếu tài liệu**, không ở tầng luật; cả ba đã có nguồn phân xử sẵn, và văn bản đã được sửa cho khớp. Giữ lại làm **hồ sơ** để lần rà sau không dựng lại chúng.
-
-**QUESTION-001 — Cờ hiện đáp án sau khi chấm: cấp contest hay cấp trận?** ✅ **ĐÃ SỬA**
-- **Context**: **CONFLICT**: phạm vi của cờ `revealAnswerAfterJudge` — Nguồn A: `CLAUDE.md` §Nguyên tắc code nói *"TRỪ khi **contest** bật `revealAnswerAfterJudge`"*; Nguồn B: `docs/decisions.md` `QĐ-062` nói cờ thuộc **match**, và nói thẳng *"phát biểu 'contest bật' trong PRD là **câu chữ lạc hậu, phải sửa** — không phải một cách đọc thay thế"*.
-- **Phân xử theo thứ bậc nguồn**: `docs/` thắng ⇒ cờ ở **cấp TRẬN**. Lý do `QĐ-062` bác phương án cấp contest: `QĐ-040` cho một contest thật chứa **cả** trận official lẫn trận luyện tập, nên đặt cờ ở cấp contest thì trận luyện tập **không bật được cờ**.
-- **Đã sửa**: `CLAUDE.md` §Nguyên tắc code — câu chữ đổi thành *"TRỪ khi **TRẬN** bật `revealAnswerAfterJudge` (cờ CẤP TRẬN, KHÔNG phải cấp contest — `QĐ-062`)"*.
-- **Affected requirements**: PRD-REQ-049 · **Affected rules**: `GR-037` · **Required decision owner**: — *(đã đóng)*
-
-**QUESTION-002 — Bản lưu luật gốc trỏ tới hai file không tồn tại** ✅ **ĐÃ SỬA**
-- **Context**: **CONFLICT**: `docs/source/fandom-olympia-26-luat-choi.md` trong banner metadata viết *"xem `docs/source/wikipedia-olympia-26-luat-choi.md` và bảng đối chiếu trong `docs/game-rules-inventory.md` PHẦN 8"*. **Cả hai file đều không tồn tại.** Trong khi đó `docs/traceability.md` nói Wikipedia **đã bị loại làm căn cứ luật** và liệt kê đầy đủ các giá trị bị loại.
-- **Ảnh hưởng thực tế**: **không mất nội dung** — `traceability.md` §Biến thể bị loại giữ đủ bảng đối chiếu.
-- **Đã sửa**: dòng tham chiếu nay nêu thẳng ba điểm khác biệt *(cấu trúc Khởi động, mức điểm Về đích, điều kiện mở miếng ghép VCNV)*, ghi rõ Wikipedia bị loại **có chủ đích**, và trỏ về `docs/traceability.md` §Biến thể bị loại. **Chỉ banner metadata bị sửa; không một chữ nào của bản lưu luật gốc bị đụng tới.**
-- **Affected requirements**: PRD-REQ-021 · **Affected rules**: toàn bộ giá trị luật · **Required decision owner**: — *(đã đóng)*
-
-**QUESTION-003 — "Sáu thang bậc" hay "bảy thang bậc"?** ✅ **ĐÃ SỬA**
-- **Context**: **CONFLICT**: `docs/game-state-machine.md` §Quy ước đọc viết *"Sáu thang bậc trạng thái, KHÔNG trộn lẫn"*, nhưng bảng ngay sau đó liệt kê **bảy** *(trận · giai đoạn · câu · ghế · tín hiệu · lớp phủ · ô chữ)*; hai chỗ khác trong cùng file — §Sơ đồ và mục `STATE-039` — đều nói **bảy**, và `glossary.md` `TERM-018` cũng nói **bảy**.
-- **Phân xử**: con số **bảy** đúng; *"sáu"* là số lạc, nhiều khả năng còn sót từ trước khi thang **ô chữ** được tách ra (`QĐ-052`).
-- **Đã sửa**: câu mở đầu §Quy ước đọc đổi thành *"Bảy thang bậc trạng thái, KHÔNG trộn lẫn."*
-- **Affected requirements**: PRD-REQ-058 *(thang ô chữ — chính là thang bị bỏ sót khi đếm sáu)* · **Affected rules**: `GR-009`, `GR-011`, `GR-012` · **Required decision owner**: — *(đã đóng)*
-
-### 22.2 NEEDS CLARIFICATION
+### 22.1 NEEDS CLARIFICATION
 
 **QUESTION-004 — Kết quả Câu hỏi phụ được ghi bằng vật gì, và có hoàn nguyên được không?**
 - **Context**: **MISSING**. Câu hỏi phụ **không cộng điểm** — người thắng chỉ **đổi thứ hạng** (`GR-023`, `QĐ-055`, `TERM-038`). Nhưng mô hình dữ liệu khai *"điểm là hàm của nhật ký sự kiện"* (`INV-002`), và danh sách loại sự kiện đã đặt tên trong `TERM-021` không có loại nào ghi kết quả tie-break. Không rule nào nói kết quả này được ghi bằng gì, có phải là sự kiện không, và có hoàn nguyên được không.
@@ -1846,7 +1824,7 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 - **Context**: `product-discovery.md` §9 ghi rõ nhóm `METRIC-005` → `METRIC-016` là **đề xuất bổ sung**, không phải requirement; và nhận xét rằng nhóm đã có trong nguồn *"không tiêu chí nào đo giá trị với người dùng"*.
 - **Affected requirements**: METRIC-005 → METRIC-016 · **Affected rules**: — · **Required decision owner**: Chủ dự án
 
-### 22.3 Đối chiếu đợt rà soát lượt 3 — mục đã được trả lời
+### 22.2 Đối chiếu đợt rà soát lượt 3 — mục đã được trả lời
 
 > `docs/reviews/**` là **kho lưu, không phải requirement**. Bảng này chỉ để chứng minh 31/35 mục không còn mở, và chỉ ra nguồn đã trả lời chúng.
 
@@ -1948,7 +1926,7 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 | PRD-REQ-046 | GOAL-006 | EPIC-006, EPIC-008 | J5 | AD, TS | `GR-032`, `GR-007` · `INV-008` | `QĐ-022`, `TERM-027` | CONFIRMED |
 | PRD-REQ-047 | GOAL-005 | EPIC-006, EPIC-002 | J2, J5 | AD, SV | `GR-031` · `INV-011` | `QĐ-041`, `QĐ-044` | CONFIRMED |
 | PRD-REQ-048 | GOAL-007 | EPIC-006 | J5, J6 | SV | `GR-031`, `GR-005` · `INV-012` | `QĐ-042`, `QĐ-003` | CONFIRMED |
-| PRD-REQ-049 | GOAL-005 | EPIC-006, EPIC-009 | J5 | AD, MC, OV | `GR-037` · `INV-017` | `QĐ-051`, `QĐ-062` | CONFIRMED *(xem `QUESTION-001`)* |
+| PRD-REQ-049 | GOAL-005 | EPIC-006, EPIC-009 | J5 | AD, MC, OV | `GR-037` · `INV-017` | `QĐ-051`, `QĐ-062`, `QĐ-080` | CONFIRMED |
 | PRD-REQ-050 | GOAL-007 | EPIC-006, EPIC-008 | J6 | TS, SV | `GR-036` | `QĐ-045`, `QĐ-046` | CONFIRMED |
 | PRD-REQ-051 | GOAL-007 | EPIC-007 | J5 | AD | `GR-027`, `GR-026` | `QĐ-073`, `QĐ-010` | CONFIRMED |
 | PRD-REQ-052 | GOAL-007 | EPIC-007 | J5 | AD | `GR-006`, `GR-015`, `GR-035` | `QĐ-029`, `QĐ-073` | CONFIRMED |
@@ -2040,9 +2018,6 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 
 | Question | Loại | Requirement bị ảnh hưởng |
 |---|---|---|
-| QUESTION-001 | CONFLICT — ✅ **đã sửa** | PRD-REQ-049 |
-| QUESTION-002 | CONFLICT — ✅ **đã sửa** | PRD-REQ-021 |
-| QUESTION-003 | CONFLICT — ✅ **đã sửa** | PRD-REQ-058 |
 | QUESTION-004 | MISSING | PRD-REQ-032, 039, 079 |
 | QUESTION-005 | MISSING | PRD-REQ-016 |
 | QUESTION-006 | MISSING | PRD-REQ-016, 081 |
@@ -2062,4 +2037,4 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 
 *Hết tài liệu. Bước tiếp theo trong quy trình: `/speckit.specify` cho từng feature, lấy PRD này làm nguồn cấp trên.*
 
-*Ba mâu thuẫn `QUESTION-001` → `QUESTION-003` **đã được sửa trong tài liệu nguồn**. Hai câu hỏi còn lại ở mức chặn nghiệm thu — `QUESTION-004` (kết quả Câu hỏi phụ được ghi bằng vật gì) và `QUESTION-012` (v1 có khoá cứng phạm vi phân định hoà không) — nên được chủ dự án phân xử trước khi viết spec cho EPIC-005, EPIC-006 và EPIC-010.*
+*Hai câu hỏi ở mức chặn nghiệm thu — `QUESTION-004` (kết quả Câu hỏi phụ được ghi bằng vật gì) và `QUESTION-012` (v1 có khoá cứng phạm vi phân định hoà không) — nên được chủ dự án phân xử trước khi viết spec cho EPIC-005, EPIC-006 và EPIC-010.*
