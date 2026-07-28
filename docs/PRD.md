@@ -396,8 +396,8 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 
 | Hành trình | Trạng thái |
 |---|---|
-| **Kết quả từ bản portable quay về máy chủ trung tâm** | Trận chạy trên portable sinh ra kết quả và thống kê; **hiện không có đường mang về** — `QUESTION-006` |
-| **Cài đặt lần đầu** | Mới có giải pháp kỹ thuật tạo admin bằng dòng lệnh, **chưa có trải nghiệm người dùng** — `QUESTION-007` |
+| **Kết quả từ bản portable quay về máy chủ trung tâm** | Trận chạy trên portable sinh ra kết quả và thống kê; **hiện không có đường mang về** — `QUESTION-003` |
+| **Cài đặt lần đầu** | Mới có giải pháp kỹ thuật tạo admin bằng dòng lệnh, **chưa có trải nghiệm người dùng** — `QUESTION-004` |
 
 *Nguồn: `product-discovery.md` §4.*
 
@@ -439,7 +439,7 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 - **Primary actor**: ACTOR-001 admin
 - **User value**: Giải `PS-2` cho ngày thi — mang trọn contest sang máy portable.
 - **Scope**: Xuất và nhập gói contest gồm câu hỏi, metadata media, và media theo từng vòng · giữ `everPublic` theo câu, đặt lại cờ đã-dùng theo contest · nhập/xuất phần đề của một setter.
-- **Out of scope**: **Danh sách thí sinh trong gói contest** và **gói kết quả chiều ngược** — cả hai **chưa có yêu cầu nguồn** (`QUESTION-005`, `QUESTION-006`).
+- **Out of scope**: **Danh sách thí sinh trong gói contest** và **gói kết quả chiều ngược** — cả hai **chưa có yêu cầu nguồn** (`QUESTION-002`, `QUESTION-003`).
 - **Related journeys**: JOURNEY-003
 - **Related game rules**: `GR-031`
 - **Dependencies**: EPIC-002
@@ -556,7 +556,7 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 - **Primary actor**: ACTOR-001 admin *(và người cài đặt)*
 - **User value**: Giải `PS-2` — không bị khoá vào LAN, cũng không phụ thuộc Internet ngày thi.
 - **Scope**: Hồ sơ máy chủ dựng bằng container · hồ sơ portable Windows chạy LAN offline · giới hạn kích thước media · rate-limit cổng khán giả và nút khoá cổng.
-- **Out of scope**: Nhiều tổ chức trên một bản cài (NON-GOAL-006). **Trải nghiệm cài đặt lần đầu chưa có** (`QUESTION-007`).
+- **Out of scope**: Nhiều tổ chức trên một bản cài (NON-GOAL-006). **Trải nghiệm cài đặt lần đầu chưa có** (`QUESTION-004`).
 - **Related journeys**: JOURNEY-003, JOURNEY-004
 - **Related game rules**: —
 - **Dependencies**: EPIC-003
@@ -586,12 +586,12 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 - **Related journeys**: *(chưa đặc tả)*
 - **Related game rules**: `GR-010` C6 `[v2]`
 - **Dependencies**: EPIC-013
-- **MVP status**: **v2 — sau MVP**. **Hai câu hỏi luật còn mở**: `QUESTION-013`, `QUESTION-014`
+- **MVP status**: **v2 — sau MVP**. **Hai câu hỏi luật còn mở**: `QUESTION-010`, `QUESTION-011`
 - **Source**: §5 E-14 · `TERM-003`, `TERM-009` · `CLAUDE.md` §Lộ trình version
 
 ### Hai epic chưa có yêu cầu nguồn
 
-**Danh sách thí sinh trong gói contest** *(mã hoá, hợp nhất tài khoản trùng, phiếu tài khoản)* và **gói kết quả chiều ngược**. Cả hai chỉ tồn tại trong bản nháp `plans/**` ⇒ **không phải requirement**. Xem `QUESTION-005`, `QUESTION-006`. *(Nguồn: `product-discovery.md` §5.)*
+**Danh sách thí sinh trong gói contest** *(mã hoá, hợp nhất tài khoản trùng, phiếu tài khoản)* và **gói kết quả chiều ngược**. Cả hai chỉ tồn tại trong bản nháp `plans/**` ⇒ **không phải requirement**. Xem `QUESTION-002`, `QUESTION-003`. *(Nguồn: `product-discovery.md` §5.)*
 
 ---
 
@@ -737,7 +737,7 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 - **Actor**: ACTOR-002 · **Related epic**: EPIC-003, EPIC-012 · **Related journey**: JOURNEY-001 · **Related game rules**: —
 - **Priority**: P2 · **Rationale**: Bản portable chạy trên máy tính xách tay; media không giới hạn làm gói contest không mang đi được.
 - **Acceptance intent**: File vượt ngưỡng bị từ chối kèm thông điệp nêu ngưỡng.
-- **Source**: `CLAUDE.md` §Quy ước khác *(ảnh ≤10MB · video ≤200MB · audio ≤20MB)* · **Status**: NEEDS CLARIFICATION — *ba con số này chỉ có ở `CLAUDE.md`, chưa có mục nào trong `docs/` chốt; xác nhận và ghi vào `docs/`?* (`QUESTION-009`)
+- **Source**: `CLAUDE.md` §Quy ước khác *(ảnh ≤10MB · video ≤200MB · audio ≤20MB)* · **Status**: NEEDS CLARIFICATION — *ba con số này chỉ có ở `CLAUDE.md`, chưa có mục nào trong `docs/` chốt; xác nhận và ghi vào `docs/`?* (`QUESTION-006`)
 
 ### EPIC-004 — Contest builder và luật tuỳ biến
 
@@ -1244,7 +1244,7 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-011 · **Related journey**: JOURNEY-002 · **Related game rules**: —
 - **Priority**: P2 · **Rationale**: Ai có mã phòng đều thấy tên và thông tin trường lớp của học sinh vị thành niên; tuỳ chọn này là biện pháp giảm thiểu duy nhất hiện có.
 - **Acceptance intent**: Bật tuỳ chọn ⇒ kênh khán giả và lớp phủ hiện biệt danh.
-- **Source**: `product-discovery.md` §7 AS-6 · **Status**: NEEDS CLARIFICATION — *tuỳ chọn này có nên bật mặc định cho trận có thí sinh vị thành niên không?* (`QUESTION-010`)
+- **Source**: `product-discovery.md` §7 AS-6 · **Status**: NEEDS CLARIFICATION — *tuỳ chọn này có nên bật mặc định cho trận có thí sinh vị thành niên không?* (`QUESTION-007`)
 
 **PRD-REQ-084 — Disclaimer khi tải nhạc lên**
 - **Description**: Hệ thống MUST hiện disclaimer về bản quyền khi người dùng tải file âm thanh lên.
@@ -1274,7 +1274,7 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-012 · **Related journey**: JOURNEY-004 · **Related game rules**: —
 - **Priority**: P2 · **Rationale**: Đây là mục tiêu phi chức năng phụ thuộc sức chứa hội trường và phần cứng thật; chốt bừa một con số biến một giá trị cấu hình thành một cam kết.
 - **Acceptance intent**: Đổi ngưỡng bằng cấu hình môi trường mà không sửa code.
-- **Source**: `QĐ-067` · **Status**: NEEDS CLARIFICATION — *chủ dự án đã **hoãn có chủ đích**; khi cần chốt phải trả lời (a) số viewer đồng thời tối đa ở hồ sơ portable LAN, (b) hồ sơ container có cần con số cao hơn không* (`QUESTION-008`)
+- **Source**: `QĐ-067` · **Status**: NEEDS CLARIFICATION — *chủ dự án đã **hoãn có chủ đích**; khi cần chốt phải trả lời (a) số viewer đồng thời tối đa ở hồ sơ portable LAN, (b) hồ sơ container có cần con số cao hơn không* (`QUESTION-005`)
 
 ### EPIC-013 — Luyện tập `[v1.5]`
 
@@ -1297,7 +1297,7 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 - **Actor**: ACTOR-003 · **Related epic**: EPIC-013 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-013` C5, `GR-014`, `GR-016`, `GR-020` C6
 - **Priority**: P3 · **Rationale**: Mô hình dữ liệu và giao diện đã làm cho 1-12 từ v1 chính là để bước này không phải chuyển đổi dữ liệu.
 - **Acceptance intent**: Ship luật đa ghế không kèm bước chuyển đổi dữ liệu nào.
-- **Source**: `QĐ-007` · `CLAUDE.md` §Lộ trình version · **Status**: NEEDS CLARIFICATION — *thang điểm Tăng tốc cho số ghế ≠ 4 chưa có trong bất kỳ nguồn nào; ai quyết giá trị và theo căn cứ gì?* (`QUESTION-011`)
+- **Source**: `QĐ-007` · `CLAUDE.md` §Lộ trình version · **Status**: NEEDS CLARIFICATION — *thang điểm Tăng tốc cho số ghế ≠ 4 chưa có trong bất kỳ nguồn nào; ai quyết giá trị và theo căn cứ gì?* (`QUESTION-008`)
 
 ### EPIC-014 — Thi đội `[v2]`
 
@@ -1313,7 +1313,7 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 - **Actor**: ACTOR-003 · **Related epic**: EPIC-014 · **Related journey**: *(chưa đặc tả)* · **Related game rules**: `GR-021`, `GR-023`
 - **Priority**: P3 · **Rationale**: Đội ba người có ba lượt và chín câu nhưng **một** ngôi sao — giao của hai luật này chưa có nguồn nào phủ.
 - **Acceptance intent**: *(chưa viết được — xem trạng thái)*
-- **Source**: `docs/reviews/game-rules-review.md` GRR-170, GRR-171 · **Status**: NEEDS CLARIFICATION *(`QUESTION-013`, `QUESTION-014`)*
+- **Source**: `docs/reviews/game-rules-review.md` GRR-170, GRR-171 · **Status**: NEEDS CLARIFICATION *(`QUESTION-010`, `QUESTION-011`)*
 
 ---
 
@@ -1443,8 +1443,8 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | NFR-02 | Biên thời gian MUST là **biên đóng** — timestamp đúng bằng mốc là hợp lệ | `GR-035`, `INV-005`, `QĐ-029` | CONFIRMED |
 | NFR-03 | Chỉnh giờ hệ thống giữa trận MUST NOT đảo được thứ hạng đã ghi; máy thí sinh không đồng bộ giờ MUST NOT ảnh hưởng kết quả | `GR-035` | CONFIRMED |
 | NFR-04 | MUST NOT có cửa sổ ân hạn hay trừ bù độ trễ tay người cho mốc do admin bấm | `QĐ-006`, `GR-033` | CONFIRMED |
-| NFR-05 | Giao diện MUST phản hồi thao tác **≤100 ms**, và kết quả đầu tiên **≤1 giây** | `CLAUDE.md` §UX | NEEDS CLARIFICATION — *hai ngưỡng này chỉ có ở `CLAUDE.md`; xác nhận và ghi vào `docs/`?* (`QUESTION-009`) |
-| NFR-06 | Ngưỡng độ trễ và số viewer đồng thời MUST dùng mặc định cấu hình được | `QĐ-067` | NEEDS CLARIFICATION *(`QUESTION-008`)* |
+| NFR-05 | Giao diện MUST phản hồi thao tác **≤100 ms**, và kết quả đầu tiên **≤1 giây** | `CLAUDE.md` §UX | NEEDS CLARIFICATION — *hai ngưỡng này chỉ có ở `CLAUDE.md`; xác nhận và ghi vào `docs/`?* (`QUESTION-006`) |
+| NFR-06 | Ngưỡng độ trễ và số viewer đồng thời MUST dùng mặc định cấu hình được | `QĐ-067` | NEEDS CLARIFICATION *(`QUESTION-005`)* |
 
 ### 15.2 Đồng thời *(concurrency)*
 
@@ -1454,7 +1454,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | NFR-08 | Một contest MUST chỉ có **một trận đang chạy** tại một thời điểm | `QĐ-039` | CONFIRMED |
 | NFR-09 | Hàng đợi tín hiệu MUST xử lý **FIFO thuần theo server timestamp**, không ưu tiên theo loại, số ghế hay vị trí; hai tín hiệu cùng mốc do hàng đợi tự quyết, **tất định khi dựng lại** | `INV-007`, `QĐ-025` | CONFIRMED |
 | NFR-10 | Mỗi thao tác MUST có đúng **một đường vào** cho mỗi mode trả lời | `QĐ-019` | CONFIRMED |
-| NFR-11 | Nhiều trận song song trên một bản cài | `product-discovery.md` §7 AS-2 *(giả định chưa kiểm chứng, con số lấy từ bản nháp)* | NEEDS CLARIFICATION *(`QUESTION-016`)* |
+| NFR-11 | Nhiều trận song song trên một bản cài | `product-discovery.md` §7 AS-2 *(giả định chưa kiểm chứng, con số lấy từ bản nháp)* | NEEDS CLARIFICATION *(`QUESTION-013`)* |
 
 ### 15.3 Khả năng kiểm toán *(auditability)*
 
@@ -1503,7 +1503,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | ID | Yêu cầu | Nguồn | Trạng thái |
 |---|---|---|---|
 | NFR-33 | Hạn lưu trữ MUST khác nhau theo **mục đích trận** | `QĐ-040` | CONFIRMED |
-| NFR-34 | Giá trị hạn lưu trữ cụ thể *(luyện tập 3 tháng · official 12 tháng)* | `CLAUDE.md` §Lộ trình version | NEEDS CLARIFICATION — *hai con số chỉ có ở `CLAUDE.md`; `docs/` không chốt số nào* (`QUESTION-015`) |
+| NFR-34 | Giá trị hạn lưu trữ cụ thể *(luyện tập 3 tháng · official 12 tháng)* | `CLAUDE.md` §Lộ trình version | NEEDS CLARIFICATION — *hai con số chỉ có ở `CLAUDE.md`; `docs/` không chốt số nào* (`QUESTION-012`) |
 | NFR-35 | Job dọn dữ liệu MUST cảnh báo trước và MUST NOT đụng biên bản đã xuất | `QĐ-077` | CONFIRMED |
 
 ### 15.8 Trải nghiệm và bố cục *(usability)*
@@ -1604,7 +1604,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | **RISK-007** | **Dữ liệu học sinh vị thành niên lộ qua mã phòng công khai** | Cao — rủi ro pháp lý cho đơn vị tự host | Trung bình | PRD-REQ-083, PRD-REQ-086 | Tuỳ chọn biệt danh; rate-limit và khoá cổng phòng; nhắc trong tài liệu vận hành | §7 AS-6 |
 | **RISK-008** | **Phạm vi v1 quá rộng** — v1 hiện không phải MVP mà là một sản phẩm hoàn chỉnh, vẫn ôm cả bốn biến thể Khởi động, hai format Tăng tốc, nạp trước mã hoá, hai hồ sơ triển khai, chủ đề và bộ âm thanh đầy đủ | Cao — kéo dài thời gian tới trận thật đầu tiên | Cao | Toàn bộ epic v1 | Nếu cắt: **cắt biến thể, không cắt giai đoạn**; giữ một đường đi hoàn chỉnh từ soạn đề tới xuất kết quả. Ba khoá cứng của v1 đã cắt sẵn một phần. **Nếu chỉ giữ được một thứ ngoài màn khán giả, giữ màn MC** | §8 |
 | **RISK-009** | **Server sập giữa trận** ⇒ mất khả năng cứu | Cao | *(không đủ căn cứ)* | NFR-31 | **Ranh giới đã chấp nhận có chủ đích**, không phải chỗ thiếu đặc tả. Hướng giảm thiểu thuộc vận hành, không thuộc sản phẩm | `QĐ-070` |
-| **RISK-010** | **Kết quả chạy trên bản portable không có đường về máy chủ trung tâm** | Trung bình — mất số liệu thống kê và lịch sử | Cao *(hiện không có đường nào)* | PRD-REQ-016, PRD-REQ-081 | Chốt hoặc đóng hẳn hành trình *portable → trung tâm* trước khi thiết kế gói kết quả | `product-discovery.md` §4, §10 · `QUESTION-006` |
+| **RISK-010** | **Kết quả chạy trên bản portable không có đường về máy chủ trung tâm** | Trung bình — mất số liệu thống kê và lịch sử | Cao *(hiện không có đường nào)* | PRD-REQ-016, PRD-REQ-081 | Chốt hoặc đóng hẳn hành trình *portable → trung tâm* trước khi thiết kế gói kết quả | `product-discovery.md` §4, §10 · `QUESTION-003` |
 
 ---
 
@@ -1623,7 +1623,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 
 ### 19.2 Đề xuất — chưa được chốt
 
-> `product-discovery.md` §9 ghi rõ đây là **đề xuất bổ sung**, không phải requirement. Toàn bộ nhóm này mang `NEEDS CLARIFICATION` (`QUESTION-017`).
+> `product-discovery.md` §9 ghi rõ đây là **đề xuất bổ sung**, không phải requirement. Toàn bộ nhóm này mang `NEEDS CLARIFICATION` (`QUESTION-014`).
 
 | ID | Đo gì | Ngưỡng gợi ý | Goal | Nguồn |
 |---|---|---|---|---|
@@ -1671,7 +1671,7 @@ Cho **N trận**: `69N` câu + `N` bộ Chướng ngại vật. Không lặp câ
 | Metric thay thế | Đo gì | Ngưỡng | Trạng thái |
 |---|---|---|---|
 | **METRIC-007a** | Số câu phải chọn tay cho một trận chuẩn | **69** *(giá trị suy ra, không phải mục tiêu)* | CONFIRMED |
-| **METRIC-007b** | Thời gian admin dựng xong danh sách 69 câu khi kho đã có | *chưa chốt* — gộp vào `METRIC-005` | NEEDS CLARIFICATION *(`QUESTION-017`)* |
+| **METRIC-007b** | Thời gian admin dựng xong danh sách 69 câu khi kho đã có | *chưa chốt* — gộp vào `METRIC-005` | NEEDS CLARIFICATION *(`QUESTION-014`)* |
 
 ---
 
@@ -1721,7 +1721,7 @@ Trong 98 yêu cầu, **93 ở trạng thái `CONFIRMED`** và **5 mang `NEEDS CL
 
 Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 → {EPIC-007, EPIC-008, EPIC-009, EPIC-010}. EPIC-003 và EPIC-012 nhánh song song sau EPIC-002. EPIC-011 chạy song song từ EPIC-001.
 
-**Chặn ngoài phạm vi kỹ thuật**: `QUESTION-004` *(kết quả tie-break ghi bằng gì)* chặn nghiệm thu đầu ra cuối cùng của EPIC-006 và EPIC-010.
+**Chặn ngoài phạm vi kỹ thuật**: `QUESTION-001` *(kết quả tie-break ghi bằng gì)* chặn nghiệm thu đầu ra cuối cùng của EPIC-006 và EPIC-010.
 
 ---
 
@@ -1750,7 +1750,7 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 | **Đánh phiên bản khi sửa câu đã duyệt** | §8 xếp là mục cắt được của kho đề |
 | **Kick thí sinh khỏi trận** | Nhu cầu *"rời hẳn một ghế khỏi trận"* **hoãn sang phiên bản sau** (`TERM-032`) |
 | **Mở khoá số hàng ngang 5-8 và playlist tuỳ ý** | Mô hình dữ liệu đã sẵn sàng; đường xử lý và cửa giao diện chưa có (`QĐ-068`, `QĐ-069`) |
-| **Gói kết quả chiều ngược portable → trung tâm** | Chưa có yêu cầu nguồn — `QUESTION-006` |
+| **Gói kết quả chiều ngược portable → trung tâm** | Chưa có yêu cầu nguồn — `QUESTION-003` |
 
 ---
 
@@ -1762,65 +1762,65 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 
 ### 22.1 NEEDS CLARIFICATION
 
-**QUESTION-004 — Kết quả Câu hỏi phụ được ghi bằng vật gì, và có hoàn nguyên được không?**
+**QUESTION-001 — Kết quả Câu hỏi phụ được ghi bằng vật gì, và có hoàn nguyên được không?**
 - **Context**: **MISSING**. Câu hỏi phụ **không cộng điểm** — người thắng chỉ **đổi thứ hạng** (`GR-023`, `QĐ-055`, `TERM-038`). Nhưng mô hình dữ liệu khai *"điểm là hàm của nhật ký sự kiện"* (`INV-002`), và danh sách loại sự kiện đã đặt tên trong `TERM-021` không có loại nào ghi kết quả tie-break. Không rule nào nói kết quả này được ghi bằng gì, có phải là sự kiện không, và có hoàn nguyên được không.
 - **Hệ quả**: đây là **đầu ra cuối cùng của cả hệ thống** — thiếu nó thì không viết được acceptance criteria cho *kết quả trận*.
 - **Affected requirements**: PRD-REQ-032, PRD-REQ-039, PRD-REQ-079 · **Affected rules**: `GR-022`, `GR-023`, `GR-025`, `GR-028` · **Required decision owner**: Chủ dự án
 - *Xuất xứ phát hiện*: `docs/reviews/game-rules-review.md` GRR-156 *(kho lưu, không phải requirement)*
 
-**QUESTION-005 — Danh sách thí sinh trong gói contest**
+**QUESTION-002 — Danh sách thí sinh trong gói contest**
 - **Context**: **MISSING**. `product-discovery.md` §5 ghi đây là **epic chưa có yêu cầu nguồn**; các chi tiết *(mã hoá, hợp nhất tài khoản trùng, phiếu tài khoản)* chỉ tồn tại trong bản nháp `plans/**` ⇒ không phải requirement.
 - **Affected requirements**: PRD-REQ-016 · **Affected rules**: — · **Required decision owner**: Chủ dự án *(chốt hoặc đóng hẳn)*
 
-**QUESTION-006 — Gói kết quả chiều ngược và hành trình portable → trung tâm**
+**QUESTION-003 — Gói kết quả chiều ngược và hành trình portable → trung tâm**
 - **Context**: **MISSING**. Trận chạy trên bản portable sinh ra kết quả và thống kê; **hiện không có đường mang về** máy chủ trung tâm. `product-discovery.md` §4 xếp là *hành trình chưa có*, §5 xếp là *epic chưa có yêu cầu nguồn*, §10 xếp là việc còn phải làm.
 - **Affected requirements**: PRD-REQ-016, PRD-REQ-081 · **Affected rules**: — · **Required decision owner**: Chủ dự án *(chốt hoặc đóng hẳn)*
 
-**QUESTION-007 — Trải nghiệm cài đặt lần đầu**
+**QUESTION-004 — Trải nghiệm cài đặt lần đầu**
 - **Context**: **MISSING**. Mới có giải pháp kỹ thuật tạo tài khoản admin bằng dòng lệnh, **chưa có trải nghiệm người dùng**.
 - **Affected requirements**: PRD-REQ-085 · **Affected rules**: — · **Required decision owner**: Chủ dự án
 
-**QUESTION-008 — Quy mô viewer và ngưỡng độ trễ**
+**QUESTION-005 — Quy mô viewer và ngưỡng độ trễ**
 - **Context**: Chủ dự án đã quyết là **chưa cần trả lời ở giai đoạn này** (`QĐ-067`) — **hoãn có chủ đích, không phải mục treo**. Bốn tài liệu cũ đưa bốn con số khác nhau, và khác biệt đó chỉ phản ánh việc chưa ai đo. Khi cần trả lời phải chốt hai điều: **(a)** số viewer đồng thời tối đa ở hồ sơ portable LAN, **(b)** hồ sơ container có cần con số cao hơn không và cao bao nhiêu.
 - **Affected requirements**: PRD-REQ-086, PRD-REQ-087, NFR-06 · **Affected rules**: *không rule nào đọc con số này* · **Required decision owner**: Chủ dự án
 
-**QUESTION-009 — Các ngưỡng số chỉ tồn tại ở `CLAUDE.md`, không có trong `docs/`**
+**QUESTION-006 — Các ngưỡng số chỉ tồn tại ở `CLAUDE.md`, không có trong `docs/`**
 - **Context**: Ba nhóm số được dùng như ràng buộc nhưng chưa có mục nào trong `docs/` chốt: giới hạn kích thước media *(ảnh ≤10MB · video ≤200MB · audio ≤20MB)*; ngưỡng phản hồi giao diện *(≤100 ms cho thao tác, ≤1 giây cho kết quả đầu tiên)*; và khung nhìn tham chiếu *(1440×900)*. Constitution yêu cầu mọi yêu cầu chức năng truy nguyên về `docs/`.
 - **Affected requirements**: PRD-REQ-019, NFR-05, NFR-37 · **Affected rules**: — · **Required decision owner**: Chủ dự án *(xác nhận rồi ghi vào `docs/`)*
 
-**QUESTION-010 — Tuỳ chọn biệt danh có bật mặc định cho thí sinh vị thành niên không?**
+**QUESTION-007 — Tuỳ chọn biệt danh có bật mặc định cho thí sinh vị thành niên không?**
 - **Context**: `product-discovery.md` §7 AS-6 ghi *"Chỉ có tuỳ chọn dùng biệt danh, **không bật mặc định**"* và xếp giả định *"mã 6 số công khai là chấp nhận được về quyền riêng tư"* vào nhóm **chưa được kiểm chứng**. Không nguồn nào nói mặc định này đã được cân nhắc hay chỉ là giá trị rơi vào.
 - **Affected requirements**: PRD-REQ-083 · **Affected rules**: — · **Required decision owner**: Chủ dự án
 
-**QUESTION-011 — Thang điểm cho số ghế ≠ 4 `[v1.5]`**
+**QUESTION-008 — Thang điểm cho số ghế ≠ 4 `[v1.5]`**
 - **Context**: **MISSING**. Thang điểm Tăng tốc **40/30/20/10** và các quy tắc phụ thuộc số ghế chỉ định nghĩa cho **đúng 4 đơn vị điểm** (`GR-013` C5, `GR-014`, `GR-016`, `GR-020` C6 đều gắn nhãn `[v1.5]`). Không nguồn nào cho giá trị với số ghế khác. Đây **không phải mục treo** mà là **phạm vi phiên bản** (`QĐ-007`) — nhưng v1.5 không ship được cho tới khi có câu trả lời.
 - **Affected requirements**: PRD-REQ-090 · **Affected rules**: `GR-013`, `GR-014`, `GR-016`, `GR-020` · **Required decision owner**: Chủ dự án
 
-**QUESTION-012 — v1 có khoá cứng phạm vi phân định hoà không?**
+**QUESTION-009 — v1 có khoá cứng phạm vi phân định hoà không?**
 - **Context**: v1 đã khoá cứng **hai** giá trị bằng cùng một khuôn — số hàng ngang bằng 4 (`QĐ-068`) và playlist bốn vòng (`QĐ-069`) — nhưng **không** khoá `tieBreakPositions`, vốn mặc định `[1]` *(chỉ phân định vị trí nhất)* và `traceability.md` xếp vào nhóm *"cấu hình được, không bật mặc định"*. Luật gốc chỉ mô tả chọn ra **một** người thắng.
 - **Câu hỏi**: v1 có khoá cứng `tieBreakPositions = [1]` như đã khoá hai giá trị kia không, hay để mở?
 - **Affected requirements**: PRD-REQ-024, PRD-REQ-025, PRD-REQ-032 · **Affected rules**: `GR-022`, `GR-025` · **Required decision owner**: Chủ dự án
 - *Xuất xứ phát hiện*: `docs/reviews/game-rules-review.md` GRR-158 — mục **duy nhất** trong đợt rà soát đề nghị **thu hẹp** phạm vi thay vì thêm câu hỏi *(kho lưu, không phải requirement)*
 
-**QUESTION-013 — Ngôi sao hy vọng khi thi đội `[v2]`**
+**QUESTION-010 — Ngôi sao hy vọng khi thi đội `[v2]`**
 - **Context**: **MISSING**. Đội ba người có ba lượt và chín câu nhưng **một** ngôi sao. Không nguồn chuẩn tắc nào nói ai trong đội được đặt và khoá lúc nào. `game-rules.md` chỉ có một mục `[v2]` duy nhất — `GR-010` C6, về việc một thành viên trả lời sai thì loại cả đội.
 - **Affected requirements**: PRD-REQ-092 · **Affected rules**: `GR-021` · **Required decision owner**: Chủ dự án *(khi mở phạm vi v2)*
 - *Xuất xứ phát hiện*: `docs/reviews/game-rules-review.md` GRR-170
 
-**QUESTION-014 — Ai chọn người thi Câu hỏi phụ khi thi đội `[v2]`**
+**QUESTION-011 — Ai chọn người thi Câu hỏi phụ khi thi đội `[v2]`**
 - **Context**: **MISSING**. Không tài liệu chuẩn tắc nào đặc tả điểm này. *(Đợt rà soát ghi nó là `CONFLICT` giữa hai rule mang mã của một tài liệu tồn kho **đã bị thay thế**; trong `docs/` hiện tại không có rule thi đội nào, nên ở đây nó là **thiếu**, không phải **mâu thuẫn**.)*
 - **Affected requirements**: PRD-REQ-092 · **Affected rules**: `GR-023`, `GR-025` · **Required decision owner**: Chủ dự án *(khi mở phạm vi v2)*
 - *Xuất xứ phát hiện*: `docs/reviews/game-rules-review.md` GRR-171
 
-**QUESTION-015 — Giá trị hạn lưu trữ**
+**QUESTION-012 — Giá trị hạn lưu trữ**
 - **Context**: `QĐ-040` chốt rằng hạn lưu trữ **khác nhau theo mục đích trận**, nhưng không cho con số. Hai giá trị *(luyện tập 3 tháng · official 12 tháng)* chỉ xuất hiện ở `CLAUDE.md` §Lộ trình version.
 - **Affected requirements**: NFR-33, NFR-34, PRD-REQ-080 · **Affected rules**: — · **Required decision owner**: Chủ dự án
 
-**QUESTION-016 — Số trận song song**
+**QUESTION-013 — Số trận song song**
 - **Context**: `product-discovery.md` §7 AS-2 xếp *"nhiều trận song song là nhu cầu thật"* vào nhóm giả định **chưa được kiểm chứng**, và ghi rõ *"con số được chốt mà không dẫn nguồn nhu cầu"*. Con số cụ thể chỉ tồn tại trong bản nháp `plans/**` ⇒ không phải requirement.
 - **Affected requirements**: NFR-11, PRD-REQ-027 · **Affected rules**: — · **Required decision owner**: Chủ dự án
 
-**QUESTION-017 — Bộ chỉ số thành công đề xuất chưa được chốt**
+**QUESTION-014 — Bộ chỉ số thành công đề xuất chưa được chốt**
 - **Context**: `product-discovery.md` §9 ghi rõ nhóm `METRIC-005` → `METRIC-016` là **đề xuất bổ sung**, không phải requirement; và nhận xét rằng nhóm đã có trong nguồn *"không tiêu chí nào đo giá trị với người dùng"*.
 - **Affected requirements**: METRIC-005 → METRIC-016 · **Affected rules**: — · **Required decision owner**: Chủ dự án
 
@@ -1849,9 +1849,9 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 | GRR-153 | ORDER_DEPENDENT | `QĐ-002` + `GR-016` + `INV-020` — thứ tự lượt tính lại sau mỗi lượt và chỉ là **khuyến nghị** |
 | GRR-154 | INVALID_TRANSITION | `GR-020` — **người thi chính không cướp câu của mình** |
 | GRR-155 | UNREACHABLE | `QĐ-036` + `GR-022` — điều kiện hoà tính **tại cú bấm chốt trận**, không phụ thuộc mốc *"sau phần thi Về đích"* |
-| **GRR-156** | **MISSING** | **CÒN MỞ** → `QUESTION-004` |
+| **GRR-156** | **MISSING** | **CÒN MỞ** → `QUESTION-001` |
 | GRR-157 | IDEMPOTENCY | `GR-025` — cả hai lần bốc là **sự kiện thật trong nhật ký**, lần cuối có hiệu lực; *"bốc lại không idempotent **theo thiết kế**"* |
-| **GRR-158** | **CONFLICT** *(thu hẹp phạm vi)* | **CÒN MỞ** → `QUESTION-012` |
+| **GRR-158** | **CONFLICT** *(thu hẹp phạm vi)* | **CÒN MỞ** → `QUESTION-009` |
 | GRR-159 | ORDER_DEPENDENT | `QĐ-035` + `GR-029` — điều chỉnh điểm thủ công **không tự hoàn nguyên**; *"mồ côi" là hành vi **ĐÚNG*** |
 | GRR-160 | IDEMPOTENCY | `GR-030` C5 — bỏ vòng lần hai là **INVALID STATE**, không phải chống trùng |
 | GRR-161 | INVALID_TRANSITION | `QĐ-004` — chấm câu thuộc vòng đã bỏ là invalid state |
@@ -1863,8 +1863,8 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 | GRR-167 | IDEMPOTENCY | `QĐ-050` + `STATE-039` — banner tạm dừng là **một** lớp phủ do admin bật/tắt, không phải bộ đếm nguyên nhân |
 | GRR-168 | CONCURRENCY | `QĐ-008` — đúng **một phiên** giữ quyền điều khiển |
 | GRR-169 | CONCURRENCY | `QĐ-045` — **không có chính sách dropout tự động**; quá ngưỡng chỉ tô nổi bật ⇒ không có xử lý tự động nào để tranh chấp |
-| **GRR-170** | **MISSING** `[v2]` | **CÒN MỞ** → `QUESTION-013` |
-| **GRR-171** | **CONFLICT** `[v2]` | **CÒN MỞ** → `QUESTION-014` *(phân loại lại thành MISSING — xem mục đó)* |
+| **GRR-170** | **MISSING** `[v2]` | **CÒN MỞ** → `QUESTION-010` |
+| **GRR-171** | **CONFLICT** `[v2]` | **CÒN MỞ** → `QUESTION-011` *(phân loại lại thành MISSING — xem mục đó)* |
 
 **Không mục nào trong `game-rules.md`, `game-state-machine.md`, `decisions.md`, `glossary.md` hay `traceability.md` còn mang marker treo.** Ba tài liệu đầu tự khai điều này; lần quét toàn văn xác nhận. Marker duy nhất được định nghĩa và dùng trong bộ đặc tả là `[SUY RA]` — nhãn nguồn, không phải câu hỏi mở.
 
@@ -2018,23 +2018,23 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 
 | Question | Loại | Requirement bị ảnh hưởng |
 |---|---|---|
-| QUESTION-004 | MISSING | PRD-REQ-032, 039, 079 |
-| QUESTION-005 | MISSING | PRD-REQ-016 |
-| QUESTION-006 | MISSING | PRD-REQ-016, 081 |
-| QUESTION-007 | MISSING | PRD-REQ-085 |
-| QUESTION-008 | NEEDS CLARIFICATION | PRD-REQ-086, 087 · NFR-06 |
-| QUESTION-009 | NEEDS CLARIFICATION | PRD-REQ-019 · NFR-05, NFR-37 |
-| QUESTION-010 | NEEDS CLARIFICATION | PRD-REQ-083 |
-| QUESTION-011 | MISSING | PRD-REQ-090 |
-| QUESTION-012 | NEEDS CLARIFICATION | PRD-REQ-024, 025, 032 |
-| QUESTION-013 | MISSING `[v2]` | PRD-REQ-092 |
-| QUESTION-014 | MISSING `[v2]` | PRD-REQ-092 |
-| QUESTION-015 | NEEDS CLARIFICATION | PRD-REQ-080 · NFR-33, NFR-34 |
-| QUESTION-016 | NEEDS CLARIFICATION | PRD-REQ-027 · NFR-11 |
-| QUESTION-017 | NEEDS CLARIFICATION | METRIC-005 → METRIC-016 |
+| QUESTION-001 | MISSING | PRD-REQ-032, 039, 079 |
+| QUESTION-002 | MISSING | PRD-REQ-016 |
+| QUESTION-003 | MISSING | PRD-REQ-016, 081 |
+| QUESTION-004 | MISSING | PRD-REQ-085 |
+| QUESTION-005 | NEEDS CLARIFICATION | PRD-REQ-086, 087 · NFR-06 |
+| QUESTION-006 | NEEDS CLARIFICATION | PRD-REQ-019 · NFR-05, NFR-37 |
+| QUESTION-007 | NEEDS CLARIFICATION | PRD-REQ-083 |
+| QUESTION-008 | MISSING | PRD-REQ-090 |
+| QUESTION-009 | NEEDS CLARIFICATION | PRD-REQ-024, 025, 032 |
+| QUESTION-010 | MISSING `[v2]` | PRD-REQ-092 |
+| QUESTION-011 | MISSING `[v2]` | PRD-REQ-092 |
+| QUESTION-012 | NEEDS CLARIFICATION | PRD-REQ-080 · NFR-33, NFR-34 |
+| QUESTION-013 | NEEDS CLARIFICATION | PRD-REQ-027 · NFR-11 |
+| QUESTION-014 | NEEDS CLARIFICATION | METRIC-005 → METRIC-016 |
 
 ---
 
 *Hết tài liệu. Bước tiếp theo trong quy trình: `/speckit.specify` cho từng feature, lấy PRD này làm nguồn cấp trên.*
 
-*Hai câu hỏi ở mức chặn nghiệm thu — `QUESTION-004` (kết quả Câu hỏi phụ được ghi bằng vật gì) và `QUESTION-012` (v1 có khoá cứng phạm vi phân định hoà không) — nên được chủ dự án phân xử trước khi viết spec cho EPIC-005, EPIC-006 và EPIC-010.*
+*Hai câu hỏi ở mức chặn nghiệm thu — `QUESTION-001` (kết quả Câu hỏi phụ được ghi bằng vật gì) và `QUESTION-009` (v1 có khoá cứng phạm vi phân định hoà không) — nên được chủ dự án phân xử trước khi viết spec cho EPIC-005, EPIC-006 và EPIC-010.*
