@@ -77,8 +77,8 @@
 **Định nghĩa.** Người xem, truy cập **public chỉ bằng mã phòng 6 số** — không account, không duyệt. **Read-only tuyệt đối**: server drop mọi event ghi từ namespace này.
 
 - **Tên khác**: khán giả · người xem
-- **Đừng nhầm với**: **Overlay** — cùng mô hình truy cập nhưng là frame stream cho OBS, không phải màn người xem. **Overlay không bao giờ nhận đáp án**, kể cả khi `revealAnswerAfterJudge` bật
-- **Nguồn**: `QĐ-015`, `QĐ-051`
+- **Đừng nhầm với**: **Overlay** — cùng mô hình truy cập nhưng là frame stream cho OBS, không phải màn người xem. Overlay **nhận đáp án cùng lúc và cùng điều kiện với viewer** kể từ `QĐ-080`; lệnh cấm tuyệt đối trước đây **đã bị gỡ**
+- **Nguồn**: `QĐ-015`, `QĐ-051`, `QĐ-080`
 
 ### TERM-008 — User
 
@@ -105,7 +105,8 @@
 
 **Định nghĩa.** Đơn vị tổ chức **bao trùm** — **bản thiết kế**, không phải một lần chạy. Gắn với một kho đề đã gán, và là **phạm vi của quy tắc no-repeat**: câu đã hỏi trong bất kỳ trận nào của contest thì không xuất hiện lại.
 
-- **Thuộc contest**: mã phòng 6 số · kho đề · cấu hình gốc · mode trả lời · cờ no-repeat
+- **Thuộc contest**: mã phòng 6 số · kho đề · cấu hình gốc · mode trả lời · **phạm vi** no-repeat
+- **Đừng nhầm với**: *"**cờ** no-repeat"* — **không tồn tại**. No-repeat là một **phạm vi**, không cấu hình được, không tắt được (`QĐ-044`). Gọi nó là *cờ* gợi ý một công tắc, và một công tắc như thế sẽ vô hiệu hoá cả hàng rào `everPublic`
 - **Đừng nhầm với**: **Match** — một contest chứa **nhiều** trận, nhưng chỉ **một trận đang chạy** tại một thời điểm
 - **Nguồn**: `QĐ-017`, `QĐ-039`, `QĐ-044`
 
@@ -160,8 +161,8 @@
 
 Trong một **contest thật**, trận `practice` **chỉ được gán câu đã hiển thị** ở các trận thật trước đó — nên nó không thể nhìn thấy đề chưa thi.
 
-- **Đừng nhầm với**: **`revealAnswerAfterJudge`** là cờ **riêng**, chỉ lấy **mặc định** theo `matchPurpose` (official tắt, practice bật) rồi đổi được
-- **Nguồn**: `QĐ-040`, `QĐ-051`
+- **Đừng nhầm với**: **`revealAnswerAfterJudge`** là cờ **riêng**, nay mặc định **BẬT cho cả hai mục đích trận** (`QĐ-080`) và vẫn đổi được từng trận — nó **không còn** phân biệt official với practice
+- **Nguồn**: `QĐ-040`, `QĐ-051`, `QĐ-080`
 
 ### TERM-016 — Mode trả lời
 
@@ -203,8 +204,9 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 
 - **Tên khác**: vòng phụ · tie-break
 - **Giá trị**: `tieBreakPositions` mặc định `[1]` — chỉ vị trí NHẤT
-- **Đừng nhầm với**: **câu hỏi phụ ≠ câu hỏi dự phòng** (câu thay thế khi media hỏng)
-- **Nguồn**: luật gốc §Câu hỏi phụ · `QĐ-036`, `QĐ-055`
+- **Nguồn đề**: **không có kho riêng.** Rút từ ba kho — **Về đích → Khởi động → VCNV** theo thứ tự ưu tiên đó; kho **Tăng tốc không phải nguồn**; câu `isPractical` bị loại. Câu mượn bị bỏ qua `timeSeconds` và `value`. Admin **chỉ định trước** một số câu **còn available** được, **tại `LOBBY`**, hạn chót là mốc bấm Chốt trận — chỉ định là **đặt chỗ**, thiếu thì bù theo thứ tự ưu tiên (`QĐ-081`)
+- **Đừng nhầm với**: **câu hỏi phụ ≠ câu hỏi dự phòng** (câu thay thế khi media hỏng) · **"không có kho riêng" ≠ "không cần kiểm kho"** — cửa vào vòng vẫn kiểm đủ 3 câu khả dụng, chỉ là phép kiểm đọc **ba kho nguồn** thay vì một kho khai riêng
+- **Nguồn**: luật gốc §Câu hỏi phụ · `QĐ-036`, `QĐ-055`, `QĐ-081`
 
 ### TERM-021 — Event · MatchEvent
 
@@ -418,8 +420,24 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 
 - **Tên khác**: timeout · deadline · `endsAt`
 - **Giá trị**: Khởi động 3s · VCNV hàng ngang 15s · VCNV sau gợi ý cuối 15s · Tăng tốc 20/20/30/30s · Về đích 15s (câu 20đ) / 20s (câu 30đ) · cửa sổ cướp 5s · Câu hỏi phụ 15s
-- **Đừng nhầm với**: **biên là biên ĐÓNG** — tới **đúng** mốc vẫn hợp lệ · **grace 120 giây** cũng là mốc thời gian nhưng **không phải** timeout của câu · hết giờ **khoá thí sinh, không khoá admin**
+- **Đừng nhầm với**: **biên là biên ĐÓNG** — tới **đúng** mốc vẫn hợp lệ · **grace 120 giây** cũng là mốc thời gian nhưng **không phải** timeout của câu · hết giờ **khoá thí sinh, không khoá admin** · **Câu khép** (TERM-057) là mốc **khác hẳn**, đến sau
 - **Nguồn**: luật gốc (mọi heading vòng) · `QĐ-029`, `QĐ-030`
+
+### TERM-057 — Câu khép
+
+**Định nghĩa.** Thời điểm **không còn ai được trả lời một câu nữa**. Đây là mốc **công bố đáp án** cho thí sinh, viewer và overlay (`QĐ-080`).
+
+| Vòng · pha | Câu khép khi |
+|---|---|
+| Khởi động — lượt riêng · lượt chung | admin chấm xong; hoặc hết cửa sổ chuông không ai bấm ⇒ **câu bị bỏ qua** |
+| VCNV — hàng ngang · ô trung tâm | admin chấm xong |
+| Tăng tốc | admin chấm xong **cả bảng** |
+| **Về đích** | cửa sổ cướp quyền **đã đóng** VÀ người cướp **đã được chấm**; hoặc hết 5 giây không ai bấm; hoặc người thi chính được chấm **Đúng** |
+
+- **Tên khác**: mốc công bố
+- **Đừng nhầm với**: ***"đã chấm"*** — hai mốc **trùng nhau ở mọi vòng TRỪ Về đích**, nơi cú bấm *chấm Sai* vừa là phán quyết vừa là cú **mở cửa sổ cướp quyền**. Lẫn hai mốc này là **xoá sổ cơ chế cướp quyền** · **Hết giờ** (TERM-042) — hết giờ chỉ khoá ô nhập của thí sinh, câu vẫn chưa khép vì chưa ai chấm · **Kết thúc vòng** — phạm vi vòng, không phải phạm vi câu
+- **Ba ca đứng ngoài**: câu bị bỏ qua **vẫn công bố** · phán quyết **Huỷ kết quả** **không** tự công bố · đáp án **Chướng ngại vật** không theo cơ chế này, mà theo `GR-012`
+- **Nguồn**: `QĐ-080` · `GR-037`, `GR-020` · `INV-017`
 
 ### TERM-043 — Grace kết nối
 
@@ -456,7 +474,8 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 **Định nghĩa.** Thời gian suy nghĩ, là **metadata của TỪNG CÂU HỎI** — cùng mức 20đ có thể câu 15s và câu 40s. Hệ thống chọn câu theo **mức điểm**, thời gian lấy **theo câu**; preset chỉ đặt default.
 
 - **Đừng nhầm với**: nguồn ngoài **gắn chặt thời gian với mức điểm**; repo **cố ý** tổng quát hoá vượt nguồn. Per-question override **thắng** default của preset
-- **Nguồn**: `QĐ-055` *(giá trị mặc định)* · `CLAUDE.md` §Luật chơi & đề thi
+- **Ngoại lệ DUY NHẤT của quy tắc "per-question thắng preset"**: ở **Câu hỏi phụ**, `timeSeconds` của câu **bị bỏ qua** — vòng đó luôn **15 giây**, con số **cố định, không cấu hình** (`GR-023`). Ngoại lệ chỉ phát sinh vì vòng này **mượn câu từ ba kho khác** và câu mượn mang theo `timeSeconds` của kho gốc (`QĐ-081`)
+- **Nguồn**: `QĐ-055` *(giá trị mặc định)* · `QĐ-081` *(ngoại lệ)* · `CLAUDE.md` §Luật chơi & đề thi
 
 ### TERM-046 — Kho đề · Pool
 
@@ -464,7 +483,8 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 
 - **Tên khác**: pool · ngân hàng đề · bộ đề · danh sách đã gán
 - **Đừng nhầm với**: ba thứ khác nhau — **kho đề toàn hệ thống** ≠ **pool đã gán cho contest** ≠ **pool còn lại sau no-repeat**
-- **Nguồn**: `QĐ-042`, `QĐ-043`
+- **Năm vòng nhưng chỉ BỐN kho**: Khởi động · VCNV · Tăng tốc · Về đích. **Câu hỏi phụ không có kho riêng** — kho của nó là **dẫn xuất** từ ba kho đầu trừ Tăng tốc (`QĐ-081`)
+- **Nguồn**: `QĐ-042`, `QĐ-043`, `QĐ-081`
 
 ### TERM-047 — Rút đề
 
@@ -514,7 +534,7 @@ Hàng rào gắn với **THAO TÁC, không gắn với mốc thời gian**: nó 
 
 **Định nghĩa.** Một trong **4 từ** cần đoán, đồng thời là **4 gợi ý** liên quan đến Chướng ngại vật. Thời gian suy nghĩ **15 giây**; trả lời đúng **+10**. **Mọi thí sinh chưa bị loại cùng trả lời bằng máy tính** khi một hàng ngang được chọn.
 
-- **Giá trị**: O26 = **4 hàng**
+- **Giá trị**: O26 = **4 hàng**, mang số thứ tự **cố định** `1`→`4` trong một **Bộ VCNV** (TERM-058)
 - **Đừng nhầm với**: ***"hàng ngang được MỞ" ≠ "miếng ghép được MỞ"*** — luật gốc dùng hai chủ ngữ khác nhau; đây là chìa khoá đọc điều kiện tới ô trung tâm · **lượt CHỌN hàng ngang** (theo vị trí, tối đa 1 lượt mỗi người) khác **việc TRẢ LỜI hàng ngang** (cả sân cùng trả lời) · **chủ thể CHỌN đổi theo mode**, còn **việc TRẢ LỜI thì luôn gõ máy**
 - **Nguồn**: luật gốc §Vượt chướng ngại vật · `QĐ-018`, `QĐ-019`, `QĐ-052`
 
@@ -531,6 +551,16 @@ Hàng rào gắn với **THAO TÁC, không gắn với mốc thời gian**: nó 
 
 - **Đừng nhầm với**: miếng ghép **không mở** vẫn không cản hàng ngang tiếp theo được hỏi — cả 4 hàng **luôn được hỏi hết**, nên ô trung tâm **luôn tới được**
 - **Nguồn**: luật gốc §Vượt chướng ngại vật · `QĐ-057`
+
+### TERM-058 — Bộ VCNV
+
+**Định nghĩa.** **Đơn vị chọn tay và đơn vị rút của vòng Vượt chướng ngại vật.** Một bộ gồm **sáu thành phần**: **1 Chướng ngại vật** *(từ khoá ẩn + hình ảnh 5 miếng ghép)* · **4 hàng ngang** · **1 câu ô trung tâm**.
+
+- **Tên khác**: bộ chướng ngại vật
+- **Số thứ tự cố định**: bốn hàng ngang mang số `1`→`4`, mỗi số ứng với **một miếng ghép ở một góc cố định**. Hàng ngang **không hoán đổi được** — không giữa các bộ, cũng không cho nhau trong cùng bộ
+- **Khả dụng**: một bộ chỉ mở được vòng VCNV khi **cả sáu thành phần đều chưa dùng**. Mất một thành phần là **vỡ bộ**
+- **Đừng nhầm với**: ***hàng ngang KHÔNG phải câu hỏi độc lập*** — nó là **gợi ý của một Chướng ngại vật cụ thể** (*"4 từ hàng ngang, **cũng chính là 4 gợi ý liên quan đến** Chướng ngại vật"*). Ghép 4 hàng ngang bất kỳ với một Chướng ngại vật bất kỳ thì vòng **vẫn chạy trót lọt về kỹ thuật** nhưng **trò chơi mất nghĩa**, và không phép kiểm nào bắt được · **kho VCNV là kho các BỘ**, không phải kho câu · mượn một hàng ngang làm **Câu hỏi phụ** (`QĐ-081`) là **vỡ nguyên một bộ** — mất 6 thành phần để lấy 1, nên kho VCNV xếp **cuối** thứ tự ưu tiên rút
+- **Nguồn**: luật gốc §Vượt chướng ngại vật, hai câu đầu · `QĐ-082` · `GR-031`
 
 ### TERM-055 — Chướng ngại vật
 
@@ -582,9 +612,11 @@ Hàng rào gắn với **THAO TÁC, không gắn với mốc thời gian**: nó 
 | `tie` | Hoà | TERM-040 |
 | `draw` | **3 nghĩa** — rút đề · bốc thăm · hoà | TERM-047 · TERM-041 · TERM-040 |
 | `timeout`, `deadline` | Hết giờ | TERM-042 |
+| `questionClosed` | Câu khép — **mốc công bố đáp án**, khác *"đã chấm"* | TERM-057 |
 | `question` | Câu hỏi | TERM-044 |
 | `pool` | Kho đề | TERM-046 |
 | `visibility` | **Dẫn xuất, read-only** — không set tay được | TERM-050 |
 | `everPublic` | Dấu vết lịch sử một chiều | TERM-049 |
-| `row` | Hàng ngang | TERM-052 |
+| `row` | Hàng ngang — **không phải câu độc lập** | TERM-052 |
 | `obstacle` | Chướng ngại vật | TERM-055 |
+| `obstacleSet` | Bộ VCNV — **đơn vị chọn và rút** của vòng | TERM-058 |

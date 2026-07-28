@@ -17,7 +17,7 @@
 
 ## Quy ước đọc
 
-**Sáu thang bậc trạng thái, KHÔNG trộn lẫn.** Từ *"state"* trong tài liệu nguồn mang nhiều nghĩa; ở đây chúng được tách hẳn:
+**Bảy thang bậc trạng thái, KHÔNG trộn lẫn.** Từ *"state"* trong tài liệu nguồn mang nhiều nghĩa; ở đây chúng được tách hẳn:
 
 | Thang bậc | Mã | Tính chất |
 |---|---|---|
@@ -504,7 +504,8 @@ stateDiagram-v2
 - **Cho phép**: admin bấm *"Câu kế tiếp"* (hoặc nút kết thúc lượt/vòng khi đã đủ số câu) · mở miếng ghép (VCNV) · điều chỉnh điểm.
 - **Cấm**: chấm lại · đổi phán quyết tại chỗ · mở lại chuông cho người khác trên cùng câu.
 - **Ra**: *"Câu kế tiếp"* ⇒ `STATE-017` của câu kế · hoặc nút kết thúc lượt/vòng.
-- **Nguồn**: `QĐ-014`, `QĐ-041` · `GR-004`, `GR-026`, `GR-028`, `GR-029`
+- **Công bố đáp án**: vào trạng thái này là **câu khép** ⇒ server đẩy đáp án tới thí sinh, viewer và overlay nếu `revealAnswerAfterJudge` bật (`INV-017`, `GR-037`, `QĐ-080`). **Hai ngoại lệ**: phán quyết *Huỷ kết quả* **không** công bố; và ở **Về đích**, chấm Sai người thi chính dẫn sang `STATE-013` *(cửa sổ cướp)* chứ **không** vào trạng thái này — câu chưa khép, **không công bố**.
+- **Nguồn**: `QĐ-014`, `QĐ-041`, `QĐ-080` · `GR-004`, `GR-026`, `GR-028`, `GR-029`, `GR-037`
 
 ---
 
@@ -1087,6 +1088,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 
 - **Actor**: Admin
 - **Mô tả**: thêm câu từ kho vào, hoặc gỡ câu ra. Gỡ chỉ có nghĩa *"không rút nữa"*: **không** xoá cờ đã-dùng, **không** hoàn tác việc câu đã lộ, **không** đụng no-repeat cấp contest. Sau khi sửa, **pre-flight chạy lại**.
+- **Cùng cửa này còn mang một thao tác nữa**: **chỉ định câu làm Câu hỏi phụ**, và gỡ chỉ định. Chỉ nhận câu **còn available**; hạn chót là **mốc bấm Chốt trận**. Chỉ định là **đặt chỗ có hiệu lực từ thời điểm chỉ định** — câu đó bị loại khỏi phép rút của các vòng **mở sau đó**, nên pre-flight của những vòng đó đòi thêm. Chỉ định ở `LOBBY` **cuối** không tốn gì. — `QĐ-081`, `GR-023`
 - **Hợp lệ ở**: `STATE-001` — tức **cửa vào vòng**, đúng nơi phép kiểm kho đề đặt.
 - **Không hợp lệ ở**: **mọi trạng thái vòng đang chạy** — trong vòng không có nhu cầu, vì số câu của vòng là con số cố định đã kiểm đủ tại cửa vào · **gỡ một câu đã hiển thị** ⇒ toast, **không ép được**.
 - **Nguồn**: `QĐ-043`, `QĐ-044` · `GR-031`
@@ -1266,7 +1268,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | T-018 | `STATE-007` | `EVENT-044` Hết giờ (câu 3) | Đã hỏi hết 3 câu, 0 người được chấm Đúng | `STATE-016` | — | `GR-023`, `GR-025` |
 | T-019 | `STATE-016` | `EVENT-027` Xác nhận kết quả | Kết quả bốc gần nhất đã hiện cho admin | `STATE-008` | Ghi event bốc thăm; cập nhật thứ hạng | `GR-025` |
 | T-020 | **Mọi** trạng thái của trận đang chạy | `EVENT-008` Huỷ trận | Dialog hạng phá huỷ + lý do | `STATE-008`, nhãn `bỏ dở` | **Điểm GIỮ NGUYÊN**; **không phân định thứ hạng, không người thắng**; ghi `closedBy` / `closedAt` / `reason`; biên bản in nhãn **"trận bỏ dở"** kèm đủ các vòng đã chạy | `GR-022` |
-| T-021 | `STATE-008` (trận **cũ**) | `EVENT-036` Tạo trận mới, `official` | Trận cũ đã đóng sổ (nhãn nào cũng được) **và** kho đề **còn lại** đủ pre-flight | **Trận MỚI ở `STATE-001`** — trận cũ **không đổi trạng thái** | Match mới: điểm rỗng, event log rỗng, ghế gán lại, cấu hình **chưa đóng băng**. Cờ no-repeat **đi xuyên qua**. Mã phòng **giữ nguyên** | `GR-030`, `GR-031` |
+| T-021 | `STATE-008` (trận **cũ**) | `EVENT-036` Tạo trận mới, `official` | Trận cũ đã đóng sổ (nhãn nào cũng được) **và** kho đề **còn lại** đủ pre-flight | **Trận MỚI ở `STATE-001`** — trận cũ **không đổi trạng thái** | Match mới: điểm rỗng, event log rỗng, ghế gán lại, cấu hình **chưa đóng băng**. Phạm vi no-repeat **đi xuyên qua** — cờ đã-dùng của contest không đặt lại. Mã phòng **giữ nguyên** | `GR-030`, `GR-031` |
 | T-022 | `STATE-008` (contest **thật**) | `EVENT-036` Tạo trận mới, `practice` | Pool **ĐÃ HIỂN THỊ** của contest đủ pre-flight — **phép kiểm ĐẢO CHIỀU** so với `T-021` | **Trận practice MỚI ở `STATE-001`** | Chỉ gán được câu **đã lộ** ⇒ **không tiêu thêm câu nào**. `revealAnswerAfterJudge` mặc định **BẬT**; retention **3 tháng** | `GR-031` |
 
 > **Không có transition nào rời `STATE-008`.** `T-021` và `T-022` trông giống đường ra nhưng không phải: chúng **dựng một thể hiện máy trạng thái khác**, có event log riêng. Trận cũ giữ nguyên trạng thái và biên bản (`QĐ-039`).
@@ -1520,11 +1522,15 @@ Một cửa sổ đã mở thì **chạy hết theo server time**, trừ khi có
 
 **Phân biệt KHÉP với ĐÓNG BĂNG**: bất biến này cấm **đóng băng** — giữ đồng hồ lại rồi thả ra, vì thời gian đã trôi thì không lấy lại được. Nó **không** cấm một cửa sổ **kết thúc sớm** khi lý do tồn tại của nó đã hết. Hai đường khép hợp lệ: chuông ở Câu hỏi phụ, và các đường khép vòng. — `QĐ-030`, `QĐ-031`
 
-### INV-017 — Đáp án chỉ rời server tới ADMIN và MC
+### INV-017 — Trước mốc CÂU KHÉP, đáp án chỉ rời server tới ADMIN và MC
 
-Ngoại lệ duy nhất: `revealAnswerAfterJudge` bật **và** câu đã chấm xong. Overlay **không bao giờ** nhận đáp án. Server enforce bất kể client là ai, đã join room gì, UI có ẩn nút hay không.
+Admin và MC xem được mọi lúc. **Thí sinh, viewer và overlay** xem được **từ mốc câu khép trở đi**, với điều kiện `revealAnswerAfterJudge` bật — cờ này mặc định **BẬT**. Server enforce bất kể client là ai, đã join room gì, UI có ẩn nút hay không.
 
-**Chỉ ĐÁP ÁN là mật.** Ba loại thông tin, ba chế độ — đừng trộn: **đáp án chuẩn** = mật · **bài làm của thí sinh khác** = ẩn tạm thời trong lúc câu còn mở, lộ khi admin bấm · **điểm số** = **công khai với mọi vai, luôn luôn**. — `QĐ-015`, `QĐ-051`
+**Mốc là CÂU KHÉP, không phải *"đã chấm"*.** Hai mốc trùng nhau ở mọi vòng **trừ Về đích**, nơi cú bấm *chấm Sai* mở cửa sổ cướp quyền 5 giây — câu chỉ khép sau khi cửa sổ đóng và người cướp đã được chấm. Ba ca đứng ngoài: câu bị bỏ qua **vẫn công bố**; phán quyết *Huỷ kết quả* **không** tự công bố; đáp án **Chướng ngại vật** theo `GR-012`, không theo cơ chế này.
+
+**Cấm đẩy đáp án xuống client trước mốc rồi ẩn bằng cờ hiển thị** — server chỉ đẩy tại đúng mốc.
+
+**Chỉ ĐÁP ÁN là mật, và chỉ mật tới mốc.** Ba loại thông tin, ba chế độ — đừng trộn: **đáp án chuẩn** = mật tới mốc câu khép · **bài làm của thí sinh khác** = ẩn tạm thời trong lúc câu còn mở, lộ khi admin bấm · **điểm số** = **công khai với mọi vai, luôn luôn**. — `QĐ-015`, `QĐ-051`, `QĐ-080`
 
 ### INV-018 — Điểm được phép ÂM, không có sàn
 

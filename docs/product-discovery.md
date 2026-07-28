@@ -10,7 +10,7 @@
 
 | File | Vai trò |
 |---|---|
-| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-079` |
+| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-082` |
 | `game-rules.md` · `game-state-machine.md` | Luật và vận hành |
 | `traceability.md` | Truy nguyên rule ↔ luật gốc ↔ `QĐ-*` |
 | `plans/**` | **Bản nháp.** Mọi trích dẫn dưới đây là **bối cảnh**, không phải requirement |
@@ -181,7 +181,7 @@ Các quyết định ở `decisions.md` ràng buộc giao diện. Bảng dưới
 | **Không thấy khuyến nghị lượt** — đó là lộ thứ tự sắp tới | `QĐ-076` | E-9 |
 | **Lớp phủ công bố chồng lên** màn đang chạy mà không huỷ nó; áp cho **cả máy thí sinh** | `QĐ-049` | E-8 · E-9 |
 | **Bảng xếp hạng chịu được điểm âm và đồng hạng**, không hard-code số ghế | `QĐ-012` `QĐ-049` | E-9 |
-| **Overlay không bao giờ nhận đáp án** | `QĐ-051` | E-9 |
+| **Overlay nhận đáp án cùng lúc và cùng điều kiện với viewer** — từ mốc **câu khép**, theo cờ reveal. Lệnh cấm tuyệt đối trước đây **đã gỡ** | `QĐ-080` | E-9 |
 
 ## Xuyên suốt
 

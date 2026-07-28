@@ -11,7 +11,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
-| `decisions.md` | **Vì sao** — 79 quyết định `QĐ-001` → `QĐ-079`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 82 quyết định `QĐ-001` → `QĐ-082`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; file này dùng đúng tên ở đó |
 | `game-state-machine.md` | Máy trạng thái: `STATE-*` · `EVENT-*` · `T-*` · `INV-*`. Mọi rule ở đây phải khớp với một hoặc nhiều transition ở đó |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -420,7 +420,9 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - Hàng ngang **luôn trả lời bằng máy**, bất kể mode contest. Thời gian suy nghĩ **15 giây**.
 - Đúng **+10** cho **mỗi** người được chấm đúng · Sai **0**, không trừ.
 - **≥1 người đúng ⇒ miếng ghép mở.** Không ai đúng ⇒ miếng ghép **không** mở.
-- **Không thứ gì tự lộ khi hết giờ** — hết giờ chỉ khoá ô nhập. Hai thứ chỉ hiện khi **admin bấm hiển thị**: **đáp án chuẩn** của hàng ngang, và **bài làm của từng thí sinh**.
+- **Không thứ gì tự lộ khi HẾT GIỜ** — hết giờ chỉ khoá ô nhập, không mở gì cả.
+- **Bài làm của từng thí sinh** chỉ hiện khi **admin bấm hiển thị**, ở mọi thời điểm.
+- **Đáp án chuẩn của hàng ngang** tự công bố tại mốc **CÂU KHÉP** *(tức khi admin chấm xong)* nếu `revealAnswerAfterJudge` bật — `GR-037`, `QĐ-080`. Đây là **thay đổi so với bản trước**, vốn buộc admin bấm; hai thứ trên **không** đi cùng nhau nữa. Admin vẫn mở và đóng tay được (`QĐ-048`).
 
 **Bảng quyết định**
 
@@ -872,7 +874,11 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Không đổi gì.** Lựa chọn của thí sinh khác — mỗi người một gói riêng · thứ tự chọn **không** ảnh hưởng thứ tự rút; mức chỉ là bộ lọc.
 
-**Biên.** Pre-flight kiểm kho đề theo **trường hợp xấu nhất**: mọi thí sinh cùng chọn một mức. Thiếu ⇒ **không mở được vòng Về đích**.
+**Biên.** Pre-flight kiểm kho đề theo **trường hợp xấu nhất**: mọi thí sinh cùng chọn một mức. Vì phép kiểm chạy **trước khi ai chọn**, nó phải đúng cho **cả hai** mức:
+
+> **Cần `3 × số ghế` câu ở mức 20 VÀ `3 × số ghế` câu ở mức 30.** Với 4 ghế: **12 + 12 = 24 câu**, trong khi vòng chỉ tiêu **12**. Số dư **đúng 12** là tất định, không phụ thuộc lựa chọn của ai — và nó là **nguồn đề của vòng Câu hỏi phụ** (`GR-023`, `QĐ-081`).
+
+Thiếu ⇒ **không mở được vòng Về đích**.
 
 **Bấm trùng.** Chọn nhiều lần trước mốc khoá là **last-wins** — cùng ngữ nghĩa với nút gửi đáp án. Chọn gói **không phải chuông**, nên **không** áp cơ chế *"bấm xong thì tắt"*.
 
@@ -1017,6 +1023,8 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Không đổi gì.** Điểm của những người **không bấm** · các câu trước · bản gửi của người thi chính.
 
+> **Cấm: KHÔNG công bố đáp án khi cửa sổ cướp quyền đang mở.** Cú bấm *chấm Sai* của người thi chính vừa là phán quyết vừa là cú **mở cửa sổ này** — nên ở Về đích, *"đã chấm"* **không** phải mốc công bố. Câu chỉ khép sau khi cửa sổ đóng và người cướp đã được chấm (`GR-037`, `QĐ-080`). Công bố sớm biến cướp quyền thành cuộc thi bấm chuột: người cướp chỉ việc đọc lại đáp án vừa hiện trên màn hình.
+
 **Thứ tự đánh giá.** **(1)** admin chấm Sai cho người thi chính → **(2)** mở cửa sổ **5 giây** → **(3)** các thí sinh khác bấm chuông → **(4)** người sớm nhất theo server timestamp giành quyền; cùng mốc thì hàng đợi tự quyết → **(5)** admin chấm người cướp → **(6)** tính transfer hoặc trừ nửa.
 
 **Biên.** Cửa sổ **5 giây**, cứng. Bấm ngoài cửa sổ: **không có tín hiệu nào được tạo**. Chấm **sau khi** cửa sổ đã đóng vẫn thực hiện được — cửa sổ chỉ chi phối việc **bấm chuông**. Điểm người cướp **được phép âm, không có sàn**.
@@ -1106,7 +1114,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - Phép phân định hoà chạy **tại cú bấm Chốt trận**, trên bảng điểm **ở đúng mốc đó** ⇒ điểm admin vừa sửa **được tính vào**.
 - Có hoà **trong `tieBreakPositions`** ⇒ `TIE_BREAK`; không thì `FINISHED`. `tieBreakPositions` mặc định `[1]` — chỉ phân định vị trí **NHẤT**.
 - Nhóm hoà phải có **≥ 2** người.
-- Kho câu phụ phải đủ **3 câu**, kiểm ở **cửa vào vòng**.
+- Phải có đủ **3 câu khả dụng** cho vòng này, kiểm ở **cửa vào vòng**. **Không có kho Câu hỏi phụ riêng** — đề rút từ ba kho nguồn *(Về đích · Khởi động · VCNV)*, xem `GR-023` và `QĐ-081`.
 
 **Bảng quyết định**
 
@@ -1152,6 +1160,21 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - **Có người giành được quyền ⇒ đồng hồ 15 giây DỪNG NGAY**, không chạy tiếp. Cửa sổ 15 giây là cửa sổ **suy nghĩ + giành quyền**; trả lời sai thì **cả nhóm sang câu kế**, không còn ai để đếm giờ cho.
 - **Không có đồng hồ trả lời riêng sau khi giành quyền.** Nguồn im lặng **có chủ ý**: nó nói rõ *"tính từ lúc giành được quyền"* ở Khởi động lượt chung và *"suy nghĩ **và trả lời**"* ở Về đích, nhưng ở Câu hỏi phụ **chỉ ghi** *"Thời gian suy nghĩ cho mỗi câu hỏi là 15 giây"*, và **không** có chế tài cho việc bấm chuông rồi im lặng — khác hẳn −5 của Khởi động. Bấm rồi im ⇒ admin chấm **Sai** ⇒ sang câu kế. **Không phát minh cửa sổ trả lời cho vòng này.**
 
+**Nguồn đề — vòng này KHÔNG có kho riêng**
+
+- Đề rút từ **ba kho nguồn**: **Về đích · Khởi động · VCNV**, trong danh sách đã gán, loại câu đã dùng như mọi vòng.
+- **Thứ tự ưu tiên rút: Về đích → Khởi động → VCNV.** Kho Về đích **luôn dư đúng 12 câu** sau khi vòng chạy xong *(pre-flight đòi 24, vòng tiêu 12 — `GR-017`)*, nên nó là nguồn đúng. Kho VCNV khan nhất và rút vào đó **làm vỡ một bộ**.
+- **Kho Tăng tốc KHÔNG phải nguồn.** Câu ở đó là *nhìn nhanh · sắp xếp · suy luận · đoạn băng*, dựng cho **cả sân cùng gõ máy** và tính theo **thứ hạng tốc độ**; đặt vào một cửa sổ tranh chuông 15 giây là hỏng, và ở mode sân khấu thì **không có gì để nói**.
+- **Câu `isPractical` bị LOẠI khỏi phép rút** — nó có hai pha thời gian và cần giới thiệu dụng cụ, không có đường chạy trong khuôn 15 giây.
+- **Metadata của kho gốc bị vô hiệu hoá**: `timeSeconds` **bỏ qua**, luôn **15 giây** · `value` **bỏ qua**, vòng này không sinh điểm · phân loại theo vòng **không mang ý nghĩa nào**.
+- **Admin chỉ định một số câu làm Câu hỏi phụ được — TẠI `LOBBY`**, không phải ở cấu hình trận *(cấu hình trận đã đóng băng từ cú bấm bắt đầu trận)*. Bốn ràng buộc:
+  - Chỉ nhận câu **còn available** — chưa hiển thị. Câu **đã hiển thị** không chỉ định được, cùng ranh giới `GR-031` C6.
+  - Làm được ở **bất kỳ `LOBBY` nào**; hạn chót là **mốc bấm Chốt trận**, tức trước khi vào vòng.
+  - **Gỡ chỉ định được**, đối xứng; câu gỡ ra quay lại phép rút của vòng gốc.
+  - Chỉ định là **ĐẶT CHỖ có hiệu lực TỪ THỜI ĐIỂM CHỈ ĐỊNH**: câu đó bị loại khỏi phép rút của **các vòng mở sau đó**. ⇒ Chỉ định ở `LOBBY` **trước** Về đích tốn **+k** vào kho Về đích; chỉ định ở `LOBBY` **cuối** tốn **0**, vì không còn vòng nào đụng tới 12 câu dư.
+- **Chỉ định ít hơn 3 câu** ⇒ danh sách chỉ định tiêu trước, **phần thiếu bù theo thứ tự ưu tiên** ở trên. Không chặn cứng. Không chỉ định gì ⇒ rút hoàn toàn theo thứ tự ưu tiên.
+- **Cấm** để `timeSeconds` hoặc `value` của câu mượn chi phối vòng này; **cấm** lấy câu từ kho Tăng tốc; **cấm** rút câu `isPractical`.
+
 **Bảng quyết định**
 
 | Ca | Điều kiện | Kết quả | Thay đổi trạng thái |
@@ -1166,7 +1189,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Thứ tự đánh giá.** **(1)** admin bấm hiển thị câu, MC đọc → **(2)** admin **start timer**, 15 giây → **(3)** thí sinh bấm, server ghi timestamp → **(4)** có người giành quyền: **timer dừng** → **(5)** admin chấm → **(6)** đúng thì kết thúc vòng, sai hoặc hết giờ thì sang câu kế → **(7)** hết 3 câu chưa ai đúng: sang `GR-025`.
 
-**Biên.** Thời gian **15 giây**, số câu **3**, nhóm tối thiểu **2** người — cả ba đều cứng.
+**Biên.** Thời gian **15 giây**, số câu **3**, nhóm tối thiểu **2** người — cả ba đều cứng. **15 giây thắng `timeSeconds` của câu mượn** — xem §Nguồn đề.
 
 **Đồng thời.** Hai người bấm cùng mốc ⇒ hàng đợi tự quyết, ngẫu nhiên; thứ tự đó được ghi lại.
 
@@ -1177,7 +1200,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - Cả 3 câu không ai đúng ⇒ bốc thăm.
 - Admin chấm **Sai** nhầm: nút chấm **tự khoá sau lần bấm đầu**; muốn sửa thì đi qua hoàn nguyên (`GR-028`) hoặc điều chỉnh thủ công (`GR-029`).
 
-**Nguồn**: luật gốc §Câu hỏi phụ *"Các thí sinh trả lời 3 câu hỏi. Thời gian suy nghĩ cho mỗi câu hỏi là 15 giây… Nếu trả lời sai, các thí sinh sẽ bước sang câu hỏi tiếp theo."* · `QĐ-020`, `QĐ-025`, `QĐ-031`, `QĐ-055`, `QĐ-060`
+**Nguồn**: luật gốc §Câu hỏi phụ *"Các thí sinh trả lời 3 câu hỏi. Thời gian suy nghĩ cho mỗi câu hỏi là 15 giây… Nếu trả lời sai, các thí sinh sẽ bước sang câu hỏi tiếp theo."* · `QĐ-020`, `QĐ-025`, `QĐ-031`, `QĐ-055`, `QĐ-060`, `QĐ-081`
 
 ---
 
@@ -1237,14 +1260,14 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | C1 | 3 câu chưa ai đúng, nhóm ≥ 2 người | Server đề xuất **một** người bằng bốc thăm ngẫu nhiên |
 | C2 | Admin bấm **Yes** trên kết quả | Người đó nhận vị trí đang tranh; vòng đóng, trận về `LOBBY` |
 | C3 | Admin bấm **Bốc lại** | Bốc thăm lần nữa. **Cả hai lần đều là event thật** trong log append-only; **lần cuối cùng có hiệu lực**, lần trước **không** bị đánh dấu vô hiệu — nó chỉ bị một event sau ghi đè |
-| C4 | Kho câu phụ **không đủ 3 câu** | **Vòng không mở được** — chặn ở cửa vào vòng. Không tồn tại ca cạn giữa vòng |
+| C4 | **Không đủ 3 câu khả dụng** từ ba kho nguồn | **Vòng không mở được** — chặn ở cửa vào vòng. Không tồn tại ca cạn giữa vòng. Ca này **gần như không chạm tới**: kho Về đích luôn dư đúng 12 câu sau vòng Về đích (`GR-017`, `QĐ-081`) |
 | C5 | Admin **không** phân định một nhóm | Các thành viên nhóm đó ghi **đồng hạng**, theo standard competition ranking |
 
 **Không đổi gì.** Điểm — vòng này không cộng trừ · lịch sử 3 câu · thứ hạng của người ngoài nhóm.
 
 **Thứ tự đánh giá.** **(1)** câu 3 đóng, kiểm tra có ai đúng không → **(2)** không: server bốc → **(3)** hiện kết quả cho admin dưới dạng **đề xuất** → **(4)** admin bấm Yes hoặc Bốc lại → **(5)** chốt, cập nhật thứ hạng → **(6)** vòng đóng.
 
-**Biên.** Nhóm **2** người: bốc. Nhóm **4** người: bốc, nếu config mở tới đó. Kho câu phụ **< 3**: vòng không mở.
+**Biên.** Nhóm **2** người: bốc. Nhóm **4** người: bốc, nếu config mở tới đó. **Dưới 3 câu khả dụng** từ ba kho nguồn *(kể cả sau khi bù cho danh sách chỉ định)*: vòng không mở.
 
 **Bấm trùng.** Nút bốc thăm **một chiều, tự tắt**. *"Bốc lại"* là **thao tác riêng, có dialog Yes/No**, sinh **event mới** — không phải bấm trùng nút cũ. Thao tác này **không idempotent theo thiết kế**: mục đích của nó chính là ra kết quả khác. Chống bấm nhầm nằm ở nút tự tắt + dialog, **không** ở dedup phía server.
 
@@ -1495,6 +1518,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 - **Người tạo contest PHẢI chọn danh sách câu trước khi start** — tìm kiếm toàn văn, lọc, sắp xếp trên kho rồi chụp vào cấu hình trận. Hệ thống **không** tự lấy đề.
 - Server rút **ngẫu nhiên TRONG danh sách đã chụp**, loại những câu có `usedInContest = true`.
+- **Ngoại lệ DUY NHẤT — vòng VCNV rút theo BỘ, không rút từng câu.** Một bộ gồm **1 Chướng ngại vật + 4 hàng ngang + 1 câu ô trung tâm**; hàng ngang là **gợi ý của chính Chướng ngại vật đó**, mang **số thứ tự cố định** ứng với một miếng ghép ở một góc cố định, nên **không hoán đổi được** giữa các bộ. Bộ chỉ khả dụng khi **cả sáu thành phần đều chưa dùng**; mất một thành phần là **vỡ bộ**. Xem `QĐ-082`.
 - `usedInContest` là cờ **toàn contest**, xuyên nhiều trận, và **không bao giờ được đặt lại** — kể cả khi bỏ hoặc chạy lại vòng.
 - **Kho đề kiểm tại cửa vào TỪNG VÒNG**, không phải một lần trước trận.
 - Mỗi lần rút sinh event `QUESTIONS_DRAWN` ⇒ phát lại trận ra đúng thứ tự câu cũ.
@@ -1510,6 +1534,8 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | C1 | Rút 4 câu từ kho 200, chưa câu nào dùng | Chọn ngẫu nhiên 4; sinh `QUESTIONS_DRAWN`; đặt cờ khi các câu đó **hiển thị** |
 | C2 | Trận thứ hai của cùng contest, 4 câu trước đã dùng | Kho hiệu dụng **196** |
 | C3 | Vòng cần 4 câu, kho còn **3** | **Vòng đó không mở được**; **các vòng khác vẫn mở bình thường**. Admin thấy thiếu bao nhiêu câu |
+| C3b | Vòng **VCNV**, kho có 4 hàng ngang và 1 Chướng ngại vật nhưng **không thuộc cùng một bộ** | **Vòng không mở được** — phép kiểm đếm **bộ nguyên vẹn**, không đếm câu. Đủ số câu **không phải** điều kiện đủ |
+| C3c | Một hàng ngang của bộ X đã bị dùng làm **Câu hỏi phụ** (`GR-023`) | **Bộ X vỡ**, không dùng cho vòng VCNV nữa dù 5 thành phần kia còn nguyên. Giao diện **cảnh báo trước** khi admin chỉ định một hàng ngang làm Câu hỏi phụ, nêu rõ bộ nào sẽ vỡ |
 | C4 | Kho cạn **giữa** vòng | **KHÔNG TỒN TẠI** — nhu cầu của vòng là con số cố định, đã kiểm đủ tại cửa vào; câu bị bỏ qua nằm trong con số đó |
 | C5 | Admin sửa danh sách gán **tại `LOBBY`** | **ĐƯỢC.** Kho đề kiểm lại sau khi sửa; vào audit; cờ `usedInContest` **không** bị đụng tới |
 | C6 | Bớt một câu **đã hiển thị** | **KHÔNG TỒN TẠI** — câu đã tiêu không còn là mục tiêu của thao tác gỡ; admin thấy toast, **không ép được**. Cho gỡ thì gỡ-rồi-thêm-lại thành đường lách quy tắc không lặp |
@@ -1533,7 +1559,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - Trận 2 dùng danh sách gán khác; 4 câu của trận 1 vẫn bị loại.
 - Vòng Khởi động lượt riêng đã mở được thì **chạy trọn vòng** — không có đường cạn giữa chừng.
 
-**Nguồn**: `QĐ-039`, `QĐ-040`, `QĐ-041`, `QĐ-042`, `QĐ-043`, `QĐ-044`
+**Nguồn**: `QĐ-039`, `QĐ-040`, `QĐ-041`, `QĐ-042`, `QĐ-043`, `QĐ-044`, `QĐ-082`
 
 ---
 
@@ -1787,7 +1813,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 >
 > | Loại | Chế độ | Quy định ở |
 > |---|---|---|
-> | **Đáp án chuẩn** | **MẬT** — chỉ admin và MC | **Rule này** |
+> | **Đáp án chuẩn** | **MẬT tới mốc CÂU KHÉP**; từ mốc đó công bố cho mọi vai theo cờ | **Rule này** |
 > | **Bài làm của thí sinh khác** | **ẨN TẠM THỜI** khi câu còn mở; lộ khi admin bấm hiển thị | `GR-008` |
 > | **ĐIỂM SỐ** | **CÔNG KHAI, LUÔN LUÔN** — mọi vai, mọi lúc, gồm cả máy thí sinh | `QĐ-015` |
 >
@@ -1795,40 +1821,62 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Điều kiện.**
 
-- **Admin và MC luôn được xem**, không phụ thuộc cấu hình nào. Mỗi lần xem đều **vào audit**.
-- **Overlay không bao giờ được xem** — read-only tuyệt đối.
-- Thí sinh và viewer chỉ thấy đáp án khi `revealAnswerAfterJudge` **BẬT** **và** câu **đã chấm xong**.
-- `revealAnswerAfterJudge` là cờ **CẤP TRẬN**, lấy mặc định theo mục đích trận: **`official` ⇒ TẮT** · **`practice` ⇒ BẬT**. Giá trị được **chụp vào trận lúc start**; sửa cấu hình contest sau đó **không đụng** trận đã chạy.
+- **Admin và MC luôn được xem**, không phụ thuộc cấu hình nào và không phụ thuộc mốc nào. Mỗi lần xem đều **vào audit**.
+- **Thí sinh, viewer và overlay được xem từ mốc CÂU KHÉP trở đi**, với điều kiện `revealAnswerAfterJudge` **BẬT**. Trước mốc đó: **không ai trong ba vai này** được xem.
+- **Mốc công bố là CÂU KHÉP, không phải "đã chấm"** — xem bảng §Mốc câu khép theo vòng bên dưới. Hai mốc trùng nhau ở mọi vòng **trừ Về đích**.
+- `revealAnswerAfterJudge` là cờ **CẤP TRẬN**, mặc định **BẬT** cho cả `official` lẫn `practice`, admin đổi được từng trận. Giá trị được **chụp vào trận lúc start**; sửa cấu hình contest sau đó **không đụng** trận đã chạy.
+- **Đáp án Chướng ngại vật KHÔNG thuộc rule này** — nó theo `GR-012`: lộ khi có người giải đúng, hoặc khi admin bấm công bố.
 - Yêu cầu không được phép: server **im lặng**, không trả đáp án.
+
+**Mốc câu khép theo vòng**
+
+| Vòng · pha | Câu khép khi |
+|---|---|
+| Khởi động — lượt riêng | admin chấm xong *(hai mốc trùng)* |
+| Khởi động — lượt chung | admin chấm xong; **hoặc** hết cửa sổ chuông 3 giây không ai bấm ⇒ câu bị bỏ qua |
+| VCNV — câu hàng ngang | admin chấm xong *(hoặc bấm chốt câu — `GR-026` C4)* |
+| VCNV — câu ô trung tâm | admin chấm xong |
+| Tăng tốc | admin chấm xong cả bảng *(một câu = một event điểm — `QĐ-013`)* |
+| **Về đích** | **cửa sổ cướp quyền đã đóng VÀ người cướp đã được chấm**; hoặc hết 5 giây không ai bấm; hoặc người thi chính được chấm **Đúng** *(không mở cửa sổ cướp)* |
 
 **Bảng quyết định**
 
-| Ca | Vai · cấu hình | Kết quả |
+| Ca | Vai · cấu hình · mốc | Kết quả |
 |---|---|---|
 | C1 | **Admin** | Trả đáp án; ghi audit |
 | C2 | **MC** | Trả đáp án; ghi audit |
-| C3 | Viewer · reveal **TẮT** | **Không trả** |
-| C4 | Viewer · reveal **BẬT** · **chưa chấm** | **Không trả** |
-| C5 | Viewer · reveal **BẬT** · **đã chấm** | Trả đáp án |
-| C6 | **Overlay** | **Không trả**, mọi lúc, mọi cấu hình |
+| C3 | Thí sinh · viewer · overlay — reveal **TẮT** | **Không trả** |
+| C4 | Thí sinh · viewer · overlay — reveal **BẬT** · **câu chưa khép** | **Không trả** |
+| C5 | Thí sinh · viewer · overlay — reveal **BẬT** · **câu đã khép** | Trả đáp án |
+| C6 | **Về đích** — người thi chính vừa bị chấm Sai, **cửa sổ cướp đang mở** | **Không trả** — câu **chưa khép**. Trả ở đây là xoá sổ cướp quyền |
+| C7 | Câu **bị bỏ qua** *(không ai bấm chuông)* · reveal **BẬT** | Trả đáp án — câu đã tiêu, đã khép |
+| C8 | Câu khép bằng phán quyết **Huỷ kết quả** | **Không tự trả.** Admin mở tay được (`QĐ-048`) |
+| C9 | Đáp án **Chướng ngại vật** | Ngoài phạm vi rule này — theo `GR-012` |
 
-> **Vì sao cờ đặt ở cấp TRẬN, không phải cấp CONTEST.** Một contest thật được phép chứa **cả** trận chính thức lẫn trận tổng duyệt. Đặt ở cấp contest thì không thể vừa giấu đáp án ở trận chính thức vừa hiện đáp án ở trận tổng duyệt — kịch bản đó **không dựng được**.
+> **Vì sao cờ đặt ở cấp TRẬN, không phải cấp CONTEST.** Một contest thật được phép chứa **cả** trận chính thức lẫn trận tổng duyệt. Đặt ở cấp contest thì không thể đặt hai giá trị khác nhau cho hai trận cùng phòng — kịch bản đó **không dựng được**.
 >
 > **Không lẫn với mode trả lời**, vốn đặt ở **cấp CONTEST**: mode là thuộc tính của **sân khấu và phần cứng** (có micro không, thí sinh có bàn phím không) nên không đổi giữa hai trận cùng phòng; `revealAnswerAfterJudge` là thuộc tính **sư phạm** của từng trận. Hai trục khác nhau, không phải thiếu nhất quán.
 
-**Không đổi gì.** Trạng thái trận — xem đáp án **không** sinh event điểm nào · quyền của admin và MC · lệnh cấm với overlay.
+**Cấm.**
 
-**Thứ tự đánh giá.** **(1)** nhận yêu cầu → **(2)** xét vai: admin hoặc MC ⇒ trả ngay → **(3)** overlay ⇒ từ chối ngay → **(4)** còn lại: xét cờ reveal và trạng thái đã chấm → **(5)** ghi audit nếu có trả.
+- **Cấm đẩy đáp án xuống client trước mốc câu khép rồi ẩn bằng cờ hiển thị.** Server chỉ được đẩy **tại đúng mốc**. Đây là lỗi của tiền lệ Athena — nó nạp toàn bộ ngân hàng đề xuống mọi máy client và chỉ dựa vào một cờ hiển thị của giao diện, khiến đáp án nằm sẵn trong bộ nhớ máy thí sinh suốt trận.
+- **Cấm công bố khi cửa sổ cướp quyền Về đích đang mở** — xem C6.
+- **Cấm cuốn đáp án Chướng ngại vật theo cơ chế này** — xem C9.
 
-**Biên.** Mốc lộ đáp án là **sau khi admin bấm Đúng/Sai**, không sớm hơn.
+**Không đổi gì.** Trạng thái trận — xem đáp án **không** sinh event điểm nào · quyền của admin và MC · quyền đóng hiển thị thủ công của admin (`QĐ-048`) · **cửa sổ cướp quyền và mọi con số của luật**.
 
-**Bấm trùng.** Xem nhiều lần: mỗi lần một dòng audit; trạng thái trận không đổi.
+**Thứ tự đánh giá.** **(1)** nhận yêu cầu → **(2)** xét vai: admin hoặc MC ⇒ trả ngay → **(3)** còn lại: xét cờ reveal → **(4)** xét **câu đã khép chưa** → **(5)** xét ca biên *(Huỷ kết quả · Chướng ngại vật)* → **(6)** ghi audit nếu có trả.
+
+**Biên.** Mốc công bố là **CÂU KHÉP**, không sớm hơn. Ở Về đích, mốc này đến **sau** cú bấm Đúng/Sai của người thi chính, cách nhau ít nhất bằng độ dài cửa sổ cướp quyền.
+
+**Bấm trùng.** Xem nhiều lần: mỗi lần một dòng audit; trạng thái trận không đổi. Công bố là **một chiều ở phía engine** — đã công bố thì engine không tự thu lại.
 
 **Ví dụ.**
 
 - Admin thấy đáp án cạnh bài làm **ngay cả khi chưa chấm** — đó là công cụ để chấm.
-- Trận chính thức, reveal TẮT: chấm xong, admin và MC thấy đáp án; viewer **không**.
-- Trận tổng duyệt, reveal BẬT: chưa chấm thì viewer không thấy; chấm xong thì thấy.
-- Một contest chứa **trận tổng duyệt** (reveal BẬT) và **trận chính thức** (reveal TẮT) — cùng kho đề, cùng mode trả lời, **hai giá trị reveal khác nhau**. Đây chính là kịch bản buộc cờ này phải ở cấp trận.
+- Khởi động lượt chung, reveal BẬT: admin chấm Sai ⇒ câu kết thúc ⇒ đáp án hiện trên máy thí sinh, màn khán giả và overlay.
+- **Về đích, câu 30đ, reveal BẬT**: A trả lời sai ⇒ admin chấm Sai ⇒ cửa sổ cướp 5 giây mở, **đáp án vẫn kín** ⇒ B bấm chuông, trả lời, admin chấm ⇒ **bây giờ** đáp án mới hiện. Nếu công bố ở bước chấm Sai thì B chỉ việc đọc lại thứ vừa thấy — cướp quyền mất nghĩa.
+- Khởi động lượt chung, hết 3 giây không ai bấm chuông: câu bị bỏ qua, **vẫn công bố** — câu đã hỏi, đã tiêu, giữ kín không bảo vệ được gì.
+- Trận chính thức tắt cờ: chấm xong, chỉ admin và MC thấy đáp án — hành vi cũ vẫn dựng lại được bằng một thao tác.
 
-**Nguồn**: `QĐ-015`, `QĐ-017`, `QĐ-039`, `QĐ-048`, `QĐ-051`, `QĐ-062`
+**Nguồn**: `QĐ-015`, `QĐ-017`, `QĐ-039`, `QĐ-048`, `QĐ-051`, `QĐ-062`, `QĐ-080`

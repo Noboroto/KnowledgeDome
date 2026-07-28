@@ -9,10 +9,10 @@
 | Ký hiệu | Là gì | Vị thế |
 |---|---|---|
 | **Luật gốc** | `source/fandom-olympia-26-luat-choi.md` — bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26), lấy 2026-07-23 | **Source of truth duy nhất về LUẬT** |
-| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-079` | Source of truth về **lựa chọn sản phẩm** |
+| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-082` | Source of truth về **lựa chọn sản phẩm** |
 | **Rule** | `game-rules.md` — `GR-001` → `GR-037` | Đặc tả nghiệp vụ **chuẩn tắc** |
 | **Máy trạng thái** | `game-state-machine.md` — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` | Đặc tả **chuẩn tắc** phần vận hành |
-| **Thuật ngữ** | `glossary.md` — `TERM-001` → `TERM-056` | Tên gọi chuẩn |
+| **Thuật ngữ** | `glossary.md` — `TERM-001` → `TERM-058` | Tên gọi chuẩn |
 | `plans/**` | Bản nháp planning | **KHÔNG phải nguồn.** Không trích như requirement |
 | `reviews/` | Kho lưu thảo luận, đề xuất `GRR-*` | **KHÔNG phải nguồn** |
 | Athena | `D:\Github\Athena-Intelligent-Olympia` | **Tiền lệ**, không phải thẩm quyền. Dùng để phát hiện nhánh thiếu và xếp thứ tự việc kiểm thử |
@@ -48,6 +48,7 @@ Mỗi phát biểu trong `game-rules.md` và `decisions.md` mang **đúng một*
 
 | Rule | Luật gốc | Quyết định liên quan |
 |---|---|---|
+| `GR-031` §Ngoại lệ — bộ VCNV | *"Có 4 từ hàng ngang, **cũng chính là 4 gợi ý liên quan đến Chướng ngại vật**"* · *"4 miếng ghép **tương ứng với** 4 từ hàng ngang ở 4 góc và **được đánh số cố định**"* | `QĐ-082` |
 | `GR-007` lượt chọn hàng ngang | §VCNV — lượt chọn theo thứ tự | `QĐ-019` `QĐ-021` |
 | `GR-008` trả lời hàng ngang và mở miếng ghép | *"trả lời đúng từ hàng ngang → miếng ghép mở"* · *"bất kỳ sai sót về kí tự, dấu câu, ngữ pháp → không được công nhận"* | `QĐ-010` `QĐ-018` `QĐ-052` `QĐ-057` |
 | `GR-009` bấm chuông giải Chướng ngại vật | §VCNV — băng điểm theo số hàng đã mở | `QĐ-021` `QĐ-057` |
@@ -94,13 +95,13 @@ Bảy rule dưới đây **không** đến từ luật gốc. Chúng tồn tại
 | `GR-028` điểm là hàm của event log | Mô hình dữ liệu, để sửa sai mà không mất lịch sử | `QĐ-011` `QĐ-012` `QĐ-013` |
 | `GR-029` điều chỉnh điểm thủ công | Van thoát cho mọi sai sót; thay cho việc chấm lại | `QĐ-014` `QĐ-039` |
 | `GR-030` bỏ vòng, chạy lại, kết thúc sớm | Xử lý sự cố buổi thi | `QĐ-034` `QĐ-035` |
-| `GR-031` rút đề và không lặp câu | Kho đề là khái niệm của hệ thống, không của luật | `QĐ-041` `QĐ-042` `QĐ-043` `QĐ-044` |
+| `GR-031` rút đề và không lặp câu | Kho đề là khái niệm của hệ thống, không của luật. **Ngoại lệ**: ràng buộc **bộ VCNV** thì CÓ gốc ở luật gốc — xem dòng dưới | `QĐ-041` `QĐ-042` `QĐ-043` `QĐ-044` `QĐ-082` |
 | `GR-032` hàng đợi tín hiệu | Luật gốc có chuông vật lý; phần mềm phải định nghĩa thứ tự và quyền duyệt | `QĐ-020` `QĐ-021` `QĐ-022` |
 | `GR-033` mốc thời gian do admin bấm | Máy không quan sát được sân khấu ⇒ **admin là cảm biến** | `QĐ-006` `QĐ-027` `QĐ-028` |
 | `GR-034` chuông chỉ nhận click chuột | Chống bấm nhầm khi đang gõ | `QĐ-023` |
 | `GR-035` server time | Công bằng và dựng lại được | `QĐ-006` `QĐ-029` |
 | `GR-036` mất kết nối và giữ ghế | Rủi ro của mạng, không có ở trường quay | `QĐ-045` `QĐ-046` `QĐ-047` |
-| `GR-037` phạm vi hiển thị đáp án | Bảo mật đề — luật gốc không cần vì đáp án nằm trên giấy của MC | `QĐ-048` `QĐ-051` `QĐ-062` |
+| `GR-037` phạm vi hiển thị đáp án | Bảo mật đề — luật gốc không cần vì đáp án nằm trên giấy của MC. **Mốc công bố** thì có gốc ở luật: cửa sổ cướp quyền Về đích buộc mốc phải là *câu khép*, không phải *đã chấm* | `QĐ-048` `QĐ-051` `QĐ-062` `QĐ-080` |
 
 ---
 

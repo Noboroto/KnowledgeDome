@@ -499,7 +499,9 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 | Thuộc CONTEST | Thuộc TRẬN |
 |---|---|
-| Mã phòng 6 số · kho đề · cấu hình gốc · cờ **no-repeat** | Điểm · event log · ghế đã gán · biên bản · cấu hình **đã đóng băng** |
+| Mã phòng 6 số · kho đề · cấu hình gốc · **phạm vi no-repeat** | Điểm · event log · ghế đã gán · biên bản · cấu hình **đã đóng băng** |
+
+> **Không phải *"cờ"* no-repeat.** No-repeat **không cấu hình được, không tắt được** — xem `QĐ-044`. Nó là **phạm vi** *(ranh giới tính không-lặp là một contest)*, không phải một công tắc thuộc contest.
 
 **Hệ quả.** Viewer/overlay **không phải join lại** giữa hai trận. Trận mới **chưa đóng băng cấu hình** — nó đọc cấu hình contest **hiện tại** rồi đóng băng của riêng nó, nên sửa RuleConfig **giữa hai trận** là hợp lệ và không đụng trận đã chạy.
 
@@ -571,7 +573,11 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu Đ�
 
 **Phạm vi.** No-repeat tính **theo từng contest**, đi xuyên qua mọi trận của contest đó.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5.2f`, `GRR-085`, `GRR-118`, `U-30`
+**No-repeat KHÔNG cấu hình được.** Nó là một **phạm vi**, không phải một **cờ** — không tồn tại giá trị tắt, không cửa nào trong giao diện bật/tắt nó, và không rule nào đọc một tham số điều khiển nó. Chữ *"cờ no-repeat"* từng xuất hiện trong bảng ranh giới của `QĐ-039` là **câu chữ lạc hậu, đã sửa**; hệ mã cũ có `noRepeatInMatch: true` thì **đã bị thay thế** bởi mục này.
+
+*Vì sao không cho tắt.* Tắt no-repeat là mở lại đúng ba thứ mà cả cụm quyết định kho đề dựng lên để chặn: hỏi lại câu đã lộ trên sóng · vô hiệu hoá hàng rào `everPublic` *(`QĐ-071`)* bằng một công tắc trông vô hại · và làm phép suy số trận từ kho đề mất nghĩa. Nếu về sau thật sự cần *"cho phép lặp"*, đó phải là một quyết định riêng có lý do riêng, **không phải một cờ nằm sẵn chờ ai đó bật**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5.2f`, `GRR-085`, `GRR-118`, `U-30`, và vế *"cờ no-repeat"* của `QĐ-039`
 
 ### QĐ-071 — Hàng rào `everPublic` gắn với THAO TÁC, không gắn với MỐC THỜI GIAN
 
@@ -592,6 +598,31 @@ Và là **cùng lỗ hổng với `QĐ-063`** nhìn từ hướng khác: ở đ�
 **Hệ quả.** Không viết nhánh mới — cửa của `QĐ-043` và luồng import **gọi lại đúng** hàng rào đã có. Không thêm chỗ chặn cứng nào: `QĐ-003` giữ nguyên **ba** chỗ, vì đây vẫn là **cùng một** hàng rào, chỉ được gọi ở nhiều điểm hơn. Vẫn ép được — chỉ là ép có dấu vết.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `S-21`, `GRR-111`
+
+### QĐ-082 — VCNV chọn theo BỘ; hàng ngang không phải câu độc lập
+
+**Quyết định.** Bốn vế:
+
+1. **Đơn vị chọn tay và đơn vị rút của vòng VCNV là một BỘ**, không phải sáu mục rời. Một bộ gồm: **1 Chướng ngại vật** *(từ khoá ẩn + hình ảnh 5 miếng ghép)* · **4 hàng ngang** · **1 câu ô trung tâm**.
+2. **Bốn hàng ngang mang số thứ tự CỐ ĐỊNH trong bộ** — `1` đến `4` — và số đó ứng với **một miếng ghép ở một góc cố định** của hình. Hàng ngang **không hoán đổi được** giữa các bộ, cũng **không hoán đổi được cho nhau** trong cùng một bộ.
+3. **Một bộ chỉ khả dụng cho vòng VCNV khi CẢ SÁU thành phần đều chưa dùng.** Mất một thành phần là **vỡ bộ**: bộ đó không mở được vòng VCNV nữa, dù năm thành phần kia còn nguyên.
+4. **Pre-flight vòng VCNV kiểm theo bộ nguyên vẹn**, không kiểm theo số câu: cần **≥1 bộ**.
+
+**Vì sao.** Luật gốc nói thẳng, và nói ở hai chỗ: *"Có 4 từ hàng ngang, **cũng chính là 4 gợi ý liên quan đến Chướng ngại vật** mà các thí sinh phải đi tìm"*, và *"4 miếng ghép **tương ứng với** 4 từ hàng ngang ở 4 góc và **được đánh số cố định**"*.
+
+Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **gợi ý của một Chướng ngại vật cụ thể**. Ghép 4 hàng ngang bất kỳ với một Chướng ngại vật bất kỳ thì vòng vẫn **chạy trót lọt về mặt kỹ thuật** — đủ câu, đủ điểm, đủ miếng ghép — nhưng **trò chơi mất nghĩa**: không còn gì để suy ra, và băng điểm 60/50/40/30 thưởng cho việc *suy luận sớm* trở thành thưởng cho việc *đoán mò*.
+
+**Đây là chỗ đặc tả từng thiếu.** `GR-031` chỉ mô tả **một** cơ chế duy nhất — *"server rút ngẫu nhiên trong danh sách đã gán"* — và cụm *"gợi ý liên quan"* của luật gốc **không xuất hiện ở bất kỳ tài liệu đặc tả nào**. Một hiện thực đọc đúng `GR-031` mà không đọc luật gốc sẽ rút 4 hàng ngang rời nhau, và **không phép kiểm nào bắt được lỗi đó**.
+
+**Hệ quả.**
+
+- **`GR-031` có đúng một ngoại lệ**: ở vòng VCNV, phép rút chọn **một bộ**, rồi dùng trọn sáu thành phần của bộ đó. Bốn vòng kia rút **từng câu** như cũ.
+- **Số câu không đổi.** Một bộ = 5 câu *(4 hàng ngang + 1 ô trung tâm)* + 1 Chướng ngại vật. Sàn một trận vẫn là **69 câu + 1 bộ**; chỉ **đơn vị chọn** đổi, không phải con số.
+- **Nối thẳng với `QĐ-081` vế 3.** Đây chính là lý do kho VCNV xếp **cuối** trong thứ tự ưu tiên rút của Câu hỏi phụ: mượn một hàng ngang ra làm câu tie-break là **vỡ nguyên một bộ** — mất 6 thành phần để lấy 1. Giao diện phải **cảnh báo** khi admin chỉ định một hàng ngang làm Câu hỏi phụ, và nói rõ bộ nào sẽ vỡ.
+- **Người ra đề soạn theo bộ**, không soạn hàng ngang rời. Kho VCNV là **kho các bộ**, không phải kho câu.
+- **Import/export đi theo bộ** — tách một hàng ngang khỏi bộ khi xuất là tạo ra dữ liệu không dùng được ở nơi nhận.
+
+*Nguồn*: luật gốc §Vượt chướng ngại vật, hai câu đầu · `[SUY RA]` từ chính hai câu đó · *Thay cho*: chỗ trống trong `GR-031`
 
 ---
 
@@ -683,13 +714,50 @@ Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài kho�
 
 *Nguồn*: `[CHỦ DỰ ÁN]` + `[SUY RA]` (chiều thứ hai) · *Thay cho*: `C-21`
 
-### QĐ-051 — Đáp án chỉ rời server tới ADMIN và MC
+### QĐ-051 — Đáp án chỉ rời server tới ADMIN và MC **trước mốc công bố**
 
-**Quyết định.** Thí sinh, viewer, overlay **không** nhận đáp án chuẩn. **Ngoại lệ có cấu hình**: `revealAnswerAfterJudge` — mặc định **TẮT** ở trận official, **BẬT** ở trận practice; khi bật thì đáp án chỉ được đẩy **sau khi đã chấm xong**.
+**Quyết định.** Trước mốc công bố, thí sinh, viewer và overlay **không** nhận đáp án chuẩn. Admin và MC được xem **mọi lúc**, không phụ thuộc cấu hình, mỗi lần xem vào audit.
+
+Từ mốc công bố trở đi thì khác — xem `QĐ-080`, quyết định **mốc công bố là CÂU KHÉP** và mở phạm vi người nhận sang **cả bốn** vai còn lại kể cả overlay.
 
 **Hệ quả.** Mọi kênh đều đi qua cùng một bộ lọc theo vai — kể cả gói khôi phục kết nối (`QĐ-046`) và lớp công bố (`QĐ-049`).
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-080 — Công bố đáp án tại mốc CÂU KHÉP, cho cả overlay
+
+**Quyết định.** Bốn vế, không tách rời được:
+
+1. **Mốc công bố là CÂU KHÉP**, không phải *"đã chấm"*. Câu khép = **không còn ai được trả lời câu đó nữa**. Ở Khởi động, VCNV hàng ngang, VCNV ô trung tâm và Tăng tốc, hai mốc **trùng nhau**. Ở **Về đích** thì không: cú bấm *chấm Sai* của người thi chính **chính là** cú mở cửa sổ cướp quyền (`GR-018`), nên câu chỉ khép **sau khi cửa sổ cướp đóng và người cướp đã được chấm** — hoặc hết 5 giây không ai bấm.
+2. **Phạm vi người nhận là cả bốn vai còn lại**: thí sinh · viewer · **overlay**. Lệnh cấm tuyệt đối với overlay **bị gỡ**.
+3. **`revealAnswerAfterJudge` giữ nguyên là cờ cấp trận, nhưng mặc định đổi thành BẬT cho cả `official` lẫn `practice`.** Admin tắt được cho từng trận. **Không đường nào vòng qua cờ** — kể cả câu bị bỏ qua ở vế 4.
+4. **Ba ca biên:**
+   - **Câu bị bỏ qua** *(Khởi động lượt chung, hết 3 giây không ai bấm chuông — `GR-005`)*: câu **chưa từng được chấm** nhưng **đã tiêu**. **VẪN công bố.**
+   - **Phán quyết *Huỷ kết quả*** (`QĐ-061`): **KHÔNG** tự công bố.
+   - **Chướng ngại vật**: **KHÔNG** theo cơ chế này. Đáp án Chướng ngại vật giữ nguyên `GR-012` — lộ khi có người giải đúng, hoặc khi admin bấm công bố.
+
+**Vì sao.**
+
+*Vì sao mốc là **câu khép** chứ không phải **đã chấm**.* Ở Về đích hai mốc lệch nhau, và lệch đúng vào chỗ đắt nhất trận. Công bố tại *chấm Sai* nghĩa là: A sai ⇒ đáp án hiện lên mọi màn hình ⇒ B bấm chuông trong 5 giây, đọc lại thứ vừa thấy ⇒ **B +30, A −30**. Cướp quyền là cơ chế chuyển điểm lớn nhất của vòng quyết định; công bố sớm **xoá sổ nó** và biến vòng thành cuộc thi bấm chuột. Đây là **sai luật gốc**, không phải lệch trải nghiệm.
+
+Chọn *"câu khép"* thay vì *"đã chấm, trừ Về đích"* vì nó **không đẻ nhánh đặc biệt**: mốc này đã có sẵn trong đặc tả — `TERM-031` ghi *"cửa sổ cướp **thuộc về câu và khép theo câu**"*, và `STATE-021 → EVENT-003` chính là nó.
+
+*Vì sao mở cho overlay.* Overlay là kênh đẩy dữ liệu cho phần mềm dựng hình. Công bố đáp án trên sóng sau khi đã chấm là chuẩn của gameshow truyền hình; giữ lệnh cấm tuyệt đối chỉ khiến người dựng hình phải chèn tay đáp án từ một nguồn khác.
+
+*Vì sao `GOAL-005` không bị vi phạm.* Mục tiêu là *"đáp án không bao giờ tới client **trước lúc công bố**"*. Tại mốc câu khép, câu đã hỏi xong và đề đã lộ — không còn gì để giữ. Ràng buộc chỉ **dịch chỗ**: không phải *ai được thấy* mà **đáp án được phép rời server vào lúc nào**.
+
+*Vì sao Huỷ kết quả không tự công bố, trong khi câu bị bỏ qua thì có.* Câu bị bỏ qua là một kết cục **bình thường** của luật — MC đọc đáp án lên là việc thường ngày. *Huỷ kết quả* thì gần như luôn gắn với **tình huống sự cố đang được xử lý**: câu chỉ có bản gửi quá hạn, hoặc câu đang mở bị khép vì kết thúc vòng khẩn cấp (`QĐ-034`). Tự đẩy đáp án lên sân khấu giữa lúc admin đang chữa sự cố là gây nhiễu. Admin vẫn **mở tay được** theo `QĐ-048`.
+
+*Vì sao Chướng ngại vật đứng ngoài.* Đáp án Chướng ngại vật không thuộc một câu hỏi nào — nó là đích của cả vòng. Cuốn nó theo quy tắc công bố tự động sẽ **kết thúc vòng sớm** ngay khi hàng ngang đầu tiên khép.
+
+**Hệ quả.**
+
+- **Ràng buộc kỹ thuật bắt buộc**: server chỉ đẩy đáp án **tại đúng mốc công bố**. **Cấm** đẩy đáp án xuống client sớm rồi ẩn bằng một cờ hiển thị. Đây là **lỗi của tiền lệ Athena** — nó nạp toàn bộ ngân hàng đề xuống mọi máy client, mã hoá bằng phép dịch ký tự, và chỉ dựa vào một cờ `Visibility` của giao diện; đáp án nằm sẵn trong bộ nhớ máy thí sinh suốt trận. Đó đúng là `PS-6`.
+- **Công bố là một chiều ở phía engine**: đã công bố thì engine không tự thu lại. Quyền **đóng thủ công** của admin giữ nguyên theo `QĐ-048`.
+- `INV-017` mất vế *"overlay không bao giờ"*; `GR-008` mất vế *"không thứ gì tự lộ"* đối với **đáp án chuẩn** — vế đó vẫn đúng cho **bài làm của thí sinh khác**.
+- Ba loại thông tin nay có ba chế độ mới: **đáp án chuẩn** = mật tới mốc câu khép, sau đó công khai theo cờ · **bài làm của thí sinh khác** = ẩn tạm thời, lộ khi admin bấm · **điểm số** = công khai luôn luôn.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: vế *"overlay không bao giờ nhận đáp án"* của `QĐ-051`, và mặc định `official ⇒ TẮT` của `QĐ-062`
 
 ### QĐ-072 — Ba hạng cảnh báo giao diện, phân biệt bằng thứ chúng bảo vệ
 
@@ -858,6 +926,50 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 **Không ai bấm trong 15 giây**, hoặc **cả nhóm bị cấm ở một câu**: vẫn **TÍNH** vào tổng ba câu.
 
+*Nguồn đề của vòng này*: xem `QĐ-081` — **không có kho Câu hỏi phụ riêng**.
+
+### QĐ-081 — Câu hỏi phụ KHÔNG có kho riêng; rút từ ba kho nguồn
+
+**Quyết định.** Năm vế:
+
+1. **Không tồn tại kho Câu hỏi phụ.** Đề của vòng này rút từ **ba kho nguồn**: **Về đích · Khởi động · VCNV**, trong danh sách đã gán của trận, loại câu đã dùng như mọi vòng khác.
+2. **Kho Tăng tốc KHÔNG phải nguồn.**
+3. **Thứ tự ưu tiên rút: Về đích → Khởi động → VCNV.**
+4. **Câu mượn bị vô hiệu hoá bốn thứ metadata:** `timeSeconds` **bỏ qua**, luôn dùng **15 giây** · `value` **bỏ qua**, vòng này không sinh điểm · câu `isPractical` **bị loại khỏi phép rút** · phân loại theo vòng của kho gốc **không mang theo ý nghĩa nào**.
+5. **Admin chỉ định một số câu làm Câu hỏi phụ được — TẠI `LOBBY`.** Bốn ràng buộc: chỉ nhận câu **còn available** *(chưa hiển thị)* · làm được ở **bất kỳ `LOBBY` nào**, hạn chót là **mốc bấm Chốt trận** · **gỡ chỉ định được**, đối xứng · chỉ định là **ĐẶT CHỖ có hiệu lực TỪ THỜI ĐIỂM CHỈ ĐỊNH**: câu đó bị loại khỏi phép rút của **các vòng mở sau đó**. Chỉ định **ít hơn 3** câu ⇒ phần thiếu **bù theo thứ tự ưu tiên** ở vế 3. Không chỉ định gì ⇒ lui hẳn về vế 1.
+
+**Vì sao bỏ kho riêng.** Một kho khai riêng cho một vòng **có thể không bao giờ chạy** là chi phí đặt sai chỗ: nó bắt admin chuẩn bị đề cho một nhánh điều kiện, và tạo ra một cửa chặn cứng thứ tư trên thực tế. Ba kho nguồn đã có sẵn câu đúng khuôn cần dùng.
+
+**Vì sao ba kho đó, và vì sao KHÔNG Tăng tốc.** Câu hỏi phụ là **một người giành quyền bằng chuông**, cửa sổ **15 giây**, và ở mode sân khấu thì **trả lời bằng miệng**. Ba kho nguồn chứa câu trả lời được bằng một câu nói. Kho Tăng tốc thì không: câu ở đó là *nhìn nhanh · sắp xếp · suy luận · đoạn băng*, **cả sân cùng gõ máy**, tính điểm theo **thứ hạng tốc độ**. Câu *sắp xếp* đặt vào cửa sổ tranh chuông là hỏng — kéo thả không xong kịp, và ở mode sân khấu thì **không có gì để nói**.
+
+**Vì sao thứ tự ưu tiên là Về đích trước.** Kho Về đích **luôn dư đúng 12 câu** sau khi vòng chạy xong: pre-flight đòi 24 *(12 mức 20 **và** 12 mức 30, vì bốn thí sinh có thể cùng chọn một mức)* nhưng vòng chỉ tiêu **12**. Số dư này là **cấu trúc, tất định, không phụ thuộc lựa chọn của ai** — nên nó là nguồn đúng cho một nhánh điều kiện. Kho VCNV thì ngược lại, **khan nhất**: mỗi trận cần **một bộ** gồm Chướng ngại vật, 4 hàng ngang và câu ô trung tâm, và **rút một hàng ngang ra làm câu hỏi phụ sẽ LÀM VỠ cả bộ** — bộ thiếu gợi ý không dùng cho vòng VCNV của trận sau được nữa. Không có thứ tự này thì một trận hoà âm thầm ăn mất bộ VCNV của trận kế.
+
+**Vì sao chỉ định là ĐẶT CHỖ chứ không phải danh sách ưu tiên.** Nếu câu được chỉ định vẫn nằm trong phép rút của vòng gốc, nó có thể bị vòng gốc tiêu mất và hệ thống **âm thầm bỏ qua chỉ định của admin** — đúng thứ `QĐ-074` cấm.
+
+**Vì sao chỉ định đặt ở `LOBBY` chứ không ở cấu hình trận.** Cấu hình trận **đóng băng tại cú bấm bắt đầu trận** (`QĐ-075`). Đặt tính năng ở đó buộc admin chọn câu tie-break **trước khi trận chạy** — trước khi biết có hoà không, và trước khi biết câu nào còn lại. Đặt ở `LOBBY` thì nó **đi nhờ ngoại lệ sẵn có của `QĐ-043`**, không tạo ngoại lệ mới cho quy tắc đóng băng.
+
+**Vì sao chi phí là hàm của THỜI ĐIỂM, không phải của tính năng.** Đặt chỗ chỉ tốn khi còn vòng nào **mở sau đó** muốn rút vào cùng kho:
+
+| Chỉ định ở | Vòng còn lại sau đó | Chi phí |
+|---|---|---|
+| `LOBBY` trước Về đích | Về đích | **+k** vào kho Về đích |
+| **`LOBBY` cuối**, sau khi Về đích đã chạy | **không còn vòng nào** | **0** |
+
+Ở `LOBBY` cuối, kho Về đích đang có **đúng 12 câu dư** mà không vòng nào sẽ đụng tới. Chỉ định 3 trong 12 ⇒ **không lấy mất của ai**. Đây cũng là thời điểm **tự nhiên nhất**: admin nhìn bảng điểm, thấy có hoà, rồi chọn ba câu hợp khuôn tranh chuông. ⇒ Chi phí `+k` **tránh được hoàn toàn**, không phải cái giá bắt buộc.
+
+**Vì sao chỉ nhận câu còn available.** Không có ràng buộc này, admin chỉ định một câu **đã hiển thị** ⇒ vòng Câu hỏi phụ hỏi lại **một câu đã lộ**, phá quy tắc không lặp câu. Ranh giới đúng là **đã hiển thị**, cùng ranh giới `GR-031` C6 dùng để cấm gỡ câu đã tiêu khỏi danh sách gán.
+
+**Vì sao thiếu thì bù chứ không chặn.** Chỉ định 1 câu rồi chặn cứng vì chưa đủ 3 là quá tay — hệ thống chỉ có **ba** chỗ chặn cứng (`QĐ-003`) và đây không thuộc ba chỗ đó. Bù theo thứ tự ưu tiên giữ đúng khuôn advisory.
+
+**Hệ quả.**
+
+- **Sàn kho đề của một trận KHÔNG tăng.** Trước quyết định này, một trận chuẩn cần **69 câu + 3 câu phụ = 72**. Nay là **69**, và nhánh Câu hỏi phụ được phục vụ bởi 12 câu Về đích vốn đã bắt buộc phải có. Với N trận: dư Về đích tại mọi thời điểm là `24N − 12j ≥ 12`, nên **mọi trận đều có đủ đề cho tie-break**. Vế 5 **không** làm sàn này tăng, vì chỉ định ở `LOBBY` cuối có chi phí **0**.
+- **Chặn cứng ở cửa vào vòng vẫn giữ** — nó vẫn là *"cửa vào vòng thiếu câu"*, nên `QĐ-003` giữ nguyên con số **ba**. Nhưng nó **gần như không còn chạm tới**: chỉ xảy ra khi admin chủ động gỡ hết câu dư ở `LOBBY`, hoặc chỉ định một danh sách rồi để nó cạn.
+- **Ngoại lệ duy nhất của quy tắc "per-question override thắng preset"** (`TERM-045`) nằm ở vế 4: 15 giây của Câu hỏi phụ là **cố định, không cấu hình** (`GR-023`), nên nó thắng ngược lại `timeSeconds` của câu. Hai quy tắc này đá nhau ở đúng ca mượn kho, và vế 4 phân xử.
+- **Câu mượn vẫn tiêu như mọi câu khác** — cờ đã-dùng bật tại mốc hiển thị, không lặp lại trong contest.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: vế *"kho câu phụ riêng"* của `QĐ-055` và `GR-022`
+
 *Nguồn*: `[LUẬT GỐC]` · *Thay cho*: `GRR-058`, `GRR-059`, `GRR-061`, `GRR-064`, `Đ-9.a`
 
 ### QĐ-056 — Khởi động: đọc nguồn cho bốn chỗ từng bị coi là thiếu
@@ -932,7 +1044,9 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 ### QĐ-062 — `revealAnswerAfterJudge` là cờ CẤP TRẬN
 
-**Quyết định.** Cờ này thuộc **match**, không thuộc contest. Nó lấy **mặc định** theo `matchPurpose` — `official` tắt, `practice` bật — rồi admin đổi được cho từng trận.
+**Quyết định.** Cờ này thuộc **match**, không thuộc contest. Admin đổi được cho từng trận.
+
+> **Mặc định đã đổi** (`QĐ-080`): nay **BẬT cho cả `official` lẫn `practice`**. Trước đây `official` mặc định tắt. Vế *"cờ ở cấp trận"* dưới đây **không đổi** — nó vẫn là lý do duy nhất khiến cờ này không đặt được ở cấp contest.
 
 **Vì sao.** Ba chỗ đã chốt đều chỉ cùng một hướng, và một trong ba khiến phương án per-contest **không thể đúng**: `QĐ-040` cho một **contest thật chứa cả trận official lẫn trận practice**. Nếu cờ đặt ở cấp contest thì trận practice trong contest thật **không bật được** — mất đúng công dụng của nó. Thêm nữa `QĐ-051` khai mặc định **theo `matchPurpose`** (vốn per-match), và `QĐ-032` liệt cờ này vào gói **đóng băng vào TRẬN**.
 

@@ -14,7 +14,7 @@ vai_trò: source of truth luật O26 theo quyết định D8 (plans/260711-2340-
 > **Lấy lúc**: 2026-07-23
 > **Vì sao lưu bản này**: `DEFERED.md` D8 chỉ định trang trên là **source of truth** cho luật O26. Wiki cộng đồng sửa được bất kỳ lúc nào và không có versioning → bản snapshot này cố định nội dung tại thời điểm lấy, để mọi giá trị trong RuleConfig truy nguyên được về một văn bản bất biến.
 > **Cảnh báo**: đây là bản sao nguyên văn của nguồn bên thứ ba, KHÔNG phải requirement của sản phẩm. Requirement nằm ở `docs/PRD.md`.
-> **Nguồn này mâu thuẫn với Wikipedia** ở nhiều điểm — xem `docs/source/wikipedia-olympia-26-luat-choi.md` và bảng đối chiếu trong `docs/game-rules-inventory.md` PHẦN 8.
+> **Nguồn này mâu thuẫn với Wikipedia** ở nhiều điểm — cấu trúc Khởi động, mức điểm Về đích, điều kiện mở miếng ghép VCNV. **Chủ dự án đã chọn Fandom làm nguồn duy nhất và LOẠI Wikipedia làm căn cứ luật**; mọi giá trị của bản Wikipedia bị loại **có chủ đích**, không phải bỏ sót. Bảng đối chiếu đầy đủ: `docs/traceability.md` §Biến thể bị loại.
 
 ---
 

@@ -17,7 +17,7 @@ Thư mục này giữ **biên bản quá trình**: các đợt rà soát luật,
 | `../decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-066` |
 | `../game-rules.md` | Luật chơi — `GR-001` → `GR-037` |
 | `../game-state-machine.md` | Máy trạng thái — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` |
-| `../glossary.md` | Thuật ngữ — `TERM-001` → `TERM-056` |
+| `../glossary.md` | Thuật ngữ — `TERM-001` → `TERM-058` |
 | `../traceability.md` | Truy nguyên rule ↔ luật gốc ↔ `QĐ-*` |
 | `../product-discovery.md` | Câu hỏi cấp sản phẩm ngoài phạm vi luật chơi |
 
