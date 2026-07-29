@@ -1,6 +1,8 @@
 # KnowledgeDome — Olympia Contest System
 
-Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô hình Đường lên đỉnh Olympia). Planning **(bản nháp, sẽ migrate vào `docs/`)** tại `plans/260711-2340-olympia-contest-system/` (spec engine: `research/ruleconfig-v2-spec.md`); sổ quyết định: `plans/260711-2340-olympia-contest-system/DEFERED.md` (D1-D23, đa số đã chốt); demo tĩnh: `public/`.
+Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô hình Đường lên đỉnh Olympia). **Nguồn sự thật DUY NHẤT là `docs/`** — xem `docs/README.md` cho thứ bậc nguồn; sổ quyết định: `docs/decisions.md` (`QĐ-001`→`QĐ-092`); demo tĩnh: `public/`.
+
+> **Thư mục `plans/` đã bị xoá (29/07)** sau khi migrate xong sang `docs/`. Phần chưa migrate — spec RuleConfig v2, kiến trúc kỹ thuật, 12 kế hoạch theo phase, red-team, khảo sát UX, hướng dẫn hồ sơ portable — **chỉ còn trong lịch sử git**; lấy lại bằng `git show <sha>:plans/...`. **Không** trích chúng như requirement.
 
 Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO, @casl/ability · React+Vite, MUI, Motion for React, Zustand, TanStack Query · MinIO.
 
@@ -41,8 +43,9 @@ Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, 
 - Do not expand feature scope during implementation.
 
 > Chi tiết cưỡng chế (6 cổng chất lượng, định dạng marker, quy tắc sửa đổi):
-> `.specify/memory/constitution.md`. **`plans/**` là BẢN NHÁP** — chưa migrate sang `docs/`,
-> KHÔNG được trích như requirement đã chốt.
+> `.specify/memory/constitution.md`. **Lưu ý**: bản hiến chương đó viết khi `docs/` chưa tồn tại
+> và còn coi `plans/**` là nguồn chuyển tiếp — hai tiền đề nay **đều sai**. Nó cần một lần sửa đổi
+> theo đúng quy trình của chính nó; tới lúc đó, đọc phần "Trạng thái chuyển tiếp" là đã hết hiệu lực.
 
 ## Lộ trình version (✅ D18 chốt 12/07 · ✅ sửa phạm vi số ghế 24/07)
 
@@ -55,7 +58,7 @@ Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, 
 
 ## Luật chơi & đề thi (chốt 12/07)
 
-- **Source of truth luật O26 = Fandom wiki** ([Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26)) — bảng giá trị đã đối chiếu: `plans/.../research/rules-2026.md`. Mọi giá trị vẫn là RuleConfig custom được; contest builder có nút **"Áp dụng luật 2026"** áp preset `O26_DEFAULT@1`.
+- **Source of truth luật O26 = Fandom wiki** ([Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26)) — bản lưu bất biến: `docs/source/fandom-olympia-26-luat-choi.md`; bảng đối chiếu giá trị và biến thể bị loại: `docs/traceability.md`. Mọi giá trị vẫn là RuleConfig custom được; contest builder có nút **"Áp dụng luật 2026"** áp preset `O26_DEFAULT@1`.
 - **Điểm ĐỘC LẬP thời gian**: `timeSeconds` là metadata TỪNG CÂU HỎI (cùng mức 20đ có thể câu 15s và 40s) — hệ thống chọn câu theo MỨC ĐIỂM, thời gian lấy theo câu; preset chỉ đặt default.
 - **Người tạo contest PHẢI chọn danh sách câu hỏi trước khi start** (full-text search + filter + sort trên kho đề); hệ thống KHÔNG tự lấy đề — draw chỉ RANDOM TRONG danh sách đã gán (snapshot). Pre-flight chặn start khi thiếu.
 - **Contest config import/export trọn gói** (D23): ZIP = Excel câu hỏi (default; nhận CSV/Google Sheet) + JSON metadata media + media theo subfolder từng vòng — use-case soạn trên bản Internet → import vào portable.

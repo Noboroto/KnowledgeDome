@@ -13,7 +13,7 @@
 | **Rule** | `game-rules.md` — `GR-001` → `GR-037` | Đặc tả nghiệp vụ **chuẩn tắc** |
 | **Máy trạng thái** | `game-state-machine.md` — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` | Đặc tả **chuẩn tắc** phần vận hành |
 | **Thuật ngữ** | `glossary.md` — `TERM-001` → `TERM-058` | Tên gọi chuẩn |
-| `plans/**` | Bản nháp planning | **KHÔNG phải nguồn.** Không trích như requirement |
+| `plans/**` | Bản nháp planning, **đã xoá 29/07** | **KHÔNG phải nguồn.** Chỉ còn trong lịch sử git; không trích như requirement |
 | `reviews/` | Kho lưu thảo luận, đề xuất `GRR-*` | **KHÔNG phải nguồn** |
 | Athena | `D:\Github\Athena-Intelligent-Olympia` | **Tiền lệ**, không phải thẩm quyền. Dùng để phát hiện nhánh thiếu và xếp thứ tự việc kiểm thử |
 

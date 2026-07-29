@@ -2,7 +2,9 @@
 
 Nền tảng tổ chức thi đấu gameshow kiến thức tuỳ biến theo mô hình *Đường lên đỉnh Olympia* (luật O26).
 
-Thư mục này là **nguồn sự thật của dự án**. Mọi thứ ngoài nó — `plans/**`, `public/`, ghi chú trong chat — đều **không** phải requirement.
+Thư mục này là **nguồn sự thật của dự án**. Mọi thứ ngoài nó — `public/`, ghi chú trong chat — đều **không** phải requirement.
+
+> **`plans/` đã bị xoá ngày 2026-07-29** sau khi migrate xong. Nó từng là bản nháp planning và chưa bao giờ là nguồn. Phần chưa migrate *(spec RuleConfig v2, kiến trúc kỹ thuật, kế hoạch theo phase, red-team, khảo sát UX, hồ sơ portable)* chỉ còn trong **lịch sử git**; tài liệu trong `reviews/` và `source/` vẫn nhắc tới đường dẫn cũ vì chúng ghi lại **lịch sử**, không phải chỉ chỗ đọc.
 
 ---
 
@@ -91,7 +93,7 @@ Biên bản rà soát và đề xuất `GRR-*` của giai đoạn 2026-07. **Kh�
 
 ## Quy ước đọc
 
-**Thứ bậc nguồn.** `source/` → `decisions.md` → `game-rules.md` và `game-state-machine.md`. Trên thắng dưới. `plans/**` là **bản nháp**, không thắng thứ gì.
+**Thứ bậc nguồn.** `source/` → `decisions.md` → `game-rules.md` và `game-state-machine.md`. Trên thắng dưới. Không có nguồn nào ngoài `docs/`.
 
 **Một chiều.** Tài liệu đặc tả nói **cái đang là** và dẫn về `QĐ-*`; `decisions.md` **không** dẫn ngược lại mã đặc tả. Nhờ vậy đổi số hiệu rule không làm hỏng sổ quyết định.
 
