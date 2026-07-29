@@ -43,9 +43,9 @@ Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, 
 - Do not expand feature scope during implementation.
 
 > Chi tiết cưỡng chế (6 cổng chất lượng, định dạng marker, quy tắc sửa đổi):
-> `.specify/memory/constitution.md`. **Lưu ý**: bản hiến chương đó viết khi `docs/` chưa tồn tại
-> và còn coi `plans/**` là nguồn chuyển tiếp — hai tiền đề nay **đều sai**. Nó cần một lần sửa đổi
-> theo đúng quy trình của chính nó; tới lúc đó, đọc phần "Trạng thái chuyển tiếp" là đã hết hiệu lực.
+> `.specify/memory/constitution.md` — **bản 1.3.0**, đã đóng `TODO(DOCS_MIGRATION)`.
+> **Không còn đường nào đưa nội dung ngoài `docs/` vào spec**: `docs/reviews/**`, `public/`,
+> lịch sử git và ghi chú trong chat đều KHÔNG thoả cổng truy nguyên.
 
 ## Lộ trình version (✅ D18 chốt 12/07 · ✅ sửa phạm vi số ghế 24/07)
 

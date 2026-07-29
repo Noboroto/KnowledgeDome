@@ -1,7 +1,7 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: TEMPLATE (chưa khởi tạo) → 1.0.0 → 1.1.0 → 1.2.0
+Version change: TEMPLATE (chưa khởi tạo) → 1.0.0 → 1.1.0 → 1.2.0 → 1.3.0
 Bump rationale: Lần phê chuẩn đầu tiên — mọi placeholder được thay bằng nội dung cụ thể,
   toàn bộ nguyên tắc là mới (MAJOR-level khởi tạo, đánh số 1.0.0 theo quy ước ratification).
 
@@ -31,9 +31,7 @@ Templates requiring updates:
      agent-specific lỗi thời.
 
 Deferred TODOs:
-  - TODO(DOCS_MIGRATION): thư mục `docs/` CHƯA TỒN TẠI. `plans/260711-2340-olympia-contest-system/**`
-    là BẢN NHÁP, sẽ migrate vào `docs/` ở các bước sau — KHÔNG phải nguồn sự thật.
-    Xem "Ràng buộc tài liệu & phạm vi" → "Trạng thái chuyển tiếp".
+  - (không còn) TODO(DOCS_MIGRATION) đã ĐÓNG ở sửa đổi 1.3.0 — xem bên dưới.
 
 AMENDMENT 1.1.0 (2026-07-23)
   - Làm rõ theo chỉ đạo chủ dự án: `plans/**` là bản nháp, KHÔNG được coi là `docs/` tạm thời.
@@ -48,6 +46,31 @@ AMENDMENT 1.2.0 (2026-07-23)
     → "Product and Specification Workflow"; constitution chỉ trỏ tới, không sao chép.
   - Bump MINOR: mở rộng hướng dẫn đáng kể (làm rõ "docs/" gồm những gì và thứ tự ưu tiên),
     không sửa nguyên tắc I–VI.
+
+AMENDMENT 1.3.0 (2026-07-29) — ĐÓNG TODO(DOCS_MIGRATION)
+  Nguyên nhân: hai tiền đề của mục "Trạng thái chuyển tiếp" đã hết hiệu lực.
+    (a) `docs/` NAY ĐÃ TỒN TẠI và có nội dung đầy đủ: `source/`, `decisions.md` (QĐ-001→092),
+        `game-rules.md` (GR-001→037), `game-state-machine.md`, `glossary.md`, `traceability.md`,
+        `product-discovery.md`, `PRD.md`, `roadmap-post-v1.md`, `reviews/`, `README.md`.
+        `PRD.md` bản 2.2.0 khai **0 CONFLICT, 0 NEEDS CLARIFICATION** trên 102 requirement.
+    (b) `plans/` ĐÃ BỊ XOÁ khỏi repo (2026-07-29) sau khi migrate xong; nội dung chưa migrate
+        chỉ còn trong lịch sử git.
+
+  Mục bị ảnh hưởng:
+    - "Ràng buộc tài liệu & phạm vi" → GỠ tiểu mục "Trạng thái chuyển tiếp — TODO(DOCS_MIGRATION)",
+      thay bằng "Nguồn đã migrate xong" nêu vị thế hiện hành của `plans/**` và `docs/reviews/**`.
+    - "Quy trình sinh specification & cổng chất lượng" → Cổng 1 bỏ câu trỏ tới mục chuyển tiếp;
+      diễn đạt lại vị thế của nguồn ngoài `docs/` cho khỏi phụ thuộc sự tồn tại của `plans/`.
+    - KHÔNG nguyên tắc I–VI nào bị sửa.
+
+  Bump MINOR (không phải PATCH) theo đúng chỉ dẫn tự đặt ở 1.2.0 dòng "Khi migrate xong…":
+    phạm vi nguồn có thẩm quyền thay đổi thực chất — trước sửa đổi, một requirement được phép
+    tồn tại dưới dạng marker trỏ về nháp; sau sửa đổi, đường đó KHÔNG còn, mọi requirement
+    phải truy về `docs/`.
+
+  Templates đã rà lại (mục (d) của quy tắc Sửa đổi): `.specify/templates/` — spec-template.md,
+  plan-template.md, tasks-template.md, checklist-template.md, constitution-template.md
+  đều KHÔNG tham chiếu `plans/**` hay trạng thái chuyển tiếp. Không cần sửa file nào.
 -->
 
 # KnowledgeDome Constitution
@@ -151,24 +174,27 @@ làm là phần chạy được.
   chat hoặc plan. Spec Kit sở hữu `specs/**`; KHÔNG tạo plan song song ngoài Spec Kit cho
   feature đã do Spec Kit quản lý, trừ khi được yêu cầu rõ ràng.
 
-### Trạng thái chuyển tiếp — TODO(DOCS_MIGRATION)
+### Nguồn đã migrate xong (2026-07-29)
 
-`docs/` CHƯA tồn tại trong repo. `plans/260711-2340-olympia-contest-system/**` (`PRD.md`,
-`user-stories.md`, `DEFERED.md`, `research/**`) là **BẢN NHÁP**, sẽ được migrate vào `docs/`
-ở các bước sau. Trong giai đoạn chuyển tiếp:
+`docs/` đã có nội dung đầy đủ và là nguồn thẩm quyền **duy nhất**. Bản đồ tài liệu nằm ở
+`docs/README.md`; KHÔNG sao chép lại ở đây.
 
-- `plans/**` MUST NOT được trích dẫn như requirement đã chốt. Nó là bối cảnh và ứng viên
-  requirement, không phải nguồn thẩm quyền.
-- Mọi requirement rút ra từ `plans/**` MUST hoặc (a) mang `[NEEDS CLARIFICATION: xác nhận
-  từ nháp <path §> — đã chốt chưa?]`, hoặc (b) được chủ dự án xác nhận rồi ghi vào `docs/`
-  TRƯỚC khi vào spec. Không có đường thứ ba.
-- Hệ quả phải chấp nhận: cho tới khi `docs/` có nội dung, spec sinh ra sẽ có mật độ marker
-  `[NEEDS CLARIFICATION]` cao. Đó là trạng thái ĐÚNG, không phải lỗi của spec — nó đo đúng
-  lượng nghiệp vụ chưa được chốt chính thức.
-- `DEFERED.md` (sổ quyết định D-numbered) là ứng viên migrate ưu tiên số 1: nó chứa các
-  quyết định đã được cân nhắc kỹ nhất và sẽ gỡ được nhiều marker nhất khi vào `docs/`.
-- Khi migrate xong, constitution này MUST được cập nhật để gỡ mục "Trạng thái chuyển tiếp"
-  (bump MINOR — thay đổi phạm vi nguồn có thẩm quyền).
+- **KHÔNG còn đường nào đưa nội dung ngoài `docs/` vào spec.** Trước đây một requirement được
+  phép tồn tại tạm dưới dạng marker trỏ về nháp; đường đó đã ĐÓNG. Nội dung không nằm trong
+  `docs/` thì hoặc là câu hỏi (Nguyên tắc III), hoặc là đề xuất phải được chủ dự án chấp thuận
+  và ghi vào `docs/` TRƯỚC khi vào spec (Nguyên tắc I). Không có đường thứ ba.
+- **`docs/reviews/**` là KHO LƯU, không phải nguồn.** Nó ghi lại các đợt rà soát và đề xuất
+  `GRR-*`. Dùng được để *phát hiện* câu hỏi và mâu thuẫn; MUST NOT trích như requirement.
+  Cùng vị thế: `public/` (demo tĩnh, làm trước tài liệu nên có chỗ lệch — lệch thì demo sai).
+- **`plans/**` đã bị XOÁ khỏi repo.** Nó từng là bản nháp planning và chưa bao giờ là nguồn.
+  Phần chưa migrate — spec RuleConfig v2, kiến trúc kỹ thuật, kế hoạch theo phase, red-team,
+  khảo sát UX, hồ sơ portable — chỉ còn trong lịch sử git. Lấy ra tham khảo **kỹ thuật** thì
+  được; trích như requirement thì MUST NOT, y như trước khi xoá.
+- **Mật độ marker `[NEEDS CLARIFICATION]` trong spec nay là TÍN HIỆU, không còn là trạng thái
+  nền.** `docs/PRD.md` bản 2.2.0 khai 0 CONFLICT và 0 NEEDS CLARIFICATION trên 102 requirement.
+  Một spec sinh ra với nhiều marker nghĩa là **hoặc** feature đó chạm vào vùng `docs/` thật sự
+  chưa phủ, **hoặc** người viết spec chưa đọc hết `docs/` — cả hai đều đáng dừng lại kiểm,
+  khác hẳn giai đoạn trước khi marker dày là chuyện bình thường.
 
 ### CLAUDE.md
 
@@ -184,7 +210,8 @@ Cổng bắt buộc, kiểm tra trước khi một spec được coi là sẵn s
 
 1. **Cổng truy nguyên**: mọi FR truy về được `docs/`, hoặc mang marker
    `[NEEDS CLARIFICATION]`, hoặc nằm trong mục "Assumptions". Không có loại thứ tư.
-   Trích dẫn `plans/**` KHÔNG thoả cổng này (xem "Trạng thái chuyển tiếp").
+   Trích dẫn nguồn NGOÀI `docs/` KHÔNG thoả cổng này — gồm `docs/reviews/**`, `public/`,
+   lịch sử git, và ghi chú trong chat (xem "Nguồn đã migrate xong").
 2. **Cổng mâu thuẫn**: mọi mâu thuẫn phát hiện được đã ghi theo định dạng `**CONFLICT**`;
    không FR nào phụ thuộc vào mâu thuẫn chưa phân xử.
 3. **Cổng kiểm thử được**: mọi FR có ít nhất một Acceptance Scenario `Given/When/Then`;
@@ -214,4 +241,4 @@ còn tồn đọng không chặn việc *viết* spec, nhưng chặn việc impl
   đơn giản hơn đã bị loại và vì sao.
 - **Hướng dẫn vận hành hằng ngày**: `CLAUDE.md` (quy ước code, UX, bảo mật, commit).
 
-**Version**: 1.2.0 | **Ratified**: 2026-07-23 | **Last Amended**: 2026-07-23
+**Version**: 1.3.0 | **Ratified**: 2026-07-23 | **Last Amended**: 2026-07-29
