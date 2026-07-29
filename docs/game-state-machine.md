@@ -353,7 +353,7 @@ stateDiagram-v2
 ### STATE-007 — TIE_BREAK (Câu hỏi phụ)
 
 - **Mô tả**: phân định thí sinh hoà điểm. **3** câu, **15 giây** mỗi câu, giành quyền bằng chuông. **Không cộng điểm** — chỉ đổi thứ hạng.
-- **Vào**: admin bấm **chốt trận** ở `LOBBY` **và** ≥2 thí sinh cùng điểm cao nhất **và** vị trí hoà nằm trong `tieBreakPositions` (mặc định `[1]`) **và** cửa vào vòng đủ 3 câu.
+- **Vào**: admin bấm **chốt trận** ở `LOBBY` **và** ≥2 thí sinh cùng điểm cao nhất **và** vị trí hoà nằm trong `tieBreakPositions` — **v1 khoá cứng `[1]`**, tức chỉ vị trí NHẤT (`QĐ-085`) — **và** cửa vào vòng đủ 3 câu.
 - **Cho phép**: admin hiển thị câu → bấm mốc hiệu lệnh (= start timer) → chấm · thí sinh bấm chuông **từ mốc start timer trở đi**.
 - **Cấm**: cộng/trừ điểm trận · **chuông sống trước mốc hiệu lệnh** — nút **không render**, server **từ chối** tín hiệu tới sớm · **cho đồng hồ chạy tiếp sau khi đã có người giành quyền**.
 - **Ra**: (a) một thí sinh được chấm **Đúng** ⇒ thắng tie-break, sinh `EVENT-048` và trận về `STATE-001` — **chưa đóng sổ**, cần thêm một cú `EVENT-007` · (b) hết 3 câu chưa phân định ⇒ `STATE-016` (bốc thăm) · (c) admin bỏ vòng — cũng là **cửa hoàn nguyên** kết quả tie-break, dùng được cả ở `STATE-001` trước cú chốt cuối.
@@ -1285,7 +1285,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | T-019 | `STATE-016` | `EVENT-027` Xác nhận kết quả | Kết quả bốc gần nhất đã hiện cho admin | `STATE-001` | Ghi event bốc thăm **và** sinh `EVENT-048` `TIE_BREAK_RESOLVED` (`method = 'random-draw'`); cập nhật thứ hạng. Trận **chưa đóng sổ** | `GR-025` |
 | T-020 | **Mọi** trạng thái của trận đang chạy | `EVENT-008` Huỷ trận | Dialog hạng phá huỷ + lý do | `STATE-008`, nhãn `bỏ dở` | **Điểm GIỮ NGUYÊN**; **không phân định thứ hạng, không người thắng**; ghi `closedBy` / `closedAt` / `reason`; biên bản in nhãn **"trận bỏ dở"** kèm đủ các vòng đã chạy | `GR-022` |
 | T-021 | `STATE-008` (trận **cũ**) | `EVENT-036` Tạo trận mới, `official` | Trận cũ đã đóng sổ (nhãn nào cũng được) **và** kho đề **còn lại** đủ pre-flight | **Trận MỚI ở `STATE-001`** — trận cũ **không đổi trạng thái** | Match mới: điểm rỗng, event log rỗng, ghế gán lại, cấu hình **chưa đóng băng**. Phạm vi no-repeat **đi xuyên qua** — cờ đã-dùng của contest không đặt lại. Mã phòng **giữ nguyên** | `GR-030`, `GR-031` |
-| T-022 | `STATE-008` (contest **thật**) | `EVENT-036` Tạo trận mới, `practice` | Pool **ĐÃ HIỂN THỊ** của contest đủ pre-flight — **phép kiểm ĐẢO CHIỀU** so với `T-021` | **Trận practice MỚI ở `STATE-001`** | Chỉ gán được câu **đã lộ** ⇒ **không tiêu thêm câu nào**. `revealAnswerAfterJudge` mặc định **BẬT**; retention **3 tháng** | `GR-031` |
+| T-022 | `STATE-008` (contest **thật**) | `EVENT-036` Tạo trận mới, `practice` | Pool **ĐÃ HIỂN THỊ** của contest đủ pre-flight — **phép kiểm ĐẢO CHIỀU** so với `T-021` | **Trận practice MỚI ở `STATE-001`** | Chỉ gán được câu **đã lộ** ⇒ **không tiêu thêm câu nào**. `revealAnswerAfterJudge` mặc định **BẬT**; retention **mặc định 3 tháng**, cấu hình được (`QĐ-091`) | `GR-031` |
 
 > **Không có transition nào rời `STATE-008`.** `T-021` và `T-022` trông giống đường ra nhưng không phải: chúng **dựng một thể hiện máy trạng thái khác**, có event log riêng. Trận cũ giữ nguyên trạng thái và biên bản (`QĐ-039`).
 

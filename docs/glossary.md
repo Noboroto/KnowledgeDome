@@ -203,10 +203,10 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 **Định nghĩa.** Vòng phân định thí sinh hoà điểm. **3 câu × 15 giây**, giành quyền bằng chuông, **không cộng điểm** — chỉ đổi thứ hạng. Vào khi admin bấm **chốt trận** và server tính ra có hoà ở vị trí thuộc `tieBreakPositions`.
 
 - **Tên khác**: vòng phụ · tie-break
-- **Giá trị**: `tieBreakPositions` mặc định `[1]` — chỉ vị trí NHẤT
+- **Giá trị**: `tieBreakPositions` **v1 khoá cứng `[1]`** — chỉ vị trí NHẤT; cửa tạo contest không cho chọn khác, cấu hình vẫn nhận mảng nhiều vị trí nhưng không có đường xử lý (`QĐ-085`)
 - **Nguồn đề**: **không có kho riêng.** Rút từ ba kho — **Về đích → Khởi động → VCNV** theo thứ tự ưu tiên đó; kho **Tăng tốc không phải nguồn**; câu `isPractical` bị loại. Câu mượn bị bỏ qua `timeSeconds` và `value`. Admin **chỉ định trước** một số câu **còn available** được, **tại `LOBBY`**, hạn chót là mốc bấm Chốt trận — chỉ định là **đặt chỗ**, thiếu thì bù theo thứ tự ưu tiên (`QĐ-081`)
 - **Đừng nhầm với**: **câu hỏi phụ ≠ câu hỏi dự phòng** (câu thay thế khi media hỏng) · **"không có kho riêng" ≠ "không cần kiểm kho"** — cửa vào vòng vẫn kiểm đủ 3 câu khả dụng, chỉ là phép kiểm đọc **ba kho nguồn** thay vì một kho khai riêng
-- **Nguồn**: luật gốc §Câu hỏi phụ · `QĐ-036`, `QĐ-055`, `QĐ-081`
+- **Nguồn**: luật gốc §Câu hỏi phụ · `QĐ-036`, `QĐ-055`, `QĐ-081`, `QĐ-085`
 
 ### TERM-021 — Event · MatchEvent
 
@@ -401,7 +401,7 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 
 ### TERM-040 — Hoà
 
-**Định nghĩa.** **Bằng điểm.** Là điều kiện kích hoạt Câu hỏi phụ, thu hẹp còn **vị trí thuộc `tieBreakPositions`** (mặc định chỉ vị trí NHẤT).
+**Định nghĩa.** **Bằng điểm.** Là điều kiện kích hoạt Câu hỏi phụ, thu hẹp còn **vị trí thuộc `tieBreakPositions`** — ở v1 là **chỉ vị trí NHẤT**, khoá cứng (`QĐ-085`). Hoà ở vị trí khác ghi **đồng hạng**, hạng kế nhảy qua.
 
 - **Tên khác**: tie · đồng hạng
 - **Đừng nhầm với**: **hoà ĐIỂM** (kích hoạt tie-break) và **hoà THỜI GIAN** ở Tăng tốc (cùng server timestamp ⇒ cùng mức điểm) là **hai thứ khác nhau** · hoà **ngoài** phạm vi phân định thì ghi **ĐỒNG HẠNG** vào biên bản, hạng kế **nhảy qua** số người đồng hạng · điểm âm tham gia điều kiện hoà bình thường

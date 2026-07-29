@@ -6,7 +6,9 @@
 >
 > **Nguồn.** Giữ nguyên nguồn của từng mục khi còn ở `PRD.md`: `docs/source/`, `docs/decisions.md`, `docs/game-rules.md`, `docs/game-state-machine.md`, `docs/glossary.md`, `docs/traceability.md`, `docs/product-discovery.md`. `plans/**` và `docs/reviews/**` **không phải nguồn**.
 >
-> **Đánh số — nối tiếp `PRD.md`, không đè lên nó.** `PRD.md` dùng tới `PRD-REQ-098`, `QUESTION-008`, `ACTOR-006`, `JOURNEY-007`, `EPIC-012`, `FS-36`; tài liệu này bắt đầu ngay sau các số đó. Nhờ vậy khi một hạng mục được mở phạm vi, nó **nối thẳng vào cuối `PRD.md`** mà không phải đánh số lần nữa, và không lúc nào hai tài liệu mang trùng mã.
+> **Đánh số — chia chung một dãy với `PRD.md`, không đè lên nhau.** Tài liệu này giữ `PRD-REQ-099`→`103`, `QUESTION-009`→`011`, `ACTOR-007`, `JOURNEY-008`, `EPIC-013`→`014`, `FS-37`→`38`. Khi một hạng mục được mở phạm vi, nó **chuyển thẳng sang `PRD.md`** giữ nguyên mã, và không lúc nào hai tài liệu mang trùng mã.
+>
+> **Cập nhật 2026-07-29.** `PRD.md` nay dùng tới `PRD-REQ-107` — dãy `099`→`103` vẫn thuộc tài liệu này, nên `PRD.md` có một khoảng trống cố ý ở đó. `PRD.md` **không còn câu hỏi mở nào**; ba `QUESTION-*` dưới đây giữ nguyên số hiệu để mọi trích dẫn cũ không trôi nghĩa.
 >
 > Số hiệu ở đây là **chỉ mục của bản hiện hành**, không phải định danh vĩnh viễn: `PRD.md` đánh số lại mỗi khi có mục đóng hoặc chuyển đi, và tài liệu này chạy theo. Trích dẫn `PRD-REQ-*` hay `QUESTION-*` từ nơi khác phải kèm **tên** hạng mục.
 
@@ -182,6 +184,8 @@
 | **Đánh phiên bản khi sửa câu đã duyệt** | §8 xếp là mục cắt được của kho đề |
 | **Kick thí sinh khỏi trận** | Nhu cầu *"rời hẳn một ghế khỏi trận"* **hoãn sang phiên bản sau** (`TERM-032`) |
 | **Mở khoá số hàng ngang 5-8 và playlist tuỳ ý** | Mô hình dữ liệu đã sẵn sàng; đường xử lý và cửa giao diện chưa có (`QĐ-068`, `QĐ-069`) |
+| **Mở khoá phạm vi phân định hoà (`tieBreakPositions` ngoài `[1]`)** | Khoá cứng thứ ba của v1 (`QĐ-085`). Mở ra **phải viết mới bốn thứ chưa có nguồn**: thứ tự giải nhiều nhóm hoà · ngân sách `3N` câu khi `N` chỉ biết tại cú bấm chốt trận · điều kiện tái nhập `STATE-007` *(hiện bị `GR-022` C7 chặn)* · cách đọc `QĐ-083` vế 5 khi một nhóm mất hiệu lực còn nhóm kia thì không |
+| **Bốn chỉ số thành công còn hoãn** | Tỉ lệ admin dựng được contest lần đầu không cần hỏi ai · tỉ lệ tái sử dụng câu hỏi sau 5 trận · số trận thật trong ba tháng đầu · nhân sự tối thiểu vận hành một trận. Cả bốn cần **người ngoài đội** hoặc **thời gian sau khi ra mắt**; chỉ đặt ngưỡng sau khi `ASSUMPTION-001` có lời giải (`QĐ-092`). Chúng là bốn chỉ số **duy nhất** đo được giá trị với người dùng — hoãn, không bỏ |
 | **Đồng bộ TỰ ĐỘNG kết quả portable → trung tâm** | `QĐ-084` chốt là **không làm**. Bốn gói xuất có đủ ở cả hai hồ sơ; chỉ cờ *đã dùng* có đường nhập ngược (`PRD-REQ-095`) |
 
 ---

@@ -144,6 +144,46 @@ Không lặp vòng, không đổi thứ tự, không bớt vòng ở **thiết k
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-7` *(vế playlist)*, `G-2` *(vế "số vòng không cứng")*
 
+### QĐ-085 — v1 khoá cứng phạm vi phân định hoà: CHỈ vị trí NHẤT
+
+**Quyết định.** `tieBreakPositions` ở v1 **luôn là `[1]`**. Cửa tạo contest **không cho chọn** giá trị khác. Mô hình dữ liệu và cấu hình luật vẫn **nhận** mảng nhiều vị trí mà không lỗi cấu trúc — nhưng **đường xử lý không tồn tại**.
+
+Hoà ở mọi vị trí khác vị trí nhất ⇒ ghi **đồng hạng**, hạng kế nhảy qua. Đây không phải ca lỗi, đó là `GR-022` C4 đã có sẵn.
+
+**Vì sao — đây là khoá cứng THỨ BA, cùng khuôn với hai cái đã có.** `QĐ-068` khoá `rowCount = 4` và `QĐ-069` khoá playlist bốn vòng, cả hai vì cùng một lý do: **luật cho giá trị khác không tồn tại trong nguồn, mở ra là bịa luật.** `tieBreakPositions` rơi đúng vào khuôn đó mà chưa bị khoá. Luật gốc chỉ mô tả chọn ra **một** người thắng.
+
+**Chỗ thiếu KHÔNG phải luật của một lượt phân định, mà là luật ĐIỀU PHỐI nhiều lượt.** Cơ chế Câu hỏi phụ tự nó không phụ thuộc vị trí — 3 câu, chuông, không cộng điểm, chạy cho hạng 2 cũng hoạt động y hệt. Thứ không có nguồn là bốn điều dưới đây, và cả bốn chỉ xuất hiện khi có **từ hai nhóm hoà trở lên**:
+
+- **Thứ tự phân định.** Hoà ở hạng 1 và hoà ở hạng 3 cùng lúc thì giải nhóm nào trước, và giải xong nhóm đầu có phải tính lại nhóm sau không.
+- **Ngân sách câu.** 3 câu cho mỗi nhóm hay 3 câu dùng chung. Pre-flight (`GR-031`) hiện kiểm **một** con số cố định; với N nhóm nó phải kiểm `3N`, mà N chỉ biết được **tại cú bấm chốt trận** — sau khi cửa vào vòng đã đóng.
+- **Tái nhập `STATE-007`.** `GR-022` C7 chốt *"chốt trận lần hai **không** vào lại Câu hỏi phụ"*. Với nhiều nhóm, cú bấm thứ hai **phải** vào lại cho nhóm chưa giải — tức phải viết lại chính cái guard chống vòng lặp mà `QĐ-083` dựng lên.
+- **Va chạm với `QĐ-083` vế 5.** Event tie-break mất hiệu lực khi nhóm không còn bằng điểm **và không còn đúng `position`**. Với nhiều nhóm, một lần admin sửa điểm ở `LOBBY` có thể làm mất hiệu lực nhóm này mà giữ nguyên nhóm kia — trạng thái hợp lệ nhưng chưa ai đặc tả cách đọc.
+
+Khoá `[1]` xoá cả bốn khỏi v1 mà **không mất tính năng nào đang có nguồn**.
+
+**Hệ quả.**
+
+- **`GR-022` C1 và C4 giữ nguyên văn.** Chúng đã viết theo `tieBreakPositions`, nên khoá giá trị không đụng câu chữ — chỉ thu hẹp tập giá trị đầu vào.
+- **`traceability.md` chuyển dòng *"Câu hỏi phụ cho nhiều nhóm hoà"*** từ nhóm *cấu hình được* sang nhóm **v1 khoá cứng**, cạnh `rowCount` và playlist. Ghi chú *"v1 khoá cứng **hai** thứ"* thành **ba**.
+- **`QĐ-083` §Ba ca biên vẫn đúng nguyên văn.** Ca *"sửa điểm làm hoà nhóm khác"* nay chỉ có nghĩa: sửa điểm tạo ra một nhóm hoà **mới ở vị trí nhất**. Vẫn là `TIE_BREAK` lần hai, vẫn tiêu 3 câu, vẫn tối đa 4 lần với kho dư 12 câu.
+- **Ví dụ `tieBreakPositions = [1,2]` trong `QĐ-083`** là minh hoạ cho phương án *"+1đ"* đã bị loại, **không phải** cấu hình v1 hỗ trợ. Giữ nguyên vì nó đang chứng minh một lập luận, không đang mô tả sản phẩm.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · `[SUY RA]` từ `QĐ-068`, `QĐ-069` *(cùng khuôn)* · *Thay cho*: câu hỏi mở **phạm vi phân định hoà** *(nay đã đóng)*, `GRR-158`
+
+### QĐ-089 — Số trận song song: mục tiêu định cỡ là SÁU, không phải chặn cứng
+
+**Quyết định.** Một bản cài được định cỡ và kiểm thử tải cho **tối đa 6 trận chạy đồng thời**; trường hợp thường trực là **1-2 trận**.
+
+Con số này là **mục tiêu vận hành**, **không** phải ràng buộc chức năng: hệ thống **không đếm** số trận đang chạy và **không từ chối** trận thứ bảy. Không rule, không transition, không guard nào đọc nó.
+
+**Vì sao không biến nó thành chặn cứng.** `PS-8` đã được giải ở tầng kiến trúc — trạng thái thuộc về **trận**, không phải biến toàn cục (`QĐ-039`) — và lời giải đó đúng với mọi N. Thêm một hạn ngạch nghĩa là thêm một ca hỏng mới *(từ chối mở trận vì lý do không liên quan tới luật chơi)* để đổi lấy đúng con số không.
+
+Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiểm thử tải**. `INV-014` chốt chỉ có **ba** chỗ chặn cứng; đây không phải chỗ thứ tư.
+
+**Hệ quả.** `ASSUMPTION-002` chuyển từ *"con số chốt mà không dẫn nguồn nhu cầu"* sang **có con số từ chủ dự án**, nhưng vế *"nhiều trận song song là nhu cầu thật"* **vẫn là giả định chưa kiểm chứng** — 6 là kỳ vọng, không phải quan sát.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **số trận song song** *(nay đã đóng)*
+
 ### QĐ-008 — Một contest có nhiều TÀI KHOẢN admin, nhưng đúng MỘT PHIÊN điều khiển
 
 **Quyết định.** Ràng buộc *"một admin"* đặt ở tầng **phiên**, không ở tầng tài khoản. Một contest được gán **nhiều tài khoản** quyền admin; tại một thời điểm chỉ **một phiên** giữ quyền điều khiển. Các phiên admin khác **xem được, không bấm được** — cùng bề mặt hiển thị, khác quyền ghi.
@@ -668,7 +708,7 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 
 | | Gói | Nội dung | Chiều |
 |---|---|---|---|
-| **X1** | **Gói contest** | Câu hỏi · metadata media · media theo vòng · cấu hình luật | **Ra và vào** — nhập thành contest **nháp** |
+| **X1** | **Gói contest** | Câu hỏi · metadata media · media theo vòng · cấu hình luật · **danh sách người tham gia đã mã hoá** (`QĐ-086`, tuỳ chọn) | **Ra và vào** — nhập thành contest **nháp** |
 | **X2** | **Toàn bộ kết quả + nhật ký sự kiện** | Mọi trận của contest: nhật ký sự kiện đầy đủ, điểm, thứ hạng, hoàn nguyên, người bấm, lý do | **Chỉ ra** |
 | **X3** | **Bản kê câu đã dùng** | `questionId` · `usedAt` · `matchId` | **Ra và vào** — hợp vào cờ đã dùng |
 | **X4** | **Kết quả rút gọn** | Bảng điểm cuối · thứ hạng · người thắng, theo từng trận | **Chỉ ra** |
@@ -697,13 +737,44 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 
 **Hệ quả.**
 
-- **`RISK-010` đổi hạng**: từ *"chưa quyết"* thành **ranh giới chấp nhận có chủ đích**, cùng loại với `RISK-009`.
+- **Rủi ro *"không có đường mang kết quả về"* đổi hạng**: từ *"chưa quyết"* thành **ranh giới chấp nhận có chủ đích**, cùng loại với `RISK-009` — nên nó **không còn là một mục rủi ro mở** và đã rời bảng `PRD.md` §18. *(Mã `RISK-010` trong bảng hiện hành là một rủi ro khác — dữ liệu cá nhân lộ qua vật mang, `QĐ-086`.)*
 - **Thống kê ghi ngược kho đề (`PRD-REQ-081`) chỉ áp cho trận chạy trên CÙNG bản cài.** Trận chạy trên portable đóng góp đúng **một bit** *"đã dùng"*, không đóng góp số liệu. Đây là cái giá đã biết của việc bỏ đồng bộ kết quả.
 - **X2 là van thoát của hạn lưu trữ.** `QĐ-077` yêu cầu job dọn không đụng biên bản đã xuất; với X2 câu đó có nghĩa vật lý — gói đã xuất nằm **ngoài** hệ thống. Xuất trước khi hết hạn thì bằng chứng phân xử còn nguyên mà dữ liệu trong máy vẫn dọn đúng hạn.
 - **Nhập X3 phải có bản xem trước ba nhóm** trước khi cho bấm: *sẽ chuyển sang đã dùng* · *đã ở trạng thái đó, bỏ qua* · **không thuộc danh sách gán của contest đích** — nhóm thứ ba **báo rõ và không tự áp**, vì cờ này gắn với contest chứ không gắn với câu.
 - **Cả hai đường ghi đều qua dialog Yes/No** (`QĐ-072`, không hoàn tác được) và ghi `AuditLog` kèm nguồn là *tay* hay *bản kê nào*. **Không** sinh `MatchEvent` — đây là thao tác cấp contest, không thuộc trận nào.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **gói kết quả chiều ngược** *(nay đã đóng)*, `RISK-010`
+
+### QĐ-086 — Gói contest MANG danh sách người tham gia, và danh sách đó LUÔN mã hoá
+
+**Quyết định.** Gói contest (`QĐ-084` X1) có thêm một phần: **danh sách người tham gia**. Bảy vế:
+
+1. **Bật/tắt được khi xuất.** Gói không kèm danh sách vẫn là gói hợp lệ.
+2. **Danh sách LUÔN ở dạng đã mã hoá**, kể cả khi nó không mang mật khẩu nào. Không có biến thể *"để nguyên chữ cho dễ đọc"*.
+3. **Chìa khoá KHÔNG nằm trong gói.** Người xuất đặt một cụm mật khẩu và truyền qua kênh khác. Người nhập **bắt buộc** nhập đúng cụm đó. Sai cụm mật khẩu, hoặc gói bị sửa một byte ⇒ **từ chối toàn bộ**, không nhập nửa vời. Gói không kèm danh sách thì không hỏi gì.
+4. **Cách xử lý mật khẩu là THIẾT LẬP của người xuất**, hai lựa chọn, ghi vào phần mô tả gói để bên nhập biết cách dựng:
+   - **(a) Tạo mật khẩu mới lúc nhập, kèm phiếu tài khoản in được** — mặc định. Mật khẩu cũ **không** rời hệ thống nguồn.
+   - **(b) Giữ mật khẩu hiện tại** — tiện hơn cho thí sinh, đổi lại là đưa dấu vết mật khẩu ra khỏi hệ thống.
+5. **Chỉ người ĐƯỢC GÁN vào contest** — thí sinh, MC, và **tài khoản admin của contest** (`QĐ-087`). Không bao giờ xuất toàn bộ danh bạ của bản cài.
+6. **Trùng tên đăng nhập ở bên nhận thì HỎI, không tự nối** — ba lựa chọn: nối vào tài khoản sẵn có · tạo tài khoản mới có hậu tố · huỷ nhập. Tự nối là trao quyền của một người cho một người khác chỉ vì trùng tên.
+7. **Vai tuỳ biến đi kèm.** Vai do đơn vị tự định nghĩa ở bản nguồn phải xuất kèm định nghĩa, nếu không bên nhận dựng lại được tài khoản mà không dựng lại được quyền.
+
+**Vì sao phải có.** Bản có Internet và bản portable là **hai hệ tài khoản độc lập** — người tạo ở bên này không tồn tại ở bên kia, còn ghế thì trỏ tới người. Gói không mang danh sách thì nhập xong **không ai đăng nhập được**, và admin phải gõ lại toàn bộ tài khoản cùng phép gán ghế ngay tại hội trường. Mất gần hết giá trị của chữ *"trọn gói"* trong `GOAL-009`.
+
+**Vì sao mã hoá là bắt buộc chứ không phải tuỳ chọn.** Nội dung này là **dữ liệu cá nhân của học sinh vị thành niên** — tên, trường, lớp — đi trên một chiếc USB. Ở phương án (b) nó còn mang thêm dấu vết mật khẩu, thứ mà `CLAUDE.md` §Zero-trust xếp cao nhất. Để tuỳ chọn nghĩa là sẽ có người tắt nó đúng vào lần cần nhất. Đây cũng là **`RISK-007` ở dạng thứ hai**: không phải lộ qua mã phòng, mà lộ qua vật mang.
+
+**Vì sao (a) là mặc định mà không phải là ép buộc.** (a) an toàn hơn thật — mật khẩu cũ không rời hệ nguồn, nên kể cả lộ cụm mật khẩu gói thì cũng không lộ mật khẩu nào đang dùng ở bản trung tâm. Nhưng (b) là thứ duy nhất cho thí sinh đăng nhập bằng đúng mật khẩu quen, và người xuất là người biết ngày thi của mình phát phiếu được hay không. Nên: mặc định (a), đổi được, và giao diện nói rõ cái giá của từng lựa chọn ngay cạnh chỗ chọn.
+
+**Điểm yếu nhất của sơ đồ là chính cụm mật khẩu do người đặt** — giao diện phải kiểm độ mạnh lúc xuất. Không có cách nào bù chỗ này bằng kỹ thuật.
+
+**Hệ quả.**
+
+- **`EPIC-003` hết mục *out of scope*** về danh sách thí sinh.
+- **Xuất và nhập danh sách đều vào `AuditLog`**, tách riêng khỏi lần xuất gói — đây là một lần **dữ liệu cá nhân rời hệ thống**, không cùng hạng với xuất câu hỏi.
+- **Tài liệu vận hành phải nói: xoá gói sau ngày thi.** Gói đã ra khỏi hệ thống thì hạn lưu trữ (`QĐ-091`) không với tới được nó.
+- **Phiếu tài khoản là hiện vật in ra** — nó thừa hưởng đúng vấn đề của mọi thứ in ra, và tài liệu vận hành phải nhắc thu lại hoặc huỷ.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **danh sách thí sinh trong gói contest** *(nay đã đóng)*
 
 ---
 
@@ -933,6 +1004,43 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 **Vì sao.** Thiếu slot thì không thêm được về sau mà không sửa engine. Có slot mà để trống thì **không tốn gì**.
 
 *Nguồn*: `[SUY RA]` từ `QĐ-049` · *Thay cho*: `S-5`
+
+### QĐ-088 — Hai kênh public nhận đẩy MỘT CHIỀU trên HTTP; kênh hai chiều chỉ cho vai đã xác thực
+
+**Quyết định.** Hai kênh public — **màn khán giả** và **lớp phủ dựng stream** — nhận cập nhật bằng **luồng sự kiện một chiều server → client trên HTTP**, cộng một lời gọi đọc thông thường để lấy ảnh chụp trạng thái lúc vào phòng. Chúng **không** dùng kênh hai chiều.
+
+Kênh hai chiều **chỉ dành cho vai đã xác thực**: admin, thí sinh, MC.
+
+**Vì sao — lý do mạnh nhất là bảo mật, không phải hiệu năng.** Quy tắc hiện hành là *"server drop mọi sự kiện ghi từ kênh viewer"*. Đó là một **luật phải cưỡng chế**, và mọi luật phải cưỡng chế đều hỏng được: thêm một handler, quên một guard, một namespace mới sao chép nhầm cấu hình. Với kênh một chiều, **không tồn tại đường ghi để mà chặn** — tính chất read-only chuyển từ *thứ phải kiểm* thành *thứ không thể vi phạm*. Đây đúng là dạng hàng rào mà `INV-017` và `GR-037` cần: không dựa vào việc nhớ kiểm.
+
+**Vì sao nó cũng tách được câu hỏi quy mô ra khỏi công bằng trận.** Khán giả không còn nằm chung ngân sách kết nối với lõi thi đấu, nên **số khán giả tăng không đụng tới** thứ tự chuông, đồng hồ hay thứ hạng tốc độ — những thứ `GR-035` và `INV-004` bảo đảm. Trước đây một phòng đông là một rủi ro công bằng; nay nó chỉ còn là một câu hỏi định cỡ.
+
+**Nói cho đúng: việc này KHÔNG làm số khán giả thành miễn phí.** Mỗi người xem vẫn giữ **một kết nối mở** tới server. Nó rẻ hơn đáng kể và đặt sau proxy được, nhưng nó không phải bằng không. Điều đổi được là **hạng** của con số: từ một **cam kết sản phẩm** xuống một **giá trị định cỡ triển khai**. `QĐ-067` vì thế vẫn đứng nguyên — con số vẫn là mặc định cấu hình được, chỉ khác là nay đã biết rõ nó không chạm vào luật chơi.
+
+**Hệ quả.**
+
+- **`CLAUDE.md` §Stack phải nói rõ phạm vi**: kênh socket hai chiều dành cho vai đã xác thực; hai kênh public đi đường HTTP một chiều.
+- **Lớp phủ vẫn nhận đáp án từ mốc câu khép** (`QĐ-080`) — chiều truyền không đổi cái gì được truyền. Kênh một chiều **đẩy được** đáp án đúng lúc; nó chỉ không nhận vào.
+- **Nút *"khoá cổng"*** (`PRD-REQ-086`) áp ở tầng vào của kênh public, không đổi.
+- **Không đụng tới việc nạp trước media mã hoá** (`QĐ-012b`) — đó là đường tải nội dung, không phải đường sự kiện.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: vế *"quy mô viewer có ảnh hưởng trận không"* của câu hỏi mở **quy mô viewer** *(nay đã đóng)*
+
+### QĐ-090 — BỎ HẲN tuỳ chọn biệt danh
+
+**Quyết định.** v1 **không có** tuỳ chọn hiển thị biệt danh thay tên thật. Các kênh public hiện đúng **tên hiển thị của ghế** như người dựng contest đã nhập.
+
+**Vì sao.** Nó không mua được thứ nó hứa. Khán giả tại chỗ **nhìn thấy mặt và biết tên** thí sinh; che tên trên màn hình không giấu được ai với người đang ngồi trong hội trường, và cũng không giấu được với người xem stream vì MC đọc tên bằng lời. Đổi lại, giữ nó là thêm một trạng thái hiển thị phải kiểm ở **cả bốn** kênh (khán giả, lớp phủ, MC, thí sinh) và thêm một chỗ để lệch nhau.
+
+**Đường giảm thiểu thật thì vẫn còn, và nó không phải một tính năng.** Tên hiển thị của ghế là **trường tự do**. Người tổ chức muốn để *"Minh A."* thay tên đầy đủ thì gõ đúng như thế lúc dựng contest. Đó là quyết định của người nhập liệu — chỗ duy nhất biết được bối cảnh — chứ không phải một công tắc của hệ thống.
+
+**Hệ quả.**
+
+- **Yêu cầu *"tuỳ chọn dùng biệt danh"* bị xoá khỏi `PRD.md`**, và `EPIC-011` bỏ vế đó khỏi phạm vi. Mã `PRD-REQ-083` được **dùng lại** cho hạn lưu trữ (`QĐ-091`), theo quy ước đánh số lại cho liền của `PRD.md`.
+- **`RISK-007` mất một hướng giảm thiểu.** Còn lại: giới hạn tần suất, nút khoá cổng phòng, **và** khuyến nghị đặt tên hiển thị rút gọn trong tài liệu vận hành. Mức tác động của rủi ro **không đổi** — hướng giảm thiểu cũ vốn đã yếu, việc bỏ nó chỉ làm hồ sơ rủi ro **nói thật hơn**.
+- **`ASSUMPTION-005` phải viết lại**: căn cứ cũ dẫn chính tuỳ chọn này.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **biệt danh có bật mặc định không** *(nay đã đóng)*
 
 ---
 
@@ -1197,6 +1305,55 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 
 *Nguồn*: luật gốc §Khởi động (3 loại), §Tăng tốc (4 loại) + `[SUY RA]` từ `QĐ-010` · *Thay cho*: `U-34`, `U-36`, `U-7`
 
+### QĐ-087 — Cài đặt lần đầu: dòng lệnh khi dựng máy, tài khoản admin đi theo gói khi ra hội trường
+
+**Quyết định.** Hai đường, cùng tồn tại, phục vụ hai thời điểm khác nhau:
+
+- **Dòng lệnh — đường nền, luôn có.** Tạo tài khoản admin đầu tiên trên một bản cài trống. Đây là thao tác của người **dựng máy**, làm **trước** ngày thi.
+- **Tài khoản admin đi theo gói contest** (`QĐ-086` vế 5) — đường của **ngày thi**. Nhập gói vào bản portable là có sẵn tài khoản điều khiển; không phải mở dòng lệnh ở hội trường.
+
+**v1 KHÔNG làm trình hướng dẫn cài đặt trên trình duyệt.**
+
+**Vì sao hai đường mà không phải một.** Hai đường phục vụ hai người khác nhau ở hai lúc khác nhau. Người dựng máy portable là người có khả năng chạy dòng lệnh và có thời gian làm việc đó ở nhà; người vận hành ngày thi là giáo viên trong hội trường, trước giờ phát sóng. Bắt người thứ hai làm việc của người thứ nhất là chỗ hỏng thật của `PRD-REQ-085` — chứ không phải chuyện dòng lệnh xấu.
+
+**Vì sao chưa làm trình hướng dẫn.** Nó là đường thứ ba cho cùng một việc, và là đường **nhạy cảm nhất**: một bề mặt web mở, không xác thực, tạo được tài khoản toàn quyền. Muốn làm cho đúng thì phải có mã dùng-một-lần sinh lúc cài, tức lại quay về một thao tác dòng lệnh. Hai đường trên đã phủ hết ca dùng đã biết.
+
+**Ràng buộc kèm theo — tài khoản admin trong gói LUÔN theo phương án (a).** `QĐ-086` vế 4 cho người xuất chọn giữ mật khẩu cũ; **ngoại lệ: tài khoản admin không được chọn (b)**. Nó luôn được cấp mật khẩu mới lúc nhập, in ra phiếu. Lý do: tài khoản admin là **toàn quyền trên trận**, nên cái giá của việc dấu vết mật khẩu của nó rời hệ thống khác hẳn cái giá với một ghế thí sinh. Đây là vế `[SUY RA]`, không phải phát biểu trực tiếp của chủ dự án.
+
+**Hệ quả.**
+
+- **Bản cài trống + gói không kèm danh sách người tham gia ⇒ vẫn phải dùng dòng lệnh.** Tài liệu vận hành phải nói thẳng ca này, vì nó là ca duy nhất còn lại có thể xảy ra ở hội trường.
+- **`EPIC-012` hết mục *out of scope*** về trải nghiệm cài đặt lần đầu.
+- **Phép kiểm nghiệm thu của `PRD-REQ-085` mạnh lên**: chạy trọn một trận trên bản portable **đã ngắt Internet**, bắt đầu từ thao tác nhập gói — không có bước dòng lệnh nào ở giữa.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế ràng buộc tài khoản admin: `[SUY RA]` từ `QĐ-078` · *Thay cho*: câu hỏi mở **trải nghiệm cài đặt lần đầu** *(nay đã đóng)*
+
+### QĐ-091 — Hạn lưu trữ: admin đặt được; mặc định 12 tháng chính thức, 3 tháng luyện tập
+
+**Quyết định.** Hạn lưu trữ là **giá trị cấu hình do admin đặt**, riêng cho từng mục đích trận. Giá trị **mặc định**:
+
+| Mục đích trận | Mặc định |
+|---|---|
+| `official` | **12 tháng** |
+| `practice` | **3 tháng** |
+
+Hai con số là **mặc định**, không phải luật: không rule, không transition nào đọc chúng.
+
+**Vì sao đặt mặc định thay vì để trống.** `QĐ-040` đã chốt phần chuẩn tắc — hạn **khác nhau theo mục đích trận**. Cái còn thiếu chỉ là con số, và con số không có thì job dọn không dựng được, còn `PRD-REQ-080` không có gì để kiểm. Khác với quy mô viewer (`QĐ-067`), ở đây **không cần đo gì cả** để chọn: đây là lựa chọn về quyền riêng tư, không phải về phần cứng.
+
+**Vì sao 3 tháng cho luyện tập.** Trận luyện tập không có giá trị phân xử — không ai khiếu nại một buổi tập. Giữ lâu chỉ tích thêm dữ liệu cá nhân của học sinh mà không đổi được gì.
+
+**Rủi ro của việc để admin đặt.** Admin đặt được nghĩa là admin đặt được **rất dài**. Đó là chấp nhận có chủ đích: đơn vị tự host là bên chịu trách nhiệm pháp lý, nên bên đó phải là bên quyết. Hệ thống làm đúng một việc — **mặc định về phía giữ ít hơn**.
+
+**Hệ quả.**
+
+- **Hai con số nay thuộc `docs/`.** `CLAUDE.md` bỏ chúng khỏi §Lộ trình version; chỗ đó chỉ còn nói *"retention riêng theo mục đích trận"*.
+- **`game-state-machine.md` `T-022`** ghi *"retention 3 tháng"* — đọc là **mặc định**, không phải hằng số.
+- **Job dọn thuộc v1.5** (`roadmap-post-v1.md` §8.1), nhưng **ràng buộc đặt lên nó** (`PRD-REQ-080`: cảnh báo trước, không đụng biên bản đã xuất) thuộc v1 và không đổi.
+- **Gói đã xuất nằm ngoài tầm với của hạn lưu trữ** — gồm cả gói mang danh sách người tham gia (`QĐ-086`). Đây là lý do tài liệu vận hành phải nhắc xoá gói sau ngày thi.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **giá trị hạn lưu trữ** *(nay đã đóng)*
+
 ---
 
 # M. Bảng tra mã CŨ → MỚI
@@ -1297,7 +1454,7 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 
 # N. Đã hoãn có chủ đích
 
-**Không còn mục treo nào.** Mục dưới đây **không phải câu hỏi chưa trả lời** — nó là một câu hỏi chủ dự án đã quyết là **chưa cần trả lời lúc này**.
+**Không còn mục treo nào.** Hai mục dưới đây **không phải câu hỏi chưa trả lời** — chúng là câu hỏi chủ dự án đã quyết là **chưa cần trả lời lúc này**.
 
 ### QĐ-067 — Quy mô viewer và ngưỡng độ trễ: HOÃN, không phải treo
 
@@ -1312,3 +1469,24 @@ Chốt bừa một con số **đắt hơn** là để trống: nó biến một 
 Khi nào cần trả lời, chỉ phải chốt hai điều: **(a)** số viewer đồng thời tối đa ở hồ sơ **portable LAN** — suy từ hội trường lớn nhất dự kiến; **(b)** hồ sơ **compose** có cần con số cao hơn không, và cao bao nhiêu.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-2`, `C-5`
+
+**Bổ sung sau `QĐ-088`.** Việc hai kênh public chuyển sang đẩy một chiều **không** trả lời câu hỏi này, nhưng nó hạ **hạng** của câu hỏi: con số viewer nay chắc chắn không chạm tới công bằng trận, chỉ còn là giá trị định cỡ. Hai điều cần chốt ở đoạn cuối vẫn nguyên như trên.
+
+### QĐ-092 — Bộ chỉ số: chốt BẢY, hoãn BỐN cho tới khi có người dùng đầu tiên
+
+**Quyết định.** Nhóm chỉ số đề xuất được tách làm hai, và chỉ nhóm đầu là **tiêu chí nghiệm thu v1**:
+
+| | Chỉ số | Vì sao chốt được ngay |
+|---|---|---|
+| **Chốt** | thời gian dựng một contest khi kho đề đã có · số lần **ép qua cảnh báo** trong một trận · số lần trận gián đoạn vì lỗi hệ thống · tỉ lệ thí sinh nối lại trong ngưỡng chờ · sự kiện bị khiếu nại có đủ dấu vết · số đáp án rò ra kênh không có quyền · thời điểm sớm nhất thí sinh thấy được nội dung đề | Đo được bằng **bộ kiểm tự động và một trận thử**, không cần ai ngoài đội |
+| **Hoãn** | tỉ lệ admin dựng được contest lần đầu không cần hỏi ai · tỉ lệ tái sử dụng câu hỏi sau 5 trận · số trận thật trong ba tháng đầu · nhân sự tối thiểu vận hành một trận | Cần **người ngoài đội** hoặc **thời gian sau khi ra mắt** |
+
+Bốn chỉ số hoãn **chỉ được đặt ngưỡng sau khi có người dùng đầu tiên đã cam kết** (`ASSUMPTION-001`).
+
+**Vì sao hoãn thay vì bỏ.** Chúng là bốn chỉ số **duy nhất** đo được thứ mà `product-discovery.md` §9 tự nhận là đang thiếu: *"không tiêu chí nào đo giá trị với người dùng."* Bỏ chúng là chấp nhận vĩnh viễn cái thiếu đó. Nhưng đặt ngưỡng bây giờ là đặt cho **một dân số chưa tồn tại** — `≥ 4/5 người` khi chưa biết năm người đó là ai thì không phải một mục tiêu, nó là một con số trang trí.
+
+**Hai chỉ số chốt nằm TRONG bộ kiểm đã có, không phải bộ kiểm mới.** *Số đáp án rò* và *thời điểm sớm nhất thí sinh thấy đề* là **hai phép đo cụ thể** của chính bộ kiểm *"không rò đáp án"* đã chốt từ đầu. Ghi riêng để chúng có ngưỡng rõ, không phải để dựng thêm bộ kiểm thứ hai.
+
+**Hệ quả.** `PRD.md` §19.2 tách làm hai bảng thay vì một bảng mang `NEEDS CLARIFICATION`; bốn chỉ số hoãn chuyển sang `roadmap-post-v1.md`, cùng chỗ với các hạng mục chưa gắn mốc.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **bộ chỉ số thành công chưa chốt** *(nay đã đóng)*

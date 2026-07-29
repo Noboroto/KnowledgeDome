@@ -197,6 +197,8 @@ Các quyết định ở `decisions.md` ràng buộc giao diện. Bảng dưới
 
 # 7. Giả định chưa được kiểm chứng
 
+> **Bảng này là ảnh chụp lúc khảo sát, không phải trạng thái hiện hành.** Hai dòng đã bị quyết định sau đó ghi đè — **AS-2** *(con số nay là **tối đa 6**, `QĐ-089`)* và **AS-5** *(tuỳ chọn biệt danh **đã bỏ hẳn**, `QĐ-090`)*. Trạng thái hiện hành đọc ở `PRD.md` §17.
+
 | ID | Giả định | Vì sao đáng ngờ |
 |---|---|---|
 | AS-1 | **Có nhu cầu thị trường thực** | Không có nghiên cứu người dùng, không có người dùng đầu tiên cam kết |

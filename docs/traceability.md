@@ -9,7 +9,7 @@
 | Ký hiệu | Là gì | Vị thế |
 |---|---|---|
 | **Luật gốc** | `source/fandom-olympia-26-luat-choi.md` — bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26), lấy 2026-07-23 | **Source of truth duy nhất về LUẬT** |
-| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-082` | Source of truth về **lựa chọn sản phẩm** |
+| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-092` | Source of truth về **lựa chọn sản phẩm** |
 | **Rule** | `game-rules.md` — `GR-001` → `GR-037` | Đặc tả nghiệp vụ **chuẩn tắc** |
 | **Máy trạng thái** | `game-state-machine.md` — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` | Đặc tả **chuẩn tắc** phần vận hành |
 | **Thuật ngữ** | `glossary.md` — `TERM-001` → `TERM-058` | Tên gọi chuẩn |
@@ -133,14 +133,16 @@ Engine hỗ trợ, preset O26 **không** dùng. Ghi ở đây để chúng khôn
 | VCNV **gợi ý ký tự** | O11-O12 | Cấu hình được; **không** trong preset O26 |
 | Tăng tốc **clue-buzz** | — | Cấu hình được; **không** trong preset O26 |
 | VCNV `rowCount` **5-8** hàng ngang | — | Cấu hình được. Đây là **đổi con số của luật**, khác hẳn việc hệ thống tự đẻ thêm câu |
-| Câu hỏi phụ cho **nhiều nhóm hoà** | — | `tieBreakPositions` mặc định `[1]` — chỉ phân định vị trí NHẤT. Mở rộng được |
+| Câu hỏi phụ cho **nhiều nhóm hoà** | — | `tieBreakPositions` **v1 khoá cứng `[1]`** — chỉ phân định vị trí NHẤT (`QĐ-085`). Mở rộng được ở phiên bản sau |
 
-> ⚠️ **v1 KHOÁ CỨNG hai thứ trong bảng này**: `rowCount` = **4** (`QĐ-068`) và playlist = **bốn vòng chuẩn, đúng thứ tự** (`QĐ-069`). Mô hình dữ liệu và RuleConfig vẫn nhận giá trị khác để phiên bản sau chỉ việc mở khoá — nhưng **engine-path chưa tồn tại** và cửa tạo contest **không cho chọn**. Cùng khuôn với `QĐ-007`: hạ tầng làm sẵn, luật khoá ở trường hợp v1.
+> ⚠️ **v1 KHOÁ CỨNG ba thứ trong bảng này**: `rowCount` = **4** (`QĐ-068`), playlist = **bốn vòng chuẩn, đúng thứ tự** (`QĐ-069`), và `tieBreakPositions` = **`[1]`** (`QĐ-085`). Mô hình dữ liệu và RuleConfig vẫn nhận giá trị khác để phiên bản sau chỉ việc mở khoá — nhưng **engine-path chưa tồn tại** và cửa tạo contest **không cho chọn**. Cùng khuôn với `QĐ-007`: hạ tầng làm sẵn, luật khoá ở trường hợp v1.
+>
+> Riêng `tieBreakPositions`, thứ còn thiếu **không phải luật của một lượt phân định** — cơ chế Câu hỏi phụ vốn không phụ thuộc vị trí — mà là luật **điều phối nhiều lượt**: thứ tự giải nhiều nhóm hoà, ngân sách `3N` câu khi `N` chỉ biết được tại cú bấm chốt trận, và việc tái nhập vòng phân định vốn bị `GR-022` C7 chặn.
 
 ---
 
 # Không còn mục treo
 
-**Quy mô viewer và ngưỡng độ trễ** — chủ dự án đã quyết là **chưa cần trả lời ở giai đoạn này** (`QĐ-067`). Đây là con số phi chức năng, chỉ đi vào hai chỗ và cả hai đều là **cấu hình**: ngưỡng rate-limit của cổng viewer, và mục tiêu kiểm thử tải. Không rule, không transition nào đọc nó.
+**Quy mô viewer và ngưỡng độ trễ** — chủ dự án đã quyết là **chưa cần trả lời ở giai đoạn này** (`QĐ-067`). Đây là con số phi chức năng, chỉ đi vào hai chỗ và cả hai đều là **cấu hình**: ngưỡng rate-limit của cổng viewer, và mục tiêu kiểm thử tải. Không rule, không transition nào đọc nó. Từ `QĐ-088`, hai kênh public nhận đẩy **một chiều** và nằm ngoài kênh của lõi thi đấu ⇒ con số này chắc chắn **không chạm tới công bằng trận**.
 
 **Luật cho số ghế ≠ 4** không nằm ở đây vì nó **không phải câu hỏi còn treo** mà là **phạm vi phiên bản**: v1 đặc tả luật cho **đúng 4 thí sinh**; schema, mô hình ghế và giao diện làm cho **1-12** ngay từ đầu; luật đa ghế thuộc **v1.5**. Xem `QĐ-007`.

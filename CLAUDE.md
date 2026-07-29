@@ -4,6 +4,8 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô
 
 Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO, @casl/ability · React+Vite, MUI, Motion for React, Zustand, TanStack Query · MinIO.
 
+> **Phạm vi kênh realtime (✅ `QĐ-088`)**: Socket.IO **chỉ cho vai đã xác thực** — admin, thí sinh, MC. Hai kênh public — **màn khán giả** và **overlay OBS** — dùng **SSE + REST một chiều**, không có đường ghi. Read-only của kênh public vì thế là tính chất **cấu trúc**, không phải luật server phải cưỡng chế.
+
 ## Product and Specification Workflow
 
 ### Source-of-truth hierarchy
@@ -47,7 +49,7 @@ Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, 
 - **v1 — Solo contest** (Phase 1-10): contest chính thức, thí sinh CÁ NHÂN, đủ loại vòng + biến thể, kho đề, viewer/overlay/MC/admin, 2 profile deploy (compose + portable Windows).
   - **LUẬT v1 chỉ đặc tả cho ĐÚNG 4 THÍ SINH** (✅ chốt 24/07). Luật gốc O26 viết cho đúng 4 người; không phát minh luật cho số ghế khác.
   - **Nhưng v1 VẪN hỗ trợ LƯU TRỮ DỮ LIỆU và UI cho 1-12 người** — schema, seat model, `scoringUnit`, RuleConfig dạng mảng, và giao diện đều làm cho 1-12 ngay từ đầu. Chỉ **LUẬT/engine-path** cho số ghế ≠ 4 là chưa có.
-- **v1.5 — Practice + luật đa ghế** (Phase 11): `matchPurpose: practice`, bộ đề PUBLIC + share-link, UI luyện tập solo, trainer role, retention riêng (practice 3 tháng / official 12 tháng) · **+ LUẬT cho 1-12 thí sinh** (✅ chuyển từ v2 sang v1.5 ngày 24/07) — chỉ ship luật + sửa controller, KHÔNG migrate schema.
+- **v1.5 — Practice + luật đa ghế** (Phase 11): `matchPurpose: practice`, bộ đề PUBLIC + share-link, UI luyện tập solo, trainer role, retention riêng theo `matchPurpose` (**giá trị mặc định ở `QĐ-091`**, không lặp ở đây) · **+ LUẬT cho 1-12 thí sinh** (✅ chuyển từ v2 sang v1.5 ngày 24/07) — chỉ ship luật + sửa controller, KHÔNG migrate schema.
 - **v2 — Teams** (Phase 12): thi đội — buzz cá nhân, điểm về đội (semantics spec §2b).
 - **DB + Zod schema chuẩn bị ĐẦY ĐỦ ngay từ v1** (Team/seat.teamId/scoringUnit, matchPurpose, visibility/everPublic, ACL, retention) — KHÔNG để dành schema cho version sau, tránh migrate; v1 chỉ chưa bật engine-path tương ứng.
 
@@ -116,11 +118,11 @@ Nguyên tắc nền: **máy độc quyền SỰ KIỆN, người độc quyền 
 ## Nguyên tắc code — BẮT BUỘC toàn repo
 
 - **DRY**: không lặp logic/hằng số/schema — Zod schemas, RuleConfig, permission catalog, socket event contracts đều ở `packages/shared` dùng chung FE+BE; validation viết MỘT lần (Zod) chạy cả hai đầu; component/hook/util lặp ≥2 lần phải trích xuất.
-- **Zero-trust security**: KHÔNG BAO GIỜ tin client — mọi request/socket event đều verify auth + permission (CASL) ở server bất kể client là ai, đã join room gì, UI có ẩn nút hay không; viewer/overlay là public nhưng server vẫn enforce read-only (drop mọi event ghi từ namespace này); mọi input validate lại ở server (validate FE chỉ là UX); **TRƯỚC mốc CÂU KHÉP đáp án chỉ rời server tới admin + MC (authenticated + audit); viewer/thí sinh/overlay không nhận. TỪ mốc câu khép, server đẩy đáp án tới cả ba vai đó nếu `revealAnswerAfterJudge` bật (cờ CẤP TRẬN — `QĐ-062`; mặc định BẬT cho cả official lẫn practice — `QĐ-080`; đổi được từng trận). CÂU KHÉP ≠ "đã chấm": ở Về đích cú bấm chấm Sai MỞ cửa sổ cướp quyền 5s, câu chỉ khép sau khi cửa sổ đóng và người cướp đã được chấm — công bố sớm là xoá sổ cướp quyền. Ba ca biên: câu bị bỏ qua VẪN công bố; "Huỷ kết quả" KHÔNG tự công bố; đáp án Chướng ngại vật theo `GR-012`, ngoài cơ chế này. CẤM đẩy đáp án xuống client trước mốc rồi ẩn bằng cờ hiển thị (lỗi của tiền lệ Athena)**; timer/điểm/chuông chỉ tính ở server.
+- **Zero-trust security**: KHÔNG BAO GIỜ tin client — mọi request/socket event đều verify auth + permission (CASL) ở server bất kể client là ai, đã join room gì, UI có ẩn nút hay không; viewer/overlay là public và **không có đường ghi** — kênh SSE một chiều, read-only là tính chất cấu trúc chứ không phải luật phải cưỡng chế (`QĐ-088`); mọi input validate lại ở server (validate FE chỉ là UX); **TRƯỚC mốc CÂU KHÉP đáp án chỉ rời server tới admin + MC (authenticated + audit); viewer/thí sinh/overlay không nhận. TỪ mốc câu khép, server đẩy đáp án tới cả ba vai đó nếu `revealAnswerAfterJudge` bật (cờ CẤP TRẬN — `QĐ-062`; mặc định BẬT cho cả official lẫn practice — `QĐ-080`; đổi được từng trận). CÂU KHÉP ≠ "đã chấm": ở Về đích cú bấm chấm Sai MỞ cửa sổ cướp quyền 5s, câu chỉ khép sau khi cửa sổ đóng và người cướp đã được chấm — công bố sớm là xoá sổ cướp quyền. Ba ca biên: câu bị bỏ qua VẪN công bố; "Huỷ kết quả" KHÔNG tự công bố; đáp án Chướng ngại vật theo `GR-012`, ngoài cơ chế này. CẤM đẩy đáp án xuống client trước mốc rồi ẩn bằng cờ hiển thị (lỗi của tiền lệ Athena)**; timer/điểm/chuông chỉ tính ở server.
 
 ## Mô hình truy cập (chốt 12/07)
 
-- **Public (chỉ cần MÃ PHÒNG 6 số, không account, không duyệt)**: màn viewer + overlay OBS (frame stream) — read-only tuyệt đối, có rate-limit + nút "khoá cổng" của admin.
+- **Public (chỉ cần MÃ PHÒNG 6 số, không account, không duyệt)**: màn viewer + overlay OBS (frame stream) — read-only tuyệt đối qua **SSE + REST một chiều**, có rate-limit + nút "khoá cổng" của admin.
 - **Cần AUTH (username+password + permission)**: thí sinh, MC, admin/setter — mọi giao diện có thể gửi event hoặc thấy đáp án.
 
 ## Quy ước khác

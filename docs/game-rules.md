@@ -1112,7 +1112,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 
 - Hết vòng Về đích, trận **về `LOBBY`** — **chưa** đóng sổ, **chưa** tính hoà, **chưa** có thứ hạng. Admin vẫn sửa điểm được ở đây.
 - Phép phân định hoà chạy **tại cú bấm Chốt trận**, trên bảng điểm **ở đúng mốc đó** ⇒ điểm admin vừa sửa **được tính vào**.
-- Có hoà **trong `tieBreakPositions`** ⇒ `TIE_BREAK`; không thì `FINISHED`. `tieBreakPositions` mặc định `[1]` — chỉ phân định vị trí **NHẤT**.
+- Có hoà **trong `tieBreakPositions`** ⇒ `TIE_BREAK`; không thì `FINISHED`. **v1 khoá cứng `tieBreakPositions = [1]`** — chỉ phân định vị trí **NHẤT**, cửa tạo contest không cho chọn giá trị khác (`QĐ-085`). Cấu hình vẫn **nhận** danh sách nhiều vị trí mà không lỗi cấu trúc, nhưng **không có đường xử lý** cho chúng ⇒ ở v1, mọi ca dưới đây đọc `tieBreakPositions` như tập một phần tử.
 - Nhóm hoà phải có **≥ 2** người.
 - Phải có đủ **3 câu khả dụng** cho vòng này, kiểm ở **cửa vào vòng**. **Không có kho Câu hỏi phụ riêng** — đề rút từ ba kho nguồn *(Về đích · Khởi động · VCNV)*, xem `GR-023` và `QĐ-081`.
 
@@ -1142,9 +1142,9 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 **Ví dụ.**
 
 - A=100, B=100, C=90, D=85 ⇒ `TIE_BREAK` cho A, B.
-- A=100, B=100, C=100, D=85 với `tieBreakPositions=[1,2]` ⇒ `TIE_BREAK` cho A, B, C.
+- A=100, B=100, C=100, D=85 ⇒ `TIE_BREAK` cho **cả ba** A, B, C — nhóm hoà ở vị trí nhất có ba người, vẫn là **một** nhóm.
 - A=110, B=100, C=90 ⇒ `FINISHED`.
-- A=B=C=100 nhưng config `[1]` ⇒ `FINISHED`, ghi 3 người đồng hạng.
+- A=110, B=100, C=100, D=85 ⇒ `FINISHED`: hoà ở vị trí **nhì**, ngoài `tieBreakPositions` ⇒ **C4**, ghi B và C **đồng hạng nhì**, D xuống **hạng tư**, không có hạng ba.
 - A=100, B=100 ⇒ `TIE_BREAK`, A thắng ⇒ về `LOBBY`. Bấm Chốt trận lần hai, điểm không đổi ⇒ **C7**: `FINISHED`, A nhất.
 - Như trên nhưng admin sửa **A 100→110** ở `LOBBY` ⇒ **C8**: nhóm {A,B} tan, event mất đối tượng ⇒ `FINISHED`, A nhất **theo điểm**.
 - Như trên nhưng admin sửa **C 90→100** ⇒ **C8**: nhóm mới {A,B,C} ≠ {A,B} ⇒ vào `TIE_BREAK` **lần hai**, tiêu thêm 3 câu.
