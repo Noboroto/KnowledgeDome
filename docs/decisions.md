@@ -12,7 +12,7 @@
 | **Vì sao** | Lý do chọn, và **phương án bị loại** khi có. Phần này tồn tại để lần sau không ai mở lại một cuộc tranh luận đã xong. |
 | **Hệ quả** | Những chỗ khác buộc phải theo. |
 | **Nguồn** | Luật gốc, phát biểu của chủ dự án, hoặc suy luận từ quyết định khác. |
-| **Thay cho** | Mã cũ mà mục này gộp vào. Dùng để truy nguyên tài liệu cũ và `reviews/`. |
+| **Thay cho** | **Hiếm gặp.** Chỉ dùng khi mục này thay **một phần** của một quyết định khác, hoặc lấp một chỗ trống/mâu thuẫn đã biết. Ánh xạ **mã cũ → mã mới** không nằm ở đây mà ở **§M**. |
 
 **Ba hạng nguồn, không trộn lẫn:**
 
@@ -46,7 +46,7 @@ Bảy mục dưới đây chi phối mọi mục còn lại. Mâu thuẫn với 
 
 **Hệ quả.** Màn `/mc` là **READ-ONLY, trừ đúng MỘT ngoại lệ**: MC duyệt cú **giành quyền điều khiển** khi phiên admin đang giữ mất kết nối (`QĐ-093`) — chỗ duy nhất mà tầng *"bấm"* trống nên không còn ai thi hành lời của MC. Ngoài đó, **không tạo bề mặt quyền ghi nào cho MC**. Mọi mốc thời gian mà luật gốc mô tả bằng hành vi của MC đều thành một cú bấm của admin (`QĐ-027`).
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-6.4a`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-002 — Hệ thống ADVISORY: máy khuyến nghị, admin quyết
 
@@ -56,7 +56,7 @@ Bảy mục dưới đây chi phối mọi mục còn lại. Mâu thuẫn với 
 
 **Hệ quả.** Vị trí thí sinh và thứ tự lượt riêng Khởi động là **đầu vào của khuyến nghị**, không phải ràng buộc. Conflict luật ⇒ dialog cảnh báo, admin bấm Yes là thực hiện.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5`, `Đ-7.1`, `C-15`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-003 — Chỉ có BA chỗ chặn cứng
 
@@ -72,7 +72,7 @@ Mọi lệch luật khác **chỉ cảnh báo**.
 
 **Hệ quả.** Ngưỡng thứ ba **không ép được**, nên phải có lối thoát: `QĐ-043` cho admin bổ sung câu tại cửa vào vòng.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-15.3`, `Đ-31`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-004 — Thao tác ở INVALID STATE là nhánh KHÔNG TỒN TẠI
 
@@ -82,7 +82,7 @@ Mọi lệch luật khác **chỉ cảnh báo**.
 
 **Hệ quả.** Ba lớp phản hồi tách bạch: **toast** (không ép được) · **dialog cảnh báo** (ép được) · **dialog xác nhận** (chống bấm nhầm).
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-16`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-005 — Chống bấm nhầm chỉ ở phía ADMIN
 
@@ -96,7 +96,7 @@ Mọi lệch luật khác **chỉ cảnh báo**.
 
 **Hệ quả.** Lỗi bấm nhầm của thí sinh được sửa bằng **admin bấm No** ở hàng đợi (`QĐ-021`), không phải bằng nút "huỷ" phía thí sinh.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-4.3`, `Đ-7` (vế dialog), `Đ-36` (vế ngoại lệ)
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-006 — Mốc do admin bấm là TUYỆT ĐỐI
 
@@ -106,7 +106,7 @@ Mọi lệch luật khác **chỉ cảnh báo**.
 
 **Hệ quả.** Van thoát **không phải** grace mà là **sửa được sau**: lịch sử giữ đầy đủ để admin xem lại và can thiệp.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-6.3`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-103 — Xung đột CHƯA CÓ LUẬT: giải bằng HÀNG ĐỢI, hết cách mới NGẪU NHIÊN
 
@@ -151,7 +151,7 @@ Mọi lệch luật khác **chỉ cảnh báo**.
 
 **Hệ quả.** Cấu hình 4 ghế mà **runtime tụt còn 3** (rớt quá grace, bị loại, bỏ cuộc) là tình huống của **v1**, không hoãn được: hệ thống cảnh báo, **admin quyết** (`QĐ-002`).
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-7`, `GRR-129`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-068 — v1 khoá cứng BỐN hàng ngang VCNV; cấu hình vẫn nhận 5-8
 
@@ -161,7 +161,7 @@ Mọi lệch luật khác **chỉ cảnh báo**.
 
 **Hệ quả.** Cùng khuôn với `QĐ-007`: **hạ tầng làm sẵn, luật để sau**. Không migrate schema khi mở khoá.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `U-3`, `C-7` *(vế `rowCount`)*
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-069 — v1 khoá cứng playlist BỐN vòng chuẩn
 
@@ -173,7 +173,7 @@ Không lặp vòng, không đổi thứ tự, không bớt vòng ở **thiết k
 
 **Đừng nhầm với `QĐ-035`.** Bỏ vòng và **chạy lại** vòng vẫn được phép — đó là **sửa sự cố** một vòng đã hỏng, khác hẳn việc **thiết kế** một contest có hai vòng Khởi động. Thứ tự **chạy** vẫn do admin quyết (`QĐ-002`); thứ bị khoá là **cấu hình** playlist.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-7` *(vế playlist)*, `G-2` *(vế "số vòng không cứng")*
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-085 — v1 khoá cứng phạm vi phân định hoà: CHỈ vị trí NHẤT
 
@@ -199,7 +199,7 @@ Khoá `[1]` xoá cả bốn khỏi v1 mà **không mất tính năng nào đang 
 - **`QĐ-083` §Ba ca biên vẫn đúng nguyên văn.** Ca *"sửa điểm làm hoà nhóm khác"* nay chỉ có nghĩa: sửa điểm tạo ra một nhóm hoà **mới ở vị trí nhất**. Vẫn là `TIE_BREAK` lần hai, vẫn tiêu 3 câu, vẫn tối đa 4 lần với kho dư 12 câu.
 - **Ví dụ `tieBreakPositions = [1,2]` trong `QĐ-083`** là minh hoạ cho phương án *"+1đ"* đã bị loại, **không phải** cấu hình v1 hỗ trợ. Giữ nguyên vì nó đang chứng minh một lập luận, không đang mô tả sản phẩm.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · `[SUY RA]` từ `QĐ-068`, `QĐ-069` *(cùng khuôn)* · *Thay cho*: câu hỏi mở **phạm vi phân định hoà** *(nay đã đóng)*, `GRR-158`
+*Nguồn*: `[CHỦ DỰ ÁN]` · `[SUY RA]` từ `QĐ-068`, `QĐ-069` *(cùng khuôn)*
 
 ### QĐ-089 — Số trận song song: mục tiêu định cỡ là SÁU, không phải chặn cứng
 
@@ -213,7 +213,7 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 
 **Hệ quả.** `ASSUMPTION-002` chuyển từ *"con số chốt mà không dẫn nguồn nhu cầu"* sang **có con số từ chủ dự án**, nhưng vế *"nhiều trận song song là nhu cầu thật"* **vẫn là giả định chưa kiểm chứng** — 6 là kỳ vọng, không phải quan sát.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **số trận song song** *(nay đã đóng)*
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-008 — Một contest có nhiều TÀI KHOẢN admin, nhưng đúng MỘT PHIÊN điều khiển
 
@@ -223,7 +223,7 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 
 **Hệ quả.** Phải có cơ chế **chuyển quyền điều khiển** giữa hai phiên, và mọi lần chuyển đều vào `AuditLog`. Mỗi event vẫn mang **đúng một** `actor` = phiên đang giữ quyền lúc bấm ⇒ mô hình event log không đổi gì.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-18`, `S-16`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-009 — v1 luôn có người điều khiển
 
@@ -231,7 +231,7 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 
 **Hệ quả.** Rủi ro *"không ai chấm"* dồn hết sang tính năng luyện tập của v1.5, nơi nó được giải bằng phạm vi khác (`QĐ-040`).
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-14`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -245,7 +245,7 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 
 **Hệ quả.** Mâu thuẫn *"chính tả nghiêm ngặt vs normalize"* **tan** — không có nhánh máy nào tự quyết, nên normalize và highlight chỉ là **trợ giúp hiển thị**. Bỏ dấu khi so khớp nghĩa là *"đừng tô đỏ chỗ khác dấu"*, **không** nghĩa là *"công nhận đúng"*.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-1`, `C-12`, `K-6`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-011 — Điểm là hàm của event log; hoàn nguyên là THÊM event
 
@@ -255,13 +255,13 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 
 **Hệ quả.** Bỏ vòng VCNV sinh event đảo ngược **chỉ cho event điểm của VCNV**; điểm Tăng tốc giữ nguyên. Không có khái niệm *"quay về snapshot mốc vòng"*.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5.3`, `Đ-5.3.X`, `R-GEN-07` (bị thay thế), `GRR-073` (mất đối tượng)
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-012 — Điểm được phép ÂM
 
 **Quyết định.** Không có sàn điểm. Điểm âm tham gia bình thường vào xếp lượt Về đích, điều kiện hoà, và hiển thị.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-2`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-013 — Độ hạt của một event điểm: hai hình dạng, không tranh nhau
 
@@ -276,7 +276,7 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 
 **Hệ quả.** Không cần khoá chống trùng dùng chung cho E1 và E2 — vì `QĐ-014` bỏ hẳn thao tác sửa từng phần một event E2. Hai hình dạng **không bao giờ phải nói chuyện với nhau**.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5.3.1`, `GRR-071`, `TERM-026`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-014 — Một câu đi qua ĐÚNG MỘT phán quyết; sai thì admin cộng tay
 
@@ -286,13 +286,13 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 
 **Hệ quả.** Ở Tăng tốc, admin **tự tính delta** kể cả phần dây chuyền — một ghế từ Sai thành Đúng thì những người xếp sau tụt một bậc, có thể phải sửa tới bốn ghế cho một lỗi. Đây là **cái giá được chấp nhận có chủ ý**: đổi lấy một mô hình mà người vận hành giữ trọn trong đầu.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-17`, `Đ-56`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-015 — Điểm số là thông tin CÔNG KHAI với mọi vai
 
 **Quyết định.** Bảng điểm hiển thị cho viewer, overlay, thí sinh, MC, admin. Chỉ **đáp án** mới bị giới hạn (`QĐ-051`).
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-20`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-083 — Kết quả Câu hỏi phụ là EVENT THỨ HẠNG, không phải event điểm
 
@@ -329,7 +329,7 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 - **`TERM-021` bổ sung `TIE_BREAK_RESOLVED`** vào danh sách loại event đã đặt tên. Đây chính là chỗ trống mà `GRR-156` chỉ ra.
 - **Nhánh bốc thăm không phải làm lại gì**: `EVENT-027` *(xác nhận kết quả bốc thăm)* là cái sinh ra `TIE_BREAK_RESOLVED` với `method = 'random-draw'`. Các lần bốc trước vẫn nằm nguyên trong log theo `QĐ-011`.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `GRR-156`, và mâu thuẫn `LOBBY` / `FINISHED` giữa `game-rules.md` và `game-state-machine.md`
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: mâu thuẫn `LOBBY` / `FINISHED` giữa `game-rules.md` và `game-state-machine.md`
 
 ---
 
@@ -348,13 +348,13 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Hệ quả ngược trực giác.** Mode sân khấu **không** làm nhẹ yêu cầu phần cứng — VCNV và Tăng tốc vẫn buộc gõ máy (`QĐ-018`), nên mỗi thí sinh vẫn cần thiết bị nhập liệu đầy đủ.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-4`, `Đ-4.1`, `C-13`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-017 — Mode đặt ở cấp CONTEST, một giá trị chung cho mọi vòng
 
 **Quyết định.** Một contest **không trộn** hai mode.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-4.a2`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-018 — VCNV và Tăng tốc LUÔN gõ máy
 
@@ -362,7 +362,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Vì sao.** Luật gốc nói thẳng *"các thí sinh trả lời bằng máy tính"* ở hai vòng này. Phát biểu đó **được giữ nguyên, không bị ghi đè** — không có mâu thuẫn với nguồn.
 
-*Nguồn*: `[LUẬT GỐC]` · *Thay cho*: `Đ-4.b`, `Đ-4.X2`, `Đ-14`
+*Nguồn*: `[LUẬT GỐC]`
 
 ### QĐ-019 — Chủ thể thao tác đi theo MODE, một đường vào cho mỗi mode
 
@@ -379,7 +379,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 1. **Chọn gói Về đích, mode nhập liệu** vẫn giữ fallback admin chọn hộ `20/20/20` khi thí sinh không chọn kịp — luật cần một đường thoát để lượt thi không tắc, còn chọn hàng ngang thì không có mốc "quá hạn" tương đương.
 2. **Chọn hàng ngang, mode nhập liệu** có **dialog xác nhận trên máy thí sinh** — ngoại lệ duy nhất của `QĐ-005`. Xác nhận xong thì khoá nút chọn; khoá là **tạm**, admin bấm No thì mở lại. Dialog này **không thay thế** bước admin duyệt: dialog chống bấm nhầm, admin duyệt là phán quyết.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-36`, `Đ-40`, `Đ-41`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -391,7 +391,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Vì sao.** Lịch sử đầy đủ là van thoát thay cho grace (`QĐ-006`) — admin xem lại được và can thiệp được khi có sự cố.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-7`, `Đ-7.a`, `Đ-7.b`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-021 — Hàng đợi chỉ CHẶN ở VCNV
 
@@ -406,7 +406,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Tiêu chí.** Tín hiệu **một chiều, hậu quả nặng, không bị ép thời gian** ⇒ chặn. Tín hiệu **đua tốc độ, cửa sổ chặt** ⇒ không chặn, server phân xử ngay; hàng đợi chỉ là lưới an toàn.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-7.2`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-022 — Từ chối một tín hiệu KHÔNG làm thí sinh mất lượt
 
@@ -414,13 +414,13 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Vì sao.** Đây là cơ chế sửa lỗi bấm nhầm của thí sinh (`QĐ-005`). Nếu reject làm mất lượt thì nó thành hình phạt, và admin sẽ ngại dùng.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-7` (vế reject), `GRR-143`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-023 — Chuông chỉ nhận click chuột và tự khoá ngay khi bấm
 
 **Quyết định.** **Không gán hotkey** cho chuông — tránh bấm nhầm khi đang gõ đáp án. Nút tự khoá **ở frontend, trước khi gửi**, gỡ khoá khi sang câu mới. Nút *"Mở chướng ngại vật"* của VCNV **được xếp là chuông** ⇒ cũng chỉ nhận click, cũng tự khoá, nên mỗi ghế chỉ phát **một** tín hiệu cho cả vòng.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-24`, `Đ-4.3` (vế chuông)
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-024 — Tín hiệu đến sau khi đã có người giành quyền: ghi nhận nhưng TRƠ
 
@@ -428,13 +428,13 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Vì sao.** *Trơ* khác *drop*: drop là mất dấu, trơ là có dấu mà không có hiệu lực. Lịch sử trơ chính là căn cứ để admin can thiệp khi có tranh chấp.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-25`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-025 — Hai tín hiệu cùng mốc thời gian: hàng đợi tự quyết
 
 **Quyết định.** Bằng nhau tới **millisecond** thì thứ tự do hàng đợi quyết định, không có quy tắc phá hoà nào thêm.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-23`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-026 — Đặt Ngôi sao hy vọng ở mode nhập liệu KHÔNG cần admin duyệt
 
@@ -442,7 +442,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Vì sao.** Cụm *"admin duyệt Yes/No"* trong tài liệu cũ là **lỗi diễn đạt** mô tả **mode sân khấu**, nơi admin **là người bấm** nên khái niệm *"duyệt tín hiệu"* không tồn tại. Về sau bị đọc thành *"admin duyệt tín hiệu của thí sinh"*, tạo ra một mâu thuẫn không có thật.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-54`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -461,7 +461,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Vì sao.** Hệ quả trực tiếp của `QĐ-001`: máy không quan sát được sân khấu, admin là cảm biến.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-6`, `Đ-6.1`, `Đ-33`, `GRR-048`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-028 — "Hiển thị câu hỏi" và "start timer" là HAI thao tác, thứ tự cố định
 
@@ -469,13 +469,13 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Vì sao.** Gộp lại là **phá luật**: khoảng giữa hai mốc chính là lúc MC đọc, và hai thứ sống trong khoảng đó — cửa sổ chuông của Khởi động lượt chung, và mốc đóng cửa sổ Ngôi sao hy vọng. Gộp thì cửa sổ chuông co lại đúng bằng thời gian suy nghĩ, còn cửa sổ NSHV mất mốc đóng.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-26`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-029 — Biên thời gian là biên ĐÓNG
 
 **Quyết định.** Tới **đúng** mốc hạn là **hợp lệ**. Bản quá hạn **không bị máy loại thẳng** — nó vào lịch sử màn admin, **tô đỏ**, admin quyết.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-28`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-030 — Đồng hồ khoá THÍ SINH, không khoá ADMIN; và không bao giờ đóng băng
 
@@ -485,7 +485,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Phân biệt KHÉP với ĐÓNG BĂNG.** Bất biến này cấm **đóng băng** — giữ đồng hồ lại rồi thả ra, vì thời gian đã trôi thì không lấy lại được. Nó **không** cấm một cửa sổ **kết thúc sớm** khi lý do tồn tại của nó đã hết (`QĐ-031`, `QĐ-034`).
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-20`, `Đ-21`, `Đ-35` (vế nút chấm)
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-031 — Tín hiệu KHÔNG GIÀNH QUYỀN không đụng đồng hồ; tín hiệu GIÀNH QUYỀN thì khép cửa sổ
 
@@ -503,7 +503,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Không có đồng hồ trả lời riêng ở Câu hỏi phụ.** Luật gốc **im lặng có chủ ý**: nó nói rõ *"tính từ lúc giành được quyền"* ở Khởi động lượt chung và *"suy nghĩ **và trả lời**"* ở Về đích, nhưng ở Câu hỏi phụ chỉ ghi *"Thời gian suy nghĩ cho mỗi câu hỏi là 15 giây"* — và **không** có chế tài cho việc bấm chuông rồi im lặng. Ba chỗ vắng cùng lúc không phải sót. Bấm rồi im ⇒ admin chấm Sai ⇒ sang câu kế.
 
-*Nguồn*: `[LUẬT GỐC]` + `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-22`, `Đ-53`
+*Nguồn*: `[LUẬT GỐC]` + `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -517,7 +517,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Hệ quả.** Nội dung trình diễn giữa hai vòng (giao lưu, giải lao, video hình hiệu) **không cần** trạng thái riêng — nó là **lớp phủ** admin bật/tắt.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-38`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-033 — Pipeline vòng ĐỘC LẬP
 
@@ -531,7 +531,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Ngoại lệ duy nhất** là cờ **hành chính** của admin — `QĐ-047` — vì nó không do vòng nào sinh ra.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-39`, `Đ-42`, `Đ-7.3`, `Đ-5.1d`, `Đ-5.1e`, `GRR-115` → `GRR-117`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-034 — Mọi vòng vào và ra qua `LOBBY`; có cửa ra khẩn cấp giữ điểm
 
@@ -548,7 +548,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Hệ quả.** Câu đang mở khép bằng **Huỷ kết quả** — không sinh điểm cho ai, và **không** ép mọi ghế thành SAI: cú bấm *"kết thúc khẩn cấp"* phát biểu *"vòng này hỏng"*, ép thành SAI ở đó là tự chấm trá hình. Biên bản gắn nhãn **"kết thúc sớm"**.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-46`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-035 — Bỏ vòng và chạy lại vòng
 
@@ -563,7 +563,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 | Điều chỉnh điểm thủ công của admin | **KHÔNG** tự revert — đó là phán quyết của người, không thuộc vòng nào |
 | Vòng đang chạy vs đã kết thúc | **Cùng quy tắc**, chỉ khác kích thước tập event |
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5.1`, `Đ-5.2`, `Đ-11.B`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-036 — Trận KHÔNG tự đóng sổ: `LOBBY` giữ trận cho tới khi admin bấm
 
@@ -573,7 +573,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Hệ quả.** Hộp thoại chốt trận **phải nói rõ hệ quả** — *"chốt xong sẽ không sửa được điểm nữa"* (`QĐ-037`). Mở công bố kết quả **trước** khi chốt vẫn hợp lệ, nhưng bảng đó là **tạm thời**.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-48`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-037 — `FINISHED` là terminal và NIÊM PHONG
 
@@ -585,7 +585,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Phương án bị loại.** `GRR-120` đề xuất cho phép **chạy lại vòng sau `FINISHED`** — **bác**, vì chạy lại vòng làm đổi điểm. Nhu cầu đằng sau nó được đáp ứng sớm hơn ở `LOBBY` và muộn hơn ở trận mới.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-51`, `GRR-120` (bác)
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-038 — Trận bỏ dở đóng sổ bằng NHÃN, không phải bằng trạng thái thứ năm
 
@@ -595,7 +595,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Trường đi kèm.** `matchClosedReason` (`hoàn thành` | `bỏ dở`) · `closedBy` · `closedAt` · `reason` (**bắt buộc** khi bỏ dở).
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-47`, `GRR-077` vế 2
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-039 — Contest là BẢN THIẾT KẾ, Match là MỘT LẦN CHẠY
 
@@ -615,7 +615,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Ràng buộc suy ra.** Một contest chỉ có **một trận đang chạy** tại một thời điểm — mã phòng thuộc contest, nên hai trận song song sẽ đụng nhau ở cùng một phòng.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-49`, `C-9`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-040 — Tách PRACTICE CONTEST khỏi CONTEST THẬT
 
@@ -643,7 +643,7 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu Đ�
 
 **Practice contest không cần luật mới**: phạm vi no-repeat vốn theo từng contest, nên nó tự tách khỏi mọi contest thật.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-57`, `U-31`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -655,7 +655,7 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu Đ�
 
 **Hệ quả.** Biên *"lớn hơn max"* của mọi vòng **không tồn tại**, và **"kho đề cạn giữa vòng" không tồn tại** — nhu cầu của vòng đã được kiểm đủ tại cửa vào. Nút *"Câu kế tiếp"* ở câu cuối cùng đã chuyển dạng thành *"Kết thúc lượt"*.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-30`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-042 — Kho đề kiểm tại CỬA VÀO TỪNG VÒNG
 
@@ -663,7 +663,7 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu Đ�
 
 **Vì sao.** Kiểm ở cửa vào từng vòng thay vì một lần lúc bắt đầu trận: admin đổi thứ tự vòng được (`QĐ-002`), nên không có "danh sách vòng sẽ chạy" để kiểm trước.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-31`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-043 — Danh sách câu đã gán sửa được tại CỬA VÀO VÒNG
 
@@ -671,7 +671,7 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu Đ�
 
 **Vì sao.** Đây là **lối thoát duy nhất** của ngưỡng chặn cứng `QĐ-042` — không có nó thì một vòng thiếu câu là mất hẳn. Còn cấm gỡ câu đã hiển thị là để bịt đường lách: gỡ rồi thêm lại sẽ vô hiệu hoá `QĐ-044`.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-37`, `C-18`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-044 — Câu ĐÃ HIỂN THỊ thì không bao giờ trả lại kho
 
@@ -685,7 +685,7 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu Đ�
 
 *Vì sao không cho tắt.* Tắt no-repeat là mở lại đúng ba thứ mà cả cụm quyết định kho đề dựng lên để chặn: hỏi lại câu đã lộ trên sóng · vô hiệu hoá hàng rào `everPublic` *(`QĐ-071`)* bằng một công tắc trông vô hại · và làm phép suy số trận từ kho đề mất nghĩa. Nếu về sau thật sự cần *"cho phép lặp"*, đó phải là một quyết định riêng có lý do riêng, **không phải một cờ nằm sẵn chờ ai đó bật**.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-5.2f`, `GRR-085`, `GRR-118`, `U-30`, và vế *"cờ no-repeat"* của `QĐ-039`
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: vế *"cờ no-repeat"* của `QĐ-039`
 
 ### QĐ-071 — Hàng rào `everPublic` gắn với THAO TÁC, không gắn với MỐC THỜI GIAN
 
@@ -705,7 +705,7 @@ Và là **cùng lỗ hổng với `QĐ-063`** nhìn từ hướng khác: ở đ�
 
 **Hệ quả.** Không viết nhánh mới — cửa của `QĐ-043` và luồng import **gọi lại đúng** hàng rào đã có. Không thêm chỗ chặn cứng nào: `QĐ-003` giữ nguyên **ba** chỗ, vì đây vẫn là **cùng một** hàng rào, chỉ được gọi ở nhiều điểm hơn. Vẫn ép được — chỉ là ép có dấu vết.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `S-21`, `GRR-111`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-082 — VCNV chọn theo BỘ; hàng ngang không phải câu độc lập
 
@@ -773,7 +773,7 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 - **Nhập X3 phải có bản xem trước ba nhóm** trước khi cho bấm: *sẽ chuyển sang đã dùng* · *đã ở trạng thái đó, bỏ qua* · **không thuộc danh sách gán của contest đích** — nhóm thứ ba **báo rõ và không tự áp**, vì cờ này gắn với contest chứ không gắn với câu.
 - **Cả hai đường ghi đều qua dialog Yes/No** (`QĐ-072`, không hoàn tác được) và ghi `AuditLog` kèm nguồn là *tay* hay *bản kê nào*. **Không** sinh `MatchEvent` — đây là thao tác cấp contest, không thuộc trận nào.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **gói kết quả chiều ngược** *(nay đã đóng)*, `RISK-010`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-086 — Gói contest MANG danh sách người tham gia, và danh sách đó LUÔN mã hoá
 
@@ -804,7 +804,7 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 - **Tài liệu vận hành phải nói: xoá gói sau ngày thi.** Gói đã ra khỏi hệ thống thì hạn lưu trữ (`QĐ-091`) không với tới được nó.
 - **Phiếu tài khoản là hiện vật in ra** — nó thừa hưởng đúng vấn đề của mọi thứ in ra, và tài liệu vận hành phải nhắc thu lại hoặc huỷ.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **danh sách thí sinh trong gói contest** *(nay đã đóng)*
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -892,7 +892,7 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 
 **Hệ quả.** Grace là **khuyến nghị**, không phải ràng buộc: admin can thiệp sớm cũng được. Ghế mất kết nối giữa vòng **không cản trận chạy tiếp**.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `U-13`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-046 — Ghế kết nối lại được khôi phục kể cả GIỮA CÂU
 
@@ -905,7 +905,7 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 
 **Thứ không khôi phục được**: ký tự đang gõ dở mà **chưa gửi** — nó chưa bao giờ tới server.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-45b`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-047 — v1 KHÔNG có kick; dùng VÔ HIỆU HOÁ / KÍCH HOẠT LẠI
 
@@ -919,7 +919,7 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 
 **Vô hiệu hoá KHÔNG phải hệ quả của mất kết nối** — hai chuyện độc lập, hai nút khác nhau.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-52`, `Đ-45a` (bị thay thế)
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -937,13 +937,13 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 
 Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài khoản admin khác **tiếp quản được** khi phiên cũ mất kết nối.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `S-17`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-048 — Admin TOÀN QUYỀN mở và đóng đáp án, ô chữ
 
 **Quyết định.** Quyền không điều kiện. Thao tác **mở** đi qua **dialog Yes/No** để tránh bấm nhầm.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-11`, `C-11`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-049 — Màn công bố kết quả là LỚP PHỦ, không phải một bước của luồng thi
 
@@ -960,7 +960,7 @@ Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài kho�
 
 **Lớp phủ áp cho MỌI vai, gồm cả máy thí sinh** — điểm vốn đã công khai với mọi vai (`QĐ-015`) nên không lộ thêm gì.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-19`, `S-24`, `S-25`, `GRR-032`, `GRR-057`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-050 — Banner tạm dừng: chặn toàn cục, KHÔNG CHỮ
 
@@ -970,7 +970,7 @@ Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài kho�
 
 **Hệ quả.** Không tồn tại thời điểm nào banner và một đồng hồ đang chạy cùng có mặt, nên câu hỏi *"banner có đóng băng đồng hồ không"* **không có chủ ngữ** — `QĐ-030` không cần ngoại lệ.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` + `[SUY RA]` (chiều thứ hai) · *Thay cho*: `C-21`
+*Nguồn*: `[CHỦ DỰ ÁN]` + `[SUY RA]` (chiều thứ hai)
 
 ### QĐ-096 — Khán giả và lớp phủ vào bằng ĐÚNG URL; không tài khoản, không vai, không bước nhập mã
 
@@ -1055,7 +1055,7 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **`Esc` ở màn thí sinh mode sân khấu**: **không làm gì** — ba vòng đó không có ô nhập để xoá, và `Esc` không bao giờ là nút quay lại ở màn thi đấu.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-004`, `QĐ-005` · *Thay cho*: `Q-A1`, `S-3`, `S-7`, `S-18`
+*Nguồn*: `[SUY RA]` từ `QĐ-004`, `QĐ-005`
 
 ### QĐ-073 — Màn chấm của admin
 
@@ -1067,7 +1067,7 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 - **Admin xem được lịch sử bài gửi** của một ghế, không chỉ bản đang tính. Cần cho phân xử khiếu nại; và `QĐ-029` đã giao cho admin quyền sửa, nên phải cho admin dữ liệu để sửa đúng.
 - **Bản hợp lệ và bản quá hạn hiện CẠNH NHAU**, bản quá hạn tô đỏ, và **nút chấm bật được cho cả hai**. Khoá cứng bản quá hạn là lấy mất quyền phán quyết mà `QĐ-010` đã giao.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-010`, `QĐ-013`, `QĐ-029` · *Thay cho*: `Q-B2`, `Q-B4`, `Q-B5`, `S-8`, `S-9`
+*Nguồn*: `[SUY RA]` từ `QĐ-010`, `QĐ-013`, `QĐ-029`
 
 ### QĐ-074 — Thao tác tay của admin THẮNG mọi cờ tự động
 
@@ -1079,7 +1079,7 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **Không có khái niệm "engine tự mở".** Engine không bao giờ tự mở gì, nên `AuditLog` **không cần** phân biệt *do-admin* với *do-engine* — mọi lần mở đều do admin. Chỗ **cần** phân biệt là khác: ô VCNV chuyển sang *đã hỏi* do **luồng** hay do **admin đánh dấu tay** (`GR-009` C12), vì hai đường đó cùng đổi băng điểm.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-048`, `QĐ-051`, `QĐ-062` · *Thay cho*: `Q-A3`, `Q-A5`, `Q-A6`, `Q-A7`
+*Nguồn*: `[SUY RA]` từ `QĐ-048`, `QĐ-051`, `QĐ-062`
 
 ### QĐ-075 — Mode trả lời: chụp vào trận, không thuộc preset luật
 
@@ -1091,7 +1091,7 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 - **Một mode chung cho cả trận official lẫn trận practice** của cùng contest — mode là thuộc tính của **phòng**, không của **mục đích trận**. Đây là chỗ nó khác `revealAnswerAfterJudge` (`QĐ-062`), và khác **có lý do**, không phải thiếu nhất quán.
 - **Biên bản ở mode sân khấu ghi Đúng/Sai, không ghi nội dung** — không có bài làm dạng chữ để ghi. Mode nhập liệu thì ghi cả nội dung.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-016`, `QĐ-017`, `QĐ-062` · *Thay cho*: `Q-C1b`, `Q-C1c`, `Q-C2`, `Q-C3`, `Q-C4`
+*Nguồn*: `[SUY RA]` từ `QĐ-016`, `QĐ-017`, `QĐ-062`
 
 ### QĐ-076 — Viewer KHÔNG được báo về can thiệp của admin
 
@@ -1101,7 +1101,7 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **Vì sao.** Viewer xem một **buổi thi**, không xem một **bảng điều khiển**. Mọi thông báo kiểu *"admin vừa bỏ vòng 2"* đều biến sự cố hậu trường thành sự kiện trên sân khấu. Người giải thích chuyện đang xảy ra là **MC**, không phải giao diện.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-035`, `QĐ-051` · *Thay cho*: `S-4`, `S-11`, `S-22`
+*Nguồn*: `[SUY RA]` từ `QĐ-035`, `QĐ-051`
 
 ### QĐ-077 — Biên bản trận ghi theo LẦN CHẠY
 
@@ -1111,7 +1111,7 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **Xuất biên bản trước khi dọn dữ liệu.** Job dọn theo retention **cảnh báo trước**, và **không** đụng biên bản đã xuất — hiện vật đã xuất nằm ngoài vòng đời của dữ liệu thô.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-011`, `QĐ-035` · *Thay cho*: `S-6`, `S-10`
+*Nguồn*: `[SUY RA]` từ `QĐ-011`, `QĐ-035`
 
 ### QĐ-078 — Thao tác phá huỷ có permission RIÊNG, không mặc định theo vai
 
@@ -1119,7 +1119,7 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **Vì sao.** Đây là các thao tác **đổi được kết quả trận**. Zero-trust bắt server kiểm quyền cho **mọi** request; nếu quyền chỉ là *"vai admin"* thì không có cách nào cấp một tài khoản chạy trận mà không đồng thời cho nó xoá vòng. Tách permission cũng là thứ làm cho `QĐ-008` — nhiều tài khoản, một phiên — dùng được thật.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-008` · *Thay cho*: `S-1`
+*Nguồn*: `[SUY RA]` từ `QĐ-008`
 
 ### QĐ-079 — Danh sách `sound-cue` phủ cả sự kiện điều khiển
 
@@ -1127,7 +1127,7 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **Vì sao.** Thiếu slot thì không thêm được về sau mà không sửa engine. Có slot mà để trống thì **không tốn gì**.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-049` · *Thay cho*: `S-5`
+*Nguồn*: `[SUY RA]` từ `QĐ-049`
 
 ### QĐ-088 — Hai kênh public nhận đẩy MỘT CHIỀU trên HTTP; kênh hai chiều chỉ cho vai đã xác thực
 
@@ -1148,7 +1148,7 @@ Kênh hai chiều **chỉ dành cho vai đã xác thực**: admin, thí sinh, MC
 - **Nút *"khoá cổng"*** (`PRD-REQ-086`) áp ở tầng vào của kênh public, không đổi.
 - **Không đụng tới việc nạp trước media mã hoá** (`QĐ-012b`) — đó là đường tải nội dung, không phải đường sự kiện.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: vế *"quy mô viewer có ảnh hưởng trận không"* của câu hỏi mở **quy mô viewer** *(nay đã đóng)*
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-102 — Khoá cổng chỉ chặn MÀN KHÁN GIẢ; lớp phủ luôn vào được
 
@@ -1176,7 +1176,7 @@ Kênh hai chiều **chỉ dành cho vai đã xác thực**: admin, thí sinh, MC
 - **`RISK-007` mất một hướng giảm thiểu.** Còn lại: giới hạn tần suất, nút khoá cổng phòng, **và** khuyến nghị đặt tên hiển thị rút gọn trong tài liệu vận hành. Mức tác động của rủi ro **không đổi** — hướng giảm thiểu cũ vốn đã yếu, việc bỏ nó chỉ làm hồ sơ rủi ro **nói thật hơn**.
 - **`ASSUMPTION-005` mất một căn cứ**: nó từng dẫn chính tuỳ chọn này làm biện pháp giảm thiểu.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **biệt danh có bật mặc định không** *(nay đã đóng)*
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -1201,7 +1201,7 @@ Cách viết này bảo đảm hai điều mà bộ đếm `+1` không: **không
 
 **Đường mở tay của admin** đặt thẳng một ô sang giá trị bất kỳ, **cả hai chiều**. Nó **không sinh điểm cho ai** và **không tiêu câu** — mốc tiêu câu là *hiển thị câu hỏi*, mà nút đó đã tách rời. Đây là **đường duy nhất để dựng lại bàn cờ sau sự cố**, nên nó phải nuôi đúng biến mà băng điểm đọc: nếu không thì trạng thái khôi phục **trông đúng mà tính điểm sai**.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-44`, `Đ-50`, `U-32`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-053 — Chốt câu ⇒ ghế chưa chấm mặc định SAI
 
@@ -1218,7 +1218,7 @@ Cách viết này bảo đảm hai điều mà bộ đếm `+1` không: **không
 
 Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đang chờ, admin chốt câu vì lý do hoàn toàn khác sẽ **loại nhầm** một thí sinh — hậu quả nặng nhất của cả vòng.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-43`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-054 — Câu hỏi phụ: chuông KHÔNG SỐNG trước mốc start timer
 
@@ -1241,7 +1241,7 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 | **VCNV** (*"Mở chướng ngại vật"*) | Không gắn mốc nào — bấm được bất cứ lúc nào trong vòng |
 | **Về đích** (cướp quyền) | Admin chấm Sai — cửa sổ 5 giây |
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-55`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-055 — Câu hỏi phụ KHÔNG cộng điểm trận
 
@@ -1253,7 +1253,7 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 *Nguồn đề của vòng này*: xem `QĐ-081` — **không có kho Câu hỏi phụ riêng**.
 
-*Nguồn*: `[LUẬT GỐC]` · *Thay cho*: `GRR-058`, `GRR-059`, `GRR-061`, `GRR-064`, `Đ-9`, `Đ-9.a`
+*Nguồn*: `[LUẬT GỐC]`
 
 ### QĐ-081 — Câu hỏi phụ KHÔNG có kho riêng; rút từ ba kho nguồn
 
@@ -1308,7 +1308,7 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 | Biên quỹ thời gian | Hết giờ còn câu, hoặc hết câu còn giờ ⇒ **lượt kết thúc** ở cả hai nhánh |
 | Thứ tự lượt riêng | Luật **không quy định** ⇒ khuyến nghị theo contest settings |
 
-*Nguồn*: `[LUẬT GỐC]` · *Thay cho*: `GRR-005`, `GRR-006`, `GRR-012`, `Đ-5.a`, `Đ-19`
+*Nguồn*: `[LUẬT GỐC]`
 
 ### QĐ-057 — VCNV: sáu chỗ đọc nguồn đã giải quyết
 
@@ -1323,7 +1323,7 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 | Nhiều người bấm giải CNV | Thứ tự = thứ tự vào hàng đợi; người bị từ chối **không mất lượt** |
 | Công bố Chướng ngại vật | Thao tác **thủ công** của admin, **tuỳ chọn** — vòng vẫn kết thúc được mà không công bố |
 
-*Nguồn*: `[LUẬT GỐC]` · *Thay cho*: `GRR-013`, `GRR-016`, `GRR-019`, `GRR-021`, `GRR-025`, `GRR-027`
+*Nguồn*: `[LUẬT GỐC]`
 
 ### QĐ-058 — Về đích: bốn chỗ đọc nguồn đã giải quyết
 
@@ -1339,7 +1339,7 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 **Hai con số hay bị lẫn.** **5 giây** là độ dài **cửa sổ bấm chuông** cướp quyền; **20/40 giây** là **thời gian thực hành của người cướp**, chỉ bắt đầu đếm **sau khi** đã có người giành được quyền.
 
-*Nguồn*: `[LUẬT GỐC]` · *Thay cho*: `GRR-041`, `GRR-047`, `GRR-048`, `GRR-056`, `U-8`, `U-20`, `Đ-3`
+*Nguồn*: `[LUẬT GỐC]`
 
 ### QĐ-059 — Tăng tốc: xếp hạng tính trên TẬP NGƯỜI ĐÚNG
 
@@ -1347,13 +1347,13 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 **Nhận mọi lần trả lời tới khi hết giờ, tính bản CUỐI CÙNG.** Không khoá ô nhập, không khoá nút gửi. Xếp hạng theo server-received timestamp của bản cuối. **Bản nội dung y hệt bản trước KHÔNG cập nhật mốc** — cập nhật mốc cho một bản không đổi nội dung cho phép thí sinh **tự làm xấu** thứ hạng của mình bằng thao tác vô nghĩa, mà ở vòng xếp hạng thì mốc **là** kết quả.
 
-*Nguồn*: `[LUẬT GỐC]` + `[CHỦ DỰ ÁN]` · *Thay cho*: `GRR-033`, `GRR-039`, `Đ-32`, `K-8`
+*Nguồn*: `[LUẬT GỐC]` + `[CHỦ DỰ ÁN]`
 
 ### QĐ-060 — Nút thao tác một chiều tự tắt sau khi bấm
 
 **Quyết định.** Mọi nút thực hiện một thao tác một chiều **tự tắt** ngay sau lần bấm đầu. Server vẫn phải bỏ qua lệnh trùng — client không được tin.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-29`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-061 — Phán quyết nhị phân khi "Sai" trừ 0 điểm; có phạt thì thêm "Huỷ kết quả"
 
@@ -1361,7 +1361,7 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 **Hệ quả.** *Huỷ kết quả* là một **hạng phán quyết có sẵn**, nên các đường khép câu bất thường (`QĐ-034`) dùng lại nó thay vì phát minh nhánh mới.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-34`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -1455,7 +1455,7 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 **Vì sao.** Ba chỗ đã chốt đều chỉ cùng một hướng, và một trong ba khiến phương án per-contest **không thể đúng**: `QĐ-040` cho một **contest thật chứa cả trận official lẫn trận practice**. Nếu cờ đặt ở cấp contest thì trận practice trong contest thật **không bật được** — mất đúng công dụng của nó. Thêm nữa `QĐ-051` khai mặc định **theo `matchPurpose`** (vốn per-match), và `QĐ-032` liệt cờ này vào gói **đóng băng vào TRẬN**.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-032`, `QĐ-040`, `QĐ-051` · vế mặc định: `QĐ-080` · *Thay cho*: `C-1`, `K-4`
+*Nguồn*: `[SUY RA]` từ `QĐ-032`, `QĐ-040`, `QĐ-051` · vế mặc định: `QĐ-080`
 
 ### QĐ-063 — `Question.visibility` là giá trị DẪN XUẤT, không phải cột set tay
 
@@ -1472,7 +1472,7 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ nguy hiểm là *"đã từng lộ"*, không phải *"đang lộ"*.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-040` + zero-trust · *Thay cho*: `C-10`, `K-10`, `D16` (vế *"cột set tay"* bị thay thế)
+*Nguồn*: `[SUY RA]` từ `QĐ-040` + zero-trust
 
 ### QĐ-064 — Duyệt đề `DRAFT` → `ACTIVE` là việc của ADMIN
 
@@ -1482,7 +1482,7 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 
 **Phân biệt với `QĐ-008`.** `QĐ-008` nói *"mỗi contest một admin"* — đó là **admin của một trận đang chạy**. Duyệt đề diễn ra ở **kho đề**, vốn nằm **ngoài** phạm vi một contest, nên ràng buộc một-người không áp ở đây.
 
-*Nguồn*: `CLAUDE.md` §UX · *Thay cho*: `C-3`
+*Nguồn*: `CLAUDE.md` §UX
 
 ### QĐ-065 — `User` là TÀI KHOẢN, và mỗi tài khoản mang ĐÚNG MỘT vai
 
@@ -1519,7 +1519,7 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 
 **Hệ quả.** `isPractical` là kênh trả lời **thứ tư**, nằm ngoài trục này — nó không có ô nhập nào, admin chấm *"đạt / không đạt"*.
 
-*Nguồn*: luật gốc §Khởi động (3 loại), §Tăng tốc (4 loại) + `[SUY RA]` từ `QĐ-010` · *Thay cho*: `U-34`, `U-36`, `U-7`
+*Nguồn*: luật gốc §Khởi động (3 loại), §Tăng tốc (4 loại) + `[SUY RA]` từ `QĐ-010`
 
 ### QĐ-087 — Cài đặt lần đầu: dòng lệnh khi dựng máy, tài khoản admin đi theo gói khi ra hội trường
 
@@ -1542,7 +1542,7 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 - **`EPIC-012` hết mục *out of scope*** về trải nghiệm cài đặt lần đầu.
 - **Phép kiểm nghiệm thu của `PRD-REQ-085` mạnh lên**: chạy trọn một trận trên bản portable **đã ngắt Internet**, bắt đầu từ thao tác nhập gói — không có bước dòng lệnh nào ở giữa.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · vế ràng buộc tài khoản admin: `[SUY RA]` từ `QĐ-078` · *Thay cho*: câu hỏi mở **trải nghiệm cài đặt lần đầu** *(nay đã đóng)*
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế ràng buộc tài khoản admin: `[SUY RA]` từ `QĐ-078`
 
 ### QĐ-091 — Hạn lưu trữ: admin đặt được; mặc định 12 tháng chính thức, 3 tháng luyện tập
 
@@ -1568,7 +1568,7 @@ Hai con số là **mặc định**, không phải luật: không rule, không tr
 - **Job dọn thuộc v1.5** (`roadmap-post-v1.md` §8.1), nhưng **ràng buộc đặt lên nó** (`PRD-REQ-080`: cảnh báo trước, không đụng biên bản đã xuất) thuộc v1 và không đổi.
 - **Gói đã xuất nằm ngoài tầm với của hạn lưu trữ** — gồm cả gói mang danh sách người tham gia (`QĐ-086`). Đây là lý do tài liệu vận hành phải nhắc xoá gói sau ngày thi.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **giá trị hạn lưu trữ** *(nay đã đóng)*
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -1697,7 +1697,7 @@ Chốt bừa một con số **đắt hơn** là để trống: nó biến một 
 
 Khi nào cần trả lời, chỉ phải chốt hai điều: **(a)** số viewer đồng thời tối đa ở hồ sơ **portable LAN** — suy từ hội trường lớn nhất dự kiến; **(b)** hồ sơ **compose** có cần con số cao hơn không, và cao bao nhiêu.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-2`, `C-5`
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-092 — Bộ chỉ số: chốt BẢY, hoãn BỐN cho tới khi có người dùng đầu tiên
 
@@ -1716,4 +1716,4 @@ Bốn chỉ số hoãn **chỉ được đặt ngưỡng sau khi có người d�
 
 **Hệ quả.** `PRD.md` §19.2 tách làm hai bảng thay vì một bảng mang `NEEDS CLARIFICATION`; bốn chỉ số hoãn chuyển sang `roadmap-post-v1.md`, cùng chỗ với các hạng mục chưa gắn mốc.
 
-*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **bộ chỉ số thành công chưa chốt** *(nay đã đóng)*
+*Nguồn*: `[CHỦ DỰ ÁN]`
