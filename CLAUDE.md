@@ -1,6 +1,6 @@
 # KnowledgeDome — Olympia Contest System
 
-Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô hình Đường lên đỉnh Olympia). **Nguồn sự thật DUY NHẤT là `docs/`** — xem `docs/README.md` cho thứ bậc nguồn; sổ quyết định: `docs/decisions.md` (`QĐ-001`→`QĐ-092`); demo tĩnh: `public/`.
+Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô hình Đường lên đỉnh Olympia). **Nguồn sự thật DUY NHẤT là `docs/`** — xem `docs/README.md` cho thứ bậc nguồn; sổ quyết định: `docs/decisions.md` (`QĐ-001`→`QĐ-103`); demo tĩnh: `public/`.
 
 > **Thư mục `plans/` đã bị xoá (29/07)** sau khi migrate xong sang `docs/`. Phần chưa migrate — spec RuleConfig v2, kiến trúc kỹ thuật, 12 kế hoạch theo phase, red-team, khảo sát UX, hướng dẫn hồ sơ portable — **chỉ còn trong lịch sử git**; lấy lại bằng `git show <sha>:plans/...`. **Không** trích chúng như requirement.
 
@@ -73,7 +73,7 @@ Nguyên tắc nền: **máy độc quyền SỰ KIỆN, người độc quyền 
 | **Admin** | **Cảm biến + cơ cấu chấp hành DUY NHẤT** của hệ thống | **Bấm** |
 | **Server** | Sự kiện và thời gian (server time, thứ tự chuông, timer) | Không ai sửa được |
 
-⇒ Màn `/mc` là **READ-ONLY**: MC không thao tác hệ thống, MC quyết bằng lời và **admin bấm**. Không tạo bề mặt quyền ghi mới cho MC.
+⇒ Màn `/mc` là **READ-ONLY, trừ đúng MỘT ngoại lệ**: MC quyết bằng lời và **admin bấm**. Ngoại lệ duy nhất là **duyệt cú giành quyền điều khiển** khi phiên admin đang giữ mất kết nối (`QĐ-093`) — chỗ duy nhất mà tầng "bấm" trống nên không còn ai thi hành lời của MC. Ngoài đó, **không tạo bề mặt quyền ghi nào cho MC**; đặc biệt MC **không** duyệt tín hiệu của thí sinh — hàng đợi VCNV vẫn thuộc admin.
 
 - **Máy KHÔNG tự chấm Đúng/Sai.** Với câu gõ, máy chỉ **highlight ký tự khác** giữa bài làm và đáp án; admin tự đánh giá (chính tả, ý nghĩa tương đồng). Không viết đường code nào tự cộng/trừ điểm từ so khớp.
 - **Admin chọn vòng nào bắt đầu và lượt của ai. THỨ TỰ DO ADMIN QUYẾT ĐỊNH**; hệ thống chỉ **recommend theo luật + contest settings** (vị trí thí sinh, thứ tự lượt riêng Khởi động — đều là đầu vào của recommendation, KHÔNG phải ràng buộc cưỡng chế). Conflict luật (một người thi 2 lần, đổi lượt…) → **dialog cảnh báo**, admin bấm Yes/No để vẫn thực hiện. KHÔNG chặn cứng.
@@ -121,7 +121,7 @@ Nguyên tắc nền: **máy độc quyền SỰ KIỆN, người độc quyền 
 ## Nguyên tắc code — BẮT BUỘC toàn repo
 
 - **DRY**: không lặp logic/hằng số/schema — Zod schemas, RuleConfig, permission catalog, socket event contracts đều ở `packages/shared` dùng chung FE+BE; validation viết MỘT lần (Zod) chạy cả hai đầu; component/hook/util lặp ≥2 lần phải trích xuất.
-- **Zero-trust security**: KHÔNG BAO GIỜ tin client — mọi request/socket event đều verify auth + permission (CASL) ở server bất kể client là ai, đã join room gì, UI có ẩn nút hay không; viewer/overlay là public và **không có đường ghi** — kênh SSE một chiều, read-only là tính chất cấu trúc chứ không phải luật phải cưỡng chế (`QĐ-088`); mọi input validate lại ở server (validate FE chỉ là UX); **TRƯỚC mốc CÂU KHÉP đáp án chỉ rời server tới admin + MC (authenticated + audit); viewer/thí sinh/overlay không nhận. TỪ mốc câu khép, server đẩy đáp án tới cả ba vai đó nếu `revealAnswerAfterJudge` bật (cờ CẤP TRẬN — `QĐ-062`; mặc định BẬT cho cả official lẫn practice — `QĐ-080`; đổi được từng trận). CÂU KHÉP ≠ "đã chấm": ở Về đích cú bấm chấm Sai MỞ cửa sổ cướp quyền 5s, câu chỉ khép sau khi cửa sổ đóng và người cướp đã được chấm — công bố sớm là xoá sổ cướp quyền. Ba ca biên: câu bị bỏ qua VẪN công bố; "Huỷ kết quả" KHÔNG tự công bố; đáp án Chướng ngại vật theo `GR-012`, ngoài cơ chế này. CẤM đẩy đáp án xuống client trước mốc rồi ẩn bằng cờ hiển thị (lỗi của tiền lệ Athena)**; timer/điểm/chuông chỉ tính ở server.
+- **Zero-trust security**: KHÔNG BAO GIỜ tin client — mọi request/socket event đều verify auth + permission (CASL) ở server bất kể client là ai, đã join room gì, UI có ẩn nút hay không; viewer/overlay là public và **không có đường ghi** — kênh SSE một chiều, read-only là tính chất cấu trúc chứ không phải luật phải cưỡng chế (`QĐ-088`); mọi input validate lại ở server (validate FE chỉ là UX); **TRƯỚC mốc CÂU KHÉP đáp án chỉ rời server tới phiên giữ `PERM-045` `match.readAnswer` (authenticated + audit) — ở bốn vai dựng sẵn là Quản trị và MC; viewer/thí sinh/overlay không nhận. Cửa kiểm hỏi PERMISSION, KHÔNG hỏi tên vai (`QĐ-094`). TỪ mốc câu khép, server đẩy đáp án tới cả ba vai đó nếu `revealAnswerAfterJudge` bật (cờ CẤP TRẬN — `QĐ-062`; mặc định BẬT cho cả official lẫn practice — `QĐ-080`; đổi được từng trận). CÂU KHÉP ≠ "đã chấm": ở Về đích cú bấm chấm Sai MỞ cửa sổ cướp quyền 5s, câu chỉ khép sau khi cửa sổ đóng và người cướp đã được chấm — công bố sớm là xoá sổ cướp quyền. Ba ca biên: câu bị bỏ qua VẪN công bố; "Huỷ kết quả" KHÔNG tự công bố; đáp án Chướng ngại vật theo `GR-012`, ngoài cơ chế này. CẤM đẩy đáp án xuống client trước mốc rồi ẩn bằng cờ hiển thị (lỗi của tiền lệ Athena)**; timer/điểm/chuông chỉ tính ở server.
 
 ## Mô hình truy cập (chốt 12/07)
 

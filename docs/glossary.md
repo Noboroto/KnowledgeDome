@@ -59,8 +59,10 @@
 
 ### TERM-005 — MC
 
-**Định nghĩa.** Người dẫn chương trình — **thẩm quyền phán quyết trên sân khấu**, thực hiện bằng **nói**. Không thao tác hệ thống.
+**Định nghĩa.** Người dẫn chương trình — **thẩm quyền phán quyết trên sân khấu**, thực hiện bằng **nói**. Thao tác hệ thống **đúng một thứ**: duyệt cú **giành quyền điều khiển** khi phiên admin đang giữ mất kết nối (`QĐ-093`). Ngoài đó, màn `/mc` là read-only.
 
+- **Quyền ghi duy nhất**: `PERM-054` duyệt / từ chối `EVENT-050`. MUST NOT duyệt tín hiệu của **thí sinh** — hàng đợi VCNV vẫn thuộc admin
+- **Đọc đáp án qua `PERM-045`**, không qua kho đề: vai MC gán ở phạm vi `CONTEST` nên không giữ được permission của kho đề
 - **Tên khác**: người dẫn chương trình (nguyên văn luật gốc) · **host**
 - **Đừng nhầm với**: từ **`host`** trong luật gốc nghĩa là **MC**. Nó từng được dùng cho **admin** ở đúng một tên cấu hình, nay đã bãi bỏ — nghĩa đó **không còn chỗ bám**, đừng dựng lại
 - **Nguồn**: luật gốc §Khởi động, §Câu hỏi phụ · `QĐ-001`
@@ -74,21 +76,57 @@
 
 ### TERM-007 — Viewer
 
-**Định nghĩa.** Người xem, truy cập **public chỉ bằng mã phòng 6 số** — không account, không duyệt. **Read-only tuyệt đối**: server drop mọi event ghi từ namespace này.
+**Định nghĩa.** Người xem, truy cập **public bằng đúng một URL** *(mã phòng 6 số nằm trong URL)* — không account, không vai, không bước nhập mã, không duyệt. **Read-only tuyệt đối**: kênh này là **một chiều server → client, không có đường ghi** — read-only là tính chất **cấu trúc**, không phải một luật server phải cưỡng chế.
 
 - **Tên khác**: khán giả · người xem
-- **Đừng nhầm với**: **Overlay** — cùng mô hình truy cập nhưng là frame stream cho OBS, không phải màn người xem. Overlay **nhận đáp án cùng lúc và cùng điều kiện với viewer** kể từ `QĐ-080`; lệnh cấm tuyệt đối trước đây **đã bị gỡ**
-- **Nguồn**: `QĐ-015`, `QĐ-051`, `QĐ-080`
+- **Đừng nhầm với**: **Overlay** — cùng mô hình truy cập nhưng là frame stream cho OBS, không phải màn người xem. Overlay **nhận đáp án cùng lúc và cùng điều kiện với viewer**, từ mốc **câu khép** theo cờ reveal (`QĐ-080`)
+- **Nguồn**: `QĐ-015`, `QĐ-051`, `QĐ-080`, `QĐ-088`
 
 ### TERM-008 — User
 
 **Định nghĩa.** **Tài khoản xác thực.** Các vai cần auth: thí sinh · MC · admin · setter (v1.5 thêm trainer). Viewer và overlay là **public**, không có tài khoản.
 
-**Một tài khoản giữ được nhiều vai** — *admin* và *setter* là cặp thường gặp nhất, và ở buổi thi nhỏ một người có thể vừa nói vừa bấm.
+**Mỗi tài khoản mang ĐÚNG MỘT vai** — *Quản trị*, *Người ra đề*, *MC*, hoặc *Thí sinh*.
 
-- **Ràng buộc loại trừ, server phải kiểm**: tài khoản đang ngồi **ghế thí sinh** của một trận **không được** đồng thời là **admin**, **MC**, hay **setter** của contest đó — vì admin và MC **thấy đáp án**. Ràng buộc gắn với **contest**: cùng một người vẫn có thể là thí sinh ở contest này và admin ở contest khác
+- **Một vai, nhiều phạm vi**: mọi phép gán của một tài khoản mang **cùng một vai**, nhưng tài khoản gán được ở nhiều phạm vi — một MC dẫn được nhiều contest
+- **Loại trừ là tính chất CẤU TRÚC**: tài khoản mang vai *Thí sinh* **không thể** mang vai *Quản trị* / *MC* / *Người ra đề*, vì hai vai không cùng tồn tại trên một tài khoản. Không còn cửa nào phải kiểm
+- **Ràng buộc TÀI KHOẢN, không ràng buộc CON NGƯỜI**: một người dựng hai tài khoản thì hệ thống không biết
 - **Đừng nhầm với**: **Thí sinh** (vai trò trong một trận) · **Đơn vị điểm** (chủ thể tính điểm)
-- **Nguồn**: `QĐ-065`
+- **Nguồn**: `QĐ-065`, `QĐ-094`
+
+### TERM-061 — Permission
+
+**Định nghĩa.** **Nguyên tử quyền**, và là **thứ duy nhất server kiểm** ở cửa phân quyền. Catalog: `permissions.md` `PERM-001`→`PERM-061`.
+
+- **Đừng nhầm với**: **Vai** (`TERM-062`) — vai chỉ là cái túi chứa permission. Server hỏi *"có permission X không"*, **không bao giờ** hỏi *"mang vai nào"* (`QĐ-078`, `QĐ-094`)
+- **Không suy lẫn nhau**: giữ một permission không kéo theo permission nào khác
+- **Có permission là điều kiện CẦN, không phải ĐỦ** — còn bốn cổng ngoài RBAC: phiên giữ quyền · ràng buộc loại trừ · chủ contest · trạng thái game
+- **Nguồn**: `QĐ-094`, `QĐ-078`
+
+### TERM-062 — Vai
+
+**Định nghĩa.** Một **tập permission có tên**. Bốn vai dựng sẵn: *Quản trị · Người ra đề · MC · Thí sinh*; đơn vị tự định nghĩa thêm **vai tuỳ biến**.
+
+- **Mỗi tài khoản mang đúng MỘT vai** (`QĐ-065`) — ràng buộc đặt lên **cột *vai*** của phép gán, không lên số phép gán
+- **Phép gán mang phạm vi**: `(tài khoản, vai, phạm vi)`, phạm vi ∈ {`HỆ THỐNG`, một contest}. *Vai hệ thống* và *vai vận hành* là **hai phạm vi gán**, không phải hai loại vai
+- **Đừng nhầm với**: **Permission** (`TERM-061`) — vai không phải thứ được kiểm · **Chủ contest** (`TERM-059`) — không phải một vai
+- **Nguồn**: `QĐ-094`, `QĐ-065`, `QĐ-086`
+
+### TERM-059 — Chủ contest
+
+**Định nghĩa.** **Tài khoản đã tạo contest.** Thuộc tính **cố định** của contest, ghi một lần lúc tạo.
+
+- **Tác dụng duy nhất ở v1**: **ưu tiên** khi nhiều admin cùng **giành quyền điều khiển** (`TERM-060`) trong một cửa sổ
+- **Đừng nhầm với**: **vai vận hành** (MC · trainer · host) — chủ contest **không** phải một vai, admin **không gán lại được** · **permission** (`QĐ-078`) — nó cũng không phải một mục trong catalog quyền · **`host`** — chữ đó nghĩa là **MC** (`TERM-005`)
+- **Nguồn**: `QĐ-093`
+
+### TERM-060 — Giành quyền điều khiển
+
+**Định nghĩa.** Một phiên admin lấy quyền điều khiển **mà phiên đang giữ không đồng ý**. Chỉ mở khi phiên đang giữ **mất kết nối**.
+
+- **Đừng nhầm với**: **chuyển quyền điều khiển** (`QĐ-008`) — thao tác **hợp tác**, người **đang giữ** là người bấm, làm được mọi lúc trận chưa đóng sổ. Hai đường khác nhau về ai bấm và về điều kiện mở
+- **Có MC** ⇒ MC duyệt (`TERM-005`). **Không MC** ⇒ có hiệu lực ngay và **âm thầm**
+- **Nguồn**: `QĐ-093`
 
 ### TERM-009 — Đội `[v2]`
 
@@ -235,7 +273,7 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 **Định nghĩa.** Đảo điểm bằng cách **thêm event đảo ngược** — như `git revert`, **không phải** `git reset --hard`. Event cũ không bị xoá.
 
 - **Tên khác**: revert
-- **Đừng nhầm với**: **`SCORE_ADJUST`** (TERM-024) — hoàn nguyên là đảo máy móc một event đã có; `SCORE_ADJUST` là **phán quyết mới của người** và **không tự đảo** theo vòng · **undo** — ràng buộc *"chỉ event gần nhất"* của mô hình cũ đã bị thay thế hoàn toàn
+- **Đừng nhầm với**: **`SCORE_ADJUST`** (TERM-024) — hoàn nguyên là đảo máy móc một event đã có; `SCORE_ADJUST` là **phán quyết mới của người** và **không tự đảo** theo vòng · **undo** — hoàn nguyên **không** giới hạn ở event gần nhất, và không có thao tác undo nào trong hệ thống
 - **Nguồn**: `QĐ-011`, `QĐ-035`
 
 ### TERM-024 — `SCORE_ADJUST`
@@ -596,7 +634,7 @@ Hàng rào gắn với **THAO TÁC, không gắn với mốc thời gian**: nó 
 | `team` | Đội `[v2]` | TERM-009 |
 | `contest` | Contest | TERM-010 |
 | `match`, `game` | Match · Trận | TERM-011 |
-| `user`, `account` | User — **một tài khoản giữ nhiều vai** | TERM-008 |
+| `user`, `account` | User — **một tài khoản đúng một vai** | TERM-008 |
 | `round` | Vòng | TERM-012 |
 | `turn` | Lượt — **4 nghĩa, luôn gọi tên đầy đủ** | TERM-013 |
 | `state` | **Luôn kèm thang bậc** — có bảy thang | TERM-018 |

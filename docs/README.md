@@ -18,6 +18,7 @@ Thư mục này là **nguồn sự thật của dự án**. Mọi thứ ngoài n
 | Biết **vì sao** một điều được quyết như vậy | [`decisions.md`](decisions.md) |
 | Cài đặt **luồng vận hành** — trạng thái, sự kiện, chuyển tiếp | [`game-state-machine.md`](game-state-machine.md) |
 | Tra **một thuật ngữ** | [`glossary.md`](glossary.md) |
+| Biết **ai được làm gì** — permission, vai, phạm vi | [`permissions.md`](permissions.md) |
 | Truy nguyên *"điều này từ đâu ra?"* | [`traceability.md`](traceability.md) |
 | Đọc **luật gốc nguyên văn** | [`source/`](source/) |
 | Biết **giao diện phải làm gì** để đúng các quyết định | [`product-discovery.md`](product-discovery.md) §6 |
@@ -35,7 +36,7 @@ Bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia
 
 ### [`decisions.md`](decisions.md) — vì sao
 
-**92 quyết định `QĐ-001` → `QĐ-092`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
+**103 quyết định `QĐ-001` → `QĐ-103`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
 
 Chia theo chủ đề: nguyên tắc nền · phạm vi phiên bản · điểm và event log · hai mode trả lời · tín hiệu và hàng đợi · đồng hồ · điều khiển trận · kho đề · ghế và kết nối · hiển thị và bảo mật · theo vòng · mô hình dữ liệu và quyền.
 
@@ -55,9 +56,17 @@ Trạng thái `STATE-*` · sự kiện `EVENT-*` · chuyển tiếp `T-*` · b�
 
 ### [`glossary.md`](glossary.md) — thuật ngữ
 
-**58 thuật ngữ `TERM-001` → `TERM-058`**, kèm mục **Đừng nhầm với** cho những từ nhiều nghĩa. Có bảng tra tên tiếng Anh.
+**62 thuật ngữ `TERM-001` → `TERM-062`**, kèm mục **Đừng nhầm với** cho những từ nhiều nghĩa. Có bảng tra tên tiếng Anh.
 
 Dùng khi bạn thấy một từ trong tài liệu khác mà không chắc nó chỉ đúng cái gì.
+
+### [`permissions.md`](permissions.md) — catalog phân quyền
+
+**61 permission `PERM-001` → `PERM-061`**, chia theo phạm vi `HỆ THỐNG` và `CONTEST`, kèm **bốn vai seed**.
+
+Là **catalog tra cứu**, cùng loại với `glossary.md` — nó **không đặt ra luật**. Mô hình RBAC và lý do nằm ở `decisions.md` `QĐ-094`.
+
+Ba mục đáng đọc trước khi cài đặt: **§4 bốn cổng đứng NGOÀI RBAC** *(có permission là điều kiện cần, không phải đủ)* · **§5 bốn điều CẤM** — dẫn đầu là *cấm kiểm vai thay cho kiểm permission* · **§7 vòng đời phép cấp** — trong lúc trận chưa đóng sổ, quyền chỉ **nở ra**, không bao giờ **co lại**.
 
 ### [`traceability.md`](traceability.md) — truy nguyên
 
@@ -73,7 +82,7 @@ Phần đáng dùng nhất là **§6 — giao diện phải làm gì**: danh sá
 
 ### [`PRD.md`](PRD.md) — yêu cầu cấp sản phẩm cho **phiên bản 1.0**
 
-Mục tiêu sản phẩm, actor, hành trình, epic, **98 yêu cầu `PRD-REQ-001` → `098`**, NFR, ma trận truy nguyên, và **8 câu hỏi mở** còn chặn.
+Mục tiêu sản phẩm, actor, hành trình, epic, **107 yêu cầu `PRD-REQ-*`**, NFR, ma trận truy nguyên. **Không còn câu hỏi mở nào ở mức chặn nghiệm thu.**
 
 **Đặc tả đúng bằng phiên bản 1.0** — không nói về phiên bản nào khác.
 
@@ -105,9 +114,10 @@ Biên bản rà soát và đề xuất `GRR-*` của giai đoạn 2026-07. **Kh�
 
 | Mã | Ở đâu | Là gì |
 |---|---|---|
-| `QĐ-001` → `QĐ-092` | `decisions.md` | Quyết định |
+| `QĐ-001` → `QĐ-103` | `decisions.md` | Quyết định |
 | `GR-001` → `GR-037` | `game-rules.md` | Rule luật chơi |
-| `TERM-001` → `TERM-058` | `glossary.md` | Thuật ngữ |
+| `TERM-001` → `TERM-062` | `glossary.md` | Thuật ngữ |
+| `PERM-001` → `PERM-061` | `permissions.md` | Permission |
 | `STATE-*` `EVENT-*` `T-*` `INV-*` | `game-state-machine.md` | Trạng thái · sự kiện · chuyển tiếp · bất biến |
 | `GRR-*` | **chỉ** `reviews/` | Đề xuất trong quá trình rà soát |
 

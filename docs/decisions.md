@@ -28,7 +28,7 @@
 
 # A. Nguyên tắc nền
 
-Sáu mục dưới đây chi phối mọi mục còn lại. Mâu thuẫn với chúng là dấu hiệu mục kia sai, không phải chúng sai.
+Bảy mục dưới đây chi phối mọi mục còn lại. Mâu thuẫn với chúng là dấu hiệu mục kia sai, không phải chúng sai.
 
 ### QĐ-001 — Máy độc quyền SỰ KIỆN, người độc quyền PHÁN QUYẾT
 
@@ -44,7 +44,7 @@ Sáu mục dưới đây chi phối mọi mục còn lại. Mâu thuẫn với c
 
 **Vì sao.** Máy không quan sát được sân khấu. Mọi cố gắng cho máy suy đoán ý định của con người đều tạo ra một nhánh sai mà không ai gỡ được giữa buổi thi.
 
-**Hệ quả.** Màn `/mc` là **READ-ONLY** — không tạo bề mặt quyền ghi cho MC. Mọi mốc thời gian mà luật gốc mô tả bằng hành vi của MC đều thành một cú bấm của admin (`QĐ-027`).
+**Hệ quả.** Màn `/mc` là **READ-ONLY, trừ đúng MỘT ngoại lệ**: MC duyệt cú **giành quyền điều khiển** khi phiên admin đang giữ mất kết nối (`QĐ-093`) — chỗ duy nhất mà tầng *"bấm"* trống nên không còn ai thi hành lời của MC. Ngoài đó, **không tạo bề mặt quyền ghi nào cho MC**. Mọi mốc thời gian mà luật gốc mô tả bằng hành vi của MC đều thành một cú bấm của admin (`QĐ-027`).
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-6.4a`
 
@@ -107,6 +107,37 @@ Mọi lệch luật khác **chỉ cảnh báo**.
 **Hệ quả.** Van thoát **không phải** grace mà là **sửa được sau**: lịch sử giữ đầy đủ để admin xem lại và can thiệp.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `Đ-6.3`
+
+### QĐ-103 — Xung đột CHƯA CÓ LUẬT: giải bằng HÀNG ĐỢI, hết cách mới NGẪU NHIÊN
+
+**Quyết định.** Mọi tình huống hai hay nhiều bên cùng tranh một thứ **mà sổ này chưa có luật phân xử** đều đi qua đúng hai bước, theo thứ tự:
+
+1. **HÀNG ĐỢI** — xếp theo **server timestamp**, thuần FIFO, biên đóng. Bên tới trước thắng. Không ưu tiên theo vai, theo loại tín hiệu, hay theo bất cứ thuộc tính nào khác của bên tranh (`INV-007`).
+2. **NGẪU NHIÊN** — chỉ khi bước 1 **không phân định được**, tức các timestamp **bằng nhau ở mili-giây**. Server bốc, kết quả **có hiệu lực ngay**, không ai xác nhận.
+
+**Đây là LUẬT LẤP CHỖ TRỐNG, không phải luật đè.** Nó chỉ chạy ở chỗ **chưa có** phân xử. Ba nhóm dưới đây **đã có** luật riêng và `QĐ-103` **không** với tới:
+
+| Đã có luật | Phân xử hiện hành | Nguồn |
+|---|---|---|
+| Nhiều admin cùng **giành quyền điều khiển** | **Chủ contest thắng**, rồi mới tới server timestamp | `QĐ-093` vế 4 |
+| Nhiều người **cùng mốc thời gian ở Tăng tốc** | **Chia bậc** — cùng nhận một mức điểm, **không bốc thăm** | `GR-014` *(Tăng tốc: đồng thời gian)*, luật gốc từ Olympia 7 |
+| **Hoà điểm cuối trận** | Vòng **Câu hỏi phụ**; hết 3 câu chưa phân định mới bốc thăm, và bốc thăm đó **cần admin xác nhận** | `QĐ-055`, `GR-023`, `GR-025` |
+
+**Ranh giới với `QĐ-001` — đây là chỗ dễ đọc sai nhất.** `QĐ-103` phân xử **THỨ TỰ**, không phân xử **ĐÚNG/SAI**. Máy được quyền quyết *"ai tới trước"* vì đó là **sự kiện** — thứ máy độc quyền. Máy **không bao giờ** được bốc thăm để quyết một câu trả lời đúng hay sai, một ghế thắng hay thua, hay bất cứ thứ gì luật gốc giao cho người. Gặp một xung đột thuộc hạng **phán quyết**, đường đúng vẫn là `QĐ-001`: MC nói, admin bấm — **không** phải bốc thăm.
+
+**Vì sao hàng đợi trước, ngẫu nhiên sau.** Hàng đợi là thứ đã có sẵn ở khắp hệ thống (`INV-007`) và nó **công bằng theo cách kiểm chứng được**: ai bấm trước thì thắng, và lịch sử chỉ ra được. Ngẫu nhiên không kiểm chứng được như thế, nên nó chỉ dùng ở đúng chỗ hàng đợi **không còn thông tin để phân định**. Đảo thứ tự hai bước này là vứt đi một dữ kiện thật để lấy một con xúc xắc.
+
+**Vì sao ngẫu nhiên thay vì một quy tắc tất định** *(bốc theo id nhỏ hơn, theo thứ tự chữ cái)*: mọi quy tắc như thế đều **thiên vị ổn định** — cùng một bên luôn thắng mọi lần chạm mốc, và không ai chủ ý chọn điều đó. Ngẫu nhiên không thiên vị ai, và ở tần suất mà nó xảy ra thì không đáng dựng thêm cơ chế.
+
+**RÀNG BUỘC BẮT BUỘC — kết quả bốc phải thành EVENT.** Server ghi kết quả vào nhật ký như một **sự kiện đã xảy ra**, không bao giờ tính lại lúc phát lại. Không có ràng buộc này thì `GR-028` *(điểm là hàm **tất định** của event log — phát lại cho cùng kết quả)* vỡ ngay: cùng một chuỗi event sẽ cho hai kết quả khác nhau ở hai lần phát lại. Đây là đúng khuôn `EVENT-027` đã dùng cho bốc thăm Câu hỏi phụ — kết quả bốc là **event trong log**, không phải một phép tính.
+
+**Hệ quả.**
+
+- Đóng ca **hai phiên admin cùng nhận một quyền điều khiển TRỐNG** (`PRD-REQ-108`, `FR-020b` của `specs/001-xac-thuc-phan-quyen`): quyền trống **không** đi qua đường giành nên `QĐ-093` vế 4 không với tới ⇒ rơi vào `QĐ-103` — server timestamp, bằng nhau thì bốc.
+- Mọi lần bước 2 chạy **MUST vào `AuditLog`** kèm nhãn chỉ rõ kết quả do bốc — để người vận hành xem lại phân biệt được *"thắng vì tới trước"* với *"thắng vì bốc trúng"*.
+- Đây là **luật cuối cùng được tra**, không phải luật đầu tiên. Gặp xung đột thì thứ tự tra là: luật riêng của tình huống → pattern của một quyết định trùng khuôn → `QĐ-103`.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế *"kết quả bốc phải thành event"*: `[SUY RA]` từ `GR-028` + `EVENT-027`
 
 ---
 
@@ -291,10 +322,9 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 
 **Hệ quả.**
 
-- **`GR-023` C1 và `GR-025` C2 giữ nguyên đích `LOBBY`**; ngược lại `STATE-007`, `STATE-016`, `T-017`, `T-019` phải sửa từ `FINISHED` sang `LOBBY`.
-- **`GR-022` phải thêm guard** và hai ca cho cú bấm Chốt trận thứ hai.
-- **`GR-022` §Bấm trùng phải viết lại.** Câu *"nút Chốt trận một chiều, tự tắt ⇒ không có lần bấm thứ hai"* **mâu thuẫn trực tiếp** với hướng này. Đúng phải là: nút **tắt trong lúc một vòng đang chạy** *(gồm `TIE_BREAK`)* và **sống lại khi trận về `LOBBY`**. *"Một chiều"* nghĩa là **mỗi cú bấm chỉ được phân giải một lần**, không phải *"đúng một lần trong đời một trận"*.
-- **Ví dụ cuối của `GR-023` trỏ sai và phải sửa**: *"admin chấm Sai nhầm ⇒ đi qua hoàn nguyên (`GR-028`) hoặc điều chỉnh thủ công (`GR-029`)"* — cả hai đều là đường **điểm**, không dùng được cho một vòng không sinh điểm. Đường đúng là **bỏ vòng `TIE_BREAK`**, làm được cả trong lúc vòng chạy lẫn ở `LOBBY` **trước** cú Chốt trận cuối.
+- **Vòng Câu hỏi phụ về `LOBBY`, không về `FINISHED`** — đích của `GR-023` C1, `GR-025` C2, `STATE-007`, `STATE-016`, `T-017`, `T-019`. Đóng sổ cần một cú `EVENT-007` **thứ hai**.
+- **Nút Chốt trận không phải "đúng một lần trong đời một trận"**: nó tắt trong lúc một vòng đang chạy *(gồm `TIE_BREAK`)* và **sống lại khi trận về `LOBBY`**. *"Một chiều"* nghĩa là mỗi cú bấm chỉ được phân giải một lần. Cú bấm thứ hai có guard riêng — `GR-022` C7.
+- **Gỡ một kết quả tie-break đi qua bỏ vòng `TIE_BREAK`**, không qua hoàn nguyên (`GR-028`) hay điều chỉnh thủ công (`GR-029`): hai đường đó là đường **điểm**, mà vòng này không sinh điểm.
 - **Sau khi trận `FINISHED` thì hết cửa** — niêm phong áp cho kết quả tie-break y như mọi thứ khác (`QĐ-037`).
 - **`TERM-021` bổ sung `TIE_BREAK_RESOLVED`** vào danh sách loại event đã đặt tên. Đây chính là chỗ trống mà `GRR-156` chỉ ra.
 - **Nhánh bốc thăm không phải làm lại gì**: `EVENT-027` *(xác nhận kết quả bốc thăm)* là cái sinh ra `TIE_BREAK_RESOLVED` với `method = 'random-draw'`. Các lần bốc trước vẫn nằm nguyên trong log theo `QĐ-011`.
@@ -780,6 +810,82 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 
 # I. Ghế, kết nối, và quyền thao tác
 
+### QĐ-093 — GIÀNH quyền điều khiển: chỉ khi holder mất kết nối; có MC thì MC duyệt
+
+**Quyết định.** Bên cạnh **chuyển quyền** hợp tác của `QĐ-008` — người đang giữ chủ động giao — có thêm một đường **một phía**: **giành quyền**. Năm vế:
+
+1. **Chỉ mở khi phiên đang giữ MẤT KẾT NỐI.** Holder còn kết nối thì **không ai giành được**, kể cả chủ contest; muốn đổi người thì dùng chuyển quyền hợp tác. Đây là nhánh **không tồn tại**, nút không bật — không phải chặn cứng, không phải cảnh báo ép được.
+2. **Contest CÓ MC ⇒ MC duyệt.** Cú giành lên màn `/mc` dưới dạng prompt **không đóng được**; MC bấm Duyệt hoặc Từ chối. Đây là **quyền ghi DUY NHẤT của MC trong toàn hệ thống**.
+3. **Contest KHÔNG có MC ⇒ giành có hiệu lực NGAY và ÂM THẦM.** Không dialog xác nhận, không thông báo cho thí sinh, khán giả hay lớp phủ — cùng khuôn *"khán giả không được báo gì về can thiệp của admin"* (`QĐ-076`).
+4. **Ưu tiên chủ contest.** Nhiều admin cùng giành trong một cửa sổ ⇒ **chủ contest thắng**; ngoài ra theo server timestamp, biên đóng. Chủ contest = **tài khoản đã tạo contest**, thuộc tính cố định, **không gán lại được**, **không phải một vai** và **không phải một permission**.
+5. **Không chặn flow chương trình.** Trong lúc chờ MC quyết: đồng hồ **vẫn chạy**, vòng **vẫn tiếp**, thí sinh **vẫn bị khoá theo giờ**. Không đóng băng đồng hồ (`QĐ-030`), không tự tạm dừng trận (`QĐ-070`).
+
+**Vì sao MC được một quyền ghi mà `QĐ-001` vẫn đứng.** Ba tầng của `QĐ-001` là **MC phán quyết, admin thi hành**. Ở mọi tình huống khác admin còn đó để bấm hộ. Ở đúng tình huống này, **admin đang giữ quyền đã mất kết nối** — tầng "bấm" trống, nên không còn ai thi hành lời của MC. Đây là chỗ **duy nhất** trong hệ thống mà điều đó xảy ra, và vì thế là ngoại lệ **duy nhất**. MC vẫn **không** duyệt tín hiệu của thí sinh, **không** phán quyết Đúng/Sai, **không** mở đáp án.
+
+**Vì sao không cho giành khi holder còn online.** Một quyền cướp giữa trận từ người đang bấm là thứ không có cách nào phân biệt với thao tác phá hoại, và nó sẽ được dùng nhầm nhiều hơn được dùng đúng. Mất kết nối là **điều kiện quan sát được của server**, nên nó là cửa duy nhất mở được mà không cần tin ai.
+
+**Rủi ro đã chấp nhận** *(chủ dự án chấp nhận tường minh)*:
+
+- Trong lúc chờ MC quyết, **không ai điều khiển** trong khi đồng hồ vẫn chạy. Van thoát sau đó là `GR-029` chỉnh điểm tay và `GR-030` bỏ / chạy lại vòng.
+- Contest **không có MC**: bất kỳ admin nào cũng vào được ngay khi holder rớt mạng, **không ai duyệt**. Một admin nhầm lẫn hoặc cố ý đều đi qua.
+- **Rớt mạng giả** *(rút dây, tắt Wi-Fi của chính mình)* không phân biệt được với rớt mạng thật — server chỉ thấy mất kết nối.
+- Chủ contest nghỉ việc hoặc mất tài khoản ⇒ mất luôn ưu tiên; không có đường gán lại.
+
+**Hệ quả.**
+
+- `EVENT-049` chuyển quyền · `EVENT-050` giành quyền · `EVENT-051` MC duyệt/từ chối · `STATE-039` prompt phía MC · `T-091`→`T-096`.
+- **Mọi cú giành, duyệt và từ chối đều vào `AuditLog`** — kể cả cú giành bị từ chối, và kể cả cú giành mất đối tượng vì holder kết nối lại.
+- **Màn `/mc` là read-only TRỪ ĐÚNG MỘT ngoại lệ**, không phải *"read-only tuyệt đối"* — xem `QĐ-001` §Hệ quả và `QĐ-074`.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-097 — Quyền điều khiển TRỐNG: nhận NGAY, không qua MC
+
+**Quyết định.** Quyền điều khiển là thuộc tính **nhiều nhất một giá trị** trên một trận: nó trỏ tới **một** phiên admin, hoặc **TRỐNG**. Trống là trạng thái **hợp lệ**, không phải sự cố. Ba vế:
+
+1. **Xác lập lần đầu**: phiên admin **đầu tiên** vào trận nhận quyền.
+2. **Đăng xuất chủ động NHẢ quyền** — khác mất kết nối (`QĐ-070`), nơi phiên vẫn giữ quyền và chờ quay lại.
+3. **Từ trạng thái TRỐNG, bất kỳ phiên admin nào nhận được NGAY**: không chờ MC duyệt, không dialog xác nhận, kể cả khi contest có MC đang kết nối. Mỗi lần nhận vào `AuditLog`.
+
+**Vì sao trống KHÔNG đi qua đường giành.** Cửa duyệt của `QĐ-093` tồn tại để bảo vệ **một phiên đang giữ** khỏi bị cướp. Quyền trống thì **không có ai để bảo vệ** — bắt nó chờ MC duyệt chỉ tái tạo đúng chỗ khoá chết mà `QĐ-095` đã cảnh báo: trận không ai điều khiển trong khi đồng hồ vẫn chạy, và cửa mở khoá lại phụ thuộc một người thứ ba.
+
+**Phân xử khi nhiều phiên cùng nhận: theo `QĐ-103`** — server timestamp, bằng nhau ở mili-giây thì bốc. **Ưu tiên chủ contest của `QĐ-093` vế 4 KHÔNG áp ở đây**: nó là luật của đường **giành**, mà trống không đi qua đường giành.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế phân xử đồng thời: `QĐ-103`
+
+### QĐ-098 — *"Contest CÓ MC"* đo bằng PHIÊN ĐANG KẾT NỐI, không bằng phép gán
+
+**Quyết định.** Điều kiện rẽ nhánh giữa `QĐ-093` vế 2 *(chờ MC duyệt)* và vế 3 *(hiệu lực ngay)* MUST đo bằng **có phiên MC đang kết nối tại thời điểm cú giành**, MUST NOT đo bằng việc contest có một phép gán vai MC.
+
+**Vì sao.** Lớp duyệt của MC chỉ có nghĩa khi **có người thật đang nhìn prompt**. Đo bằng phép gán thì một contest có MC ghi danh nhưng hôm đó không ai đăng nhập sẽ tạo ra một cú giành treo mà **không phiên nào trên hệ thống giải được** — trong lúc đồng hồ vẫn chạy. Đó không phải rủi ro `QĐ-093` đã chấp nhận; rủi ro đã chấp nhận là *"chờ MC quyết"*, tức giả định có MC để quyết.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-099 — Prompt duyệt KHÔNG có ngưỡng thời gian; MC cuối cùng rớt thì rơi về nhánh không-MC
+
+**Quyết định.** Hai vế:
+
+1. **Không đặt ngưỡng thời gian nào** cho prompt duyệt cú giành. Còn ít nhất một phiên MC kết nối thì prompt **tiếp tục chờ**, bao lâu cũng được.
+2. **Phiên MC CUỐI CÙNG còn kết nối mà rớt** trong lúc prompt đang chờ ⇒ cú giành **rơi về nhánh không-MC** của `QĐ-093` vế 3 và có hiệu lực **ngay**, kèm một dòng nhật ký ghi rõ lý do chuyển nhánh.
+
+**Vì sao không đặt ngưỡng.** Một con số chờ ở đây là **số ma** — không luật gốc nào và không quyết định nào trong sổ này hàm ý được nó, cùng lý do `QĐ-006` từ chối cửa sổ ân hạn. Điều kiện *"còn phiên MC nào không"* là **quan sát được của server**, nên nó là cửa đúng, y như `QĐ-093` chọn *mất kết nối* thay vì một ngưỡng thời gian.
+
+**Vì sao mốc là phiên CUỐI CÙNG.** Với nhiều phiên MC (`QĐ-100`), chuyển nhánh ngay khi **một** phiên rớt sẽ để một MC rớt mạng cướp mất quyền quyết của những MC còn đang ngồi đó.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · `[SUY RA]` từ `QĐ-006` *(không đặt số ma làm ngưỡng)*
+
+### QĐ-100 — Nhiều phiên MC: ACCEPT BẤT KỲ, quyết định tới trước thắng
+
+**Quyết định.** Prompt duyệt cú giành lên **mọi** phiên MC đang kết nối, và **bất kỳ phiên nào** cũng quyết được — **không** có phiên MC chính, **không** thứ tự ưu tiên. Quyết định **tới server đầu tiên** theo server timestamp là quyết định có hiệu lực, **bất kể** nó là Duyệt hay Từ chối; server đóng prompt ở mọi phiên còn lại. Quyết định tới sau **bị từ chối, không lật** kết quả, nhưng **vẫn vào `AuditLog`** kèm trạng thái bị từ chối.
+
+**Prompt "không đóng được" nói về MC, không nói về server.** MC không tự tắt được prompt; server đóng nó khi — và chỉ khi — cú giành đã phân giải.
+
+**Vì sao không có MC chính.** Mọi phiên MC đều mang cùng một permission `PERM-054`; dựng thêm khái niệm *"MC chính"* là thêm một trạng thái phải gán, phải chuyển giao khi người đó rớt, và phải kiểm ở cửa duyệt — ba thứ để đổi lấy không gì cả. Quyết định này **không cấp thêm quyền nào**: `QĐ-094` *(MC giữ đúng một permission ghi)* đứng nguyên.
+
+**Vì sao không ưu tiên "Từ chối thắng".** Một luật như thế biến bất kỳ MC nào thành người phủ quyết, và nó nói rằng hệ thống tin cú Từ chối hơn cú Duyệt — không có căn cứ nào cho việc đó. Server timestamp là phân xử duy nhất, đúng khuôn `QĐ-103` bước 1.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế phân xử: `QĐ-103`
+
 ### QĐ-045 — Quá grace thì hệ thống CHỈ TÔ NỔI BẬT; admin là người quyết
 
 **Quyết định.** Grace **120 giây** giữ ghế và state-sync. Quá grace, hệ thống **chỉ tô nổi bật** ghế trên màn admin kèm thời lượng mất kết nối — **không tự loại, không tự xoá**. Không có chính sách dropout tự động nào; `dropoutPolicy` **không tồn tại**.
@@ -866,11 +972,29 @@ Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài kho�
 
 *Nguồn*: `[CHỦ DỰ ÁN]` + `[SUY RA]` (chiều thứ hai) · *Thay cho*: `C-21`
 
+### QĐ-096 — Khán giả và lớp phủ vào bằng ĐÚNG URL; không tài khoản, không vai, không bước nhập mã
+
+**Quyết định.** Hai kênh public — **màn khán giả** và **lớp phủ dựng stream** — vào phòng bằng **một URL**. Ba vế:
+
+1. **Mã phòng 6 số nằm TRONG URL.** Mở đúng URL là vào phòng — **không** màn đăng nhập, **không** bước nhập mã riêng, **không** chờ duyệt.
+2. **Không tài khoản và không vai.** Hai kênh này nằm **ngoài** hệ phân quyền: không `User`, không phép gán, không permission nào trong catalog (`QĐ-094`, `permissions.md` §8). Chúng không phải một vai có túi rỗng.
+3. **URL là thứ DUY NHẤT giữ quyền vào.** Ai có URL thì vào được; không có yếu tố thứ hai.
+
+**Vì sao.** Khán giả là số đông và ẩn danh — không phát tài khoản cho từng người được, và một bước gõ mã trước giờ phát sóng chỉ là ma sát: người tổ chức vẫn phải phát cái gì đó, nên phát thẳng đường dẫn là hình thái ít bước nhất. Với lớp phủ thì càng rõ: phần mềm dựng stream nhận **một URL**, nó không có chỗ cho ai gõ mã.
+
+**Hệ quả về bảo mật, đã chấp nhận.** URL **rò dễ hơn** mã gõ tay — nó nằm trong lịch sử trình duyệt, trong ảnh chụp màn hình, trong tin nhắn chuyển tiếp, và trong thanh địa chỉ khi lên hình. Đây là `AS-5` ở dạng nặng hơn: *ai có đường dẫn đều thấy tên và trường lớp của học sinh vị thành niên*. Hàng rào còn lại **không đổi** và là toàn bộ những gì có: **rate-limit** cổng khán giả và nút **khoá cổng** của admin (`QĐ-067`, `PRD-REQ-086`). Tài liệu vận hành phải nói thẳng: **coi đường dẫn phòng như một thứ phát ra thì không thu lại được.**
+
+**Không đổi gì.** Chiều truyền — hai kênh vẫn **một chiều, không có đường ghi** (`QĐ-088`) · phạm vi đáp án — lớp phủ vẫn nhận từ mốc câu khép (`QĐ-080`) · read-only vẫn là tính chất **cấu trúc**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
 ### QĐ-051 — Đáp án chỉ rời server tới ADMIN và MC **trước mốc công bố**
 
 **Quyết định.** Trước mốc công bố, thí sinh, viewer và overlay **không** nhận đáp án chuẩn. Admin và MC được xem **mọi lúc**, không phụ thuộc cấu hình, mỗi lần xem vào audit.
 
-Từ mốc công bố trở đi thì khác — xem `QĐ-080`, quyết định **mốc công bố là CÂU KHÉP** và mở phạm vi người nhận sang **cả bốn** vai còn lại kể cả overlay.
+**Thi hành bằng PERMISSION, không bằng tên vai** (`QĐ-094`). Quyền này là `PERM-045` `match.readAnswer`; hai vai nêu trên là hai vai **dựng sẵn** giữ nó, không phải điều kiện của cửa kiểm.
+
+**Mốc công bố là CÂU KHÉP** (`QĐ-080`). Từ mốc đó, đáp án được đẩy tới **thí sinh, viewer và overlay** theo cờ `revealAnswerAfterJudge`; overlay nhận **cùng lúc và cùng điều kiện với viewer**, không có lệnh cấm riêng nào.
 
 **Hệ quả.** Mọi kênh đều đi qua cùng một bộ lọc theo vai — kể cả gói khôi phục kết nối (`QĐ-046`) và lớp công bố (`QĐ-049`).
 
@@ -951,7 +1075,7 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **Mở/đóng hiển thị KHÔNG đụng tới điểm.** Hai trục khác nhau: điểm chỉ đổi qua event (`QĐ-011`). Đóng lại một ô đã mở là đổi hiển thị, không hoàn nguyên gì.
 
-**Độc quyền admin** — chính xác hơn: **phiên đang giữ quyền điều khiển** (`QĐ-008`). MC không có nút nào; màn MC là read-only.
+**Độc quyền admin** — chính xác hơn: **phiên đang giữ quyền điều khiển** (`QĐ-008`). MC **không có nút nào ở trục hiển thị**; nút duy nhất của MC là duyệt cú giành quyền (`QĐ-093`), và nó không đụng gì tới đáp án hay ô chữ.
 
 **Không có khái niệm "engine tự mở".** Engine không bao giờ tự mở gì, nên `AuditLog` **không cần** phân biệt *do-admin* với *do-engine* — mọi lần mở đều do admin. Chỗ **cần** phân biệt là khác: ô VCNV chuyển sang *đã hỏi* do **luồng** hay do **admin đánh dấu tay** (`GR-009` C12), vì hai đường đó cùng đổi băng điểm.
 
@@ -1019,12 +1143,24 @@ Kênh hai chiều **chỉ dành cho vai đã xác thực**: admin, thí sinh, MC
 
 **Hệ quả.**
 
-- **`CLAUDE.md` §Stack phải nói rõ phạm vi**: kênh socket hai chiều dành cho vai đã xác thực; hai kênh public đi đường HTTP một chiều.
+- **Phạm vi kênh**: socket hai chiều dành cho **vai đã xác thực**; hai kênh public đi đường HTTP **một chiều**.
 - **Lớp phủ vẫn nhận đáp án từ mốc câu khép** (`QĐ-080`) — chiều truyền không đổi cái gì được truyền. Kênh một chiều **đẩy được** đáp án đúng lúc; nó chỉ không nhận vào.
 - **Nút *"khoá cổng"*** (`PRD-REQ-086`) áp ở tầng vào của kênh public, không đổi.
 - **Không đụng tới việc nạp trước media mã hoá** (`QĐ-012b`) — đó là đường tải nội dung, không phải đường sự kiện.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: vế *"quy mô viewer có ảnh hưởng trận không"* của câu hỏi mở **quy mô viewer** *(nay đã đóng)*
+
+### QĐ-102 — Khoá cổng chỉ chặn MÀN KHÁN GIẢ; lớp phủ luôn vào được
+
+**Quyết định.** Nút *"khoá cổng"* (`PRD-REQ-086`) áp cho **màn khán giả**, MUST NOT áp cho **lớp phủ**. Cổng đang khoá thì một lần lớp phủ **kết nối lại** giữa buổi phát sóng vẫn vào được, không cần thao tác mở cổng nào.
+
+**Vì sao.** Lớp phủ **chính là buổi phát sóng**, không phải khán giả của nó. Chặn nó biến một nút **giảm tải** thành một nút **tắt hình**: máy dựng stream rớt mạng 5 giây giữa trận sẽ không vào lại được, và người vận hành phải mở cổng — tức gỡ bỏ đúng hàng rào vừa dựng — chỉ để cứu hình. Thêm nữa, đường dẫn lớp phủ **không phải** đường dẫn đã phát cho người xem, nên nó không nằm trong bề mặt đang bị phát tán mà nút này sinh ra để chặn.
+
+**Không đổi gì.** Cả hai kênh vẫn **một chiều, không có đường ghi** (`QĐ-088`) · giới hạn tần suất vẫn áp ở tầng vào của kênh public · phiên khán giả **đang xem** vẫn không bị ngắt khi khoá cổng.
+
+**Rủi ro đã chấp nhận.** Ai có đường dẫn lớp phủ thì khoá cổng không chặn được họ — đây là hệ quả trực tiếp của `QĐ-096` *(URL là thứ duy nhất giữ quyền vào)*, ở dạng hẹp hơn. Đổi lại, hàng rào vẫn nguyên trên bề mặt đông người thật là màn khán giả.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-090 — BỎ HẲN tuỳ chọn biệt danh
 
@@ -1038,7 +1174,7 @@ Kênh hai chiều **chỉ dành cho vai đã xác thực**: admin, thí sinh, MC
 
 - **Yêu cầu *"tuỳ chọn dùng biệt danh"* bị xoá khỏi `PRD.md`**, và `EPIC-011` bỏ vế đó khỏi phạm vi. Mã `PRD-REQ-083` được **dùng lại** cho hạn lưu trữ (`QĐ-091`), theo quy ước đánh số lại cho liền của `PRD.md`.
 - **`RISK-007` mất một hướng giảm thiểu.** Còn lại: giới hạn tần suất, nút khoá cổng phòng, **và** khuyến nghị đặt tên hiển thị rút gọn trong tài liệu vận hành. Mức tác động của rủi ro **không đổi** — hướng giảm thiểu cũ vốn đã yếu, việc bỏ nó chỉ làm hồ sơ rủi ro **nói thật hơn**.
-- **`ASSUMPTION-005` phải viết lại**: căn cứ cũ dẫn chính tuỳ chọn này.
+- **`ASSUMPTION-005` mất một căn cứ**: nó từng dẫn chính tuỳ chọn này làm biện pháp giảm thiểu.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: câu hỏi mở **biệt danh có bật mặc định không** *(nay đã đóng)*
 
@@ -1117,6 +1253,8 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 *Nguồn đề của vòng này*: xem `QĐ-081` — **không có kho Câu hỏi phụ riêng**.
 
+*Nguồn*: `[LUẬT GỐC]` · *Thay cho*: `GRR-058`, `GRR-059`, `GRR-061`, `GRR-064`, `Đ-9`, `Đ-9.a`
+
 ### QĐ-081 — Câu hỏi phụ KHÔNG có kho riêng; rút từ ba kho nguồn
 
 **Quyết định.** Năm vế:
@@ -1158,8 +1296,6 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 - **Câu mượn vẫn tiêu như mọi câu khác** — cờ đã-dùng bật tại mốc hiển thị, không lặp lại trong contest.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: vế *"kho câu phụ riêng"* của `QĐ-055` và `GR-022`
-
-*Nguồn*: `[LUẬT GỐC]` · *Thay cho*: `GRR-058`, `GRR-059`, `GRR-061`, `GRR-064`, `Đ-9.a`
 
 ### QĐ-056 — Khởi động: đọc nguồn cho bốn chỗ từng bị coi là thiếu
 
@@ -1231,17 +1367,95 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 
 # L. Mô hình dữ liệu và quyền
 
+### QĐ-095 — Trong lúc trận chưa đóng sổ, quyền chỉ NỞ RA, không bao giờ CO LẠI
+
+**Quyết định.** Mọi thao tác quản trị làm **giảm** quyền hiệu dụng của một tài khoản đều **không thực hiện được** khi tài khoản đó còn dính tới một trận **chưa đóng sổ**. Bốn vế:
+
+1. **Phát biểu theo HIỆU ỨNG, không theo tên thao tác.** Chặn cả ba đường cùng lúc: gỡ permission khỏi **túi của một vai** · thu hồi **phép gán vai** khỏi tài khoản · **vô hiệu hoá tài khoản**. Chặn một đường mà hở hai đường kia thì luật vô nghĩa.
+2. **Cấp THÊM quyền vẫn làm được, và có hiệu lực NGAY.** Luật này **một chiều có chủ đích**: nới quyền không bao giờ khoá chết được gì, và nó có ích thật — admin cần gấp quyền bỏ vòng lúc đang phát sóng.
+3. **Mốc là "trận chưa đóng sổ"**, không phải "có câu đang mở". `STATE-001` LOBBY **vẫn tính**. `STATE-008` `FINISHED` mở khoá.
+4. **Phạm vi của phép gán quyết định trận nào chặn** (`QĐ-094`): phép gán ở một contest ⇒ chỉ trận của contest đó chặn; phép gán ở **`HỆ THỐNG`** ⇒ **bất kỳ** trận nào đang chạy cũng chặn.
+
+**Hạng phản hồi: INVALID STATE**, không phải chặn cứng. Nút không bật; tín hiệu lọt tới thì server từ chối; **không ép được**. Cùng khuôn `GR-029` C6 *(chỉnh điểm khi trận đã `FINISHED`)*. `INV-014` — *"chỉ ba chỗ chặn cứng"* — **giữ nguyên**, vì đây là *nhánh không tồn tại ở trạng thái hiện tại*, không phải một ngưỡng của luật chơi.
+
+**Vì sao chặn thay vì cho thu hồi rồi xử lý hệ quả.** Thu hồi quyền của phiên **đang giữ quyền điều khiển** giữa một câu đang mở làm **khoá chết trận**: phiên đó mất `PERM-041` nên không chấm được, mà `GR-026` và `INV-010` khai *"phán quyết là điều kiện chuyển câu"* và *"không tồn tại trạng thái vòng đã đóng mà còn câu chưa chấm"*. Mọi lối thoát đều đóng cùng lúc — admin khác **xem-không-bấm** (`QĐ-008`); `EVENT-050` giành quyền đòi holder **mất kết nối** mà holder vẫn online (`QĐ-093`); `EVENT-049` chuyển quyền, `PERM-035` kết thúc khẩn cấp và `PERM-037` huỷ trận đều nằm trong đúng vai vừa bị thu hồi; và đồng hồ **không bao giờ đóng băng** (`QĐ-030`, `INV-016`). Lối thoát duy nhất còn lại là **admin tự rút dây mạng** để mở `EVENT-050` — một hệ thống mà thao tác cứu hộ chính thức là tự phá hoại thì đã sai ở chỗ khác.
+
+**Vì sao không chọn "hiệu lực từ lần đăng nhập kế".** Phương án đó không khoá chết trận, nhưng nó để người vừa bị tước quyền **bấm tiếp tới hết ca** — hở đúng ca cần nhất, là sa thải hoặc phát hiện gian lận giữa buổi.
+
+**Vì sao không chọn "có hiệu lực ngay và tự nhả quyền điều khiển".** Nó không tự đứng được: quyền điều khiển thành **trống**, mà `EVENT-050` chỉ mở khi holder *mất kết nối*, không phải khi *trống* ⇒ phải mở thêm một đường giành quyền thứ ba. Một quyết định đẻ ra một quyết định.
+
+**Ngoài phạm vi trận đang chạy, thu hồi có hiệu lực NGAY** — suy từ `NFR-18` zero-trust *(server kiểm quyền cho mọi yêu cầu)*. Trước `QĐ-095` không suy được vế này vì nó kéo theo rủi ro khoá chết; nay rủi ro đó **không còn tồn tại về mặt cấu trúc**, nên suy luận đứng vững.
+
+**Lối thoát khi thật sự cần gỡ người giữa buổi**: **đóng sổ trận trước** — chốt trận (`EVENT-007`), hoặc huỷ trận với nhãn `bỏ dở` (`EVENT-008`, `QĐ-038`) — rồi thu hồi. Đường này luôn có, và nó để lại biên bản.
+
+**Rủi ro đã chấp nhận** *(chủ dự án chấp nhận tường minh)*:
+
+- **Admin cố tình giữ quyền và vẫn online thì không gỡ được giữa trận.** Không thu hồi được, cũng không giành quyền được. Van thoát sau đó là nhật ký đầy đủ cộng `GR-029` chỉnh điểm tay và `GR-030` bỏ / chạy lại vòng — sửa **hệ quả**, không chặn được **hành vi** tại chỗ.
+- **Sửa vai ở phạm vi `HỆ THỐNG` có thể gần như luôn bị chặn** trên một bản cài bận: `NFR-11` định cỡ tới **6 trận song song**, chỉ cần một trận chưa đóng sổ là khoá. Người quản trị phải chờ, hoặc thu hẹp phép gán về phạm vi contest.
+- **Tài khoản bị lộ mật khẩu giữa trận không vô hiệu hoá được ngay** — phải đóng sổ trận trước.
+
+**Hệ quả.**
+
+- `PRD-REQ-112`; mục §8 *"Vòng đời của một phép cấp"* ở `permissions.md`.
+- Một dòng trong bảng **Invalid transitions** của `game-state-machine.md`.
+- Đóng câu hỏi mở *"thu hồi permission giữa trận có hiệu lực ngay hay từ lần đăng nhập kế"* — **cả hai vế đều không còn đối tượng** trong lúc trận chạy.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế *"ngoài trận thì hiệu lực ngay"*: `[SUY RA]` từ `NFR-18`
+
+### QĐ-101 — `QĐ-095` chỉ áp cho tài khoản mà TRẬN CẦN QUYỀN để chạy tiếp
+
+**Quyết định.** Tập tài khoản được `QĐ-095` bảo vệ gồm **đúng** những tài khoản mà thiếu quyền của họ thì trận **không chạy tiếp được**: phiên **đang giữ** quyền điều khiển · phiên admin **có thể nhận** quyền điều khiển · **MC** *(người duyệt cú giành)*. Ngoài tập đó, thu hồi phép gán hoặc vô hiệu hoá tài khoản **vẫn thực hiện được** giữa lúc trận chưa đóng sổ — cụ thể là **tài khoản thí sinh**.
+
+**Vì sao không áp cho thí sinh.** `QĐ-095` tồn tại vì đúng một lý do: thu hồi quyền của người đang bấm làm **khoá chết trận** — không ai chấm được câu đang mở và mọi lối thoát đóng cùng lúc. Với một ghế thí sinh, **không đường nào của luật chơi bị khoá**: ghế không nộp gì thì xử **y như ghế không trả lời** (`QĐ-047`), trận chạy tiếp bình thường. Mở rộng luật ra mọi vai *"cho nhất quán"* là thêm nhánh phải kiểm thử và lấy đi một van vận hành, đổi lấy một mối đe doạ không có thật.
+
+**Van thoát để cắt một ghế giữa trận vẫn là VÔ HIỆU HOÁ GHẾ** (`QĐ-047`) — đảo ngược được, dùng được cả giữa một câu đang mở. Vô hiệu hoá **tài khoản** là thao tác của tầng khác và không phải công cụ cho tình huống này.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-094 — Phân quyền theo VAI, nhưng server chỉ kiểm PERMISSION
+
+**Quyết định.** Mô hình RBAC ba tầng: **permission → vai → phép gán có phạm vi**.
+
+1. **Permission là nguyên tử**, và là **thứ duy nhất server kiểm**. Catalog ở `docs/permissions.md` (`PERM-001`→`PERM-061`).
+2. **Vai là một túi có tên chứa permission** — không hơn. Bốn vai seed: *Quản trị · Người ra đề · MC · Thí sinh*. Đơn vị **tự định nghĩa thêm vai** (`QĐ-086` vế 7).
+3. **Phép gán mang phạm vi**: `(tài khoản, vai, phạm vi)`, phạm vi ∈ {`HỆ THỐNG`, một contest}. *Vai hệ thống* và *vai vận hành* của `QĐ-065` **không phải hai loại vai** — chúng là **hai phạm vi gán** của cùng một cơ chế.
+4. **Permission tới người dùng CHỈ qua vai.** Không có đường cấp thẳng cho một tài khoản.
+5. **Mọi phép gán của một tài khoản MUST mang CÙNG MỘT vai** (`QĐ-065`). Ràng buộc đặt lên **cột *vai***, không lên số phép gán: một tài khoản gán được ở **nhiều phạm vi**, nhưng luôn với **đúng một** vai.
+
+**Vì sao đây KHÔNG phủ định `QĐ-078` mà là cách thi hành nó.** `QĐ-078` cấm *"suy ra từ **là admin**"* — tức cấm hỏi **vai** ở cửa kiểm quyền. Nó không cấm một vai **cấp** permission. Ranh giới nằm ở **cái server hỏi**: hỏi *"có permission X trong phạm vi Y không"* thì đúng; hỏi *"có phải admin không"* thì sai, **bất kể** permission được cấp thế nào. Đây là phát biểu **thi hành được** của `QĐ-078`, vốn trước đó chỉ nói *cái gì không được làm* mà chưa nói *cấu trúc nào làm được điều đó*.
+
+**Vì sao phạm vi phải nằm trên PHÉP GÁN, không nằm trên vai.** `QĐ-065` xếp admin là *vai hệ thống*, còn `QĐ-008` lại nói *"một contest được gán **nhiều tài khoản** quyền admin"*. Hai câu chỉ cùng đúng được nếu **cùng một vai gán được ở hai phạm vi**. Đặt phạm vi lên vai thì phải đẻ ra hai vai admin khác nhau — đúng cái *"đếm sai số role"* mà `QĐ-065` cảnh báo. `PRD-REQ-006` *(MC ở contest A không có quyền MC ở contest B)* rơi ra như **hệ quả**, không phải một luật phải viết riêng.
+
+**Bốn cổng ĐỨNG NGOÀI RBAC.** Có permission là điều kiện **cần**, không phải **đủ**. Gộp bất kỳ cổng nào dưới đây vào RBAC là sai mô hình:
+
+| Cổng | Vì sao không phải permission |
+|---|---|
+| **Phiên giữ quyền điều khiển** (`QĐ-008`) | Gắn với **phiên**, không với tài khoản. Hai phiên admin quyền y hệt nhau, chỉ **một** bấm được |
+| **Ràng buộc loại trừ** (`QĐ-065`) | Chặn một **tổ hợp vai**; nó không cấp và không thu permission nào |
+| **Chủ contest** (`TERM-059`) | Thuộc tính **cố định** của contest, chỉ dùng để ưu tiên khi giành quyền. `QĐ-093` khai thẳng: không phải vai, không phải permission |
+| **Trạng thái game** (`INV-014`) | Chuông khoá · chưa tới lượt · ghế bị vô hiệu hoá · `FINISHED` niêm phong. Đủ quyền vẫn không đi được |
+
+**Vai seed Quản trị giữ ĐỦ bảy thao tác phá huỷ.** `QĐ-087` khai *"tài khoản admin là toàn quyền trên trận"*. Ca dùng của `QĐ-078` — *"chạy trận mà không xoá được vòng"* — dựng bằng một **vai tuỳ biến** bỏ bảy mục đó, **không** bằng cách bóp vai seed. `QĐ-078` đòi việc ấy **làm được**; nó không đòi mặc định phải hẹp.
+
+**MC giữ đúng MỘT permission ghi** — `PERM-054` duyệt cú giành quyền (`QĐ-093`). Permission đó MUST NOT nằm chung túi với bất kỳ permission ghi nào khác của trận; đặc biệt MC **không** giữ `PERM-042` duyệt tín hiệu của thí sinh.
+
+**Khán giả và máy dựng stream không có mục nào trong catalog** — hai kênh không có đường ghi (`QĐ-088`), nên read-only là tính chất **cấu trúc**, không phải một túi rỗng phải kiểm. Không tạo vai *"viewer"*: một vai rỗng gợi ý rằng có thứ để cấp thêm.
+
+**Hệ quả.**
+
+- Tài liệu mới `docs/permissions.md`, mã `PERM-*`.
+- **Bốn điều cấm** thi hành được, ghi ở `permissions.md` §5 — dẫn đầu là *cấm kiểm vai thay cho kiểm permission*.
+- Vai tuỳ biến **phải xuất kèm định nghĩa** trong gói contest (`QĐ-086` vế 7), nếu không bên nhận dựng lại được tài khoản mà không dựng lại được quyền.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế phạm vi-trên-phép-gán: `[SUY RA]` từ `QĐ-008` + `QĐ-065`
+
 ### QĐ-062 — `revealAnswerAfterJudge` là cờ CẤP TRẬN
 
-**Quyết định.** Cờ này thuộc **match**, không thuộc contest. Admin đổi được cho từng trận.
-
-> **Mặc định đã đổi** (`QĐ-080`): nay **BẬT cho cả `official` lẫn `practice`**. Trước đây `official` mặc định tắt. Vế *"cờ ở cấp trận"* dưới đây **không đổi** — nó vẫn là lý do duy nhất khiến cờ này không đặt được ở cấp contest.
+**Quyết định.** Cờ này thuộc **match**, không thuộc contest. Admin đổi được cho từng trận. **Mặc định BẬT cho cả `official` lẫn `practice`** (`QĐ-080`).
 
 **Vì sao.** Ba chỗ đã chốt đều chỉ cùng một hướng, và một trong ba khiến phương án per-contest **không thể đúng**: `QĐ-040` cho một **contest thật chứa cả trận official lẫn trận practice**. Nếu cờ đặt ở cấp contest thì trận practice trong contest thật **không bật được** — mất đúng công dụng của nó. Thêm nữa `QĐ-051` khai mặc định **theo `matchPurpose`** (vốn per-match), và `QĐ-032` liệt cờ này vào gói **đóng băng vào TRẬN**.
 
-**Hệ quả.** Phát biểu *"contest bật"* trong `PRD` là **câu chữ lạc hậu**, phải sửa — không phải một cách đọc thay thế.
-
-*Nguồn*: `[SUY RA]` từ `QĐ-032`, `QĐ-040`, `QĐ-051` · *Thay cho*: `C-1`, `K-4`
+*Nguồn*: `[SUY RA]` từ `QĐ-032`, `QĐ-040`, `QĐ-051` · vế mặc định: `QĐ-080` · *Thay cho*: `C-1`, `K-4`
 
 ### QĐ-063 — `Question.visibility` là giá trị DẪN XUẤT, không phải cột set tay
 
@@ -1270,21 +1484,23 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 
 *Nguồn*: `CLAUDE.md` §UX · *Thay cho*: `C-3`
 
-### QĐ-065 — `User` là TÀI KHOẢN; một tài khoản giữ được nhiều vai, trừ một ràng buộc loại trừ
+### QĐ-065 — `User` là TÀI KHOẢN, và mỗi tài khoản mang ĐÚNG MỘT vai
 
-**Quyết định.** `User` = tài khoản xác thực. **Một tài khoản giữ được nhiều vai** — *admin* và *setter* là cặp thường gặp nhất, và ở buổi thi nhỏ một người có thể vừa nói vừa bấm.
+**Quyết định.** `User` = tài khoản xác thực. **Mỗi tài khoản mang đúng một vai** — *Quản trị*, *Người ra đề*, *MC*, hoặc *Thí sinh*. Không tài khoản nào giữ hai vai.
 
-**Ràng buộc loại trừ, bắt buộc kiểm ở server:** tài khoản đang ngồi **ghế thí sinh** của một trận **không được** đồng thời giữ vai **admin**, **MC**, hoặc **setter** trong contest đó.
+**Một vai, nhiều phạm vi.** Ràng buộc đặt lên **thành phần *vai*** của phép gán (`QĐ-094`), không lên số phép gán: mọi phép gán của một tài khoản MUST mang **cùng một vai**, nhưng tài khoản vẫn được gán ở **nhiều phạm vi**. Một MC dẫn được nhiều contest; một Quản trị điều khiển được nhiều trận.
 
-**Vì sao.** `QĐ-051` cho **admin và MC thấy đáp án**. Một thí sinh kiêm một trong hai vai đó là **gian lận có cấu trúc** — không phải rủi ro vận hành mà là một lỗ hổng do mô hình quyền để hở. Đây là ràng buộc **kiểm được bằng dữ liệu**, nên phải kiểm.
+**Ràng buộc loại trừ nay là CẤU TRÚC, không phải luật phải cưỡng chế.** Tài khoản mang vai *Thí sinh* **không thể** mang vai *Quản trị*, *MC* hay *Người ra đề* — không có phép gán nào dựng được tổ hợp đó. Không còn cửa nào phải kiểm, ở bất kỳ chiều nào.
 
-**Hệ quả.** Ràng buộc gắn với **contest**, không với hệ thống: cùng một người có thể là thí sinh ở contest này và admin ở contest khác.
+**Vì sao.** `QĐ-051` cho **admin và MC thấy đáp án**. Một thí sinh giữ thêm một trong hai vai đó là **gian lận có cấu trúc**. Mô hình đa vai phải dựng một hàng rào và nhớ kiểm nó ở mọi cửa gán — mà hàng rào phải cưỡng chế thì hỏng được. Một-tài-khoản-một-vai làm tổ hợp ấy **không dựng nổi**, cùng khuôn `QĐ-088` biến read-only từ *thứ phải kiểm* thành *thứ không thể vi phạm*.
 
-**Setter kiêm MC là ĐƯỢC PHÉP.** Cả hai vai đều vốn đã thấy đáp án, nên ghép chúng **không lộ thêm gì** — khác hẳn ca thí sinh ở trên. Xung đột lợi ích *"người ra đề dẫn trận dùng đề của mình"* là **rủi ro quy trình**, và ở quy mô một trường thì cấm nó thường đồng nghĩa với không tổ chức được. Hệ thống **cảnh báo** ở cửa gán vai và ghi `AuditLog`, **không chặn** — đúng mô hình advisory (`QĐ-002`).
+**Cái mất, ghi thẳng.** Hai ca kiêm nhiệm thật ở quy mô một trường **không còn làm được bằng một tài khoản**: *Quản trị kiêm Người ra đề* — người soạn đề tự duyệt đề của mình; và *MC kiêm Quản trị* — một người vừa nói vừa bấm ở buổi thi nhỏ. Người đó nay cần **hai tài khoản** và phải đăng xuất đăng nhập giữa hai việc.
 
-**Vai hệ thống ≠ vai vận hành.** `User` mang **vai hệ thống** (tài khoản có gì trong catalog); *MC*, *trainer*, *host* là **quyền gán theo contest**, không phải vai seed. Trộn hai khái niệm là cách nhanh nhất để đếm sai số role và cấp thừa quyền.
+**Hệ thống ràng buộc TÀI KHOẢN, không ràng buộc CON NGƯỜI.** Một người dựng hai tài khoản thì hệ thống không có cách nào biết. Đây là giới hạn **có sẵn** trong mọi phiên bản của quyết định này, không phải hệ quả của thay đổi — và bảo mật thực ra **tốt lên**: ca lười, một tài khoản hai vai, nay không dựng nổi.
 
-*Nguồn*: `[SUY RA]` từ `QĐ-051` + `CLAUDE.md` §Mô hình truy cập · *Thay cho*: `A-12`
+**Vai hệ thống ≠ vai vận hành là chuyện PHẠM VI, không phải chuyện số vai.** *MC*, *trainer*, *host* gán theo **contest**; quyền trên kho đề gán ở phạm vi **hệ thống**. Cả hai đều là phép gán của cùng một cơ chế (`QĐ-094`), khác nhau ở cột phạm vi — không phải hai loại vai, và không mở đường cho một tài khoản mang hai vai.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế lý do: `[SUY RA]` từ `QĐ-051` + `CLAUDE.md` §Mô hình truy cập
 
 ### QĐ-066 — Ba kiểu NHẬP đáp án; đáp án luôn là CHUỖI
 
@@ -1358,97 +1574,108 @@ Hai con số là **mặc định**, không phải luật: không rule, không tr
 
 # M. Bảng tra mã CŨ → MỚI
 
-> Dùng khi đọc tài liệu chưa dọn hoặc `reviews/`. Mã cũ **không còn xuất hiện** trong đặc tả.
+> Dùng khi đọc `docs/reviews/**` hoặc tài liệu ngoài repo. Mã cũ **không còn xuất hiện** trong đặc tả, và **không mã nào còn là một mục** trong sổ này.
 
-> Bảng này liệt kê các họ mã chính. Nguồn chuẩn là dòng ***Thay cho*** của từng mục — có mã cũ nào không thấy ở đây thì tìm trong đó.
-
-### Mã cấp sản phẩm đã ngừng dùng
-
-| Mã cũ | Mã mới |
-|---|---|
-| `A-12` | `QĐ-065` |
-| `Q-A1` | `QĐ-051` |
-| `Q-A3` | `QĐ-074` |
-| `Q-A5` | `QĐ-074` |
-| `Q-A6` | `QĐ-074` |
-| `Q-A7` | `QĐ-074` |
-| `Q-B2` | `QĐ-073` |
-| `Q-B4` | `QĐ-073` |
-| `Q-B5` | `QĐ-073` |
-| `Q-C2` | `QĐ-075` |
-| `Q-C3` | `QĐ-075` |
-| `Q-C4` | `QĐ-075` |
-| `Q-C1b` | `QĐ-075` |
-| `Q-C1c` | `QĐ-075` |
-| `S-1` | `QĐ-078` |
-| `S-3` | `QĐ-051` |
-| `S-4` | `QĐ-076` |
-| `S-5` | `QĐ-079` |
-| `S-6` | `QĐ-077` |
-| `S-7` | `QĐ-051` |
-| `S-8` | `QĐ-073` |
-| `S-9` | `QĐ-073` |
-| `S-10` | `QĐ-077` |
-| `S-11` | `QĐ-076` |
-| `S-16` | `QĐ-008` |
-| `S-17` | `QĐ-070` |
-| `S-18` | `QĐ-051` |
-| `S-21` | `QĐ-071` |
-| `S-22` | `QĐ-076` |
-| `S-24` | `QĐ-049` |
-| `S-25` | `QĐ-049` |
+**Bảng này ĐỦ — 188 mã, không còn nguồn nào khác phải tra.** Mục nào chi phối **một vế** của mã cũ thì vế đó ghi trong ngoặc; một mã cũ tách sang nhiều mục là bình thường.
 
 | Mã cũ | Mã mới | Mã cũ | Mã mới |
 |---|---|---|---|
-| `Đ-1` | `QĐ-010` | `Đ-33` | `QĐ-027` |
-| `Đ-2` | `QĐ-012` | `Đ-34` | `QĐ-061` |
-| `Đ-3` | `QĐ-058` | `Đ-35` | `QĐ-030` |
-| `Đ-4`, `Đ-4.1` | `QĐ-016` | `Đ-36` | `QĐ-019` |
-| `Đ-4.2` | `QĐ-019` | `Đ-37` | `QĐ-043` |
-| `Đ-4.3` | `QĐ-005`, `QĐ-023` | `Đ-38` | `QĐ-032` |
-| `Đ-4.5`, `Đ-4.6` | `QĐ-002` | `Đ-39` | `QĐ-033` |
-| `Đ-4.a2` | `QĐ-017` | `Đ-40`, `Đ-41` | `QĐ-019` |
-| `Đ-4.b`, `Đ-4.X2` | `QĐ-018` | `Đ-42` | `QĐ-033` |
-| `Đ-4.f` | `QĐ-056` | `Đ-43` | `QĐ-053` |
-| `Đ-5` | `QĐ-002` | `Đ-44` | `QĐ-052` |
-| `Đ-5.1`, `Đ-5.2` | `QĐ-035` | `Đ-45a` | `QĐ-047` *(thay thế)* |
-| `Đ-5.2f` | `QĐ-044` | `Đ-45b` | `QĐ-046` |
-| `Đ-5.3` | `QĐ-011` | `Đ-46` | `QĐ-034` |
-| `Đ-5.3.1` | `QĐ-013` | `Đ-47` | `QĐ-038` |
-| `Đ-5.3.X` | `QĐ-011` | `Đ-48` | `QĐ-036` |
-| `Đ-5.a` | `QĐ-056` | `Đ-49` | `QĐ-039` |
-| `Đ-6`, `Đ-6.1` | `QĐ-027` | `Đ-50` | `QĐ-052` |
-| `Đ-6.2` → `Đ-6.4` | `QĐ-054` *(mất đường vào)* | `Đ-51` | `QĐ-037` |
-| `Đ-6.3` | `QĐ-006` | `Đ-52` | `QĐ-047` |
-| `Đ-6.4a` | `QĐ-001` | `Đ-53` | `QĐ-031` |
-| `Đ-7`, `Đ-7.a`, `Đ-7.b` | `QĐ-020` | `Đ-54` | `QĐ-026` |
-| `Đ-7.1` | `QĐ-002` | `Đ-55` | `QĐ-054` |
-| `Đ-7.2` | `QĐ-021` | `Đ-56` | `QĐ-014` |
-| `Đ-7.3` | `QĐ-033` | `Đ-57` | `QĐ-040` |
-| `Đ-9`, `Đ-9.a` | `QĐ-055` | `C-7` | `QĐ-007` |
-| `Đ-10.6`, `Đ-10.7` | `QĐ-055` | `C-9` | `QĐ-039` |
-| `Đ-11` | `QĐ-048` | `C-11` | `QĐ-048` |
-| `Đ-11.B` | `QĐ-035` | `C-12` | `QĐ-010` |
-| `Đ-15.3` | `QĐ-003` | `C-13` | `QĐ-016` |
-| `Đ-16` | `QĐ-004` | `C-14` | `QĐ-009` |
-| `Đ-17` | `QĐ-014` | `C-15` | `QĐ-002` |
-| `Đ-18` | `QĐ-008` | `C-18` | `QĐ-043` |
-| `Đ-19` | `QĐ-056` | `C-19` | `QĐ-049` |
-| `Đ-20`, `Đ-21` | `QĐ-030` | `C-20` | `QĐ-015` |
-| `Đ-22` | `QĐ-031` | `C-21` | `QĐ-050` |
-| `Đ-23` | `QĐ-025` | `U-8`, `U-20` | `QĐ-058` |
-| `Đ-24` | `QĐ-023` | `U-13` | `QĐ-045` |
-| `Đ-25` | `QĐ-024` | `U-30` | `QĐ-044` |
-| `Đ-26` | `QĐ-028` | `K-6` | `QĐ-010` |
-| `Đ-27` | `QĐ-020` | `K-8` | `QĐ-059` |
+| `Đ-1` | `QĐ-010` | `C-12` | `QĐ-010` |
+| `Đ-2` | `QĐ-012` | `C-13` | `QĐ-016` |
+| `Đ-3` | `QĐ-058` | `C-14` | `QĐ-009` |
+| `Đ-4` | `QĐ-016` | `C-15` | `QĐ-002` |
+| `Đ-4.a2` | `QĐ-017` | `C-18` | `QĐ-043` |
+| `Đ-4.b` | `QĐ-018` | `C-19` | `QĐ-049` |
+| `Đ-4.f` | `QĐ-056` | `C-20` | `QĐ-015` |
+| `Đ-4.X2` | `QĐ-018` | `C-21` | `QĐ-050` |
+| `Đ-4.1` | `QĐ-016` | `K-4` | `QĐ-062` |
+| `Đ-4.2` | `QĐ-019` | `K-6` | `QĐ-010` |
+| `Đ-4.3` | `QĐ-005` · `QĐ-023` *(vế chuông)* | `K-8` | `QĐ-059` |
+| `Đ-4.5` | `QĐ-002` | `K-10` | `QĐ-063` |
+| `Đ-4.6` | `QĐ-002` | `U-3` | `QĐ-068` |
+| `Đ-5` | `QĐ-002` | `U-7` | `QĐ-066` |
+| `Đ-5.a` | `QĐ-056` | `U-8` | `QĐ-058` |
+| `Đ-5.1` | `QĐ-035` | `U-13` | `QĐ-045` |
+| `Đ-5.1d` | `QĐ-033` | `U-20` | `QĐ-058` |
+| `Đ-5.1e` | `QĐ-033` | `U-30` | `QĐ-044` |
+| `Đ-5.2` | `QĐ-035` | `U-31` | `QĐ-040` |
+| `Đ-5.2f` | `QĐ-044` | `U-32` | `QĐ-052` |
+| `Đ-5.3` | `QĐ-011` | `U-34` | `QĐ-066` |
+| `Đ-5.3.1` | `QĐ-013` | `U-36` | `QĐ-066` |
+| `Đ-5.3.X` | `QĐ-011` | `G-2` | `QĐ-069` *(vế "số vòng không cứng")* |
+| `Đ-6` | `QĐ-027` | `S-1` | `QĐ-078` |
+| `Đ-6.1` | `QĐ-027` | `S-3` | `QĐ-072` |
+| `Đ-6.2` | `QĐ-054` | `S-4` | `QĐ-076` |
+| `Đ-6.3` | `QĐ-006` | `S-5` | `QĐ-079` |
+| `Đ-6.4` | `QĐ-054` | `S-6` | `QĐ-077` |
+| `Đ-6.4a` | `QĐ-001` | `S-7` | `QĐ-072` |
+| `Đ-7` | `QĐ-005` *(vế dialog)* · `QĐ-020` · `QĐ-022` *(vế reject)* | `S-8` | `QĐ-073` |
+| `Đ-7.a` | `QĐ-020` | `S-9` | `QĐ-073` |
+| `Đ-7.b` | `QĐ-020` | `S-10` | `QĐ-077` |
+| `Đ-7.1` | `QĐ-002` | `S-11` | `QĐ-076` |
+| `Đ-7.2` | `QĐ-021` | `S-16` | `QĐ-008` |
+| `Đ-7.3` | `QĐ-033` | `S-17` | `QĐ-070` |
+| `Đ-9` | `QĐ-055` | `S-18` | `QĐ-072` |
+| `Đ-9.a` | `QĐ-055` | `S-21` | `QĐ-071` |
+| `Đ-10.6` | `QĐ-055` | `S-22` | `QĐ-076` |
+| `Đ-10.7` | `QĐ-055` | `S-24` | `QĐ-049` |
+| `Đ-11` | `QĐ-048` | `S-25` | `QĐ-049` |
+| `Đ-11.B` | `QĐ-035` | `Q-A1` | `QĐ-072` |
+| `Đ-14` | `QĐ-018` | `Q-C1b` | `QĐ-075` |
+| `Đ-15.3` | `QĐ-003` | `Q-C1c` | `QĐ-075` |
+| `Đ-16` | `QĐ-004` | `Q-B2` | `QĐ-073` |
+| `Đ-17` | `QĐ-014` | `Q-C2` | `QĐ-075` |
+| `Đ-18` | `QĐ-008` | `Q-A3` | `QĐ-074` |
+| `Đ-19` | `QĐ-056` | `Q-C3` | `QĐ-075` |
+| `Đ-20` | `QĐ-030` | `Q-B4` | `QĐ-073` |
+| `Đ-21` | `QĐ-030` | `Q-C4` | `QĐ-075` |
+| `Đ-22` | `QĐ-031` | `Q-A5` | `QĐ-074` |
+| `Đ-23` | `QĐ-025` | `Q-B5` | `QĐ-073` |
+| `Đ-24` | `QĐ-023` | `Q-A6` | `QĐ-074` |
+| `Đ-25` | `QĐ-024` | `Q-A7` | `QĐ-074` |
+| `Đ-26` | `QĐ-028` | `A-12` | `QĐ-065` |
+| `Đ-27` | `QĐ-020` | `D16` | `QĐ-063` *(vế "cột set tay" bị thay thế)* |
 | `Đ-28` | `QĐ-029` | `NT-C` | `QĐ-032` |
 | `Đ-29` | `QĐ-060` | `R-GEN-07` | `QĐ-011` *(bị thay thế)* |
-| `Đ-30` | `QĐ-041` | `GRR-077` vế 1 | `QĐ-032` |
-| `Đ-31` | `QĐ-003`, `QĐ-042` | `GRR-077` vế 2 | `QĐ-038` |
-| `Đ-32` | `QĐ-059` | `GRR-120` | `QĐ-037` *(bác)* |
-| `C-1`, `K-4` | `QĐ-062` | `U-7`, `U-34`, `U-36` | `QĐ-066` |
-| `C-3` | `QĐ-064` | `C-2`, `C-5` | `QĐ-067` |
-| `C-10`, `K-10` | `QĐ-063` | `D16` *(vế "cột set tay")* | `QĐ-063` *(bị thay thế)* |
+| `Đ-30` | `QĐ-041` | `GRR-005` | `QĐ-056` |
+| `Đ-31` | `QĐ-003` · `QĐ-042` | `GRR-006` | `QĐ-056` |
+| `Đ-32` | `QĐ-059` | `GRR-012` | `QĐ-056` |
+| `Đ-33` | `QĐ-027` | `GRR-013` | `QĐ-057` |
+| `Đ-34` | `QĐ-061` | `GRR-016` | `QĐ-057` |
+| `Đ-35` | `QĐ-030` *(vế nút chấm)* | `GRR-019` | `QĐ-057` |
+| `Đ-36` | `QĐ-005` *(vế ngoại lệ)* · `QĐ-019` | `GRR-021` | `QĐ-057` |
+| `Đ-37` | `QĐ-043` | `GRR-025` | `QĐ-057` |
+| `Đ-38` | `QĐ-032` | `GRR-027` | `QĐ-057` |
+| `Đ-39` | `QĐ-033` | `GRR-032` | `QĐ-049` |
+| `Đ-40` | `QĐ-019` | `GRR-033` | `QĐ-059` |
+| `Đ-41` | `QĐ-019` | `GRR-039` | `QĐ-059` |
+| `Đ-42` | `QĐ-033` | `GRR-041` | `QĐ-058` |
+| `Đ-43` | `QĐ-053` | `GRR-047` | `QĐ-058` |
+| `Đ-44` | `QĐ-052` | `GRR-048` | `QĐ-027` · `QĐ-058` |
+| `Đ-45a` | `QĐ-047` *(bị thay thế)* | `GRR-056` | `QĐ-058` |
+| `Đ-45b` | `QĐ-046` | `GRR-057` | `QĐ-049` |
+| `Đ-46` | `QĐ-034` | `GRR-058` | `QĐ-055` |
+| `Đ-47` | `QĐ-038` | `GRR-059` | `QĐ-055` |
+| `Đ-48` | `QĐ-036` | `GRR-061` | `QĐ-055` |
+| `Đ-49` | `QĐ-039` | `GRR-064` | `QĐ-055` |
+| `Đ-50` | `QĐ-052` | `GRR-071` | `QĐ-013` |
+| `Đ-51` | `QĐ-037` | `GRR-073` | `QĐ-011` *(mất đối tượng)* |
+| `Đ-52` | `QĐ-047` | `GRR-077` | `QĐ-038` *(vế 2)* · `QĐ-032` *(vế 1)* |
+| `Đ-53` | `QĐ-031` | `GRR-085` | `QĐ-044` |
+| `Đ-54` | `QĐ-026` | `GRR-111` | `QĐ-071` |
+| `Đ-55` | `QĐ-054` | `GRR-115` | `QĐ-033` |
+| `Đ-56` | `QĐ-014` | `GRR-116` | `QĐ-033` |
+| `Đ-57` | `QĐ-040` | `GRR-117` | `QĐ-033` |
+| `C-1` | `QĐ-062` | `GRR-118` | `QĐ-044` |
+| `C-2` | `QĐ-067` | `GRR-120` | `QĐ-037` *(bác)* |
+| `C-3` | `QĐ-064` | `GRR-129` | `QĐ-007` |
+| `C-5` | `QĐ-067` | `GRR-143` | `QĐ-022` |
+| `C-7` | `QĐ-007` · `QĐ-068` *(vế `rowCount`)* · `QĐ-069` *(vế playlist)* | `GRR-156` | `QĐ-083` |
+| `C-9` | `QĐ-039` | `GRR-158` | `QĐ-085` |
+| `C-10` | `QĐ-063` | `TERM-026` | `QĐ-013` |
+| `C-11` | `QĐ-048` | `RISK-010` | `QĐ-084` |
+
+> **Chiều ngược lại** *(một quyết định thay một phần của quyết định khác)* không nằm ở bảng này — nó được đính chính **ngay tại chỗ** trong mục bị ảnh hưởng: `QĐ-051` và `QĐ-062` *(mốc công bố và mặc định — `QĐ-080`)* · `QĐ-055` *(kho đề — `QĐ-081`)* · `QĐ-039` *(no-repeat là phạm vi, không phải cờ — `QĐ-044`)*.
 
 ---
 
@@ -1464,13 +1691,13 @@ Hai con số là **mặc định**, không phải luật: không rule, không tr
 
 Chốt bừa một con số **đắt hơn** là để trống: nó biến một giá trị cấu hình thành một cam kết, và cam kết sai thì phải viết lại cả mục tiêu kiểm thử tải.
 
+**Hạng của câu hỏi: giá trị ĐỊNH CỠ, không phải cam kết sản phẩm.** Kênh public đẩy một chiều (`QĐ-088`) nên số viewer **không chạm tới công bằng trận** — không đụng thứ tự chuông, đồng hồ hay thứ hạng tốc độ.
+
 **Hệ quả.** Con số này chỉ đi vào **hai** chỗ, cả hai đều là **cấu hình**: ngưỡng **rate-limit** của cổng viewer, và **mục tiêu load-test**. Cả hai để mặc định, sửa bằng biến môi trường.
 
 Khi nào cần trả lời, chỉ phải chốt hai điều: **(a)** số viewer đồng thời tối đa ở hồ sơ **portable LAN** — suy từ hội trường lớn nhất dự kiến; **(b)** hồ sơ **compose** có cần con số cao hơn không, và cao bao nhiêu.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: `C-2`, `C-5`
-
-**Bổ sung sau `QĐ-088`.** Việc hai kênh public chuyển sang đẩy một chiều **không** trả lời câu hỏi này, nhưng nó hạ **hạng** của câu hỏi: con số viewer nay chắc chắn không chạm tới công bằng trận, chỉ còn là giá trị định cỡ. Hai điều cần chốt ở đoạn cuối vẫn nguyên như trên.
 
 ### QĐ-092 — Bộ chỉ số: chốt BẢY, hoãn BỐN cho tới khi có người dùng đầu tiên
 

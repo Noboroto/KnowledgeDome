@@ -10,7 +10,7 @@
 
 | File | Vai trò |
 |---|---|
-| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-082` |
+| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-103` |
 | `game-rules.md` · `game-state-machine.md` | Luật và vận hành |
 | `traceability.md` | Truy nguyên rule ↔ luật gốc ↔ `QĐ-*` |
 | `plans/**` | **Bản nháp.** Mọi trích dẫn dưới đây là **bối cảnh**, không phải requirement |
@@ -48,7 +48,7 @@ Trường học và CLB muốn tổ chức thi đấu theo format Olympia hiện
 | A-2 | **Người ra đề** | Soạn câu hỏi của mình, gắn media, nhập/xuất phần đề phụ trách |
 | A-3 | **Thí sinh** | Đăng nhập nhanh, bấm chuông, gõ đáp án, thấy phản hồi tức thì |
 | A-4 | **MC** | Màn riêng chữ rất to: câu hỏi **và đáp án**. Read-only tuyệt đối |
-| A-5 | **Khán giả** | Nhập mã 6 số là xem được — không tài khoản, không chờ duyệt |
+| A-5 | **Khán giả** | Mở đúng đường dẫn phòng là xem được — không tài khoản, không vai, không bước nhập mã, không chờ duyệt |
 | A-6 | **Máy dựng stream** | Overlay 1920×1080 nền trong suốt |
 | A-7 | **Người phụ trách luyện tập** `[v1.5]` | Tạo trận practice, chạy lại nhanh |
 
@@ -64,7 +64,7 @@ Trường học và CLB muốn tổ chức thi đấu theo format Olympia hiện
 
 **Vai hệ thống ≠ vai vận hành** (`QĐ-065`). Tài khoản mang **vai hệ thống**; *MC*, *người phụ trách luyện tập*, *host* là **quyền gán theo contest**, không phải vai seed. Trộn hai khái niệm là cách nhanh nhất để đếm sai số role và cấp thừa quyền.
 
-Một tài khoản giữ được **nhiều vai**. **Ràng buộc loại trừ duy nhất**: tài khoản đang ngồi ghế thí sinh không được đồng thời là admin, MC hay người ra đề **trong contest đó** — admin và MC thấy đáp án. Setter kiêm MC thì **được**, chỉ cảnh báo.
+Mỗi tài khoản mang **đúng một vai**, gán được ở **nhiều phạm vi** (`QĐ-065`). Vì thế tổ hợp *thí sinh* + *admin / MC / người ra đề* **không dựng nổi** — admin và MC thấy đáp án, và loại trừ ấy nay là tính chất **cấu trúc** chứ không phải một luật phải kiểm.
 
 **Quyền điều khiển gắn với PHIÊN, không với tài khoản** (`QĐ-008`): nhiều tài khoản admin, một phiên bấm được, các phiên khác xem.
 
@@ -108,7 +108,7 @@ Không stream video (chỉ đẩy dữ liệu cho OBS) · không giải đấu n
 | **J-1** Chuẩn bị kho đề | Người ra đề → Admin | Soạn câu theo ba kho, gắn metadata và media → `DRAFT` → **admin** duyệt → `ACTIVE` |
 | **J-2** Dựng contest | Admin | Tạo contest → *"Áp dụng luật 2026"* → cấu hình từng vòng → gán ghế → **chọn danh sách câu** (bắt buộc; hệ thống không tự lấy đề) → theme và âm thanh → kiểm kho đề |
 | **J-3** Chuyển sang portable | Admin | Xuất gói contest → mang sang máy portable → nhập → contest nháp → kiểm lại |
-| **J-4** Vào phòng | Thí sinh · khán giả · OBS | Admin phát mã 6 số → thí sinh đăng nhập rồi nhập mã → thử chuông, thử âm thanh, báo sẵn sàng → khán giả và overlay nhập cùng mã |
+| **J-4** Vào phòng | Thí sinh · khán giả · OBS | Admin phát mã 6 số và đường dẫn phòng → thí sinh đăng nhập rồi nhập mã → thử chuông, thử âm thanh, báo sẵn sàng → khán giả và overlay **mở đường dẫn** |
 | **J-5** Thi đấu | Admin chính; thí sinh và MC phụ | Mở vòng → hiển thị câu → start timer → thí sinh bấm chuông hoặc gõ → admin chấm → câu kế. Xen kẽ: chỉnh điểm, hoàn nguyên, mở màn công bố |
 | **J-6** Xử lý sự cố | Admin | Thí sinh rớt mạng: giữ ghế 120 giây rồi tô nổi bật, admin quyết · **admin rớt mạng: quay lại và khôi phục từ server** (`QĐ-070`) · vòng hỏng: bỏ, chạy lại, hoặc kết thúc sớm · thiếu đề: sửa danh sách ở `LOBBY` |
 | **J-7** Sau trận | Admin | Chốt trận → xuất biên bản PDF → thống kê ghi ngược kho đề → **xuất gói** *(kết quả + nhật ký · bản kê câu đã dùng · kết quả rút gọn)* → job dọn dữ liệu theo hạn |
@@ -181,7 +181,7 @@ Các quyết định ở `decisions.md` ràng buộc giao diện. Bảng dưới
 | **Không thấy khuyến nghị lượt** — đó là lộ thứ tự sắp tới | `QĐ-076` | E-9 |
 | **Lớp phủ công bố chồng lên** màn đang chạy mà không huỷ nó; áp cho **cả máy thí sinh** | `QĐ-049` | E-8 · E-9 |
 | **Bảng xếp hạng chịu được điểm âm và đồng hạng**, không hard-code số ghế | `QĐ-012` `QĐ-049` | E-9 |
-| **Overlay nhận đáp án cùng lúc và cùng điều kiện với viewer** — từ mốc **câu khép**, theo cờ reveal. Lệnh cấm tuyệt đối trước đây **đã gỡ** | `QĐ-080` | E-9 |
+| **Overlay nhận đáp án cùng lúc và cùng điều kiện với viewer** — từ mốc **câu khép**, theo cờ reveal | `QĐ-080` | E-9 |
 
 ## Xuyên suốt
 
@@ -197,15 +197,13 @@ Các quyết định ở `decisions.md` ràng buộc giao diện. Bảng dưới
 
 # 7. Giả định chưa được kiểm chứng
 
-> **Bảng này là ảnh chụp lúc khảo sát, không phải trạng thái hiện hành.** Hai dòng đã bị quyết định sau đó ghi đè — **AS-2** *(con số nay là **tối đa 6**, `QĐ-089`)* và **AS-5** *(tuỳ chọn biệt danh **đã bỏ hẳn**, `QĐ-090`)*. Trạng thái hiện hành đọc ở `PRD.md` §17.
-
 | ID | Giả định | Vì sao đáng ngờ |
 |---|---|---|
 | AS-1 | **Có nhu cầu thị trường thực** | Không có nghiên cứu người dùng, không có người dùng đầu tiên cam kết |
-| AS-2 | **Năm trận song song là nhu cầu thật** | Con số được chốt mà không dẫn nguồn nhu cầu. Với mô hình một bản cài cho một đơn vị, năm trận cùng lúc là bất thường |
+| AS-2 | **Sáu trận song song là mục tiêu định cỡ đúng** (`QĐ-089`) | Con số được chốt mà không dẫn nguồn nhu cầu. Với mô hình một bản cài cho một đơn vị, sáu trận cùng lúc là bất thường — trường hợp thường trực là 1-2 |
 | AS-3 | **Admin chấp nhận chọn tay toàn bộ đề trước mỗi trận** | Hệ thống cố ý không tự lấy đề. Chưa ai ước lượng số câu phải chọn cho một trận chuẩn |
 | AS-4 | **Preload mã hoá qua service worker chạy ổn định** | Chính nguồn xếp nó là hạng mục phức tạp nhất phía client, và đã phải chuẩn bị phương án lui |
-| AS-5 | **Mã 6 số công khai là chấp nhận được về quyền riêng tư** | Ai có mã đều thấy tên và trường lớp của học sinh vị thành niên. Chỉ có tuỳ chọn dùng biệt danh, không bật mặc định |
+| AS-5 | **Mã 6 số công khai là chấp nhận được về quyền riêng tư** | Ai có mã đều thấy tên và trường lớp của học sinh vị thành niên. **Không có cơ chế biệt danh** — tên hiển thị của ghế là trường tự do, người dựng contest tự quyết nhập gì (`QĐ-090`) |
 | AS-6 | **Người tổ chức có sẵn nhạc và hiệu ứng âm thanh** | Slot trống là im lặng, không có bộ mặc định ⇒ sản phẩm ra mắt sẽ **hoàn toàn im lặng** nếu admin không chuẩn bị |
 | AS-7 | **Wiki nguồn chính xác và ổn định** | Wiki cộng đồng, sửa được bất kỳ lúc nào, không có phiên bản. Đối phó: dùng **bản lưu trong `source/`**, không dùng URL sống |
 | AS-8 | **Thí sinh có thiết bị riêng để gõ** | VCNV và Tăng tốc **luôn** gõ máy ⇒ mỗi ghế cần một thiết bị nhập liệu đầy đủ cho cả trận, kể cả ở mode sân khấu. Chưa nguồn nào nêu yêu cầu phần cứng tối thiểu |

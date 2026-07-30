@@ -11,7 +11,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
-| `decisions.md` | **Vì sao** — 82 quyết định `QĐ-001` → `QĐ-082`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 103 quyết định `QĐ-001` → `QĐ-103`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; file này dùng đúng tên ở đó |
 | `game-state-machine.md` | Máy trạng thái: `STATE-*` · `EVENT-*` · `T-*` · `INV-*`. Mọi rule ở đây phải khớp với một hoặc nhiều transition ở đó |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -422,7 +422,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - **≥1 người đúng ⇒ miếng ghép mở.** Không ai đúng ⇒ miếng ghép **không** mở.
 - **Không thứ gì tự lộ khi HẾT GIỜ** — hết giờ chỉ khoá ô nhập, không mở gì cả.
 - **Bài làm của từng thí sinh** chỉ hiện khi **admin bấm hiển thị**, ở mọi thời điểm.
-- **Đáp án chuẩn của hàng ngang** tự công bố tại mốc **CÂU KHÉP** *(tức khi admin chấm xong)* nếu `revealAnswerAfterJudge` bật — `GR-037`, `QĐ-080`. Đây là **thay đổi so với bản trước**, vốn buộc admin bấm; hai thứ trên **không** đi cùng nhau nữa. Admin vẫn mở và đóng tay được (`QĐ-048`).
+- **Đáp án chuẩn của hàng ngang** tự công bố tại mốc **CÂU KHÉP** *(tức khi admin chấm xong)* nếu `revealAnswerAfterJudge` bật — `GR-037`, `QĐ-080`. Việc công bố đáp án và cú bấm mở của admin là **hai thứ độc lập**, không đi cùng nhau: admin vẫn mở và đóng tay được (`QĐ-048`).
 
 **Bảng quyết định**
 
@@ -983,7 +983,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - `equipmentNote` rỗng ⇒ **cảnh báo** ở cửa vào vòng — ban tổ chức có thể không biết cần mang gì. **Không chặn cứng**: dụng cụ là vật lý, máy không kiểm được.
 - `acceptanceCriteria` rỗng ⇒ admin vẫn phán quyết được bằng đánh giá của mình. **Cảnh báo**, không chặn.
 
-**Bảo mật.** `acceptanceCriteria` cùng mức với đáp án — **chỉ admin và MC**. `equipmentNote` cũng **không** ra viewer hay thí sinh trong trận vì nó tiết lộ bản chất câu hỏi, nhưng **phải** xem được trong kho đề để ban tổ chức chuẩn bị.
+**Bảo mật.** `acceptanceCriteria` cùng mức với đáp án — **chỉ phiên giữ `PERM-045`** (`GR-037`). `equipmentNote` cũng **không** ra viewer hay thí sinh trong trận vì nó tiết lộ bản chất câu hỏi, nhưng **phải** xem được trong kho đề để ban tổ chức chuẩn bị.
 
 **Ví dụ.**
 
@@ -1831,8 +1831,8 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 
 **Điều kiện.**
 
-- **Admin và MC luôn được xem**, không phụ thuộc cấu hình nào và không phụ thuộc mốc nào. Mỗi lần xem đều **vào audit**.
-- **Thí sinh, viewer và overlay được xem từ mốc CÂU KHÉP trở đi**, với điều kiện `revealAnswerAfterJudge` **BẬT**. Trước mốc đó: **không ai trong ba vai này** được xem.
+- **Ai giữ permission `PERM-045` `match.readAnswer` luôn được xem**, không phụ thuộc cấu hình nào và không phụ thuộc mốc nào. Mỗi lần xem đều **vào audit**. Ở bốn vai dựng sẵn, permission này nằm trong túi của **Quản trị** và **MC** — nhưng cửa kiểm hỏi **permission**, không hỏi tên vai (`QĐ-094`).
+- **Ai KHÔNG giữ `PERM-045` chỉ được xem từ mốc CÂU KHÉP trở đi**, với điều kiện `revealAnswerAfterJudge` **BẬT**. Trước mốc đó: **không ai trong nhóm này** được xem — gồm thí sinh, khán giả và lớp phủ dựng stream.
 - **Mốc công bố là CÂU KHÉP, không phải "đã chấm"** — xem bảng §Mốc câu khép theo vòng bên dưới. Hai mốc trùng nhau ở mọi vòng **trừ Về đích**.
 - `revealAnswerAfterJudge` là cờ **CẤP TRẬN**, mặc định **BẬT** cho cả `official` lẫn `practice`, admin đổi được từng trận. Giá trị được **chụp vào trận lúc start**; sửa cấu hình contest sau đó **không đụng** trận đã chạy.
 - **Đáp án Chướng ngại vật KHÔNG thuộc rule này** — nó theo `GR-012`: lộ khi có người giải đúng, hoặc khi admin bấm công bố.
@@ -1851,13 +1851,13 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 
 **Bảng quyết định**
 
-| Ca | Vai · cấu hình · mốc | Kết quả |
+| Ca | Permission · cấu hình · mốc | Kết quả |
 |---|---|---|
-| C1 | **Admin** | Trả đáp án; ghi audit |
-| C2 | **MC** | Trả đáp án; ghi audit |
-| C3 | Thí sinh · viewer · overlay — reveal **TẮT** | **Không trả** |
-| C4 | Thí sinh · viewer · overlay — reveal **BẬT** · **câu chưa khép** | **Không trả** |
-| C5 | Thí sinh · viewer · overlay — reveal **BẬT** · **câu đã khép** | Trả đáp án |
+| C1 | **Giữ `PERM-045`** — phiên đang giữ quyền điều khiển *(vai Quản trị dựng sẵn)* | Trả đáp án; ghi audit |
+| C2 | **Giữ `PERM-045`** — phiên không điều khiển *(vai MC dựng sẵn)* | Trả đáp án; ghi audit. **Không** kèm quyền công bố — đó là `PERM-044` |
+| C3 | **Không giữ `PERM-045`** — reveal **TẮT** | **Không trả** |
+| C4 | **Không giữ `PERM-045`** — reveal **BẬT** · **câu chưa khép** | **Không trả** |
+| C5 | **Không giữ `PERM-045`** — reveal **BẬT** · **câu đã khép** | Trả đáp án |
 | C6 | **Về đích** — người thi chính vừa bị chấm Sai, **cửa sổ cướp đang mở** | **Không trả** — câu **chưa khép**. Trả ở đây là xoá sổ cướp quyền |
 | C7 | Câu **bị bỏ qua** *(không ai bấm chuông)* · reveal **BẬT** | Trả đáp án — câu đã tiêu, đã khép |
 | C8 | Câu khép bằng phán quyết **Huỷ kết quả** | **Không tự trả.** Admin mở tay được (`QĐ-048`) |
@@ -1873,9 +1873,11 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - **Cấm công bố khi cửa sổ cướp quyền Về đích đang mở** — xem C6.
 - **Cấm cuốn đáp án Chướng ngại vật theo cơ chế này** — xem C9.
 
-**Không đổi gì.** Trạng thái trận — xem đáp án **không** sinh event điểm nào · quyền của admin và MC · quyền đóng hiển thị thủ công của admin (`QĐ-048`) · **cửa sổ cướp quyền và mọi con số của luật**.
+**Không đổi gì.** Trạng thái trận — xem đáp án **không** sinh event điểm nào · túi permission của các vai · quyền đóng hiển thị thủ công của người giữ `PERM-044` (`QĐ-048`) · **cửa sổ cướp quyền và mọi con số của luật**.
 
-**Thứ tự đánh giá.** **(1)** nhận yêu cầu → **(2)** xét vai: admin hoặc MC ⇒ trả ngay → **(3)** còn lại: xét cờ reveal → **(4)** xét **câu đã khép chưa** → **(5)** xét ca biên *(Huỷ kết quả · Chướng ngại vật)* → **(6)** ghi audit nếu có trả.
+**Thứ tự đánh giá.** **(1)** nhận yêu cầu → **(2)** xét **permission `PERM-045` trong phạm vi contest của trận**: có ⇒ trả ngay → **(3)** không có: xét cờ reveal → **(4)** xét **câu đã khép chưa** → **(5)** xét ca biên *(Huỷ kết quả · Chướng ngại vật)* → **(6)** ghi audit nếu có trả.
+
+> **Bước (2) CẤM hỏi tên vai.** Viết *"nếu là admin hoặc MC"* ở đây là vi phạm `QĐ-094` điều cấm 1, và nó vi phạm ở đúng chỗ đắt nhất — hàng rào chống rò đề. Ai giữ `PERM-045` là chuyện của catalog và của vai tuỳ biến, không phải của rule này.
 
 **Biên.** Mốc công bố là **CÂU KHÉP**, không sớm hơn. Ở Về đích, mốc này đến **sau** cú bấm Đúng/Sai của người thi chính, cách nhau ít nhất bằng độ dài cửa sổ cướp quyền.
 

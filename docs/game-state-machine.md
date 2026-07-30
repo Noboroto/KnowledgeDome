@@ -9,7 +9,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn — **source of truth duy nhất** |
-| `decisions.md` | **Vì sao** — 61 quyết định `QĐ-001` → `QĐ-061`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 103 quyết định `QĐ-001` → `QĐ-103`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; tài liệu này dùng đúng tên ở đó |
 | `game-rules.md` | Rule `GR-*`; **mọi transition ở đây phải trỏ về ≥1 `GR-*`** |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -26,8 +26,8 @@
 | **Cấp CÂU** | `STATE-017` → `STATE-021` | Vòng đời một câu hỏi, chạy bên trong một vòng |
 | **Cấp GHẾ** | `STATE-022` → `STATE-028` | **Cờ song song** — nhiều cái cùng đúng một lúc |
 | **Cấp TÍN HIỆU** | `STATE-029` → `STATE-032` | Vòng đời một tín hiệu trong hàng đợi |
-| **Cấp LỚP PHỦ** | `STATE-033` → `STATE-039` | Chồng lên trạng thái đang chạy mà **không huỷ** nó; nhiều lớp cùng bật là hợp lệ |
-| **Cấp Ô CHỮ** | `STATE-040` → `STATE-042` | Một giá trị cho **mỗi ô** của bàn cờ VCNV; năm ô độc lập |
+| **Cấp LỚP PHỦ** | `STATE-033` → `STATE-040` | Chồng lên trạng thái đang chạy mà **không huỷ** nó; nhiều lớp cùng bật là hợp lệ |
+| **Cấp Ô CHỮ** | `STATE-041` → `STATE-043` | Một giá trị cho **mỗi ô** của bàn cờ VCNV; năm ô độc lập |
 
 **Ba hạng phản hồi khi một thao tác không đi được** — phân biệt bởi **quyền của admin**, đừng trộn:
 
@@ -230,10 +230,11 @@ stateDiagram-v2
     S036: STATE-035 · DIALOG XÁC NHẬN ADMIN<br/>thao tác không hoàn tác được<br/>hạng phá huỷ thì bắt nhập lý do
     S037: STATE-036 · DIALOG CẢNH BÁO CONFLICT<br/>lệch luật nhưng ÉP ĐƯỢC
     S038: STATE-037 · TOAST INVALID STATE<br/>KHÔNG ép được
-    S039: STATE-038 · DIALOG PHÍA THÍ SINH<br/>chọn hàng ngang mode nhập liệu<br/>NGOẠI LỆ DUY NHẤT
+    S039: STATE-038 · DIALOG PHÍA THÍ SINH<br/>chọn hàng ngang mode nhập liệu<br/>NGOẠI LỆ DUY NHẤT phía thí sinh
+    S040b: STATE-039 · PROMPT DUYỆT GIÀNH QUYỀN<br/>phía MC · không đóng được<br/>QUYỀN GHI DUY NHẤT của MC
   }
   state "F.3 — Chặn TOÀN CỤC · không gắn thao tác nào" as F3 {
-    S040: STATE-039 · BANNER TẠM DỪNG<br/>KHÔNG CHỮ, không lý do<br/>thí sinh chặn hết · viewer báo tạm dừng<br/>admin KHÔNG bị phủ
+    S041: STATE-040 · BANNER TẠM DỪNG<br/>KHÔNG CHỮ, không lý do<br/>thí sinh chặn hết · viewer báo tạm dừng<br/>admin KHÔNG bị phủ
   }
   BASE --> F1: EVENT-032 mở công bố
   F1 --> BASE: EVENT-033 đóng công bố
@@ -254,9 +255,9 @@ stateDiagram-v2
 ```mermaid
 stateDiagram-v2
   direction LR
-  S041: STATE-040 · CHỜ<br/>chưa hỏi · chưa lộ gì<br/>KHÔNG vào băng điểm
-  S042: STATE-041 · ĐÃ HỎI<br/>đã mở ra hỏi, chưa lộ đáp án<br/>ĐÃ vào băng điểm
-  S043: STATE-042 · MỞ<br/>đáp án đã lộ<br/>băng điểm KHÔNG đổi thêm
+  S041: STATE-041 · CHỜ<br/>chưa hỏi · chưa lộ gì<br/>KHÔNG vào băng điểm
+  S042: STATE-042 · ĐÃ HỎI<br/>đã mở ra hỏi, chưa lộ đáp án<br/>ĐÃ vào băng điểm
+  S043: STATE-043 · MỞ<br/>đáp án đã lộ<br/>băng điểm KHÔNG đổi thêm
 
   [*] --> S041
   S041 --> S042: EVENT-022 duyệt Yes (mở hàng ngang)<br/>hoặc EVENT-021 admin đặt tay
@@ -268,7 +269,7 @@ stateDiagram-v2
 
 > **Sơ đồ này chạy SONG SONG với Sơ đồ 2, không phải bên trong nó** (`QĐ-052`). Trạng thái của một **ô** và vòng đời của **câu hỏi** trong ô đó là **hai trục độc lập**.
 >
-> **Ô trung tâm dùng chung ba trạng thái này để HIỂN THỊ, nhưng KHÔNG vào phép tính băng điểm** — xem `STATE-041`.
+> **Ô trung tâm dùng chung ba trạng thái này để HIỂN THỊ, nhưng KHÔNG vào phép tính băng điểm** — xem `STATE-042`.
 
 ---
 
@@ -388,7 +389,7 @@ stateDiagram-v2
 - **Vào**: đang ở `STATE-004`; còn ≥1 hàng ngang chưa được chọn; chưa ai giải đúng Chướng ngại vật.
 - **Cho phép**: phát tín hiệu chọn hàng ngang (chủ thể theo mode) · bấm *"Mở chướng ngại vật"* · admin duyệt Yes/No.
 - **Cấm**: chọn hàng ngang đã mở · admin chọn thay thí sinh ở mode nhập liệu.
-- **Ra**: admin xác nhận một tín hiệu chọn ⇒ ô đó sang `STATE-041` và câu của nó vào `STATE-017`.
+- **Ra**: admin xác nhận một tín hiệu chọn ⇒ ô đó sang `STATE-042` và câu của nó vào `STATE-017`.
 - **Nguồn**: luật gốc §VCNV đoạn 3 · `QĐ-019`, `QĐ-021` · `GR-007`, `GR-032`
 
 > **Lượt chọn quay vòng về vị trí 1** khi vị trí cuối đã chọn xong, còn hàng ngang chưa hỏi, **và** đã có người bị loại. Đây là **ngoại lệ tường minh** của *"tối đa 1 lượt"*, không phải mâu thuẫn (`QĐ-057`).
@@ -650,8 +651,8 @@ stateDiagram-v2
 | Nhóm | Ai thấy | Chặn thao tác bên dưới? | Thành viên |
 |---|---|---|---|
 | **F.1 — trình diễn** | viewer · overlay · thí sinh · admin | **Không** | `STATE-033` · `STATE-034` |
-| **F.2 — tương tác** | chủ yếu admin (một ngoại lệ ở thí sinh) | **Có**, nhưng chỉ **đúng thao tác đang hỏi** | `STATE-035` → `STATE-038` |
-| **F.3 — chặn toàn cục** | thí sinh · viewer · overlay · MC (**không** phủ admin) | **Có**, chặn **TẤT CẢ**, không gắn thao tác nào | `STATE-039` |
+| **F.2 — tương tác** | chủ yếu admin (**hai** ngoại lệ: một ở thí sinh, một ở MC) | **Có**, nhưng chỉ **đúng thao tác đang hỏi** | `STATE-035` → `STATE-039` |
+| **F.3 — chặn toàn cục** | thí sinh · viewer · overlay · MC (**không** phủ admin) | **Có**, chặn **TẤT CẢ**, không gắn thao tác nào | `STATE-040` |
 
 ### STATE-033 — đang công bố kết quả `[F.1]`
 
@@ -713,7 +714,18 @@ stateDiagram-v2
 
 > **Tiêu chí phân biệt, ghi để không ai gỡ nhầm hoặc nhân bản nhầm**: **đua tốc độ ⇒ không dialog · không đua tốc độ ⇒ có dialog**. Chọn hàng ngang là thao tác **duy nhất** trong game không bị ép thời gian.
 
-### STATE-039 — banner tạm dừng `[F.3]`
+### STATE-039 — prompt duyệt giành quyền điều khiển `[F.2 — QUYỀN GHI DUY NHẤT CỦA MC]`
+
+- **Mô tả**: hộp thoại trên màn `/mc` hỏi MC **duyệt hay từ chối** một cú giành quyền điều khiển. Là **bề mặt quyền ghi DUY NHẤT** của MC trong toàn hệ thống — ngoài đúng thao tác này, màn `/mc` không có nút nào.
+- **Vào**: một admin phát `EVENT-050` giành quyền **và** contest có MC được gán.
+- **Cho phép**: MC bấm **Duyệt** ⇒ quyền chuyển sang người giành · MC bấm **Từ chối** ⇒ quyền ở nguyên chỗ cũ. Mọi thao tác của trạng thái bên dưới **vẫn chạy** — đồng hồ không dừng, vòng không tạm dừng.
+- **Cấm**: **nút đóng / bỏ qua** — MC phải quyết · MC **duyệt bất cứ thứ gì khác**, đặc biệt là tín hiệu của **thí sinh** (`STATE-029` vẫn thuộc admin) · chặn đồng hồ hay bất kỳ thao tác nào ngoài chính cú giành đang hỏi.
+- **Ra**: MC duyệt hoặc từ chối · hoặc phiên đang giữ **kết nối lại** ⇒ cú giành mất đối tượng, prompt đóng, quyền ở nguyên chỗ cũ.
+- **Nguồn**: `QĐ-093` · `QĐ-001`, `QĐ-008`, `QĐ-070`
+
+> **Vì sao đây là ngoại lệ của `QĐ-001` mà không phá nó.** Ba tầng của `QĐ-001` nói **MC phán quyết, admin thi hành**. Ở mọi tình huống khác admin còn đó để bấm. Ở đúng tình huống này **admin đang giữ quyền đã mất kết nối**, nên không còn ai thi hành lời của MC — tầng "bấm" trống. Đây là chỗ **duy nhất** trong hệ thống mà điều đó xảy ra, nên cũng là quyền ghi **duy nhất** của MC. Đừng nhân bản sang bất kỳ chỗ nào khác.
+
+### STATE-040 — banner tạm dừng `[F.3]`
 
 - **Mô tả**: lớp phủ **KHÔNG CHỮ** do admin chủ động bật. **Hai tác dụng trên hai loại màn**: máy thí sinh — chặn **toàn bộ** thao tác; viewer/overlay — báo hiệu **trận đang tạm dừng**, thuần thị giác. **Không text, không lý do** — khán giả tự hiểu từ bối cảnh sân khấu. Là lớp phủ **duy nhất** chặn thao tác mà **không gắn với một thao tác cụ thể** nào.
 - **Vào**: admin bấm mở banner, **và không có cửa sổ thời gian nào đang đếm**. Đây là **điều kiện cứng của trạng thái**: khi có đồng hồ chạy thì nút **không bật**.
@@ -736,7 +748,7 @@ stateDiagram-v2
 | Chiều | Phát biểu | Trạng thái liên quan |
 |---|---|---|
 | Không mở banner khi đồng hồ chạy | Nút mở banner không bật | `STATE-019` · `STATE-010` · `STATE-013` |
-| Không start timer khi banner đang bật `[SUY RA]` | Nút start timer không bật; phải đóng banner trước | `STATE-039` |
+| Không start timer khi banner đang bật `[SUY RA]` | Nút start timer không bật; phải đóng banner trước | `STATE-040` |
 
 > Chiều thứ hai là **suy ra**, nhưng thiếu nó thì chiều thứ nhất **vô nghĩa**. Hệ quả: không tồn tại thời điểm nào banner và một đồng hồ đang chạy cùng có mặt, nên câu hỏi *"banner có đóng băng đồng hồ không"* **không có chủ ngữ** — `INV-016` không cần ngoại lệ.
 
@@ -748,7 +760,7 @@ stateDiagram-v2
 >
 > **Đây là thang bậc riêng chứ không nhét vào Sơ đồ 2** vì ba nút của admin — *mở hàng ngang* · *hiển thị câu hỏi* · *start timer* — **độc lập**. Hệ quả: trạng thái của **ô** và vòng đời của **câu hỏi trong ô** tách rời hẳn. Một ô sang *đã hỏi* mà **chưa câu nào được hiển thị** là hợp lệ; một câu **đã chấm xong** mà ô vẫn ở *đã hỏi* cũng hợp lệ. Trộn hai trục thì cả hai tình huống trên đều thành bất hợp lệ — mà chúng đúng là hai tình huống cần phục vụ (`QĐ-052`).
 
-### STATE-040 — ô chữ · CHỜ
+### STATE-041 — ô chữ · CHỜ
 
 - **Mô tả**: ô **chưa được mở ra hỏi**. Trên màn hình: ô đóng, không lộ số ký tự, không lộ đáp án. Là giá trị **khởi tạo** của cả 5 ô khi vòng VCNV mở, và khi vòng được **chạy lại**.
 - **Vào**: mở vòng VCNV · hoặc admin **đặt tay lùi về**.
@@ -757,13 +769,13 @@ stateDiagram-v2
 - **Ra**: admin duyệt Yes một tín hiệu chọn ô này · hoặc admin đặt tay.
 - **Nguồn**: `QĐ-052` · `GR-007`, `GR-009`
 
-### STATE-041 — ô chữ · ĐÃ HỎI
+### STATE-042 — ô chữ · ĐÃ HỎI
 
 - **Mô tả**: ô **đã được mở ra hỏi nhưng đáp án chưa lộ**. Đây là giá trị mà **băng điểm Chướng ngại vật đọc**. Hai đường vào **hoàn toàn ngang nhau**: đường hỏi thật, và đường admin **đặt tay** để dựng lại bàn cờ sau sự cố.
 - **Vào**: (a) admin **duyệt Yes** một tín hiệu chọn hàng ngang — **mốc đánh dấu là lúc MỞ ô, không phải lúc chấm** · (b) admin đặt tay · (c) admin bấm **đưa ra gợi ý cuối**, riêng cho ô trung tâm.
 - **Cho phép**: hiển thị câu hỏi của ô · lộ đáp án khi ≥1 người đúng · admin đặt tay sang giá trị bất kỳ.
 - **Cấm**: **đếm hai lần** — ô đã ở `ĐÃ HỎI` rồi thì mọi đường vào thêm **không** đổi băng điểm.
-- **Ra**: mở miếng ghép ⇒ `STATE-042` · hoặc admin đặt tay.
+- **Ra**: mở miếng ghép ⇒ `STATE-043` · hoặc admin đặt tay.
 - **Nguồn**: `QĐ-052` · `GR-008`, `GR-009`
 
 **Băng điểm Chướng ngại vật là HÀM của trạng thái, không phải bộ đếm cộng dồn:**
@@ -777,7 +789,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 >
 > **Ô TRUNG TÂM KHÔNG vào phép tính này.** Nó dùng chung ba trạng thái để **hiển thị**, nhưng băng chỉ đếm **4 hàng ngang** — thang có đúng **5 bậc cho 0→4 ô**, thêm ô thứ năm là **tràn bậc**. Việc gợi ý cuối hạ băng xuống **20** là một **quy tắc riêng**, với 20 là **sàn** (giữ 20 kể cả khi câu ô trung tâm sai).
 
-### STATE-042 — ô chữ · MỞ
+### STATE-043 — ô chữ · MỞ
 
 - **Mô tả**: **đáp án của ô đã lộ** — chữ cái hiện ra, miếng ghép tương ứng của Chướng ngại vật được vén. Với ô trung tâm: ô mở khi câu ô trung tâm được chấm **Đúng**.
 - **Vào**: (a) mở miếng ghép khi **≥1** thí sinh được chấm Đúng · (b) admin đặt tay · (c) **công bố Chướng ngại vật** ⇒ **mọi** ô sang `MỞ` cùng lúc.
@@ -968,7 +980,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 ### EVENT-018 — Mở miếng ghép
 
 - **Actor**: Admin
-- **Mô tả**: đi qua dialog xác nhận. Nút **một chiều, tự tắt**. Đưa ô từ `STATE-041` sang `STATE-042`.
+- **Mô tả**: đi qua dialog xác nhận. Nút **một chiều, tự tắt**. Đưa ô từ `STATE-042` sang `STATE-043`.
 - **Hợp lệ ở**: `STATE-021` của một câu hàng ngang, khi có **≥1** người được chấm Đúng.
 - **Không hợp lệ ở**: miếng ghép đã mở · không ai được chấm Đúng.
 - **Nguồn**: `QĐ-048`, `QĐ-052` · `GR-008`
@@ -986,7 +998,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 ### EVENT-020 — Công bố Chướng ngại vật
 
 - **Actor**: Admin
-- **Mô tả**: mở mọi miếng ghép và hiện Chướng ngại vật cho viewer — **mọi ô sang `STATE-042`**. **Thủ công, không tự động**; **tuỳ chọn** — vòng vẫn kết thúc được mà không công bố.
+- **Mô tả**: mở mọi miếng ghép và hiện Chướng ngại vật cho viewer — **mọi ô sang `STATE-043`**. **Thủ công, không tự động**; **tuỳ chọn** — vòng vẫn kết thúc được mà không công bố.
 - **Hợp lệ ở**: `STATE-004` khi toàn bộ thí sinh đã bị loại, hoặc khi vòng khép lại.
 - **Không hợp lệ ở**: đã bấm — nút một chiều tự tắt.
 - **Nguồn**: `QĐ-057` · `GR-012`
@@ -1127,7 +1139,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 
 - **Actor**: Admin
 - **Mô tả**: tắt lớp phủ; trạng thái bên dưới lộ lại **nguyên vẹn**. **Không có bộ đếm tự đóng.**
-- **Hợp lệ ở**: `STATE-039`.
+- **Hợp lệ ở**: `STATE-040`.
 - **Không hợp lệ ở**: banner chưa bật.
 - **Nguồn**: `QĐ-050`
 
@@ -1254,6 +1266,31 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 - **Hoàn nguyên bằng `EVENT-005` bỏ vòng** — làm được cả lúc `STATE-007` đang chạy lẫn ở `STATE-001` **trước** cú `EVENT-007` cuối. Sau `STATE-008` thì niêm phong.
 - **Nguồn**: `QĐ-083` · `GR-023`, `GR-025`
 
+### EVENT-049 — Chuyển quyền điều khiển
+
+- **Mô tả**: phiên **đang giữ** quyền điều khiển chủ động giao nó cho một phiên admin khác của cùng contest. Thao tác **hợp tác**: người giao là người bấm.
+- **Hợp lệ ở**: **mọi** trạng thái cấp trận trừ `STATE-008` — quyền điều khiển là thuộc tính của **trận đang chạy**, không phải của một vòng.
+- **Không hợp lệ ở**: `STATE-008` FINISHED *(trận niêm phong, không còn gì để điều khiển)* · khi phiên nhận **không** mang vai admin của contest đó.
+- **Side effects**: quyền ghi chuyển sang phiên nhận; phiên giao thành **xem-không-bấm**. Vào `AuditLog`. **Không** sinh event điểm, **không** đụng đồng hồ, **không** đổi trạng thái nào bên dưới.
+- **Nguồn**: `QĐ-008` · `QĐ-093`
+
+### EVENT-050 — Giành quyền điều khiển
+
+- **Mô tả**: một phiên admin **khác** lấy quyền điều khiển mà **không** cần phiên đang giữ đồng ý. Thao tác **một phía**, chỉ mở khi phiên đang giữ **mất kết nối**.
+- **Hợp lệ ở**: mọi trạng thái cấp trận trừ `STATE-008`, **và** phiên đang giữ đang ở trạng thái mất kết nối.
+- **Không hợp lệ ở**: phiên đang giữ **còn kết nối** — nhánh này **không tồn tại**, nút không bật; muốn đổi người thì dùng `EVENT-049` · `STATE-008`.
+- **Side effects**: contest **có MC** ⇒ vào `STATE-039`, chờ MC quyết, quyền **chưa** đổi. Contest **không có MC** ⇒ quyền đổi **ngay và âm thầm**: không dialog, không thông báo cho thí sinh, khán giả hay lớp phủ. Cả hai nhánh đều vào `AuditLog` ngay tại cú bấm, kể cả khi sau đó bị từ chối.
+- **Phân xử khi nhiều người cùng giành**: **chủ contest thắng**; ngoài ra theo server timestamp, biên đóng (`GR-035`, `INV-004`, `INV-007`).
+- **Nguồn**: `QĐ-093` · `QĐ-008`, `QĐ-070`
+
+### EVENT-051 — MC duyệt / từ chối cú giành quyền
+
+- **Mô tả**: MC quyết một cú `EVENT-050` đang chờ. Là **thao tác ghi DUY NHẤT** của MC trong toàn hệ thống.
+- **Hợp lệ ở**: `STATE-039` đang bật.
+- **Không hợp lệ ở**: mọi lúc khác · **mọi đối tượng khác** — MC MUST NOT duyệt tín hiệu của thí sinh (`STATE-029` thuộc admin), không phán quyết Đúng/Sai, không mở đáp án.
+- **Side effects**: **Duyệt** ⇒ quyền chuyển sang người giành, `STATE-039` tắt. **Từ chối** ⇒ quyền ở nguyên chỗ cũ, `STATE-039` tắt, cú giành giữ **vĩnh viễn** trong lịch sử ở trạng thái bị từ chối. Cả hai vào `AuditLog`. Không sinh event điểm, không đụng đồng hồ.
+- **Nguồn**: `QĐ-093` · `QĐ-001`
+
 ---
 
 # Transitions
@@ -1317,16 +1354,16 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 
 | # | Từ | Sự kiện | Guard | Sang | Side effects | Rule |
 |---|---|---|---|---|---|---|
-| T-037 | `STATE-004` | `EVENT-002` Mở vòng | Cửa vào vòng đủ câu | `STATE-009` | Người tới lượt = **vị trí số 1**; cả 5 ô về `STATE-040` | `GR-007` |
+| T-037 | `STATE-004` | `EVENT-002` Mở vòng | Cửa vào vòng đủ câu | `STATE-009` | Người tới lượt = **vị trí số 1**; cả 5 ô về `STATE-041` | `GR-007` |
 | T-038 | `STATE-009` | `EVENT-017` / `EVENT-039` Chọn hàng ngang | Chủ thể đúng theo **mode**; hàng ngang chưa mở; còn hàng chưa chọn | `STATE-029` Tín hiệu chờ duyệt | Hàng đợi **CHẶN**; ở mode nhập liệu nút chọn của ghế **khoá tạm** | `GR-007`, `GR-032` |
-| T-039 | `STATE-029` | `EVENT-022` Duyệt Yes | Tín hiệu ở đầu hàng đợi (FIFO theo server timestamp) | `STATE-017` của câu hàng ngang | Đặt cờ **lượt chọn đã dùng**; **ô chuyển `STATE-040` → `STATE-041`** — đây là **mốc đánh dấu đã hỏi**, không phải mốc chấm; băng điểm tụt một bậc | `GR-007` |
+| T-039 | `STATE-029` | `EVENT-022` Duyệt Yes | Tín hiệu ở đầu hàng đợi (FIFO theo server timestamp) | `STATE-017` của câu hàng ngang | Đặt cờ **lượt chọn đã dùng**; **ô chuyển `STATE-041` → `STATE-042`** — đây là **mốc đánh dấu đã hỏi**, không phải mốc chấm; băng điểm tụt một bậc | `GR-007` |
 | T-040 | `STATE-029` | `EVENT-023` Từ chối No | — | `STATE-031` Tín hiệu bị từ chối | **Không tác dụng phụ nào**: ô chưa đánh dấu, câu **trả lại kho** (chưa hiển thị), đồng hồ chưa chạy; nút chọn của thí sinh **mở lại**; thí sinh **không mất lượt** | `GR-007` |
 | T-041 | `STATE-009` | *(không có sự kiện)* | Người đang tới lượt **đã bị loại** | `STATE-009` | Lượt dồn sang **vị trí tiếp theo** | `GR-007` |
 | T-042 | `STATE-009` | *(không có sự kiện)* | Vị trí cuối đã chọn xong **và** còn hàng ngang chưa chọn **và** đã có người bị loại | `STATE-009` | Lượt **quay lại vị trí số 1** — ngoại lệ tường minh của *"tối đa 1 lượt"* | `GR-007` |
-| T-043 | `STATE-021` (câu hàng ngang) | `EVENT-018` Mở miếng ghép | **≥1** thí sinh được chấm Đúng | `STATE-009` hoặc `STATE-010` | **Ô: `STATE-041` → `STATE-042`**; miếng ghép vén. **Băng điểm KHÔNG tụt thêm** — ô đã đếm từ `T-039` | `GR-008` |
-| T-044 | `STATE-021` (câu hàng ngang) | `EVENT-003` Câu kế tiếp | **0** người đúng | `STATE-009` hoặc `STATE-010` | Miếng ghép **không** mở; **ô ở nguyên `STATE-041`** và **vẫn đếm** vào băng điểm | `GR-008` |
+| T-043 | `STATE-021` (câu hàng ngang) | `EVENT-018` Mở miếng ghép | **≥1** thí sinh được chấm Đúng | `STATE-009` hoặc `STATE-010` | **Ô: `STATE-042` → `STATE-043`**; miếng ghép vén. **Băng điểm KHÔNG tụt thêm** — ô đã đếm từ `T-039` | `GR-008` |
+| T-044 | `STATE-021` (câu hàng ngang) | `EVENT-003` Câu kế tiếp | **0** người đúng | `STATE-009` hoặc `STATE-010` | Miếng ghép **không** mở; **ô ở nguyên `STATE-042`** và **vẫn đếm** vào băng điểm | `GR-008` |
 | T-045 | `STATE-020` (câu hàng ngang) | Admin **chốt câu** khi mới chấm một phần | Không guard về độ phủ | `STATE-021` | Mọi ghế **chưa chấm** ⇒ **SAI**, 0 điểm, ghế **vẫn thi tiếp**. Tín hiệu *"Mở chướng ngại vật"* đang chờ duyệt **KHÔNG** bị mặc định | `GR-008`, `GR-026` |
-| T-046 | `STATE-009` | `EVENT-019` Đưa ra gợi ý cuối | Cả **4** hàng ngang **đã được hỏi**; chưa ai giải đúng; còn ≥1 người chưa bị loại | `STATE-010` | Ô trung tâm → `STATE-041`; băng điểm Chướng ngại vật về **20** (sàn) | `GR-011` |
+| T-046 | `STATE-009` | `EVENT-019` Đưa ra gợi ý cuối | Cả **4** hàng ngang **đã được hỏi**; chưa ai giải đúng; còn ≥1 người chưa bị loại | `STATE-010` | Ô trung tâm → `STATE-042`; băng điểm Chướng ngại vật về **20** (sàn) | `GR-011` |
 | T-047 | `STATE-004` (mọi giai đoạn) | `EVENT-038` Mở chướng ngại vật | Ghế chưa bị loại; chưa ai giải đúng | `STATE-029` Tín hiệu chờ duyệt | Ghi nhận **ngay**; đồng hồ hàng ngang **chạy tiếp**; **không lộ** đáp án chuẩn lẫn bài làm của người khác | `GR-009` |
 | T-048 | `STATE-029` (tín hiệu CNV) | `EVENT-022` → `EVENT-012` Chấm Đúng | — | `STATE-001` | Băng điểm chốt theo **số hàng ngang không ở trạng thái CHỜ tại mốc admin xác nhận**; vòng kết thúc | `GR-009` |
 | T-049 | `STATE-029` (tín hiệu CNV) | `EVENT-022` → `EVENT-013` Chấm Sai | — | `STATE-022` Ghế bị loại | **Không trừ điểm**; điểm hàng ngang đã kiếm **GIỮ NGUYÊN**; lượt chọn chưa dùng dồn sang vị trí kế | `GR-010` |
@@ -1391,7 +1428,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 |---|---|---|---|---|---|---|
 | T-084 | Ô ở **giá trị bất kỳ** | `EVENT-021` Đặt trạng thái ô chữ | Đang ở vòng VCNV; dialog đã xác nhận | **Giá trị đích** admin chọn | Băng điểm **tính lại từ trạng thái 4 hàng ngang** — kể cả khi giá trị đích **lùi** ⇒ băng **lên lại**. **Không** sinh điểm, **không** tiêu câu, **không** đụng đồng hồ / hàng đợi. Vào `AuditLog` | `GR-008`, `GR-009` |
 | T-085 | Ô đã ở **đúng giá trị đích** | `EVENT-021` | — | **Cùng giá trị** | **NO-OP** — phép gán, không phải phép cộng. Đây là điều làm ba lối vào *hỏi thật* / *đặt tay* / *gợi ý cuối* **không thể đếm trùng** | — |
-| T-086 | **Mọi** ô | `EVENT-020` Công bố Chướng ngại vật | Vòng đã khép hoặc toàn bộ thí sinh bị loại | **Mọi ô → `STATE-042`** | Vén toàn bộ. **Băng điểm không còn ý nghĩa** — vòng đã hết, không tín hiệu CNV nào chấm được nữa | `GR-012` |
+| T-086 | **Mọi** ô | `EVENT-020` Công bố Chướng ngại vật | Vòng đã khép hoặc toàn bộ thí sinh bị loại | **Mọi ô → `STATE-043`** | Vén toàn bộ. **Băng điểm không còn ý nghĩa** — vòng đã hết, không tín hiệu CNV nào chấm được nữa | `GR-012` |
 
 ## J. Cấp LỚP PHỦ
 
@@ -1399,8 +1436,21 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 |---|---|---|---|---|---|---|
 | T-087 | Mọi trạng thái cấp trận | `EVENT-032` Mở công bố | Lớp công bố chưa mở | **+ `STATE-033`** — trạng thái bên dưới **không đổi** | Server tính thứ hạng từ event log, đẩy xuống **một** sự kiện. **Không** sinh event điểm, **không** đổi trạng thái trận | `GR-028` |
 | T-088 | `STATE-033` | `EVENT-033` Đóng công bố | — | **− `STATE-033`** | Không có bộ đếm tự đóng | — |
-| T-089 | Mọi trạng thái cấp trận | `EVENT-034` Mở banner tạm dừng | Banner chưa bật **và không có cửa sổ thời gian nào đang đếm** | **+ `STATE-039`** | Máy thí sinh bị chặn **toàn bộ**; viewer/overlay hiện banner **không chữ**; **máy admin không bị phủ**. Không có đồng hồ nào để đụng — guard đã bảo đảm | `GR-035` |
-| T-090 | `STATE-039` | `EVENT-035` Đóng banner | — | **− `STATE-039`** | Trạng thái bên dưới lộ lại **nguyên vẹn** | — |
+| T-089 | Mọi trạng thái cấp trận | `EVENT-034` Mở banner tạm dừng | Banner chưa bật **và không có cửa sổ thời gian nào đang đếm** | **+ `STATE-040`** | Máy thí sinh bị chặn **toàn bộ**; viewer/overlay hiện banner **không chữ**; **máy admin không bị phủ**. Không có đồng hồ nào để đụng — guard đã bảo đảm | `GR-035` |
+| T-090 | `STATE-040` | `EVENT-035` Đóng banner | — | **− `STATE-040`** | Trạng thái bên dưới lộ lại **nguyên vẹn** | — |
+
+## H. Quyền ĐIỀU KHIỂN — song song với mọi trạng thái
+
+> Quyền điều khiển gắn với **phiên**, không với tài khoản (`QĐ-008`). Không transition nào ở đây sinh event điểm, đụng đồng hồ, hay đổi trạng thái ở bất kỳ thang bậc nào khác.
+
+| # | Từ | Sự kiện | Guard | Sang | Side effects | Rule |
+|---|---|---|---|---|---|---|
+| T-091 | Trận **chưa đóng sổ** | `EVENT-049` Chuyển quyền | Người bấm **đang giữ** quyền; người nhận mang vai admin của contest | Quyền ở phiên nhận | Phiên giao thành **xem-không-bấm**; vào `AuditLog`. Event trận sinh **sau** mốc này mang actor mới; event cũ **không bị viết lại** | `QĐ-008` |
+| T-092 | Trận **chưa đóng sổ**, contest **có MC** | `EVENT-050` Giành quyền | Phiên đang giữ **mất kết nối** | **+ `STATE-039`** — quyền **CHƯA** đổi | Prompt lên màn `/mc`, **không đóng được**. Đồng hồ **vẫn chạy**, vòng **vẫn tiếp**. Cú giành vào `AuditLog` ngay | `QĐ-093` |
+| T-093 | `STATE-039` | `EVENT-051` MC **Duyệt** | — | **− `STATE-039`**; quyền ở phiên giành | Vào `AuditLog` | `QĐ-093` |
+| T-094 | `STATE-039` | `EVENT-051` MC **Từ chối** | — | **− `STATE-039`**; quyền **ở nguyên** chỗ cũ | Cú giành giữ **vĩnh viễn** trong lịch sử ở trạng thái bị từ chối. Người giành bấm lại được nếu holder **vẫn** mất kết nối | `QĐ-093` |
+| T-095 | `STATE-039` | Phiên đang giữ **kết nối lại** | — | **− `STATE-039`**; quyền **ở nguyên** chỗ cũ | Cú giành **mất đối tượng** — không xoá, không cảnh báo. Cùng khuôn *"mất đối tượng"* của `EVENT-048` | `QĐ-093`, `QĐ-070` |
+| T-096 | Trận **chưa đóng sổ**, contest **không có MC** | `EVENT-050` Giành quyền | Phiên đang giữ **mất kết nối** | Quyền ở phiên giành **ngay** | **Âm thầm**: không dialog, không báo cho thí sinh / khán giả / lớp phủ (cùng khuôn `QĐ-076`). Nhiều người cùng giành ⇒ **chủ contest thắng**, ngoài ra theo server timestamp. Vào `AuditLog` | `QĐ-093` |
 
 ---
 
@@ -1413,6 +1463,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 
 | Trạng thái | Sự kiện | Vì sao không đi được | Outcome | Rule |
 |---|---|---|---|---|
+| Trận **chưa đóng sổ** *(`STATE-001`→`007`, `016`)* | Thao tác quản trị làm **GIẢM** quyền của một tài khoản dính tới trận đó — gỡ permission khỏi túi vai · thu hồi phép gán vai · vô hiệu hoá tài khoản | Thu hồi quyền của phiên đang giữ quyền điều khiển làm **khoá chết trận**: mất `PERM-041` thì không chấm được, mà phán quyết là **điều kiện chuyển câu**; mọi lối thoát đóng cùng lúc | **TOAST** invalid state. **Cấp THÊM quyền vẫn được, hiệu lực ngay** | `QĐ-095` · `INV-010`, `GR-026` |
 | `STATE-018` ở **Câu hỏi phụ** | `EVENT-037` Bấm chuông | Chuông **chưa sống** trước mốc start timer | KHÔNG CÓ TÍN HIỆU; **server cũng từ chối** (zero-trust) | `GR-024`, `GR-034` |
 | Ngoài cửa sổ chuông | `EVENT-037` | Cửa sổ đã đóng | KHÔNG CÓ TÍN HIỆU | `GR-003`, `GR-034` |
 | `STATE-028` Chuông đã khoá | `EVENT-037` | Nút tự khoá **trước khi gửi** ⇒ không có cú bấm thứ hai | KHÔNG CÓ TÍN HIỆU (server vẫn phải bỏ qua nếu nhận được) | `GR-034` |
@@ -1425,11 +1476,11 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | `STATE-009`, hàng ngang đã mở | `EVENT-039` | Hàng đã mở không còn là mục tiêu chọn được | KHÔNG CÓ TÍN HIỆU | `GR-007` |
 | `STATE-022` Ghế bị loại khỏi VCNV | Mọi sự kiện của thí sinh trong VCNV | Máy thí sinh không hiển thị gì | KHÔNG CÓ TÍN HIỆU | `GR-010` |
 | `STATE-025` Ghế bị vô hiệu hoá | **Mọi** sự kiện của thí sinh | Máy ghế bị chặn toàn bộ; **server enforce** | Tín hiệu vào lịch sử với kết cục **`STATE-032` TRƠ** — **không drop** | `GR-036` |
-| `STATE-039` Banner tạm dừng đang bật | **Mọi** sự kiện của thí sinh | Banner chặn toàn bộ; **server enforce**, không tin client | Như trên | `GR-035` |
+| `STATE-040` Banner tạm dừng đang bật | **Mọi** sự kiện của thí sinh | Banner chặn toàn bộ; **server enforce**, không tin client | Như trên | `GR-035` |
 | `STATE-008` FINISHED | `EVENT-037` Bấm chuông | Trận đã đóng sổ | Ghi lịch sử, **không có hiệu lực** | — |
 | `STATE-017` Câu chưa hiển thị | `EVENT-010` Start timer | Hai mốc có **thứ tự cố định**: hiển thị trước | Nút chưa bật | `GR-033` |
 | `STATE-019` trở đi | `EVENT-010` Start timer | Nút **tự khoá** sau lần bấm đầu | Nút disabled | `GR-033` |
-| `STATE-039` Banner đang bật | `EVENT-010` Start timer | Chiều còn lại của ràng buộc loại trừ — phải đóng banner trước | **TOAST** | `GR-035` |
+| `STATE-040` Banner đang bật | `EVENT-010` Start timer | Chiều còn lại của ràng buộc loại trừ — phải đóng banner trước | **TOAST** | `GR-035` |
 | Đang có đồng hồ chạy | `EVENT-034` Mở banner | Banner và đồng hồ **loại trừ lẫn nhau** | **TOAST** | `GR-035` |
 | `STATE-019` ở vòng **gõ máy** | `EVENT-012` / `EVENT-013` Chấm | Nút chấm **khoá tới khi hết giờ** — tránh chấm khi thí sinh còn đang sửa | Nút disabled | `GR-006` |
 | `STATE-021` Đã chấm | `EVENT-012` / `EVENT-013` Chấm lại | Một câu chỉ đi qua **đúng một** phán quyết | Nút disabled; server từ chối phán quyết lặp | `GR-026` |
@@ -1538,9 +1589,11 @@ Một cửa sổ đã mở thì **chạy hết theo server time**, trừ khi có
 
 **Phân biệt KHÉP với ĐÓNG BĂNG**: bất biến này cấm **đóng băng** — giữ đồng hồ lại rồi thả ra, vì thời gian đã trôi thì không lấy lại được. Nó **không** cấm một cửa sổ **kết thúc sớm** khi lý do tồn tại của nó đã hết. Hai đường khép hợp lệ: chuông ở Câu hỏi phụ, và các đường khép vòng. — `QĐ-030`, `QĐ-031`
 
-### INV-017 — Trước mốc CÂU KHÉP, đáp án chỉ rời server tới ADMIN và MC
+### INV-017 — Trước mốc CÂU KHÉP, đáp án chỉ rời server tới ai giữ `PERM-045`
 
-Admin và MC xem được mọi lúc. **Thí sinh, viewer và overlay** xem được **từ mốc câu khép trở đi**, với điều kiện `revealAnswerAfterJudge` bật — cờ này mặc định **BẬT**. Server enforce bất kể client là ai, đã join room gì, UI có ẩn nút hay không.
+Ai giữ **`PERM-045` `match.readAnswer`** xem được mọi lúc — ở bốn vai dựng sẵn là *Quản trị* và *MC*. Ai **không** giữ nó xem được **từ mốc câu khép trở đi**, với điều kiện `revealAnswerAfterJudge` bật — cờ này mặc định **BẬT**. Server enforce bất kể client là ai, đã join room gì, UI có ẩn nút hay không.
+
+**Cửa kiểm hỏi PERMISSION, không hỏi tên vai** (`QĐ-094` điều cấm 1). Viết *"nếu là admin hoặc MC"* ở đây là đặt một hàng rào bảo mật lên một thứ mà vai tuỳ biến đổi được mà không ai để ý.
 
 **Mốc là CÂU KHÉP, không phải *"đã chấm"*.** Hai mốc trùng nhau ở mọi vòng **trừ Về đích**, nơi cú bấm *chấm Sai* mở cửa sổ cướp quyền 5 giây — câu chỉ khép sau khi cửa sổ đóng và người cướp đã được chấm. Ba ca đứng ngoài: câu bị bỏ qua **vẫn công bố**; phán quyết *Huỷ kết quả* **không** tự công bố; đáp án **Chướng ngại vật** theo `GR-012`, không theo cơ chế này.
 

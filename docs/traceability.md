@@ -9,7 +9,7 @@
 | Ký hiệu | Là gì | Vị thế |
 |---|---|---|
 | **Luật gốc** | `source/fandom-olympia-26-luat-choi.md` — bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26), lấy 2026-07-23 | **Source of truth duy nhất về LUẬT** |
-| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-092` | Source of truth về **lựa chọn sản phẩm** |
+| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-103` | Source of truth về **lựa chọn sản phẩm** |
 | **Rule** | `game-rules.md` — `GR-001` → `GR-037` | Đặc tả nghiệp vụ **chuẩn tắc** |
 | **Máy trạng thái** | `game-state-machine.md` — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` | Đặc tả **chuẩn tắc** phần vận hành |
 | **Thuật ngữ** | `glossary.md` — `TERM-001` → `TERM-058` | Tên gọi chuẩn |
