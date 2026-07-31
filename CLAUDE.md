@@ -1,145 +1,227 @@
-# KnowledgeDome — Olympia Contest System
+# KnowledgeDome — Hệ thống thi đấu Olympia
 
-Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến (mô hình Đường lên đỉnh Olympia). **Nguồn sự thật DUY NHẤT là `docs/`** — xem `docs/README.md` cho thứ bậc nguồn; sổ quyết định: `docs/decisions.md` (`QĐ-001`→`QĐ-103`); demo tĩnh: `public/`.
+Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến, mô hình *Đường lên đỉnh Olympia*, chạy luật mùa **O26** làm preset mặc định.
 
-> **Thư mục `plans/` đã bị xoá (29/07)** sau khi migrate xong sang `docs/`. Phần chưa migrate — spec RuleConfig v2, kiến trúc kỹ thuật, 12 kế hoạch theo phase, red-team, khảo sát UX, hướng dẫn hồ sơ portable — **chỉ còn trong lịch sử git**; lấy lại bằng `git show <sha>:plans/...`. **Không** trích chúng như requirement.
+**Toàn bộ tài liệu, spec, plan, task và ghi chú trong repo viết bằng tiếng Việt.**
 
-Stack (đã chốt): NestJS + **Express adapter**, Zod, Prisma+Postgres, Redis, Better-auth, Socket.IO, @casl/ability · React+Vite, MUI, Motion for React, Zustand, TanStack Query · MinIO.
+---
 
-> **Phạm vi kênh realtime (✅ `QĐ-088`)**: Socket.IO **chỉ cho vai đã xác thực** — admin, thí sinh, MC. Hai kênh public — **màn khán giả** và **overlay OBS** — dùng **SSE + REST một chiều**, không có đường ghi. Read-only của kênh public vì thế là tính chất **cấu trúc**, không phải luật server phải cưỡng chế.
+## 1. Nguồn sự thật
 
-## Product and Specification Workflow
+**`docs/` là nguồn sự thật DUY NHẤT.** Bản đồ tài liệu: `docs/README.md`. Sổ quyết định: `docs/decisions.md` (`QĐ-001` → `QĐ-104`) — đây là nơi duy nhất ghi *vì sao*.
 
-### Source-of-truth hierarchy
+### Thứ bậc nguồn
 
-1. `docs/source/`
-   - Original business and product documents.
-   - Never modify these files unless explicitly requested.
+| # | Đường dẫn | Vai trò |
+|---|---|---|
+| 1 | `docs/source/` | Tài liệu gốc về nghiệp vụ và sản phẩm. **Không sửa** trừ khi được yêu cầu rõ ràng |
+| 2 | `docs/PRD.md` | Requirement cấp sản phẩm và định nghĩa epic. Phải truy nguyên về `docs/source/` |
+| 3 | `specs/<feature>/spec.md` | Requirement và user story chuẩn tắc của feature. **Thắng** mọi mô tả không chính thức trong chat hay trong plan |
+| 4 | `plans/<feature ID>/yyyyMMdd-HHmmss <feature/topic>/plan.md` | Kế hoạch kỹ thuật chuẩn tắc của feature đó |
+| 5 | `specs/<feature>/tasks.md` | Danh sách task thực thi chuẩn tắc |
+| 6 | `plans/yyyyMMdd-HHmmss <feature/topic>/plan.md` | Kế hoạch kỹ thuật cho việc nhỏ **nằm ngoài** spec |
 
-2. `docs/PRD.md`
-   - Product-level requirements and epic definitions.
-   - Must be traceable to documents under `docs/source/`.
+Tầng dưới phải truy nguyên được về tầng trên.
 
-3. `specs/<feature>/spec.md`
-   - Canonical feature requirements and user stories.
-   - Overrides informal descriptions in chats or implementation plans.
+### Quy tắc đặc tả
 
-4. `specs/<feature>/plan.md`
-   - Canonical technical implementation plan for that feature.
+- **Không bao giờ tự bịa requirement nghiệp vụ.**
+- Thiếu thông tin ⇒ đánh dấu `NEEDS CLARIFICATION`. Mâu thuẫn ⇒ đánh dấu `CONFLICT`. Không tự hoà giải.
+- Mọi requirement phải trỏ được về nguồn của nó.
+- **Spec Kit sở hữu** feature specification, implementation plan và task. ClaudeKit được scout, research, review, test và implement.
+- Không tạo plan ClaudeKit riêng cho feature đã do Spec Kit quản lý, trừ khi được yêu cầu rõ ràng.
+- **Không mở rộng phạm vi feature trong lúc implement.**
 
-5. `specs/<feature>/tasks.md`
-   - Canonical executable task list.
+> Chi tiết cưỡng chế — 6 cổng chất lượng, định dạng marker, quy tắc sửa đổi — ở `.specify/memory/constitution.md` **bản 1.3.0**.
+>
+> **Không còn đường nào đưa nội dung ngoài `docs/` vào spec.** `docs/reviews/**`, `public/`, lịch sử git và ghi chú trong chat đều **không** thoả cổng truy nguyên.
 
-### Rules
+### Thư mục `plans/` cũ đã bị xoá
 
-- Never invent business requirements.
-- Mark missing information as `NEEDS CLARIFICATION`.
-- Mark contradictions as `CONFLICT`.
-- Every requirement must reference its source.
-- ClaudeKit may scout, research, review, test, and implement.
-- Spec Kit owns feature specifications, implementation plans, and tasks.
-- Do not create a separate ClaudeKit plan for a Spec Kit-managed feature
-  unless explicitly requested.
-- Do not expand feature scope during implementation.
+Phần chưa migrate — spec RuleConfig v2, kiến trúc kỹ thuật, 12 kế hoạch theo phase, red-team, khảo sát UX, hướng dẫn hồ sơ portable — **chỉ còn trong lịch sử git**; lấy lại bằng `git show <sha>:plans/...`. **Không** trích chúng như requirement.
 
-> Chi tiết cưỡng chế (6 cổng chất lượng, định dạng marker, quy tắc sửa đổi):
-> `.specify/memory/constitution.md` — **bản 1.3.0**, đã đóng `TODO(DOCS_MIGRATION)`.
-> **Không còn đường nào đưa nội dung ngoài `docs/` vào spec**: `docs/reviews/**`, `public/`,
-> lịch sử git và ghi chú trong chat đều KHÔNG thoả cổng truy nguyên.
+---
 
-## Lộ trình version (✅ D18 chốt 12/07 · ✅ sửa phạm vi số ghế 24/07)
+## 2. Phạm vi phiên bản
 
-- **v1 — Solo contest** (Phase 1-10): contest chính thức, thí sinh CÁ NHÂN, đủ loại vòng + biến thể, kho đề, viewer/overlay/MC/admin, 2 profile deploy (compose + portable Windows).
-  - **LUẬT v1 chỉ đặc tả cho ĐÚNG 4 THÍ SINH** (✅ chốt 24/07). Luật gốc O26 viết cho đúng 4 người; không phát minh luật cho số ghế khác.
-  - **Nhưng v1 VẪN hỗ trợ LƯU TRỮ DỮ LIỆU và UI cho 1-12 người** — schema, seat model, `scoringUnit`, RuleConfig dạng mảng, và giao diện đều làm cho 1-12 ngay từ đầu. Chỉ **LUẬT/engine-path** cho số ghế ≠ 4 là chưa có.
-- **v1.5 — Practice + luật đa ghế** (Phase 11): `matchPurpose: practice`, bộ đề PUBLIC + share-link, UI luyện tập solo, trainer role, retention riêng theo `matchPurpose` (**giá trị mặc định ở `QĐ-091`**, không lặp ở đây) · **+ LUẬT cho 1-12 thí sinh** (✅ chuyển từ v2 sang v1.5 ngày 24/07) — chỉ ship luật + sửa controller, KHÔNG migrate schema.
-- **v2 — Teams** (Phase 12): thi đội — buzz cá nhân, điểm về đội (semantics spec §2b).
-- **DB + Zod schema chuẩn bị ĐẦY ĐỦ ngay từ v1** (Team/seat.teamId/scoringUnit, matchPurpose, visibility/everPublic, ACL, retention) — KHÔNG để dành schema cho version sau, tránh migrate; v1 chỉ chưa bật engine-path tương ứng.
+| Phiên bản | Nội dung |
+|---|---|
+| **v1 — Solo contest** | Contest chính thức, thí sinh **cá nhân**, đủ loại vòng và biến thể, kho đề, màn viewer / overlay / MC / admin, hai hồ sơ triển khai *(compose và portable Windows)* |
+| **v1.5 — Practice + luật đa ghế** | `matchPurpose: practice`, bộ đề public + share-link, giao diện luyện tập solo, vai trainer, retention riêng theo `matchPurpose` *(giá trị mặc định ở `QĐ-091`)* · **luật cho 1-12 thí sinh** — chỉ ship luật và sửa controller, **không** migrate schema |
+| **v2 — Teams** | Thi đội: bấm chuông cá nhân, điểm về đội |
 
-## Luật chơi & đề thi (chốt 12/07)
+**Luật v1 chỉ đặc tả cho ĐÚNG 4 THÍ SINH** (`QĐ-007`). Luật gốc O26 viết cho đúng 4 người; **không phát minh luật cho số ghế khác**.
 
-- **Source of truth luật O26 = Fandom wiki** ([Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26)) — bản lưu bất biến: `docs/source/fandom-olympia-26-luat-choi.md`; bảng đối chiếu giá trị và biến thể bị loại: `docs/traceability.md`. Mọi giá trị vẫn là RuleConfig custom được; contest builder có nút **"Áp dụng luật 2026"** áp preset `O26_DEFAULT@1`.
-- **Điểm ĐỘC LẬP thời gian**: `timeSeconds` là metadata TỪNG CÂU HỎI (cùng mức 20đ có thể câu 15s và 40s) — hệ thống chọn câu theo MỨC ĐIỂM, thời gian lấy theo câu; preset chỉ đặt default.
-- **Người tạo contest PHẢI chọn danh sách câu hỏi trước khi start** (full-text search + filter + sort trên kho đề); hệ thống KHÔNG tự lấy đề — draw chỉ RANDOM TRONG danh sách đã gán (snapshot). Pre-flight chặn start khi thiếu.
-- **Contest config import/export trọn gói** (D23): ZIP = Excel câu hỏi (default; nhận CSV/Google Sheet) + JSON metadata media + media theo subfolder từng vòng — use-case soạn trên bản Internet → import vào portable.
+Nhưng **lưu trữ dữ liệu và giao diện vẫn làm cho 1-12 người ngay từ v1** — schema, seat model, `scoringUnit`, RuleConfig dạng mảng và toàn bộ UI. Chỉ **đường xử lý luật** cho số ghế ≠ 4 là chưa có.
 
-### Hệ thống ADVISORY — người vận hành phán quyết (✅ chốt 24/07)
+**Schema chuẩn bị ĐẦY ĐỦ ngay từ v1** — `Team`, `seat.teamId`, `scoringUnit`, `matchPurpose`, `visibility`/`everPublic`, ACL, retention. Không để dành schema cho phiên bản sau; v1 chỉ chưa bật engine-path tương ứng.
 
-Nguyên tắc nền: **máy độc quyền SỰ KIỆN, người độc quyền PHÁN QUYẾT.** Mô hình **BA TẦNG** (áp cho mọi câu hỏi "ai làm X"):
+---
+
+## 3. Luật chơi
+
+### Nguồn luật
+
+Source of truth về luật O26 là **Fandom wiki** ([Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26)); bản lưu bất biến ở `docs/source/fandom-olympia-26-luat-choi.md`. Bảng đối chiếu giá trị và biến thể bị loại: `docs/traceability.md`.
+
+Mọi giá trị vẫn là **RuleConfig tuỳ biến được**; contest builder có nút *"Áp dụng luật 2026"* áp preset `O26_DEFAULT@1`.
+
+### Điểm độc lập thời gian
+
+`timeSeconds` là metadata **của từng câu hỏi** — cùng mức 20 điểm có thể câu 15 giây và câu 40 giây. Hệ thống chọn câu theo **mức điểm**, thời gian lấy theo câu; preset chỉ đặt mặc định.
+
+### Kho đề
+
+- **Người tạo contest phải chọn danh sách câu trước khi bắt đầu trận** — tìm kiếm toàn văn, lọc, sắp xếp trên kho đề. Hệ thống **không** tự lấy đề: rút đề chỉ **ngẫu nhiên trong danh sách đã gán**. Pre-flight chặn bắt đầu khi thiếu.
+- **Xuất/nhập contest trọn gói**: ZIP gồm Excel câu hỏi *(mặc định; nhận cả CSV và Google Sheet)*, JSON metadata media, và media theo thư mục con từng vòng. Dùng cho luồng soạn trên bản có Internet rồi nhập vào bản portable.
+
+### Mô hình ADVISORY — người vận hành phán quyết
+
+Nguyên tắc nền: **máy độc quyền SỰ KIỆN, người độc quyền PHÁN QUYẾT** (`QĐ-001`). Ba tầng, áp cho mọi câu hỏi dạng *"ai làm X"*:
 
 | Tầng | Vai trò | Phương tiện |
 |---|---|---|
 | **MC** | Thẩm quyền phán quyết **trên sân khấu** | **Nói** |
-| **Admin** | **Cảm biến + cơ cấu chấp hành DUY NHẤT** của hệ thống | **Bấm** |
-| **Server** | Sự kiện và thời gian (server time, thứ tự chuông, timer) | Không ai sửa được |
+| **Admin** | **Cảm biến và cơ cấu chấp hành DUY NHẤT** của hệ thống | **Bấm** |
+| **Server** | Sự kiện và thời gian — server time, thứ tự chuông, đồng hồ | Không ai sửa được |
 
-⇒ Màn `/mc` là **READ-ONLY, trừ đúng MỘT ngoại lệ**: MC quyết bằng lời và **admin bấm**. Ngoại lệ duy nhất là **duyệt cú giành quyền điều khiển** khi phiên admin đang giữ mất kết nối (`QĐ-093`) — chỗ duy nhất mà tầng "bấm" trống nên không còn ai thi hành lời của MC. Ngoài đó, **không tạo bề mặt quyền ghi nào cho MC**; đặc biệt MC **không** duyệt tín hiệu của thí sinh — hàng đợi VCNV vẫn thuộc admin.
+**Màn `/mc` là read-only, trừ đúng MỘT ngoại lệ**: MC duyệt cú **giành quyền điều khiển** khi phiên admin đang giữ mất kết nối (`QĐ-093`) — chỗ duy nhất mà tầng *"bấm"* trống nên không còn ai thi hành lời của MC. Ngoài đó **không tạo bề mặt quyền ghi nào cho MC**; đặc biệt MC **không** duyệt tín hiệu của thí sinh — hàng đợi VCNV vẫn thuộc admin.
 
-- **Máy KHÔNG tự chấm Đúng/Sai.** Với câu gõ, máy chỉ **highlight ký tự khác** giữa bài làm và đáp án; admin tự đánh giá (chính tả, ý nghĩa tương đồng). Không viết đường code nào tự cộng/trừ điểm từ so khớp.
-- **Admin chọn vòng nào bắt đầu và lượt của ai. THỨ TỰ DO ADMIN QUYẾT ĐỊNH**; hệ thống chỉ **recommend theo luật + contest settings** (vị trí thí sinh, thứ tự lượt riêng Khởi động — đều là đầu vào của recommendation, KHÔNG phải ràng buộc cưỡng chế). Conflict luật (một người thi 2 lần, đổi lượt…) → **dialog cảnh báo**, admin bấm Yes/No để vẫn thực hiện. KHÔNG chặn cứng.
-- **Admin toàn quyền mở/đóng đáp án và ô chữ.**
-- **Mọi mốc thời gian mà luật gốc mô tả bằng hành vi của MC đều ánh xạ thành MỘT THAO TÁC BẤM CỦA ADMIN** — máy không quan sát được sân khấu, **admin là cảm biến**. Cụ thể: *"MC đọc xong câu hỏi"* → **admin start timer**; *"hiệu lệnh của người dẫn chương trình"* (Câu hỏi phụ) → **admin bấm**, admin là người nghe hiệu lệnh.
-- **Mốc do admin bấm là TUYỆT ĐỐI — KHÔNG có cửa sổ ân hạn, KHÔNG trừ bù độ trễ tay người** (thời gian do server quyết định). Van thoát không phải grace mà là: lịch sử được giữ đầy đủ để admin **xem lại và gỡ lệnh cấm** nếu cần.
-- **Bỏ vòng / chạy lại vòng** được phép, với điều kiện còn câu hỏi. **Điểm = event log; reset = REVERT** (như `git revert`, KHÔNG phải `reset --hard`) — lịch sử **linear, append-only, không xoá**; biên bản trận giữ đầy đủ, vòng bị bỏ hiện kèm nhãn "đã bỏ". Câu đã dùng **không** trả lại pool.
-- **Vòng tính điểm theo thứ hạng (Tăng tốc): một câu = MỘT event điểm cho TOÀN BỘ người chơi**, không phải mỗi người một event — revert là revert cả bảng xếp hạng của câu đó.
+Hệ quả:
 
-### Hai mode trả lời (✅ chốt 24/07) — cấu hình ở cấp CONTEST, một giá trị chung cho toàn bộ vòng
+- **Máy không tự chấm Đúng/Sai.** Với câu gõ, máy chỉ **tô ký tự khác** giữa bài làm và đáp án; admin tự đánh giá chính tả và ý nghĩa tương đồng. **Không viết đường code nào tự cộng trừ điểm từ kết quả so khớp.**
+- **Admin chọn vòng nào bắt đầu và lượt của ai.** Hệ thống chỉ **khuyến nghị** theo luật và cấu hình contest — vị trí thí sinh và thứ tự lượt riêng Khởi động đều là **đầu vào của khuyến nghị**, không phải ràng buộc. Lệch luật ⇒ **dialog cảnh báo**, admin bấm Yes là thực hiện. **Không chặn cứng.**
+- **Admin toàn quyền mở và đóng đáp án, ô chữ.**
+- **Mọi mốc thời gian mà luật gốc mô tả bằng hành vi của MC đều ánh xạ thành một cú bấm của admin** — máy không quan sát được sân khấu. *"MC đọc xong câu hỏi"* ⇒ admin bấm start timer; *"hiệu lệnh của người dẫn chương trình"* ⇒ admin bấm.
+- **Mốc do admin bấm là tuyệt đối**: không cửa sổ ân hạn, không trừ bù độ trễ tay người. Van thoát không phải grace mà là **lịch sử đầy đủ** để admin xem lại và gỡ lệnh cấm.
+- **Bỏ vòng và chạy lại vòng** được phép, miễn còn câu. **Điểm là hàm của event log; hoàn nguyên là REVERT** — thêm event đảo ngược như `git revert`, không phải `reset --hard`. Lịch sử linear, append-only, **không xoá**; vòng bị bỏ hiện trong biên bản kèm nhãn *"đã bỏ"*. Câu đã dùng **không** trả lại kho.
+- **Vòng tính điểm theo thứ hạng (Tăng tốc): một câu là MỘT event điểm cho toàn bộ bảng**, không phải mỗi người một event — hoàn nguyên là đảo cả bảng của câu đó.
 
-- **Mode sân khấu (MẶC ĐỊNH, và là mode LUẬT được đặc tả theo)**: thí sinh **đọc** đáp án, máy chỉ dùng để **giành quyền trả lời**.
-- **Mode nhập liệu**: thí sinh gõ đáp án.
-- Áp cho **Khởi động, Về đích, Câu hỏi phụ**. **VCNV và Tăng tốc LUÔN gõ máy** — ở VCNV mode chỉ đổi cách **chọn hàng ngang** (sân khấu → admin điều khiển; nhập liệu → thí sinh click), và thí sinh dùng máy để chọn **"Mở chướng ngại vật"**.
-- **Chọn hàng ngang: MỘT đường vào cho mỗi mode** (✅ D36 chốt 25/07 — thay cho "hai đường vào"): sân khấu → **chỉ admin** click, máy thí sinh không có nút chọn; nhập liệu → **chỉ thí sinh** click, **admin không chọn thay**. Cả hai đều qua **hàng đợi** + admin xác nhận Yes/No. **KHÔNG drop tín hiệu.**
-- **Điểm được phép ÂM**, không có sàn.
+### Hai mode trả lời
 
-## UX — BẮT BUỘC
+Cấu hình ở **cấp contest**, một giá trị chung cho mọi vòng.
 
-Áp cho MỌI UI trong repo này (app React lẫn demo tĩnh `public/`):
+- **Mode sân khấu** *(mặc định, và là mode mà luật được đặc tả theo)*: thí sinh **đọc** đáp án; máy chỉ dùng để giành quyền trả lời.
+- **Mode nhập liệu**: thí sinh **gõ** đáp án.
 
-- **Visibility of System Status**: Mọi thao tác async (submit, save, validate, load) PHẢI hiển thị trạng thái rõ ràng — spinner/loading state, progress indicator, hoặc skeleton. Không để UI im lặng khi đang xử lý.
-- **Immediate Feedback**: Phản hồi người dùng **ngay lập tức**, không có độ trễ cảm nhận được. Toast/message thành công hoặc thất bại phải xuất hiện sau mỗi action. Luồng async theo pattern `loading → success/error` (MUI: `Snackbar`/`Alert`; demo tĩnh: toast component chung).
-- **KHÔNG chặn gửi lại (rule chống double-submit đã bị chủ dự án gỡ bỏ)**: nút action chỉ hiện trạng thái loading, KHÔNG disable; người dùng gửi lại được — server nhận **bản cuối cùng** trước timeout. Dedup/idempotency là việc của SERVER (event log), không phải của UI. *Ngoại lệ: khoá-theo-LUẬT-CHƠI (chuông bị khoá khi sai, NSHV đã dùng, không tới lượt) vẫn disable bình thường — đó là trạng thái game, không phải chống double-submit.*
-- **Nút bấm chuông CHỈ nhận click chuột** — không gán hotkey cho chuông (tránh bấm nhầm khi gõ đáp án); các hotkey khác (Enter gửi, 1-8 chọn hàng...) giữ nguyên. **Nút "Mở chướng ngại vật" (VCNV) được xếp là CHUÔNG** ⇒ cũng chỉ nhận click chuột.
-- **Dialog xác nhận đặt ở phía ADMIN; phía thí sinh CHỈ có ở thao tác KHÔNG đua tốc độ** (✅ chốt 24/07, sửa 25/07 theo D36). Đây là **ngoại lệ có chủ đích** của rule "không chặn gửi lại" ở trên: nó chống bấm nhầm hành động không thu hồi được, không phải chống double-submit.
-  - **Phía thí sinh: tức thời, không dialog, không rút lại** — *"thí sinh cần tốc độ, và tự chịu trách nhiệm sai lầm của mình"*. Áp cho **mọi thao tác đua tốc độ**: chuông, "Mở chướng ngại vật", gửi đáp án.
-  - **NGOẠI LỆ DUY NHẤT — chọn hàng ngang ở mode nhập liệu** (D36): thao tác **một chiều, hậu quả nặng, KHÔNG bị ép thời gian** ⇒ có **dialog xác nhận trên máy thí sinh**, xác nhận xong thì **khoá nút chọn**. Khoá là **TẠM**: admin bấm No ⇒ **mở lại** (bắt buộc bởi rule "reject ⇒ thí sinh không mất lượt"). Dialog này **không thay thế** bước admin duyệt Yes/No — hai lớp khác mục đích: dialog chống bấm nhầm, admin duyệt là phán quyết.
-  - **Phía admin: mọi thao tác không hoàn tác được đều qua dialog Yes/No** — mở đáp án/ô chữ, xác nhận chọn hàng ngang, **và xác nhận nút "Mở chướng ngại vật" của thí sinh**.
-  - **Mọi tín hiệu của thí sinh đều vào HÀNG ĐỢI theo thứ tự tới** (server timestamp). **KHÔNG có cơ chế drop.** **Hàng đợi đang hoạt động** reset sau mỗi VÒNG rồi tái sử dụng — nhưng **LỊCH SỬ tín hiệu KHÔNG BAO GIỜ XOÁ** (append-only), để admin xem lại và **gỡ lệnh cấm** khi cần. Queue **chỉ CHẶN ở VCNV**:
-    - **VCNV** (chọn hàng ngang, "Mở chướng ngại vật") — queue **chặn**: admin duyệt lần lượt, xác nhận mới có hiệu lực. Reject ⇒ tín hiệu kế tiếp lên, **thí sinh KHÔNG mất lượt**. Đây là chỗ sửa lỗi bấm nhầm của thí sinh — admin bấm No, không phải bắt thí sinh xác nhận.
-    - **Khởi động lượt chung, Về đích cướp quyền** — queue **KHÔNG chặn**: **có chuông là tính ngay** theo server timestamp, không chờ duyệt. Queue vẫn ghi nhận thứ tự để admin **can thiệp khi có sự cố**.
-  - **Tiêu chí phân biệt**: tín hiệu *một chiều, hậu quả nặng, không bị ép thời gian* ⇒ queue chặn. Tín hiệu *đua tốc độ, cửa sổ chặt* ⇒ không chặn, server phân xử ngay (giữ nguyên "server time là quyết định cuối cùng"); queue chỉ là lưới an toàn.
-- **Tăng tốc: nhận MỌI lần trả lời đến khi hết giờ, tính BẢN CUỐI CÙNG** — không khoá input/nút gửi sau khi trả lời; ranking theo server-received timestamp của bản cuối.
-- **Server time là source of truth DUY NHẤT và là quyết định cuối cùng**: timeout, thứ tự chuông, thứ hạng tốc độ đều theo đồng hồ server; client chỉ hiển thị.
-- **Viewport-Conscious Balanced Layout**: Design chủ đích theo kích thước màn hình. Giữ **nội dung chính của mỗi page/tab trong 1 viewport** trên khung nhìn tham chiếu của dự án — không thứ gì quan trọng phải scroll mới thấy — nhưng **không được nhồi nhét**: giữ breathing room và whitespace dễ đọc. Cân bằng cả hai chiều hỏng:
-  - **Không ép scroll** — nếu phần tử quan trọng nằm dưới fold, sửa layout (bỏ page header trùng breadcrumb; nén hàng stat-card "hero" thành metric strip mỏng; form 2 cột compact thay vì card xếp dọc từng field). **Bảng dài ưu tiên pagination** với page size theo viewport (~10-12 dòng) để header + toolbar + rows + pager vừa 1 màn **không scroll trang** — đây là cách sửa chính; table body scroll nội bộ + sticky header + pager ghim là fallback khi ranh giới trang bất tiện (vd ma trận cố định). Chỉ giữ scroll cả trang khi không còn cách hợp lý, và phải giải thích được.
-  - **Không phí không gian / không quá đặc** — không để mảng trống lớn hoặc info giá trị thấp chiếm chỗ đẹp; cũng không nén chặt đến rối. Ưu tiên info quan trọng với **role hiện tại**.
-  - **Dashboard**: bố cục theo **Z / F reading model**; đưa info liên quan nhất của từng role lên trước (admin → điều khiển trận + hàng chờ duyệt ĐỀ (DRAFT→ACTIVE); setter → câu hỏi của mình + trạng thái duyệt; thí sinh → trạng thái thi + điểm; viewer → sân khấu + bảng điểm).
+Áp cho **Khởi động, Về đích, Câu hỏi phụ**. **VCNV và Tăng tốc luôn gõ máy** bất kể mode — ở VCNV, mode chỉ đổi cách **chọn hàng ngang**, và thí sinh vẫn dùng máy để bấm *"Mở chướng ngại vật"*.
 
-## Điều hướng (demo `public/` và app)
+**Chọn hàng ngang có đúng MỘT đường vào cho mỗi mode**: sân khấu ⇒ **chỉ admin** click, máy thí sinh không render nút chọn; nhập liệu ⇒ **chỉ thí sinh** click, **admin không chọn thay**. Cả hai đường đều qua hàng đợi và admin xác nhận Yes/No.
 
-- Mọi màn có nút **Back** rõ ràng về màn trước/menu; `Esc` = back (đóng modal trước nếu đang mở), `H` = về hub/menu chính. *Ngoại lệ màn thi đấu của thí sinh: Esc CHỈ xoá ô nhập, không back (browser dùng Esc thoát fullscreen — tránh văng fullscreen giữa trận).*
+**Điểm được phép ÂM**, không có sàn.
 
-## Nguyên tắc code — BẮT BUỘC toàn repo
+### Hàng đợi tín hiệu
 
-- **DRY**: không lặp logic/hằng số/schema — Zod schemas, RuleConfig, permission catalog, socket event contracts đều ở `packages/shared` dùng chung FE+BE; validation viết MỘT lần (Zod) chạy cả hai đầu; component/hook/util lặp ≥2 lần phải trích xuất.
-- **Zero-trust security**: KHÔNG BAO GIỜ tin client — mọi request/socket event đều verify auth + permission (CASL) ở server bất kể client là ai, đã join room gì, UI có ẩn nút hay không; viewer/overlay là public và **không có đường ghi** — kênh SSE một chiều, read-only là tính chất cấu trúc chứ không phải luật phải cưỡng chế (`QĐ-088`); mọi input validate lại ở server (validate FE chỉ là UX); **TRƯỚC mốc CÂU KHÉP đáp án chỉ rời server tới phiên giữ `PERM-045` `match.readAnswer` (authenticated + audit) — ở bốn vai dựng sẵn là Quản trị và MC; viewer/thí sinh/overlay không nhận. Cửa kiểm hỏi PERMISSION, KHÔNG hỏi tên vai (`QĐ-094`). TỪ mốc câu khép, server đẩy đáp án tới cả ba vai đó nếu `revealAnswerAfterJudge` bật (cờ CẤP TRẬN — `QĐ-062`; mặc định BẬT cho cả official lẫn practice — `QĐ-080`; đổi được từng trận). CÂU KHÉP ≠ "đã chấm": ở Về đích cú bấm chấm Sai MỞ cửa sổ cướp quyền 5s, câu chỉ khép sau khi cửa sổ đóng và người cướp đã được chấm — công bố sớm là xoá sổ cướp quyền. Ba ca biên: câu bị bỏ qua VẪN công bố; "Huỷ kết quả" KHÔNG tự công bố; đáp án Chướng ngại vật theo `GR-012`, ngoài cơ chế này. CẤM đẩy đáp án xuống client trước mốc rồi ẩn bằng cờ hiển thị (lỗi của tiền lệ Athena)**; timer/điểm/chuông chỉ tính ở server.
+- **Mọi tín hiệu của thí sinh vào hàng đợi theo thứ tự tới** (server timestamp). **Không có cơ chế drop** — mọi tín hiệu đã tới server đều có outcome: thực thi, bị từ chối, hoặc **trơ**.
+- **Hàng đợi đang hoạt động** đặt lại theo **đích** của tín hiệu; **lịch sử tín hiệu không bao giờ xoá**, để admin xem lại và gỡ lệnh cấm.
+- **Chỉ CHẶN ở VCNV** — chọn hàng ngang và *"Mở chướng ngại vật"*: admin duyệt lần lượt, xác nhận mới có hiệu lực. Từ chối ⇒ tín hiệu kế lên, **thí sinh không mất lượt**. Đây là chỗ sửa lỗi bấm nhầm của thí sinh — admin bấm No, không phải bắt thí sinh xác nhận.
+- **Khởi động lượt chung, cướp quyền Về đích, Câu hỏi phụ — không chặn**: có chuông là tính ngay theo server timestamp. Hàng đợi vẫn ghi thứ tự làm lưới an toàn.
+- **Tiêu chí phân biệt**: tín hiệu *một chiều, hậu quả nặng, không bị ép thời gian* ⇒ chặn. Tín hiệu *đua tốc độ, cửa sổ chặt* ⇒ không chặn, server phân xử ngay.
+- Khi người đang giữ quyền bị chấm **Huỷ kết quả**, admin **kích hoạt tay** được một tín hiệu khác còn hiệu lực trong hàng đợi (`QĐ-104`).
 
-## Mô hình truy cập (chốt 12/07)
+---
 
-- **Public (chỉ cần MÃ PHÒNG 6 số, không account, không duyệt)**: màn viewer + overlay OBS (frame stream) — read-only tuyệt đối qua **SSE + REST một chiều**, có rate-limit + nút "khoá cổng" của admin.
-- **Cần AUTH (username+password + permission)**: thí sinh, MC, admin/setter — mọi giao diện có thể gửi event hoặc thấy đáp án.
+## 4. Kiến trúc và bảo mật
 
-## Quy ước khác
+### Stack
 
-- Server-authoritative tuyệt đối: timer/điểm/chuông tính ở server, client chỉ render; **server time là source of truth duy nhất**.
-- **Audit log MỌI thao tác, MỌI role** (user chốt 12/07): auth (login/logout/fail), CRUD kho đề/bộ đề, contest management, mọi event trong trận (đã có MatchEvent log), viewer join/kick, xuất/nhập, xem đáp án — bảng AuditLog chung append-only (actor, action, target, ts, ip) ngoài các log chuyên biệt.
-- **TRIM mọi input text ở CẢ frontend lẫn backend** (đề, đáp án, submission — tránh space đầu/cuối phá so khớp).
-- **Chỉ tiếng Việt** (không i18n); **múi giờ thống nhất UTC+7** — DB lưu UTC, mọi hiển thị/log/PDF format theo UTC+7, không có timezone setting per-user.
-- **Stack: NestJS + Express adapter** (✅ D9 12/07 — không dùng Fastify).
-- Mọi timer/điểm là RuleConfig — KHÔNG hard-code luật trong code/UI.
-- **Animation là module ĐỘC LẬP với engine/rule** (D22): engine chỉ emit semantic event; mapping event→animation là config client-side — sửa rule (vd cách chọn câu hỏi) không đụng animation và ngược lại.
-- **Media thí sinh preload MÃ HOÁ qua service worker** (D12b): key phát đúng lúc reveal theo server time; fallback reveal-only khi SW không khả dụng. Viewer/overlay preload URL thường.
-- **Sound**: engine emit `sound-cue {slot}`; admin tự upload file per slot (slot trống = silent, không có bộ SFX default); client pre-download toàn bộ SFX khi vào phòng.
-- **Giới hạn kích thước media là env config** — ảnh, video, audio mỗi loại một ngưỡng riêng. **Không hard-code con số** ở bất kỳ đâu trong code hay UI; thông điệp từ chối phải đọc ngưỡng từ config.
-- **Font: "Be Vietnam Pro"** + fallback font hệ thống hỗ trợ tiếng Việt (stack chuẩn trong `public/assets/tokens.css` `--font-sans`); app thật SELF-HOST woff2 trong bundle (portable LAN offline — không dùng CDN), demo dùng Google Fonts.
-- String UI tiếng Việt tách file constants (`vi.ts`), không hard-code trong JSX.
-- Commit theo Conventional Commits, KHÔNG AI attribution.
+**Backend**: NestJS + **Express adapter** *(không dùng Fastify)*, Zod, Prisma + Postgres, Redis, Better-auth, Socket.IO, `@casl/ability`.
+**Frontend**: React + Vite, MUI, Motion for React, Zustand, TanStack Query.
+**Lưu trữ media**: MinIO.
+
+### Kênh và mô hình truy cập
+
+| Kênh | Ai dùng | Cơ chế |
+|---|---|---|
+| **Có xác thực** | Admin, thí sinh, MC, setter | **Socket.IO** hai chiều. Đăng nhập bằng username + password, kiểm permission |
+| **Public** | Màn khán giả, overlay OBS | **SSE + REST một chiều**, vào bằng **mã phòng 6 số** — không tài khoản, không chờ duyệt. Có rate-limit và nút *"khoá cổng"* của admin |
+
+Kênh public **không có đường ghi**, nên read-only ở đó là tính chất **cấu trúc**, không phải một luật server phải cưỡng chế (`QĐ-088`).
+
+### Zero-trust
+
+**Không bao giờ tin client.** Mọi request và socket event đều verify auth + permission (CASL) ở server, bất kể client là ai, đã join room gì, hay giao diện có ẩn nút hay không. Mọi input validate lại ở server — validate ở frontend chỉ là UX.
+
+### Phạm vi hiển thị đáp án
+
+Đây là hàng rào chống rò đề; sai ở đây là hỏng sản phẩm.
+
+- **Trước mốc CÂU KHÉP**, đáp án chỉ rời server tới phiên giữ permission `PERM-045` `match.readAnswer` *(có xác thực, có audit)* — ở bốn vai dựng sẵn là **Quản trị** và **MC**. Thí sinh, khán giả và overlay **không** nhận.
+- **Cửa kiểm hỏi PERMISSION, không hỏi tên vai** (`QĐ-094`).
+- **Từ mốc câu khép**, server đẩy đáp án tới thí sinh, khán giả và overlay nếu cờ `revealAnswerAfterJudge` bật — cờ **cấp TRẬN**, mặc định **bật** cho cả trận chính thức lẫn luyện tập, đổi được từng trận (`QĐ-062`, `QĐ-080`).
+- **Câu khép ≠ "đã chấm".** Ở Về đích, cú bấm chấm Sai **mở** cửa sổ cướp quyền 5 giây; câu chỉ khép sau khi cửa sổ đóng **và** người cướp đã được chấm. Công bố sớm là xoá sổ cơ chế cướp quyền.
+- Ba ca biên: câu **bị bỏ qua** vẫn công bố · phán quyết **Huỷ kết quả** không tự công bố · đáp án **Chướng ngại vật** theo `GR-012`, nằm ngoài cơ chế này.
+- **CẤM đẩy đáp án xuống client trước mốc rồi ẩn bằng một cờ hiển thị.** Đây đúng là lỗi của hệ thống tiền lệ Athena.
+
+### Server-authoritative
+
+Timer, điểm và chuông **chỉ tính ở server**; client chỉ render. **Server time là source of truth duy nhất và là quyết định cuối cùng** cho timeout, thứ tự chuông và thứ hạng tốc độ.
+
+### Nhật ký thao tác
+
+**Audit log mọi thao tác, mọi vai**: đăng nhập / đăng xuất / đăng nhập hỏng, CRUD kho đề và bộ đề, quản lý contest, mọi event trong trận *(đã có `MatchEvent` log riêng)*, khán giả vào và bị kick, xuất/nhập, và **xem đáp án**. Bảng `AuditLog` chung, append-only, gồm actor · action · target · timestamp · IP.
+
+---
+
+## 5. UX — bắt buộc
+
+Áp cho **mọi** giao diện trong repo: app React lẫn demo tĩnh `public/`.
+
+### Trạng thái và phản hồi
+
+- **Hiển thị trạng thái hệ thống**: mọi thao tác async — submit, save, validate, load — phải có spinner, progress indicator hoặc skeleton. Không để giao diện im lặng khi đang xử lý.
+- **Phản hồi tức thì**: toast thành công hoặc thất bại sau mỗi action, không có độ trễ cảm nhận được. Luồng async theo mẫu `loading → success/error` — MUI dùng `Snackbar`/`Alert`, demo tĩnh dùng toast component chung.
+
+### Không chặn gửi lại
+
+Nút action chỉ hiện trạng thái loading, **không disable**. Người dùng gửi lại được; server nhận **bản cuối cùng** trước timeout. Dedup và idempotency là việc của **server** (event log), không phải của giao diện.
+
+> **Ngoại lệ**: khoá **theo luật chơi** — chuông bị khoá khi đã trả lời sai, Ngôi sao hy vọng đã dùng, chưa tới lượt — vẫn disable bình thường. Đó là trạng thái game, không phải chống double-submit.
+
+### Chuông
+
+**Nút chuông chỉ nhận click chuột**; **không** gán phím tắt nào cho chuông, để tránh bấm nhầm khi đang gõ đáp án. Các phím tắt khác giữ nguyên: `Enter` gửi, `1`-`8` chọn hàng ngang.
+
+**Nút *"Mở chướng ngại vật"* được xếp là CHUÔNG** ⇒ cũng chỉ nhận click chuột.
+
+### Dialog xác nhận
+
+Đây là **ngoại lệ có chủ đích** của rule *không chặn gửi lại*: nó chống bấm nhầm một hành động không thu hồi được, không phải chống double-submit.
+
+- **Phía admin**: mọi thao tác không hoàn tác được đều qua dialog Yes/No — mở đáp án, mở ô chữ, xác nhận chọn hàng ngang, xác nhận nút *"Mở chướng ngại vật"* của thí sinh.
+- **Phía thí sinh: tức thời, không dialog, không rút lại.** *"Thí sinh cần tốc độ, và tự chịu trách nhiệm sai lầm của mình."* Áp cho mọi thao tác đua tốc độ: chuông, *"Mở chướng ngại vật"*, gửi đáp án.
+- **Ngoại lệ duy nhất phía thí sinh — chọn hàng ngang ở mode nhập liệu**: thao tác một chiều, hậu quả nặng, **không** bị ép thời gian ⇒ có dialog xác nhận trên máy thí sinh, xác nhận xong thì khoá nút chọn. Khoá là **tạm**: admin bấm No thì **mở lại**. Dialog này **không thay thế** bước admin duyệt — hai lớp khác mục đích: dialog chống bấm nhầm, admin duyệt là phán quyết.
+
+### Vòng Tăng tốc
+
+Nhận **mọi** lần trả lời cho tới khi hết giờ và tính **bản cuối cùng** — không khoá ô nhập hay nút gửi sau lần trả lời đầu. Xếp hạng theo server-received timestamp của bản cuối.
+
+### Bố cục theo viewport
+
+Thiết kế chủ đích theo kích thước màn hình. Giữ **nội dung chính của mỗi trang trong một viewport** trên khung nhìn tham chiếu của dự án — không thứ gì quan trọng phải scroll mới thấy — nhưng **không nhồi nhét**: giữ breathing room và whitespace dễ đọc. Cân bằng cả hai chiều hỏng:
+
+- **Không ép scroll.** Phần tử quan trọng nằm dưới fold thì sửa layout: bỏ page header trùng breadcrumb, nén hàng stat-card *hero* thành metric strip mỏng, dùng form 2 cột compact thay vì card xếp dọc từng field. **Bảng dài ưu tiên pagination** với page size theo viewport *(~10-12 dòng)* để header + toolbar + rows + pager vừa một màn — đây là cách sửa chính. Table body scroll nội bộ + sticky header + pager ghim là **fallback** khi ranh giới trang bất tiện *(ví dụ ma trận cố định)*. Chỉ giữ scroll cả trang khi không còn cách hợp lý, và phải giải thích được.
+- **Không phí không gian, cũng không quá đặc.** Không để mảng trống lớn hoặc thông tin giá trị thấp chiếm chỗ đẹp; cũng không nén chặt đến rối. Ưu tiên thông tin quan trọng với **vai đang xem**.
+- **Dashboard** bố cục theo **Z / F reading model**, đưa thông tin liên quan nhất của từng vai lên trước: admin ⇒ điều khiển trận + hàng chờ duyệt đề `DRAFT` → `ACTIVE`; setter ⇒ câu hỏi của mình + trạng thái duyệt; thí sinh ⇒ trạng thái thi + điểm; khán giả ⇒ sân khấu + bảng điểm.
+
+### Điều hướng
+
+Mọi màn có nút **Back** rõ ràng về màn trước hoặc menu. `Esc` = back *(đóng modal trước nếu đang mở)*, `H` = về hub.
+
+> **Ngoại lệ — màn thi đấu của thí sinh**: `Esc` **chỉ xoá ô nhập**, không back. Trình duyệt dùng `Esc` để thoát fullscreen, nên gán back vào đó sẽ làm văng fullscreen giữa trận.
+
+---
+
+## 6. Quy ước code
+
+- **DRY.** Không lặp logic, hằng số hay schema. Zod schema, RuleConfig, permission catalog và socket event contract đều đặt ở `packages/shared` dùng chung frontend lẫn backend; validation viết **một lần** bằng Zod, chạy cả hai đầu. Component, hook hoặc util lặp từ hai lần trở lên phải trích xuất.
+- **Mọi timer và mức điểm là RuleConfig** — không hard-code luật trong code hay giao diện.
+- **Trim mọi input text ở CẢ frontend lẫn backend** — đề, đáp án, bài làm — tránh khoảng trắng đầu cuối phá so khớp.
+- **Chỉ tiếng Việt**, không i18n. **Múi giờ thống nhất UTC+7**: database lưu UTC, mọi hiển thị / log / PDF format theo UTC+7, không có thiết lập múi giờ theo người dùng.
+- **String giao diện tách ra file constants** (`vi.ts`), không hard-code trong JSX.
+- **Animation là module ĐỘC LẬP với engine và rule.** Engine chỉ emit semantic event; ánh xạ event → animation là config phía client. Sửa rule không đụng animation và ngược lại.
+- **Media của thí sinh preload ở dạng MÃ HOÁ qua service worker**; key phát đúng lúc reveal theo server time, fallback reveal-only khi service worker không khả dụng. Màn khán giả và overlay preload URL thường.
+- **Âm thanh**: engine emit `sound-cue { slot }`; admin tự upload file cho từng slot — slot trống là im lặng, **không** có bộ SFX mặc định. Client pre-download toàn bộ SFX khi vào phòng.
+- **Giới hạn kích thước media là env config**, mỗi loại *(ảnh, video, audio)* một ngưỡng riêng. **Không hard-code con số** ở bất kỳ đâu trong code hay giao diện; thông điệp từ chối phải đọc ngưỡng từ config.
+- **Font "Be Vietnam Pro"** + fallback font hệ thống hỗ trợ tiếng Việt *(stack chuẩn ở `public/assets/tokens.css`, biến `--font-sans`)*. App thật **self-host** woff2 trong bundle vì bản portable chạy LAN offline — không dùng CDN; demo tĩnh dùng Google Fonts.
+- **Commit theo Conventional Commits, KHÔNG AI attribution.**
