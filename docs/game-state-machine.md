@@ -9,7 +9,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn — **source of truth duy nhất** |
-| `decisions.md` | **Vì sao** — 103 quyết định `QĐ-001` → `QĐ-103`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 104 quyết định `QĐ-001` → `QĐ-104`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; tài liệu này dùng đúng tên ở đó |
 | `game-rules.md` | Rule `GR-*`; **mọi transition ở đây phải trỏ về ≥1 `GR-*`** |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -1036,6 +1036,17 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 - **Không hợp lệ ở**: như `EVENT-022`.
 - **Nguồn**: `QĐ-022` · `GR-007`, `GR-009`, `GR-032`
 
+### EVENT-052 — Kích hoạt tay một tín hiệu
+
+- **Actor**: Admin
+- **Mô tả**: sau khi người đang giữ quyền trả lời bị chấm **Huỷ kết quả**, admin trao quyền cho **một tín hiệu bất kỳ còn hiệu lực** trong hàng đợi của cùng **đích**. Đây là hiện thực cụ thể của mệnh đề *"hàng đợi ghi thứ tự để admin can thiệp khi có sự cố"* — trước `QĐ-104` mệnh đề đó là **lời hứa chưa có cơ chế**.
+- **Hợp lệ ở**: mọi vòng có giành quyền bằng chuông — `STATE-003` Khởi động lượt chung · cửa sổ cướp quyền của `STATE-006` Về đích · `STATE-007` Câu hỏi phụ · và tín hiệu *"Mở chướng ngại vật"* ở `STATE-004` VCNV. Yêu cầu: phán quyết **vừa** chốt cho người giữ quyền là **Huỷ kết quả** (`EVENT-014`).
+- **Không hợp lệ ở**: sau phán quyết **Đúng** hoặc **Sai** — nhánh **không tồn tại**, nút không bật · khi hàng đợi của đích đó **không còn** ứng viên · khi đã dùng hết hạn mức của `T-098` *(ba vòng chuông: một lần mỗi câu)*.
+- **Tập ứng viên**: tín hiệu ở `STATE-032` **trơ chưa từng được xử lý** · tín hiệu ở `STATE-029` **chờ duyệt** *(VCNV)* · **và** ghế **vừa bị Huỷ kết quả** ở chính câu/vòng đó. **Không** phải ứng viên: ghế mang `STATE-022` **bị loại khỏi VCNV** · ghế mang `STATE-025` **bị vô hiệu hoá**.
+- **Chọn lệch thứ tự**: hệ thống **khuyến nghị** ứng viên có server timestamp sớm nhất chưa xử lý; admin chọn ứng viên khác thì bật `STATE-036` **dialog cảnh báo lệch luật** Yes/No, **không** bắt nhập lý do, và **ép qua được**. Đây là hạng 2 của ba hạng phản hồi, **không** phải chặn cứng — `INV-014` vẫn đúng ba chỗ.
+- **Side effects**: đánh dấu **người giữ quyền mới** · cấp lại **trọn** cửa sổ suy nghĩ của vòng nếu vòng đó có *(xem `T-097`)* · **mốc câu khép lùi** (`INV-017`, `GR-037`) · vào `AuditLog` kèm ghế được chọn, ghế bị vượt, và thứ tự gốc. **Không** sinh event điểm; **không** đụng cờ đã-dùng của câu; **không** đổi trạng thái nào của bàn cờ VCNV.
+- **Nguồn**: `QĐ-104` · `QĐ-020`, `QĐ-024`, `QĐ-002`, `QĐ-003` · `GR-032` §Kích hoạt tay
+
 ## E. Admin — Về đích và tie-break
 
 ### EVENT-024 — Chốt gói câu
@@ -1452,6 +1463,19 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | T-095 | `STATE-039` | Phiên đang giữ **kết nối lại** | — | **− `STATE-039`**; quyền **ở nguyên** chỗ cũ | Cú giành **mất đối tượng** — không xoá, không cảnh báo. Cùng khuôn *"mất đối tượng"* của `EVENT-048` | `QĐ-093`, `QĐ-070` |
 | T-096 | Trận **chưa đóng sổ**, contest **không có MC** | `EVENT-050` Giành quyền | Phiên đang giữ **mất kết nối** | Quyền ở phiên giành **ngay** | **Âm thầm**: không dialog, không báo cho thí sinh / khán giả / lớp phủ (cùng khuôn `QĐ-076`). Nhiều người cùng giành ⇒ **chủ contest thắng**, ngoài ra theo server timestamp. Vào `AuditLog` | `QĐ-093` |
 
+## I. Kích hoạt tay một tín hiệu — mọi vòng có giành quyền bằng chuông
+
+> Bốn transition dưới đây chỉ mở sau một phán quyết **Huỷ kết quả** cho người đang giữ quyền (`QĐ-104`). Sau **Đúng** hoặc **Sai**, nhánh này **không tồn tại**.
+
+| # | Từ | Sự kiện | Guard | Sang | Side effects | Rule |
+|---|---|---|---|---|---|---|
+| T-097 | `STATE-021` câu **đã chấm** bằng `EVENT-014` Huỷ kết quả | `EVENT-052` Kích hoạt tay | Còn ứng viên trong hàng đợi của **đích**; chưa hết hạn mức `T-098` | `STATE-019` **đang đếm giờ** *(vòng có cửa sổ suy nghĩ)* · `STATE-020` **hết giờ chưa chấm** *(Về đích và tín hiệu Chướng ngại vật — không có đồng hồ trả lời riêng)* | Đánh dấu **người giữ quyền mới**; cấp lại **trọn** cửa sổ của vòng từ mốc bấm — lượt chung **3 giây**, Câu hỏi phụ **15 giây**. **Mốc câu khép LÙI** tới sau khi người này được chấm ⇒ đáp án **chưa** công bố | `GR-032` §Kích hoạt tay, `GR-037` |
+| T-098 | Như `T-097` | `EVENT-052` Kích hoạt tay | **Hạn mức theo ĐÍCH của tín hiệu**: ba vòng chuông *(đích là **câu**)* ⇒ **đúng một lần cho mỗi câu**; VCNV *(đích là **vòng**)* ⇒ **một lần cho mỗi `EVENT-014`**, chuỗi dừng khi hàng đợi tín hiệu Chướng ngại vật của vòng cạn | Như `T-097` | Vượt hạn mức ⇒ **TOAST** invalid state, **không ép được** — khác hẳn cảnh báo lệch thứ tự vốn ép được | `GR-032` §Kích hoạt tay |
+| T-099 | `STATE-032` tín hiệu **trơ** · hoặc `STATE-029` **chờ duyệt** *(VCNV)* | `EVENT-052` Kích hoạt tay | Tín hiệu còn hiệu lực với **đích** của nó; ghế phát **không** mang `STATE-022` bị loại và **không** mang `STATE-025` bị vô hiệu hoá | `STATE-030` tín hiệu **đã duyệt** | Tín hiệu chuyển từ **không có hiệu lực** sang **có hiệu lực**; **cả hai** trạng thái giữ trong lịch sử (`INV-001`). Ở VCNV, đây cũng là mốc **chốt băng điểm** như `EVENT-022` | `GR-009`, `GR-032` |
+| T-100 | Ghế **vừa bị Huỷ kết quả** ở chính câu/vòng đó | `EVENT-052` Kích hoạt tay | Cùng guard `T-099`, trừ vế tín hiệu — ghế này **không có** tín hiệu mới | Tín hiệu cũ **ở nguyên** `STATE-030` | Quyền trả lời được **cấp lại** cho chính ghế đó — lượt thứ hai trên cùng một câu. Không sinh trạng thái tín hiệu mới, vì đây là **cấp lại quyền**, không phải một tín hiệu khác | `GR-032` §Kích hoạt tay |
+
+> **Vì sao `T-099` không phá `INV-007`.** FIFO thuần chi phối **thứ tự xử lý bình thường** của hàng đợi; `EVENT-052` là **can thiệp ngoại lệ của người**, hiện trên màn điều khiển và vào `AuditLog`. Chọn lệch thứ tự bật `STATE-036` cảnh báo, ép được — nó **không** phải một quy tắc ưu tiên ẩn của máy, thứ mà `GR-032` §Đồng thời cấm.
+
 ---
 
 # Invalid transitions
@@ -1541,9 +1565,18 @@ Không ưu tiên theo **loại** tín hiệu, không theo số ghế hay vị tr
 
 Và **không tác dụng phụ nào** đã phát sinh: chưa đánh dấu đã hỏi, câu chưa tiêu, đồng hồ chưa chạy. — `QĐ-022`
 
-### INV-009 — Một câu chỉ đi qua đúng MỘT phán quyết
+### INV-009 — Một câu chỉ KHÉP một lần
 
-Sau khi admin bấm, nút chấm khoá và nút *"Câu kế tiếp"* hiện lên. Sửa một phán quyết đã chốt chỉ đi qua **điều chỉnh điểm thủ công**. Khoá nằm ở giao diện — **server vẫn phải từ chối phán quyết lặp**. — `QĐ-014`
+**Đơn vị của bất biến này là bộ ba *(câu, thí sinh, loại phán quyết)*, không phải *(câu)*.** Một câu hợp lệ mang **nhiều** phán quyết: `GR-008` chấm **từng** thí sinh cho một câu hàng ngang, và `GR-018` → `GR-020` chấm người thi chính rồi chấm **người cướp quyền** cho cùng một câu Về đích. Đọc bất biến này theo **câu** sẽ cấm đúng cơ chế trung tâm của vòng Về đích.
+
+Cái **chỉ xảy ra một lần** là mốc **KHÉP câu**: từ đó không còn đường chấm lại cho bất kỳ ai, và sửa sai chỉ đi qua **điều chỉnh điểm thủ công**. Server phải từ chối một phán quyết trùng bộ ba trên; khoá ở giao diện chỉ là lớp tăng cường.
+
+**Hai chỗ mốc khép ĐẾN MUỘN hơn cú bấm chấm:**
+
+- **Về đích** — cú chấm **Sai** người thi chính vừa là phán quyết vừa là cú **mở cửa sổ cướp quyền**; câu chỉ khép sau khi người cướp được chấm (`GR-037`).
+- **Kích hoạt tay** — sau một phán quyết **Huỷ kết quả**, admin còn trao quyền cho một tín hiệu khác được (`EVENT-052`, `T-097`); câu khép sau khi người được kích hoạt đã được chấm.
+
+**Ở hai vòng chấm theo lô** — Tăng tốc và câu hàng ngang VCNV — dấu Đúng/Sai đặt cho từng ghế là **lựa chọn tạm**, sửa lại được **không giới hạn** cho tới cú bấm **chốt câu**; sự kiện điểm chỉ sinh tại cú bấm đó (`GR-013` §Bấm trùng, `GR-008` §Thứ tự đánh giá). — `QĐ-014`, `QĐ-104`
 
 ### INV-010 — Phán quyết là điều kiện để chuyển câu
 

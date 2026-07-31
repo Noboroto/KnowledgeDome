@@ -9,7 +9,7 @@
 | Ký hiệu | Là gì | Vị thế |
 |---|---|---|
 | **Luật gốc** | `source/fandom-olympia-26-luat-choi.md` — bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26), lấy 2026-07-23 | **Source of truth duy nhất về LUẬT** |
-| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-103` | Source of truth về **lựa chọn sản phẩm** |
+| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-104` | Source of truth về **lựa chọn sản phẩm** |
 | **Rule** | `game-rules.md` — `GR-001` → `GR-037` | Đặc tả nghiệp vụ **chuẩn tắc** |
 | **Máy trạng thái** | `game-state-machine.md` — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` | Đặc tả **chuẩn tắc** phần vận hành |
 | **Thuật ngữ** | `glossary.md` — `TERM-001` → `TERM-058` | Tên gọi chuẩn |
@@ -51,7 +51,7 @@ Mỗi phát biểu trong `game-rules.md` và `decisions.md` mang **đúng một*
 | `GR-031` §Ngoại lệ — bộ VCNV | *"Có 4 từ hàng ngang, **cũng chính là 4 gợi ý liên quan đến Chướng ngại vật**"* · *"4 miếng ghép **tương ứng với** 4 từ hàng ngang ở 4 góc và **được đánh số cố định**"* | `QĐ-082` |
 | `GR-007` lượt chọn hàng ngang | §VCNV — lượt chọn theo thứ tự | `QĐ-019` `QĐ-021` |
 | `GR-008` trả lời hàng ngang và mở miếng ghép | *"trả lời đúng từ hàng ngang → miếng ghép mở"* · *"bất kỳ sai sót về kí tự, dấu câu, ngữ pháp → không được công nhận"* | `QĐ-010` `QĐ-018` `QĐ-052` `QĐ-057` |
-| `GR-009` bấm chuông giải Chướng ngại vật | §VCNV — băng điểm theo số hàng đã mở | `QĐ-021` `QĐ-057` |
+| `GR-009` bấm chuông giải Chướng ngại vật | §VCNV — băng điểm theo số hàng đã mở. **Lựa chọn phán quyết thứ ba (*Huỷ kết quả*) KHÔNG có trong luật gốc** — xem §Bổ sung ngoài O26 | `QĐ-021` `QĐ-057` `QĐ-104` |
 | `GR-010` trả lời sai Chướng ngại vật | §VCNV — sai thì bị loại khỏi vòng | `QĐ-057` |
 | `GR-011` ô trung tâm và gợi ý cuối | *"sau 4 hàng ngang, chưa ai giải được Chướng ngại vật"* | `QĐ-048` `QĐ-057` |
 | `GR-012` toàn bộ thí sinh bị loại | Nguồn im lặng — suy ra từ luật loại người | `QĐ-044` `QĐ-057` |
@@ -96,12 +96,12 @@ Bảy rule dưới đây **không** đến từ luật gốc. Chúng tồn tại
 | `GR-029` điều chỉnh điểm thủ công | Van thoát cho mọi sai sót; thay cho việc chấm lại | `QĐ-014` `QĐ-039` |
 | `GR-030` bỏ vòng, chạy lại, kết thúc sớm | Xử lý sự cố buổi thi | `QĐ-034` `QĐ-035` |
 | `GR-031` rút đề và không lặp câu | Kho đề là khái niệm của hệ thống, không của luật. **Ngoại lệ**: ràng buộc **bộ VCNV** thì CÓ gốc ở luật gốc — xem dòng dưới | `QĐ-041` `QĐ-042` `QĐ-043` `QĐ-044` `QĐ-082` |
-| `GR-032` hàng đợi tín hiệu | Luật gốc có chuông vật lý; phần mềm phải định nghĩa thứ tự và quyền duyệt | `QĐ-020` `QĐ-021` `QĐ-022` |
+| `GR-032` hàng đợi tín hiệu | Luật gốc có chuông vật lý; phần mềm phải định nghĩa thứ tự và quyền duyệt. §Kích hoạt tay là **bổ sung ngoài O26** — luật gốc chỉ có một người giành quyền mỗi câu | `QĐ-020` `QĐ-021` `QĐ-022` `QĐ-104` |
 | `GR-033` mốc thời gian do admin bấm | Máy không quan sát được sân khấu ⇒ **admin là cảm biến** | `QĐ-006` `QĐ-027` `QĐ-028` |
 | `GR-034` chuông chỉ nhận click chuột | Chống bấm nhầm khi đang gõ | `QĐ-023` |
 | `GR-035` server time | Công bằng và dựng lại được | `QĐ-006` `QĐ-029` |
 | `GR-036` mất kết nối và giữ ghế | Rủi ro của mạng, không có ở trường quay | `QĐ-045` `QĐ-046` `QĐ-047` |
-| `GR-037` phạm vi hiển thị đáp án | Bảo mật đề — luật gốc không cần vì đáp án nằm trên giấy của MC. **Mốc công bố** thì có gốc ở luật: cửa sổ cướp quyền Về đích buộc mốc phải là *câu khép*, không phải *đã chấm* | `QĐ-048` `QĐ-051` `QĐ-062` `QĐ-080` |
+| `GR-037` phạm vi hiển thị đáp án | Bảo mật đề — luật gốc không cần vì đáp án nằm trên giấy của MC. **Mốc công bố** thì có gốc ở luật: cửa sổ cướp quyền Về đích buộc mốc phải là *câu khép*, không phải *đã chấm*. Mốc còn **lùi thêm** khi có kích hoạt tay | `QĐ-048` `QĐ-051` `QĐ-062` `QĐ-080` `QĐ-104` |
 
 ---
 
@@ -138,6 +138,17 @@ Engine hỗ trợ, preset O26 **không** dùng. Ghi ở đây để chúng khôn
 > ⚠️ **v1 KHOÁ CỨNG ba thứ trong bảng này**: `rowCount` = **4** (`QĐ-068`), playlist = **bốn vòng chuẩn, đúng thứ tự** (`QĐ-069`), và `tieBreakPositions` = **`[1]`** (`QĐ-085`). Mô hình dữ liệu và RuleConfig vẫn nhận giá trị khác để phiên bản sau chỉ việc mở khoá — nhưng **engine-path chưa tồn tại** và cửa tạo contest **không cho chọn**. Cùng khuôn với `QĐ-007`: hạ tầng làm sẵn, luật khoá ở trường hợp v1.
 >
 > Riêng `tieBreakPositions`, thứ còn thiếu **không phải luật của một lượt phân định** — cơ chế Câu hỏi phụ vốn không phụ thuộc vị trí — mà là luật **điều phối nhiều lượt**: thứ tự giải nhiều nhóm hoà, ngân sách `3N` câu khi `N` chỉ biết được tại cú bấm chốt trận, và việc tái nhập vòng phân định vốn bị `GR-022` C7 chặn.
+
+## Bổ sung ngoài O26 — LUÔN BẬT, không phải biến thể cấu hình
+
+Khác bảng trên: mục dưới đây **không** tắt được và **không** phải tuỳ chọn. Nó là hạ tầng vận hành, không phải một cách chơi khác.
+
+| Bổ sung | Vì sao không có trong luật gốc | Mã |
+|---|---|---|
+| **Admin kích hoạt tay một tín hiệu chuông khác** khi người giữ quyền bị chấm *Huỷ kết quả* — mọi vòng có giành quyền bằng chuông, gồm cả tín hiệu *"Mở chướng ngại vật"* | Luật gốc chỉ có **một** người giành quyền cho mỗi câu, và không có khái niệm *"huỷ một lượt giành quyền"* — trên trường quay, sự cố được xử bằng lời của MC chứ không bằng thao tác trên máy. Bản phần mềm cần một đường **hiện, có dấu vết** để làm đúng việc đó | `QĐ-104` |
+| **Huỷ kết quả** thành lựa chọn phán quyết thứ ba cho tín hiệu Chướng ngại vật | Hệ quả trực tiếp của mục trên: cần một loại phán quyết mang nghĩa *"lượt này coi như không xảy ra"* mà **không** kích hoạt hình phạt bị-loại của `GR-010` | `QĐ-104` |
+
+> **Vì sao vẫn trung thành với luật gốc.** Cả hai mục chỉ mở rộng **quyền can thiệp của người vận hành**, không đụng con số nào của luật: thang điểm, hình phạt, thời gian và điều kiện thắng thua giữ nguyên. Người được kích hoạt tay chịu **y hệt** số học của vòng.
 
 ---
 

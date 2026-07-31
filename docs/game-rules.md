@@ -11,7 +11,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
-| `decisions.md` | **Vì sao** — 103 quyết định `QĐ-001` → `QĐ-103`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 104 quyết định `QĐ-001` → `QĐ-104`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; file này dùng đúng tên ở đó |
 | `game-state-machine.md` | Máy trạng thái: `STATE-*` · `EVENT-*` · `T-*` · `INV-*`. Mọi rule ở đây phải khớp với một hoặc nhiều transition ở đó |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -99,8 +99,11 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | **Khởi động — lượt chung** | **−5** | Đúng / Sai / **Huỷ kết quả** |
 | **Về đích — người cướp quyền** | **−½ giá trị câu** | Đúng / Sai / **Huỷ kết quả** |
 | **Về đích — câu có Ngôi sao hy vọng** | **−giá trị câu** | Đúng / Sai / **Huỷ kết quả** |
+| **VCNV — tín hiệu *"Mở chướng ngại vật"*** | **0 điểm, nhưng BỊ LOẠI khỏi vòng** | Đúng / Sai / **Huỷ kết quả** |
 
-> ***Huỷ kết quả* luôn có mặt** khi câu **chỉ có bản gửi quá hạn**, kể cả ở vòng mà *Sai* trừ 0. Dù hai hay ba lựa chọn, vẫn là **một** phán quyết cho một câu.
+> ***Huỷ kết quả* luôn có mặt** khi câu **chỉ có bản gửi quá hạn**, kể cả ở vòng mà *Sai* trừ 0. Dù hai hay ba lựa chọn, vẫn là **một** phán quyết cho một đối tượng được chấm.
+>
+> **Dòng cuối là ngoại lệ của tiêu chí *"chỉ nhị phân khi Sai trừ 0"***: tín hiệu Chướng ngại vật **không** trừ điểm, nhưng *Sai* ở đó kéo theo **bị loại khỏi vòng** (`GR-010`) — một hình phạt nặng hơn mọi mức trừ điểm trong bảng. Lựa chọn thứ ba tồn tại để admin khép một tín hiệu **đã xác nhận** mà **không** loại thí sinh, và nó là trigger của thao tác **kích hoạt tay** ở `GR-032` (`QĐ-104`).
 
 ### Bản gửi quá hạn
 
@@ -473,6 +476,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - Băng: **1 hàng → 60** · **2 → 50** · **3 → 40** · **4 → 30**. Sau khi **gợi ý cuối đã đưa ra**: **20**, không phụ thuộc câu ô trung tâm đúng hay sai. **20 là sàn.**
 - Nút này được xếp là **chuông** ⇒ chỉ nhận click chuột, **tự khoá khi bấm**, phía thí sinh không có dialog. Mỗi ghế phát **một** tín hiệu cho cả vòng — cơ chế *"một lần đoán, sai thì loại"* của luật gốc được giữ nguyên.
 - Hàng đợi **CHẶN**: admin xác nhận rồi tín hiệu mới có hiệu lực.
+- Phán quyết ở đây có **BA** lựa chọn — **Đúng / Sai / Huỷ kết quả** — xem bảng §*Phán quyết có hai hay ba lựa chọn*. *Huỷ kết quả* khép một tín hiệu **đã xác nhận** mà **không** loại thí sinh và **không** sinh điểm cho ai (`QĐ-104`).
 
 **Bảng quyết định**
 
@@ -482,6 +486,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | C2 · C3 · C4 | Như C1, đã hỏi **2** · **3** · **4** hàng | **+50** · **+40** · **+30** | Như C1 |
 | C5 | Sau khi gợi ý cuối đã đưa ra | **+20** | Như C1 |
 | C6 | Admin chấm **Sai** | Chuyển `GR-010` — thí sinh **bị loại** khỏi vòng | Đặt cờ bị loại |
+| **C6b** | Admin chấm **Huỷ kết quả** | Tín hiệu khép lại; thí sinh **KHÔNG bị loại**, **không** ai được điểm. Admin **kích hoạt tay** được một tín hiệu Chướng ngại vật khác còn hiệu lực trong hàng đợi — xem `GR-032` §Kích hoạt tay | Không đặt cờ bị loại; tín hiệu sang *đã xử lý*; vòng chạy tiếp |
 | C7 | Bấm khi đã hỏi 1 hàng, admin xác nhận muộn hơn | **Băng chốt theo trạng thái tại mốc ADMIN XÁC NHẬN.** Tình huống *"số hàng đổi giữa hai mốc"* **không dựng được**: hàng đợi **chặn**, nên chừng nào tín hiệu còn chờ duyệt thì **không hàng ngang nào mở thêm được** | Băng chốt tại mốc xác nhận |
 | C8 | Admin bấm **No** | Tín hiệu kế tiếp lên; **thí sinh không mất lượt** | **Chưa tác dụng phụ nào** — cùng lập luận `GR-007` C2 |
 | C9 · C10 | Ghế **đã bị loại** bấm tiếp · **đã có người giải đúng** | Nút **không hiển thị**, bấm **không phản hồi** | Không đổi |
@@ -1598,6 +1603,21 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C5 | Vòng kết thúc | Hàng đợi đang hoạt động **trống**; **lịch sử giữ nguyên** |
 | C6 | Tín hiệu từ ghế **đã bị loại** ở VCNV | Máy thí sinh **không hiển thị gì**, bấm **không phản hồi** ⇒ không có tín hiệu, không vào hàng đợi |
 | C7 | Xem lại sau khi đã từ chối | Tín hiệu bị từ chối **vẫn trong lịch sử**; admin xem lại và **gỡ lệnh cấm** nếu cần |
+| **C8** | Người đang giữ quyền bị chấm **Huỷ kết quả**; hàng đợi còn tín hiệu trơ | Admin **kích hoạt tay** được một tín hiệu còn hiệu lực — xem §Kích hoạt tay bên dưới |
+| **C9** | Admin kích hoạt một tín hiệu **lệch** khuyến nghị | **Dialog cảnh báo lệch luật** Yes/No nêu ghế bị vượt và thứ tự gốc; **không** bắt nhập lý do; admin ép qua được |
+
+**Kích hoạt tay** *(`QĐ-104`)*. Cụm *"hàng đợi ghi thứ tự để admin can thiệp khi có sự cố"* có **một** cơ chế cụ thể, và chỉ một:
+
+- **Trigger**: người đang giữ quyền bị chấm **Huỷ kết quả**. Chấm **Sai** **không** mở đường này.
+- **Phạm vi**: mọi vòng có giành quyền bằng chuông — Khởi động lượt chung · cướp quyền Về đích · Câu hỏi phụ · **và tín hiệu *"Mở chướng ngại vật"*** (`GR-009` C6b).
+- **Ứng viên**: tín hiệu **trơ chưa từng được xử lý**, **và** ghế **vừa bị Huỷ kết quả** ở chính câu/vòng đó *(được đưa lại, tức nhận lượt thứ hai)*. **Không** phải ứng viên: ghế **bị loại** khỏi vòng VCNV · ghế đang bị **vô hiệu hoá**. Tín hiệu phải còn hiệu lực với **đích** của nó.
+- **Chọn**: hệ thống **khuyến nghị** tín hiệu sớm nhất chưa xử lý; admin chọn ứng viên khác được, lệch thì cảnh báo (C9). **Không chặn cứng** — `GR-003`/`QĐ-003` chỉ có ba chỗ chặn cứng.
+- **Đồng hồ**: cấp lại **trọn** cửa sổ suy nghĩ của vòng từ mốc bấm kích hoạt — Khởi động lượt chung **3 giây** · Câu hỏi phụ **15 giây** · Về đích và tín hiệu Chướng ngại vật **không có** đồng hồ trả lời riêng nên không mở cửa sổ nào.
+- **Số lần**: **một lần mỗi CÂU** ở ba vòng chuông; ở VCNV — nơi tín hiệu gắn với **vòng** — là **một lần mỗi phán quyết Huỷ kết quả**, chuỗi dừng khi hàng đợi tín hiệu Chướng ngại vật của vòng cạn.
+- **Hình phạt**: người được kích hoạt chịu **y hệt** luật của vòng, không có bảng điểm riêng.
+- **Mốc câu khép lùi** tới sau khi người được kích hoạt đã được chấm (`GR-037`).
+
+> **Không đụng FIFO.** Quy tắc *thuần FIFO theo server timestamp* chi phối **thứ tự xử lý bình thường** của hàng đợi. Kích hoạt tay là **can thiệp ngoại lệ của người**, hiện rõ trên màn điều khiển và vào `AuditLog`. Lệnh cấm *"đừng thêm tiêu chí ưu tiên mà thí sinh không quan sát được"* nhắm vào **quy tắc máy ẩn**, không nhắm vào một quyết định của admin.
 
 **Vòng đời tín hiệu.** Tín hiệu gắn với **ĐÍCH** của nó và **vô hiệu khi đích đóng** — chọn hàng ngang gắn với **lượt chọn**, trả lời gắn với **câu**, *Mở chướng ngại vật* gắn với **vòng**. Việc hàng đợi được đặt lại theo vòng hay theo câu là **hệ quả** của quy tắc này, không phải một quy tắc riêng.
 
@@ -1848,6 +1868,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | VCNV — câu ô trung tâm | admin chấm xong |
 | Tăng tốc | admin chấm xong cả bảng *(một câu = một event điểm — `QĐ-013`)* |
 | **Về đích** | **cửa sổ cướp quyền đã đóng VÀ người cướp đã được chấm**; hoặc hết 5 giây không ai bấm; hoặc người thi chính được chấm **Đúng** *(không mở cửa sổ cướp)* |
+| **Mọi vòng — có kích hoạt tay** | mốc **lùi** tới sau khi **người được kích hoạt đã được chấm**, hoặc cửa sổ vừa cấp lại đã đóng và admin đã chốt câu (`GR-032` §Kích hoạt tay, `QĐ-104`) |
 
 **Bảng quyết định**
 
@@ -1860,7 +1881,8 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C5 | **Không giữ `PERM-045`** — reveal **BẬT** · **câu đã khép** | Trả đáp án |
 | C6 | **Về đích** — người thi chính vừa bị chấm Sai, **cửa sổ cướp đang mở** | **Không trả** — câu **chưa khép**. Trả ở đây là xoá sổ cướp quyền |
 | C7 | Câu **bị bỏ qua** *(không ai bấm chuông)* · reveal **BẬT** | Trả đáp án — câu đã tiêu, đã khép |
-| C8 | Câu khép bằng phán quyết **Huỷ kết quả** | **Không tự trả.** Admin mở tay được (`QĐ-048`) |
+| C8 | Câu khép bằng phán quyết **Huỷ kết quả** | **Không tự trả.** Admin mở tay được (`QĐ-048`). Áp cho **mọi** vị trí trong chuỗi, kể cả khi *Huỷ kết quả* là phán quyết **khép câu** cho người cướp quyền Về đích — ở ca đó **C8 thắng C6**, quy tắc phát biểu theo **loại phán quyết**, không theo vai bị chấm |
+| C8b | Đang chờ admin **kích hoạt tay** một tín hiệu khác sau một cú *Huỷ kết quả* | **Không trả** — câu **chưa khép**, mốc đã lùi (`GR-032` §Kích hoạt tay). Công bố ở đây xoá cơ hội của người sắp được kích hoạt |
 | C9 | Đáp án **Chướng ngại vật** | Ngoài phạm vi rule này — theo `GR-012` |
 
 > **Vì sao cờ đặt ở cấp TRẬN, không phải cấp CONTEST.** Một contest thật được phép chứa **cả** trận chính thức lẫn trận tổng duyệt. Đặt ở cấp contest thì không thể đặt hai giá trị khác nhau cho hai trận cùng phòng — kịch bản đó **không dựng được**.

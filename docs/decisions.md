@@ -444,6 +444,33 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
+### QĐ-104 — Admin KÍCH HOẠT TAY một tín hiệu chuông khác khi người giữ quyền bị Huỷ kết quả
+
+**Quyết định.** Khi người đang giữ quyền trả lời bị chấm **Huỷ kết quả**, admin **kích hoạt tay** được **một tín hiệu chuông bất kỳ còn hiệu lực** trong hàng đợi để người phát tín hiệu đó thành người giữ quyền mới. Sáu vế:
+
+1. **Phạm vi** — áp cho **mọi vòng có giành quyền bằng chuông**: Khởi động lượt chung · cướp quyền Về đích · Câu hỏi phụ · **và tín hiệu *"Mở chướng ngại vật"* của VCNV** *(nút này được xếp là chuông — `QĐ-023`)*.
+2. **Trigger** — chỉ phán quyết **Huỷ kết quả**. Chấm **Sai** giữ nguyên số học của luật gốc và **không** mở đường kích hoạt.
+3. **Ứng viên** — đúng hai nhóm: tín hiệu **trơ chưa từng được xử lý** (`QĐ-024`), và ghế **vừa bị chấm Huỷ kết quả** ở chính câu đó *(hoặc chính vòng đó ở VCNV)* — tức admin đưa lại được chính người vừa bị huỷ, cho họ lượt thứ hai. **Không** phải ứng viên: ghế **bị loại** khỏi vòng VCNV, và ghế đang bị **vô hiệu hoá**. Tín hiệu phải còn hiệu lực với **đích** của nó — cùng một **câu** ở ba vòng chuông, cùng một **vòng** ở VCNV.
+4. **Chọn lệch thứ tự** — hệ thống **khuyến nghị** tín hiệu sớm nhất chưa xử lý, nhưng admin chọn ứng viên khác được. Lệch khuyến nghị ⇒ **dialog cảnh báo lệch luật Yes/No**, nêu rõ ghế bị vượt và thứ tự gốc, **không** bắt nhập lý do. Đây là cảnh báo hạng thường của `QĐ-002`, **không** phải hạng phá huỷ.
+5. **Ba tham số** — **đồng hồ**: cấp lại **trọn** cửa sổ suy nghĩ của vòng, tính từ mốc admin bấm kích hoạt *(Khởi động lượt chung 3 giây · Câu hỏi phụ 15 giây cố định · Về đích và tín hiệu Chướng ngại vật không có đồng hồ trả lời riêng nên không mở cửa sổ nào)*. **Số lần**: bám theo **đích** — **một lần cho mỗi CÂU** ở ba vòng chuông; **một lần cho mỗi phán quyết Huỷ kết quả** ở VCNV, chuỗi chỉ dừng khi hàng đợi tín hiệu Chướng ngại vật của vòng đã cạn, **không** có trần tổng. **Hình phạt**: **y hệt** người giành quyền bình thường của vòng đó — không có bảng điểm riêng cho người được kích hoạt.
+6. **Mốc câu khép lùi** — câu chỉ khép sau khi người được kích hoạt **đã được chấm**, hoặc cửa sổ vừa cấp lại đã đóng và admin đã chốt câu. Trước mốc mới đó **không** công bố đáp án.
+
+**Vì sao.** `QĐ-020` cấm cơ chế drop và `QĐ-024` giữ tín hiệu thua tốc độ ở trạng thái **trơ** — dữ liệu đã nằm sẵn đó, có thứ tự, có timestamp. Cụm *"hàng đợi vẫn ghi thứ tự để admin can thiệp khi có sự cố"* vốn là **lời hứa chưa có cơ chế**: nó nói admin can thiệp được nhưng không nói bằng đường nào. Mục này là cơ chế đó.
+
+*Huỷ kết quả* được chọn làm trigger duy nhất vì nó **đã** mang nghĩa *"lượt này coi như không xảy ra"* (`QĐ-061`). Mở thêm cho *Sai* sẽ biến một câu thành chuỗi nhiều người cướp liên tiếp — luật gốc chỉ có **một** người giành quyền cho mỗi câu, và số học của `−5`, `−½ giá trị câu` viết cho đúng một người.
+
+**Vì sao cho chọn tuỳ ý thay vì ép đúng thứ tự.** Ép thứ tự sẽ là một **chặn cứng thứ tư**, trái `QĐ-003`. Mẫu đúng là mẫu đã dùng cho thứ tự lượt Về đích: máy khuyến nghị, admin quyết, lệch thì cảnh báo (`QĐ-002`). `QĐ-025` và quy tắc FIFO thuần **không** bị đụng — chúng chi phối **thứ tự xử lý bình thường** của hàng đợi; đây là **can thiệp ngoại lệ của người**, hiện rõ trên màn điều khiển và vào nhật ký. Lệnh cấm *"đừng thêm tiêu chí ưu tiên thí sinh không quan sát được"* nhắm vào **quy tắc máy ẩn**, không nhắm vào một quyết định của admin.
+
+**Vì sao ghế bị loại KHÔNG phải ứng viên.** Loại khỏi vòng là hệ quả của một phán quyết đã hoàn tất (`QĐ-057`); kích hoạt tay là đường sửa **một cú bấm nhầm chưa ngã ngũ**, không phải đường gỡ một phán quyết đã xong. Muốn gỡ thì đi cửa **bỏ vòng** hoặc **cộng tay** (`QĐ-035`, `QĐ-011`).
+
+**Hệ quả.**
+
+- Tín hiệu *"Mở chướng ngại vật"* nhận **lựa chọn phán quyết thứ ba là Huỷ kết quả** — trước đó chỉ có Đúng/Sai. Đây là đường để admin khép một tín hiệu **đã xác nhận** mà **không loại** thí sinh; nó **không** sinh điểm cho ai, và băng điểm vẫn chốt tại **mốc admin xác nhận** tín hiệu được kích hoạt (`QĐ-052`).
+- `INV-009` *"một câu đúng MỘT phán quyết"* phải đọc là ***"một câu KHÉP một lần"***, không phải *"mỗi câu một cú bấm chấm"* — vì Về đích vốn đã chấm người thi chính rồi chấm người cướp, và một câu hàng ngang VCNV chấm **từng** thí sinh. Đơn vị chống trùng của một phán quyết là bộ ba *(câu, thí sinh, loại phán quyết)*.
+- Đây là **biến thể ngoài luật gốc O26** — luật gốc chỉ có một người giành quyền cho mỗi câu. Ghi vào `traceability.md` §Biến thể ngoài luật O26.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế trơ: `QĐ-024` · vế không-drop: `QĐ-020` · vế cảnh báo ép được: `QĐ-002`, `QĐ-003`
+
 ---
 
 # F. Đồng hồ và mốc thời gian
@@ -791,7 +818,7 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 
 **Vì sao phải có.** Bản có Internet và bản portable là **hai hệ tài khoản độc lập** — người tạo ở bên này không tồn tại ở bên kia, còn ghế thì trỏ tới người. Gói không mang danh sách thì nhập xong **không ai đăng nhập được**, và admin phải gõ lại toàn bộ tài khoản cùng phép gán ghế ngay tại hội trường. Mất gần hết giá trị của chữ *"trọn gói"* trong `GOAL-009`.
 
-**Vì sao mã hoá là bắt buộc chứ không phải tuỳ chọn.** Nội dung này là **dữ liệu cá nhân của học sinh vị thành niên** — tên, trường, lớp — đi trên một chiếc USB. Ở phương án (b) nó còn mang thêm dấu vết mật khẩu, thứ mà `CLAUDE.md` §Zero-trust xếp cao nhất. Để tuỳ chọn nghĩa là sẽ có người tắt nó đúng vào lần cần nhất. Đây cũng là **`RISK-007` ở dạng thứ hai**: không phải lộ qua mã phòng, mà lộ qua vật mang.
+**Vì sao mã hoá là bắt buộc chứ không phải tuỳ chọn.** Nội dung này là **dữ liệu cá nhân của người tham gia** — tên, trường, lớp — đi trên một chiếc USB. Ở phương án (b) nó còn mang thêm dấu vết mật khẩu, thứ mà `CLAUDE.md` §Zero-trust xếp cao nhất. Để tuỳ chọn nghĩa là sẽ có người tắt nó đúng vào lần cần nhất. Đây cũng là **`RISK-007` ở dạng thứ hai**: không phải lộ qua mã phòng, mà lộ qua vật mang.
 
 **Vì sao (a) là mặc định mà không phải là ép buộc.** (a) an toàn hơn thật — mật khẩu cũ không rời hệ nguồn, nên kể cả lộ cụm mật khẩu gói thì cũng không lộ mật khẩu nào đang dùng ở bản trung tâm. Nhưng (b) là thứ duy nhất cho thí sinh đăng nhập bằng đúng mật khẩu quen, và người xuất là người biết ngày thi của mình phát phiếu được hay không. Nên: mặc định (a), đổi được, và giao diện nói rõ cái giá của từng lựa chọn ngay cạnh chỗ chọn.
 
@@ -982,7 +1009,7 @@ Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài kho�
 
 **Vì sao.** Khán giả là số đông và ẩn danh — không phát tài khoản cho từng người được, và một bước gõ mã trước giờ phát sóng chỉ là ma sát: người tổ chức vẫn phải phát cái gì đó, nên phát thẳng đường dẫn là hình thái ít bước nhất. Với lớp phủ thì càng rõ: phần mềm dựng stream nhận **một URL**, nó không có chỗ cho ai gõ mã.
 
-**Hệ quả về bảo mật, đã chấp nhận.** URL **rò dễ hơn** mã gõ tay — nó nằm trong lịch sử trình duyệt, trong ảnh chụp màn hình, trong tin nhắn chuyển tiếp, và trong thanh địa chỉ khi lên hình. Đây là `AS-5` ở dạng nặng hơn: *ai có đường dẫn đều thấy tên và trường lớp của học sinh vị thành niên*. Hàng rào còn lại **không đổi** và là toàn bộ những gì có: **rate-limit** cổng khán giả và nút **khoá cổng** của admin (`QĐ-067`, `PRD-REQ-086`). Tài liệu vận hành phải nói thẳng: **coi đường dẫn phòng như một thứ phát ra thì không thu lại được.**
+**Hệ quả về bảo mật, đã chấp nhận.** URL **rò dễ hơn** mã gõ tay — nó nằm trong lịch sử trình duyệt, trong ảnh chụp màn hình, trong tin nhắn chuyển tiếp, và trong thanh địa chỉ khi lên hình. Đây là `AS-5` ở dạng nặng hơn: *ai có đường dẫn đều thấy tên và trường lớp của thí sinh*. Hàng rào còn lại **không đổi** và là toàn bộ những gì có: **rate-limit** cổng khán giả và nút **khoá cổng** của admin (`QĐ-067`, `PRD-REQ-086`). Tài liệu vận hành phải nói thẳng: **coi đường dẫn phòng như một thứ phát ra thì không thu lại được.**
 
 **Không đổi gì.** Chiều truyền — hai kênh vẫn **một chiều, không có đường ghi** (`QĐ-088`) · phạm vi đáp án — lớp phủ vẫn nhận từ mốc câu khép (`QĐ-080`) · read-only vẫn là tính chất **cấu trúc**.
 
