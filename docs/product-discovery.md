@@ -10,7 +10,7 @@
 
 | File | Vai trò |
 |---|---|
-| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-103` |
+| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-104` |
 | `game-rules.md` · `game-state-machine.md` | Luật và vận hành |
 | `traceability.md` | Truy nguyên rule ↔ luật gốc ↔ `QĐ-*` |
 | `plans/**` | **Bản nháp.** Mọi trích dẫn dưới đây là **bối cảnh**, không phải requirement |
@@ -203,7 +203,7 @@ Các quyết định ở `decisions.md` ràng buộc giao diện. Bảng dưới
 | AS-2 | **Sáu trận song song là mục tiêu định cỡ đúng** (`QĐ-089`) | Con số được chốt mà không dẫn nguồn nhu cầu. Với mô hình một bản cài cho một đơn vị, sáu trận cùng lúc là bất thường — trường hợp thường trực là 1-2 |
 | AS-3 | **Admin chấp nhận chọn tay toàn bộ đề trước mỗi trận** | Hệ thống cố ý không tự lấy đề. Chưa ai ước lượng số câu phải chọn cho một trận chuẩn |
 | AS-4 | **Preload mã hoá qua service worker chạy ổn định** | Chính nguồn xếp nó là hạng mục phức tạp nhất phía client, và đã phải chuẩn bị phương án lui |
-| AS-5 | **Mã 6 số công khai là chấp nhận được về quyền riêng tư** | Ai có mã đều thấy tên và trường lớp của học sinh vị thành niên. **Không có cơ chế biệt danh** — tên hiển thị của ghế là trường tự do, người dựng contest tự quyết nhập gì (`QĐ-090`) |
+| AS-5 | **Mã 6 số công khai là chấp nhận được về quyền riêng tư** | Ai có mã đều thấy tên và trường lớp của thí sinh. **Không có cơ chế biệt danh** — tên hiển thị của ghế là trường tự do, người dựng contest tự quyết nhập gì (`QĐ-090`) |
 | AS-6 | **Người tổ chức có sẵn nhạc và hiệu ứng âm thanh** | Slot trống là im lặng, không có bộ mặc định ⇒ sản phẩm ra mắt sẽ **hoàn toàn im lặng** nếu admin không chuẩn bị |
 | AS-7 | **Wiki nguồn chính xác và ổn định** | Wiki cộng đồng, sửa được bất kỳ lúc nào, không có phiên bản. Đối phó: dùng **bản lưu trong `source/`**, không dùng URL sống |
 | AS-8 | **Thí sinh có thiết bị riêng để gõ** | VCNV và Tăng tốc **luôn** gõ máy ⇒ mỗi ghế cần một thiết bị nhập liệu đầy đủ cho cả trận, kể cả ở mode sân khấu. Chưa nguồn nào nêu yêu cầu phần cứng tối thiểu |

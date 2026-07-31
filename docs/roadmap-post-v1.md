@@ -154,8 +154,8 @@
 
 | Mã | Hạng mục | Epic | Requirement |
 |---|---|---|---|
-| FS-37 | Luyện tập: phép lọc kho đề đảo chiều, bộ đề public, luật đa ghế | EPIC-013 | PRD-REQ-099, 089, 090 |
-| FS-38 | Thi đội | EPIC-014 | PRD-REQ-102, 092 |
+| FS-37 | Luyện tập: phép lọc kho đề đảo chiều, bộ đề public, luật đa ghế | EPIC-013 | PRD-REQ-099, 100, 101 |
+| FS-38 | Thi đội | EPIC-014 | PRD-REQ-102, 103 |
 
 ---
 
@@ -165,7 +165,7 @@
 
 | Hạng mục | Epic | Requirement |
 |---|---|---|
-| Trận luyện tập, bộ đề public, liên kết chia sẻ, giao diện luyện tập một mình, vai trainer, hạn lưu trữ riêng | EPIC-013 | PRD-REQ-099, 089 |
+| Trận luyện tập, bộ đề public, liên kết chia sẻ, giao diện luyện tập một mình, vai trainer, hạn lưu trữ riêng | EPIC-013 | PRD-REQ-099, 100 |
 | **Luật cho 1-12 thí sinh** — chỉ ship luật và lớp điều khiển, không đổi mô hình dữ liệu | EPIC-013 | PRD-REQ-101 |
 | **Job dọn dữ liệu theo hạn lưu trữ** | EPIC-011 | PRD-REQ-080 *(yêu cầu vẫn ở `PRD.md`; chỉ **mốc ship** là v1.5)* |
 

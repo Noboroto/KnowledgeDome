@@ -12,11 +12,11 @@
 
 | Trường | Giá trị |
 |---|---|
-| **Version** | 2.2.0 — *chủ dự án phân xử toàn bộ tám câu hỏi mở; `QĐ-085`→`QĐ-092` ghi vào sổ quyết định* |
+| **Version** | 2.2.1 — *chủ dự án phân xử toàn bộ tám câu hỏi mở; `QĐ-085`→`QĐ-092` ghi vào sổ quyết định; `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001`, `108`→`112`; `QĐ-097`→`103` chủ đích truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen` (không sinh `PRD-REQ` riêng)* |
 | **Quy ước bảo trì** | Mục **đã chốt / đã đóng / đã sửa** bị **xoá khỏi tài liệu**, không giữ lại dưới dạng ghi chú lịch sử; dãy số liên quan được **đánh lại cho liền**. Lịch sử tra ở `git log` và `docs/reviews/` |
 | **Đặc tả cho** | **Phiên bản sản phẩm 1.0** |
 | **Status** | Bản đầu tiên — chờ chủ dự án phê duyệt |
-| **Last updated** | 2026-07-29 |
+| **Last updated** | 2026-07-30 |
 | **Open conflict count** | **0** |
 | **Open clarification count** | **0** |
 
@@ -25,9 +25,9 @@
 | Nguồn | Vai trò | Trạng thái khi đọc |
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn (snapshot 2026-07-23) | Không sửa; source of truth **duy nhất về LUẬT** |
-| `docs/decisions.md` | 103 quyết định `QĐ-001`→`QĐ-103` | Source of truth về **lựa chọn sản phẩm**; §N khai *"không còn mục treo nào"* |
+| `docs/decisions.md` | 104 quyết định `QĐ-001`→`QĐ-104` | Source of truth về **lựa chọn sản phẩm**; §N khai *"không còn mục treo nào"* |
 | `docs/game-rules.md` | 37 rule `GR-001`→`GR-037`, 23 nguyên tắc nền, 4 bảng dùng chung | Chuẩn tắc; **không còn marker treo** |
-| `docs/game-state-machine.md` | 43 `STATE-*`, 51 `EVENT-*`, 96 `T-*`, 22 `INV-*`, 8 sơ đồ | Chuẩn tắc; **không còn marker treo** |
+| `docs/game-state-machine.md` | 43 `STATE-*`, 52 `EVENT-*`, 100 `T-*`, 22 `INV-*`, 8 sơ đồ | Chuẩn tắc; **không còn marker treo** |
 | `docs/glossary.md` | 60 thuật ngữ `TERM-001`→`TERM-060` | Chuẩn tắc về tên gọi |
 | `docs/permissions.md` | Catalog `PERM-001`→`PERM-061`, bốn cổng ngoài RBAC, bốn điều cấm, bốn vai seed, vòng đời phép cấp | Catalog tra cứu; **không đặt ra luật** — mô hình ở `QĐ-094` |
 | `docs/traceability.md` | Ma trận rule ↔ luật gốc ↔ `QĐ-*`; biến thể bị loại; biến thể ngoài O26 | Không đặt ra luật |
@@ -393,7 +393,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Goal**: Đúng người thấy đúng thứ, và một trận luôn có đúng một người điều khiển.
 - **Primary actor**: ACTOR-001 admin
 - **User value**: Đáp án không rò; quyền điều khiển chuyển giao được khi admin đổi ca hoặc máy hỏng.
-- **Scope**: Tài khoản và vai hệ thống · vai vận hành gán theo contest · ràng buộc loại trừ thí sinh ↔ admin/MC/setter · **một phiên giữ quyền điều khiển** + chuyển quyền có audit · permission riêng cho từng thao tác phá huỷ · truy cập public bằng mã phòng 6 số cho khán giả và lớp phủ.
+- **Scope**: Tài khoản và vai hệ thống · vai vận hành gán theo contest · ràng buộc loại trừ thí sinh ↔ admin/MC/setter · **một phiên giữ quyền điều khiển** + chuyển quyền có audit · **giành quyền điều khiển khi phiên đang giữ mất kết nối** · **không thu hồi được quyền trong lúc trận chưa đóng sổ** · permission riêng cho từng thao tác phá huỷ · truy cập public bằng mã phòng 6 số cho khán giả và lớp phủ.
 - **Out of scope**: Nhiều tổ chức trên một bản cài (NON-GOAL-006); vai người duyệt đề riêng (`QĐ-064`).
 - **Related journeys**: JOURNEY-001, JOURNEY-004
 - **Related game rules**: `GR-037`
@@ -520,7 +520,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 
 ### EPIC-011 — Dữ liệu cá nhân và quyền riêng tư
 
-- **Goal**: Dữ liệu học sinh vị thành niên không tồn tại lâu hơn mức cần, và mọi thao tác đều có dấu vết.
+- **Goal**: Dữ liệu cá nhân của người tham gia được bảo mật (mã hoá khi rời hệ thống), và mọi thao tác trên hệ thống đều có dấu vết (audit log).
 - **Primary actor**: ACTOR-001 admin *(và đơn vị tự host)*
 - **User value**: Đơn vị tổ chức chịu được trách nhiệm pháp lý về dữ liệu.
 - **Scope**: Nhật ký thao tác chung, append-only, cho **mọi thao tác của mọi vai** · disclaimer khi tải nhạc lên · **hạn lưu trữ cấu hình được, khác nhau theo mục đích trận** (`QĐ-091`) · xuất biên bản trước khi dọn dữ liệu · **mã hoá bắt buộc cho danh sách người tham gia rời hệ thống** (`QĐ-086`).
@@ -627,7 +627,8 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Priority**: P1 · **Rationale**: Thu hồi quyền của phiên đang giữ quyền điều khiển giữa một câu đang mở **khoá chết trận** — phiên đó không chấm được, mà phán quyết là điều kiện chuyển câu (`INV-010`); đồng thời mọi lối thoát đóng cùng lúc: admin khác xem-không-bấm, giành quyền đòi holder mất kết nối, còn chuyển quyền và huỷ trận thì nằm trong chính vai vừa bị thu hồi. Đồng hồ không đóng băng được, nên trận kẹt giữa buổi phát sóng.
 - **Acceptance intent**: Trận đang chạy ⇒ mọi đường thu hồi quyền đều không dùng được và server từ chối, kể cả yêu cầu gửi thẳng; thêm quyền vẫn đi qua và dùng được ngay. Trận chuyển sang `FINISHED` ⇒ thu hồi thực hiện được.
 - **Note**: Rủi ro đã được chủ dự án chấp nhận tường minh, liệt kê ở `QĐ-095` — gồm việc không gỡ được một admin cố tình giữ quyền mà vẫn online, việc sửa vai ở phạm vi hệ thống có thể gần như luôn bị chặn trên bản cài bận, và việc tài khoản lộ mật khẩu giữa trận phải chờ đóng sổ mới vô hiệu hoá được. Lối thoát chính thức: chốt hoặc huỷ trận trước rồi thu hồi.
-- **Source**: `QĐ-095` · `QĐ-094`, `QĐ-078` · **Status**: CONFIRMED
+- **Note**: Phạm vi *"tài khoản dính tới trận đó"* đã được thu hẹp ở `QĐ-101`: chỉ áp cho tài khoản mà **trận cần quyền của nó để chạy tiếp** — phiên đang giữ quyền điều khiển, phiên admin có thể nhận quyền, và MC *(người duyệt cú giành)*. Thu hồi phép gán hoặc vô hiệu hoá một **tài khoản thí sinh** vẫn đi qua giữa trận; van thoát để cắt một ghế là **vô hiệu hoá ghế**, không phải vô hiệu hoá tài khoản. — `specs/001-xac-thuc-phan-quyen` FR-030, FR-030b.
+- **Source**: `QĐ-095` · `QĐ-101` · `QĐ-094`, `QĐ-078` · **Status**: CONFIRMED
 
 **PRD-REQ-006 — Vai vận hành gán theo contest, tách khỏi vai hệ thống**
 - **Description**: *MC*, *người phụ trách luyện tập*, *host* MUST là quyền gán theo từng contest, MUST NOT là vai seed của hệ thống.
@@ -797,6 +798,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-004 · **Related journey**: JOURNEY-002 · **Related game rules**: `GR-009` C11
 - **Priority**: P1 · **Rationale**: Băng điểm Chướng ngại vật cho 5-8 hàng **không tồn tại trong bất kỳ nguồn nào** ⇒ mở ra là bịa luật.
 - **Acceptance intent**: Cấu hình nhận giá trị 5-8 mà không lỗi cấu trúc; giao diện tạo contest không hiện lựa chọn.
+- **Note**: *(làm rõ 2026-07-30, phiên đối chiếu spec ↔ PRD)* Vế *"vẫn **nhận** giá trị 5-8 mà không lỗi cấu trúc"* nói về **sức chứa của mô hình dữ liệu và kiểu dữ liệu cấu hình** — chuẩn bị cho v1.5 để không phải migrate schema. Nó **KHÔNG** phải một đường ghi hợp lệ: server MUST từ chối mọi **request ghi** `rowCount ≠ 4` cho một contest v1, bất kể request đến từ giao diện hay gọi thẳng API. Đọc theo hướng "chỉ khoá ở giao diện" biến khoá cứng này thành hàng rào UI-only, trái `CLAUDE.md` §Nguyên tắc code *(zero-trust — "validate FE chỉ là UX")*. Giá trị ngoài khoá cứng vì thế chỉ tồn tại được qua nguồn **ngoài** API v1 *(seed/fixture/migration nội bộ)*; khi contest builder mở một contest như vậy thì hiển thị giá trị thật và khoá trường đó khỏi chỉnh sửa. — `specs/004-contest-builder-luat` FR-005, FR-032.
 - **Source**: `QĐ-068` · `traceability.md` · **Status**: CONFIRMED
 
 **PRD-REQ-105 — v1 khoá cứng phạm vi phân định hoà: chỉ vị trí NHẤT**
@@ -804,6 +806,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-004, EPIC-005, EPIC-006 · **Related journey**: JOURNEY-002, JOURNEY-007 · **Related game rules**: `GR-022`, `GR-023`, `GR-025`
 - **Priority**: P1 · **Rationale**: Đây là khoá cứng **thứ ba** của v1, cùng khuôn với `PRD-REQ-024` và `PRD-REQ-025`. Luật gốc chỉ mô tả chọn ra **một** người thắng. Cái thiếu không phải luật của một lượt phân định — cơ chế Câu hỏi phụ vốn không phụ thuộc vị trí — mà là luật **điều phối nhiều lượt**: thứ tự giải nhiều nhóm hoà, ngân sách câu cho `3N` câu khi `N` chỉ biết được **tại cú bấm chốt trận**, và việc tái nhập vòng phân định vốn bị `GR-022` C7 chặn.
 - **Acceptance intent**: Cấu hình nhận danh sách nhiều vị trí mà không lỗi cấu trúc; giao diện tạo contest không hiện lựa chọn; trận hoà ở vị trí nhì đóng sổ với hai người **đồng hạng nhì** và không có hạng ba.
+- **Note**: *(làm rõ 2026-07-30, phiên đối chiếu spec ↔ PRD)* Vế *"vẫn **nhận** danh sách nhiều vị trí mà không lỗi cấu trúc"* đọc **y hệt** `PRD-REQ-025` — là **sức chứa schema**, không phải đường ghi. Server MUST từ chối mọi request ghi `tieBreakPositions ≠ [1]` cho một contest v1, bất kể qua giao diện hay API. — `specs/004-contest-builder-luat` FR-008 · `specs/005-phong-thi-vong-doi-tran` FR-017.
 - **Source**: `QĐ-085` · `traceability.md` · **Status**: CONFIRMED
 
 **PRD-REQ-026 — Gán ghế và vị trí trước trận; vị trí bất biến trong trận**
@@ -811,6 +814,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-004 · **Related journey**: JOURNEY-002, JOURNEY-004 · **Related game rules**: `GR-016`, `GR-007`
 - **Priority**: P1 · **Rationale**: Vị trí là đầu vào của hai luật — thứ tự chọn hàng ngang, và phá hoà thứ tự lượt Về đích; đổi giữa trận làm hai luật đó mất nghĩa.
 - **Acceptance intent**: Sau khi vòng đầu tiên đã chạy, không có đường nào đổi vị trí.
+- **Note**: *(làm rõ 2026-07-30, phiên đối chiếu spec ↔ PRD)* Số ghế **KHÔNG** cùng khuôn với ba khoá cứng `PRD-REQ-024`, `PRD-REQ-025`, `PRD-REQ-105` — ba mục đó nói thẳng *"cửa tạo contest MUST NOT cho chọn giá trị khác"*, còn mục này đòi **giao diện hỗ trợ 1-12**. Hàng rào của v1 vì thế nằm ở **cú bấm bắt đầu trận**: bước gán ghế nhận 1-12 cho cả contest official lẫn practice, và server chặn cứng cú bắt đầu một trận có số ghế ≠ 4 vì v1 không có đường xử lý luật cho số khác (`NON-GOAL-012`, `QĐ-007`). Đặt hàng rào ở bước gán ghế sẽ buộc v1.5 dựng lại giao diện — đúng cái `QĐ-007` chốt là không làm. — `specs/004-contest-builder-luat` FR-013, FR-030.
 - **Source**: `QĐ-007` · `TERM-002` · `GR-016` · **Status**: CONFIRMED
 
 ### EPIC-005 — Phòng thi và vòng đời trận
@@ -1322,7 +1326,8 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-012, EPIC-001 · **Related journey**: JOURNEY-004 · **Related game rules**: —
 - **Priority**: P2 · **Rationale**: Mã 6 số là công khai, nên cổng khán giả là bề mặt duy nhất mở với Internet.
 - **Acceptance intent**: Khoá cổng ⇒ khán giả mới không vào được, khán giả đang xem không bị ngắt.
-- **Source**: `CLAUDE.md` §Mô hình truy cập · `QĐ-067` · **Status**: CONFIRMED *(ngưỡng cụ thể: xem `PRD-REQ-087`)*
+- **Note**: Phạm vi nút khoá cổng đã được thu hẹp ở `QĐ-102`: khoá cổng áp **chỉ cho màn khán giả**; **lớp phủ vào được kể cả khi cổng đang khoá**, kể cả một lần kết nối lại giữa buổi phát sóng — lớp phủ chính là buổi phát sóng, không phải khán giả của nó. — `specs/001-xac-thuc-phan-quyen` FR-035.
+- **Source**: `CLAUDE.md` §Mô hình truy cập · `QĐ-067`, `QĐ-102` · **Status**: CONFIRMED *(ngưỡng cụ thể: xem `PRD-REQ-087`)*
 
 **PRD-REQ-087 — Số viewer đồng thời và ngưỡng độ trễ dùng mặc định cấu hình được**
 - **Description**: Không rule, không chuyển tiếp, không đặc tả nào MUST được viết dựa trên một con số viewer đồng thời hay một ngưỡng độ trễ cụ thể. Mọi chỗ cần con số MUST dùng **mặc định cấu hình được**.
@@ -1557,7 +1562,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | **Thuật ngữ** | `glossary.md` là nguồn tên gọi; đặc biệt các từ nhiều nghĩa: *lượt* (4 nghĩa) · *kết quả* (3 nghĩa) · *draw* (3 nghĩa) · *state* (7 thang bậc) |
 | **Ràng buộc kỹ thuật toàn repo** | `CLAUDE.md` — trải nghiệm, bảo mật zero-trust, server-authoritative, không lặp logic, ngôn ngữ, múi giờ, phông chữ, quy ước commit |
 | **Cổng chất lượng** | `.specify/memory/constitution.md` — sáu cổng phải qua trước khi một spec chuyển sang bước lập kế hoạch |
-| **Thứ tự epic** | EPIC-002 phụ thuộc EPIC-001 · EPIC-003, EPIC-004 phụ thuộc EPIC-002 · EPIC-005 phụ thuộc EPIC-004 · EPIC-006…EPIC-010 phụ thuộc EPIC-005 |
+| **Thứ tự epic** | EPIC-002 phụ thuộc EPIC-001 · EPIC-003, EPIC-004 phụ thuộc EPIC-002 · EPIC-005 phụ thuộc EPIC-004 · EPIC-006 phụ thuộc EPIC-005 · EPIC-007…EPIC-010 phụ thuộc EPIC-006 |
 
 ### 16.2 Hệ thống ngoài
 
@@ -1605,7 +1610,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | **ASSUMPTION-002** | **Nhiều trận song song là nhu cầu thật** | Nay đã có con số từ chủ dự án — **tối đa 6, thường 1-2** (`QĐ-089`) — nhưng đó là **kỳ vọng, không phải quan sát**: vẫn chưa đơn vị nào chạy hai trận cùng lúc để kiểm chứng | §7 AS-2 · `QĐ-089` |
 | **ASSUMPTION-003** | **Admin chấp nhận bỏ thời gian chọn tay toàn bộ đề trước mỗi trận** | Hệ thống **cố ý** không tự lấy đề. Khối lượng là **69 câu + 1 bộ Chướng ngại vật mỗi trận** (§19.3); chưa ai kiểm chứng admin chấp nhận bỏ **bao nhiêu thời gian** cho từng ấy câu | §7 AS-3 · §19.3 |
 | **ASSUMPTION-004** | **Cơ chế nạp trước media mã hoá chạy ổn định trên trình duyệt** | Chính nguồn xếp nó là hạng mục phức tạp nhất phía client, và đã phải chuẩn bị phương án lui | §7 AS-4 |
-| **ASSUMPTION-005** | **Mã 6 số công khai là chấp nhận được về quyền riêng tư** | Ai có mã đều thấy tên và trường lớp của học sinh vị thành niên. Tuỳ chọn biệt danh **đã bỏ hẳn** (`QĐ-090`), nên hệ thống không còn biện pháp giảm thiểu nào ở tầng hiển thị — chỉ còn giới hạn tần suất, khoá cổng phòng, và việc người dựng contest **tự chọn** nhập tên rút gọn vào trường tên hiển thị | §7 AS-5 · `QĐ-090` |
+| **ASSUMPTION-005** | **Mã 6 số công khai là chấp nhận được về quyền riêng tư** | Ai có mã đều thấy tên và trường lớp của thí sinh. Tuỳ chọn biệt danh **đã bỏ hẳn** (`QĐ-090`), nên hệ thống không còn biện pháp giảm thiểu nào ở tầng hiển thị — chỉ còn giới hạn tần suất, khoá cổng phòng, và việc người dựng contest **tự chọn** nhập tên rút gọn vào trường tên hiển thị | §7 AS-5 · `QĐ-090` |
 | **ASSUMPTION-006** | **Người tổ chức có sẵn nhạc và hiệu ứng âm thanh** | Khe trống là im lặng, không có bộ mặc định ⇒ sản phẩm ra mắt sẽ **hoàn toàn im lặng** nếu admin không chuẩn bị | §7 AS-6 · `PRD-REQ-078` |
 | **ASSUMPTION-007** | **Wiki nguồn chính xác và ổn định** | Wiki cộng đồng, sửa được bất kỳ lúc nào, không có phiên bản. Đối phó: dùng **bản lưu trong `docs/source/`**, không dùng URL sống | §7 AS-7 |
 | **ASSUMPTION-008** | **Thí sinh có thiết bị riêng để gõ** | VCNV và Tăng tốc **luôn** gõ máy ⇒ mỗi ghế cần một thiết bị nhập đầy đủ cho cả trận, kể cả ở mode sân khấu. Chưa nguồn nào nêu yêu cầu phần cứng tối thiểu | §7 AS-8 · `QĐ-018`, `TERM-016` |
@@ -1624,7 +1629,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | **RISK-004** | **Cơ chế nạp trước media mã hoá không chạy ổn định** ⇒ hoặc lộ đề sớm, hoặc media không kịp | Cao — chạm trực tiếp `GOAL-005` | *(nguồn xếp là hạng mục phức tạp nhất phía client)* | PRD-REQ-049, NFR-24 | Giữ phương án lui *(chỉ công bố, không nạp trước)*; đo mốc sớm nhất thí sinh có thể thấy nội dung đề | §7 AS-4, §9 SM-10 |
 | **RISK-005** | **Sản phẩm ra mắt hoàn toàn im lặng** vì không có bộ âm thanh mặc định và admin chưa chuẩn bị | Trung bình — không chặn trận, nhưng demo rất tệ | Cao *(khe trống là im lặng theo thiết kế)* | PRD-REQ-078 | Hướng dẫn chuẩn bị âm thanh trong tài liệu dựng contest; cân nhắc gói mẫu tách rời sản phẩm | §7 AS-6, §8 · `QĐ-079` |
 | **RISK-006** | **Wiki nguồn thay đổi** mà không ai phát hiện ⇒ luật trong sản phẩm lệch với luật người dùng tra được | Trung bình | *(wiki cộng đồng, không có phiên bản)* | PRD-REQ-021 | Đã có bản lưu bất biến trong `docs/source/`; cân nhắc cơ chế phát hiện thay đổi, hoặc chấp nhận bản lưu là chốt chặn cuối | §7 AS-7, §10 |
-| **RISK-007** | **Dữ liệu học sinh vị thành niên lộ qua mã phòng công khai** | Cao — rủi ro pháp lý cho đơn vị tự host | Trung bình | PRD-REQ-086, PRD-REQ-107 | Giới hạn tần suất và nút khoá cổng phòng; khuyến nghị đặt tên hiển thị rút gọn trong tài liệu vận hành. **Tuỳ chọn biệt danh đã bỏ** (`QĐ-090`) — hướng giảm thiểu cũ vốn đã yếu vì khán giả tại chỗ nhìn thấy mặt và MC đọc tên bằng lời; bỏ nó không làm rủi ro nặng thêm, chỉ làm hồ sơ này **nói thật hơn** | §7 AS-5 · `QĐ-090` |
+| **RISK-007** | **Dữ liệu cá nhân của thí sinh lộ qua mã phòng công khai** | Cao — rủi ro pháp lý cho đơn vị tự host | Trung bình | PRD-REQ-086, PRD-REQ-107 | Giới hạn tần suất và nút khoá cổng phòng; khuyến nghị đặt tên hiển thị rút gọn trong tài liệu vận hành. **Tuỳ chọn biệt danh đã bỏ** (`QĐ-090`) — hướng giảm thiểu cũ vốn đã yếu vì khán giả tại chỗ nhìn thấy mặt và MC đọc tên bằng lời; bỏ nó không làm rủi ro nặng thêm, chỉ làm hồ sơ này **nói thật hơn** | §7 AS-5 · `QĐ-090` |
 | **RISK-010** | **Dữ liệu cá nhân lộ qua VẬT MANG** — gói contest kèm danh sách người tham gia đi trên USB, và ở lựa chọn *giữ mật khẩu hiện tại* nó mang cả dấu vết mật khẩu | Cao — cùng hạng pháp lý với `RISK-007` | Trung bình | PRD-REQ-104, NFR-24b, NFR-35b | Mã hoá **bắt buộc**, không phải tuỳ chọn; chìa khoá đi kênh khác; mặc định là *tạo mật khẩu mới*; tài khoản admin **không được** chọn giữ mật khẩu cũ; tài liệu vận hành nhắc xoá gói và thu hồi phiếu tài khoản sau ngày thi. **Điểm yếu còn lại là độ mạnh của cụm mật khẩu do người đặt** — không bù được bằng kỹ thuật | `QĐ-086`, `QĐ-087` |
 | **RISK-008** | **Phạm vi v1 quá rộng** — v1 hiện không phải MVP mà là một sản phẩm hoàn chỉnh, vẫn ôm cả bốn biến thể Khởi động, hai format Tăng tốc, nạp trước mã hoá, hai hồ sơ triển khai, chủ đề và bộ âm thanh đầy đủ | Cao — kéo dài thời gian tới trận thật đầu tiên | Cao | Toàn bộ epic v1 | Nếu cắt: **cắt biến thể, không cắt giai đoạn**; giữ một đường đi hoàn chỉnh từ soạn đề tới xuất kết quả. Bốn khoá cứng của v1 đã cắt sẵn một phần. **Nếu chỉ giữ được một thứ ngoài màn khán giả, giữ màn MC** | §8 |
 | **RISK-009** | **Server sập giữa trận** ⇒ mất khả năng cứu | Cao | *(không đủ căn cứ)* | NFR-31 | **Ranh giới đã chấp nhận có chủ đích**, không phải chỗ thiếu đặc tả. Hướng giảm thiểu thuộc vận hành, không thuộc sản phẩm | `QĐ-070` |
@@ -1891,14 +1896,14 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 
 | Goal | Requirement |
 |---|---|
-| GOAL-001 | 027, 088, 089 |
+| GOAL-001 | 027 |
 | GOAL-002 | 009, 010, 020, 022, 023, 024, 025, 026, 090, 091, 092, 105 |
 | GOAL-003 | 021 |
 | GOAL-004 | 008 |
-| GOAL-005 | 002, 003, 007, 011, 012, 013, 014, 047, 049, 060, 081, 107 |
+| GOAL-005 | 002, 003, 007, 011, 012, 013, 014, 047, 049, 060, 081, 089, 107 |
 | GOAL-006 | 041, 042, 043, 044, 045, 046, 054, 064, 065, 066, 068, 069, 070 |
 | GOAL-007 | 004, 005, 006, 015, 028, 029, 030, 031, 032, 033, 034, 035, 036, 037, 038, 039, 040, 048, 050, 051, 052, 053, 055, 056, 057, 058, 059, 061, 062, 063, 079, 080, 082, 083, 084 |
-| GOAL-008 | 001, 067, 071, 072, 073, 074, 075, 076, 077, 078, 086 |
+| GOAL-008 | 001, 067, 071, 072, 073, 074, 075, 076, 077, 078, 086, 088 |
 | GOAL-009 | 016, 017, 018, 104 |
 | GOAL-010 | 019, 085, 087, 106 |
 
