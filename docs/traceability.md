@@ -9,7 +9,7 @@
 | Ký hiệu | Là gì | Vị thế |
 |---|---|---|
 | **Luật gốc** | `source/fandom-olympia-26-luat-choi.md` — bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26), lấy 2026-07-23 | **Source of truth duy nhất về LUẬT** |
-| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-104` | Source of truth về **lựa chọn sản phẩm** |
+| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-107` | Source of truth về **lựa chọn sản phẩm** |
 | **Rule** | `game-rules.md` — `GR-001` → `GR-037` | Đặc tả nghiệp vụ **chuẩn tắc** |
 | **Máy trạng thái** | `game-state-machine.md` — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` | Đặc tả **chuẩn tắc** phần vận hành |
 | **Thuật ngữ** | `glossary.md` — `TERM-001` → `TERM-058` | Tên gọi chuẩn |
@@ -156,4 +156,4 @@ Khác bảng trên: mục dưới đây **không** tắt được và **không**
 
 **Quy mô viewer và ngưỡng độ trễ** — chủ dự án đã quyết là **chưa cần trả lời ở giai đoạn này** (`QĐ-067`). Đây là con số phi chức năng, chỉ đi vào hai chỗ và cả hai đều là **cấu hình**: ngưỡng rate-limit của cổng viewer, và mục tiêu kiểm thử tải. Không rule, không transition nào đọc nó. Từ `QĐ-088`, hai kênh public nhận đẩy **một chiều** và nằm ngoài kênh của lõi thi đấu ⇒ con số này chắc chắn **không chạm tới công bằng trận**.
 
-**Luật cho số ghế ≠ 4** không nằm ở đây vì nó **không phải câu hỏi còn treo** mà là **phạm vi phiên bản**: v1 đặc tả luật cho **đúng 4 thí sinh**; schema, mô hình ghế và giao diện làm cho **1-12** ngay từ đầu; luật đa ghế thuộc **v1.5**. Xem `QĐ-007`.
+**Luật cho số ghế TRÊN 4** không nằm ở đây vì nó **không phải câu hỏi còn treo** mà là **phạm vi phiên bản**: v1 đặc tả luật cho **tối đa 4 thí sinh**; schema, mô hình ghế và giao diện làm cho **1-12** ngay từ đầu; thang điểm cho hơn 4 đơn vị điểm thuộc **v1.5**. Trận **dưới** 4 thí sinh thì **thuộc v1** — chạy bằng **ghế bỏ thi**, vẫn áp nguyên luật 4 ghế. Xem `QĐ-007`, `QĐ-105`.

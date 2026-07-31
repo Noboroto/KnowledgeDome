@@ -12,11 +12,11 @@
 
 | Trường | Giá trị |
 |---|---|
-| **Version** | 2.2.1 — *chủ dự án phân xử toàn bộ tám câu hỏi mở; `QĐ-085`→`QĐ-092` ghi vào sổ quyết định; `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001`, `108`→`112`; `QĐ-097`→`103` chủ đích truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen` (không sinh `PRD-REQ` riêng)* |
+| **Version** | 2.4.0 — *tích hợp `QĐ-105` → `QĐ-107` thành `PRD-REQ-114`, `PRD-REQ-115` và một Note ngoại lệ ở `PRD-REQ-008`: dưới 4 thí sinh chạy bằng **ghế bỏ thi** và chỉ trên 4 mới bị chặn · VCNV có **hai** giá trị thời gian cấp vòng · kho đề có **xoá mềm** và **phiên bản theo cú Save** (bản tối giản), lật phần loại trừ đánh phiên bản của EPIC-002. Bản 2.3.0: tích hợp `QĐ-104` (admin kích hoạt tay) thành `PRD-REQ-113`, kèm ba chỗ sửa theo — §8.2 bước 5, `INV-009` ở §9.5, và bảng §13.2. Bản 2.2.1: chủ dự án phân xử toàn bộ tám câu hỏi mở; `QĐ-085`→`QĐ-092` ghi vào sổ quyết định; `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001`, `108`→`112`; `QĐ-097`→`103` chủ đích truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen` (không sinh `PRD-REQ` riêng)* |
 | **Quy ước bảo trì** | Mục **đã chốt / đã đóng / đã sửa** bị **xoá khỏi tài liệu**, không giữ lại dưới dạng ghi chú lịch sử; dãy số liên quan được **đánh lại cho liền**. Lịch sử tra ở `git log` và `docs/reviews/` |
 | **Đặc tả cho** | **Phiên bản sản phẩm 1.0** |
 | **Status** | Bản đầu tiên — chờ chủ dự án phê duyệt |
-| **Last updated** | 2026-07-30 |
+| **Last updated** | 2026-07-31 |
 | **Open conflict count** | **0** |
 | **Open clarification count** | **0** |
 
@@ -25,7 +25,7 @@
 | Nguồn | Vai trò | Trạng thái khi đọc |
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn (snapshot 2026-07-23) | Không sửa; source of truth **duy nhất về LUẬT** |
-| `docs/decisions.md` | 104 quyết định `QĐ-001`→`QĐ-104` | Source of truth về **lựa chọn sản phẩm**; §N khai *"không còn mục treo nào"* |
+| `docs/decisions.md` | 107 quyết định `QĐ-001`→`QĐ-107` | Source of truth về **lựa chọn sản phẩm**; §N khai *"không còn mục treo nào"* |
 | `docs/game-rules.md` | 37 rule `GR-001`→`GR-037`, 23 nguyên tắc nền, 4 bảng dùng chung | Chuẩn tắc; **không còn marker treo** |
 | `docs/game-state-machine.md` | 43 `STATE-*`, 52 `EVENT-*`, 100 `T-*`, 22 `INV-*`, 8 sơ đồ | Chuẩn tắc; **không còn marker treo** |
 | `docs/glossary.md` | 60 thuật ngữ `TERM-001`→`TERM-060` | Chuẩn tắc về tên gọi |
@@ -107,7 +107,7 @@ Trường học và câu lạc bộ muốn tổ chức thi đấu theo format Ol
 | **NON-GOAL-009** | **Kick thí sinh khỏi trận ở v1** — thay bằng vô hiệu hoá / kích hoạt lại ghế | `QĐ-047`, `TERM-032` |
 | **NON-GOAL-010** | **Chính sách dropout tự động** — quá ngưỡng chờ, hệ thống chỉ tô nổi bật; admin quyết | `QĐ-045`, `TERM-043` |
 | **NON-GOAL-011** | **Playlist tuỳ ý ở v1** — bốn vòng chuẩn, đúng thứ tự; không lặp, không đổi, không bớt ở thiết kế contest | `QĐ-069` |
-| **NON-GOAL-012** | **Luật cho số ghế ≠ 4** — v1 chỉ hỗ trợ **lưu trữ và giao diện** cho 1-12; đường xử lý luật chỉ có cho đúng 4 | `QĐ-007` |
+| **NON-GOAL-012** | **Luật cho số ghế TRÊN 4** — v1 chỉ hỗ trợ **lưu trữ và giao diện** cho 1-12; đường xử lý luật dừng ở 4 ghế, và cú bấm bắt đầu trận **chặn cứng** số ghế > 4. Số ghế **dưới** 4 thì **thuộc v1**: ghế thiếu người chạy như **ghế bỏ thi** *(0đ)*, vẫn áp luật 4 ghế | `QĐ-007`, `QĐ-105` |
 | **NON-GOAL-013** | **Thi đội** — v1 chỉ thi cá nhân; đơn vị điểm cấp đội không thuộc phạm vi | `product-discovery.md` §5 E-14 |
 | **NON-GOAL-014** | **Cơ chế "drop" tín hiệu** — mọi tín hiệu đã tới server đều có outcome | `QĐ-020`, `INV-006` |
 | **NON-GOAL-015** | **Đóng băng đồng hồ** — cửa sổ đã mở thì chạy hết theo server time | `QĐ-030`, `INV-016` |
@@ -231,7 +231,7 @@ Trường học và câu lạc bộ muốn tổ chức thi đấu theo format Ol
 | 3 | **Mốc 2 — admin start timer**, ánh xạ *"MC đọc xong câu hỏi"*. Ở Câu hỏi phụ đây cũng là mốc mở chuông | `STATE-019` (`T-025`) | `EVENT-010` | `GR-033`, `GR-024` |
 | 3b | *(Chỉ câu thực hành)* **Mốc 3 — admin bắt đầu thực hành**: đóng pha suy nghĩ, mở pha thực hành | `STATE-014` (`T-066`) | `EVENT-011` | `GR-019` |
 | 4 | Server đóng cửa nhận đáp án khi tới hạn. **Máy không tự chấm.** Bản quá hạn được giữ và tô đỏ | `STATE-020` (`T-026`) | `EVENT-044` | `GR-035` · bảng *Bản gửi quá hạn* |
-| 5 | **Mốc 4 — admin phán quyết** Đúng / Sai / Huỷ kết quả. Sinh sự kiện điểm; xoá hàng đợi đang hoạt động; gỡ khoá chuông mọi ghế | `STATE-021` (`T-027`/`T-028`) | `EVENT-012` / `013` / `014` | `GR-026`, `GR-032` · `INV-009` |
+| 5 | **Mốc 4 — admin phán quyết** Đúng / Sai / Huỷ kết quả. Sinh sự kiện điểm; xoá hàng đợi đang hoạt động; gỡ khoá chuông mọi ghế. *Ngoại lệ*: phán quyết **Huỷ kết quả** mở đường **kích hoạt tay** một tín hiệu còn hiệu lực trong hàng đợi (`PRD-REQ-113`) — câu chỉ khép sau khi người được kích hoạt đã được chấm | `STATE-021` (`T-027`/`T-028`) | `EVENT-012` / `013` / `014` · `EVENT-052` | `GR-026`, `GR-032` · `INV-009` |
 | 6 | Còn câu ⇒ câu kế; đủ số câu theo luật ⇒ nút chuyển thành *kết thúc lượt / vòng* | `STATE-017` (`T-029`) hoặc `STATE-001` (`T-030`) | `EVENT-003` | `GR-026` · `INV-010`, `INV-012` |
 
 **Ràng buộc bất khả xâm phạm của chuỗi này.** *Hiển thị câu hỏi* và *start timer* là **hai thao tác, thứ tự cố định, không gộp được** — khoảng giữa hai mốc chính là lúc MC đọc, và nó chứa cửa sổ chuông của Khởi động lượt chung cùng mốc đóng cửa sổ Ngôi sao hy vọng. Gộp lại là **phá luật** (`GR-033`, `QĐ-028`).
@@ -287,11 +287,12 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 |---|---|---|
 | **Invalid state** (toast) | **Không** — nhánh **không tồn tại**, nút không bật | Thao tác không có nghĩa ở trạng thái hiện tại |
 | **Cảnh báo lệch luật** (dialog Yes/No) | **Có** | Hệ thống khuyến nghị khác admin; admin luôn ép được |
-| **Chặn cứng** | **Không** | **Đúng ba chỗ** (`INV-014`): cửa sổ cướp quyền cần ≥2 thí sinh · Câu hỏi phụ cần ≥2 thí sinh · cửa vào vòng thiếu câu |
+| **Chặn cứng** *(luật chơi)* | **Không** | **Đúng ba chỗ** (`INV-014`): cửa sổ cướp quyền cần ≥2 thí sinh · Câu hỏi phụ cần ≥2 thí sinh · cửa vào vòng thiếu câu |
+| **Chặn do GIỚI HẠN PHIÊN BẢN** | **Không** | Một hạng **riêng**, không phải chỗ thứ tư của `INV-014`: cú bấm bắt đầu trận có **số ghế > 4** (`QĐ-105`). Hạng này **biến mất** khi v1.5 mở khoá luật đa ghế, thay vì buộc sửa một bất biến |
 
 ### 9.5 Bất biến chi phối toàn hệ thống
 
-`INV-001` lịch sử chỉ thêm không bao giờ mất · `INV-002` điểm luôn là hàm của nhật ký sự kiện · `INV-003` không sinh điểm mà không qua phán quyết của người · `INV-004` mọi mốc thời gian là server time · `INV-005` biên thời gian là **biên đóng** · `INV-006` mọi tín hiệu đã tới server đều có outcome · `INV-007` hàng đợi FIFO thuần theo server timestamp · `INV-008` từ chối không làm mất lượt · `INV-009` một câu đúng một phán quyết · `INV-010` phán quyết là điều kiện chuyển câu · `INV-011` câu đã hiển thị không bao giờ trả lại kho · `INV-012` số câu của một vòng là con số cố định · `INV-013` tín hiệu không giành quyền không gián đoạn đồng hồ · `INV-014` chỉ ba chỗ chặn cứng · `INV-015` đồng hồ khoá thí sinh không khoá admin · `INV-016` đồng hồ không bao giờ đóng băng · `INV-017` đáp án chỉ rời server tới phiên giữ `PERM-045` · `INV-018` điểm được phép âm · `INV-019` bị loại tước quyền không tước điểm · `INV-020` thứ tự vòng và lượt là khuyến nghị · `INV-021` lớp phủ không đổi trạng thái bên dưới · `INV-022` toàn bộ trạng thái trận nằm ở hai thứ — nhật ký sự kiện và vòng nào đang mở.
+`INV-001` lịch sử chỉ thêm không bao giờ mất · `INV-002` điểm luôn là hàm của nhật ký sự kiện · `INV-003` không sinh điểm mà không qua phán quyết của người · `INV-004` mọi mốc thời gian là server time · `INV-005` biên thời gian là **biên đóng** · `INV-006` mọi tín hiệu đã tới server đều có outcome · `INV-007` hàng đợi FIFO thuần theo server timestamp · `INV-008` từ chối không làm mất lượt · `INV-009` một câu **KHÉP** một lần — đơn vị chống trùng của một phán quyết là bộ ba *(câu, thí sinh, loại phán quyết)*, vì Về đích chấm người thi chính rồi chấm người cướp, một câu hàng ngang VCNV chấm **từng** thí sinh, và `PRD-REQ-113` cho phép chấm thêm người được kích hoạt tay · `INV-010` phán quyết là điều kiện chuyển câu · `INV-011` câu đã hiển thị không bao giờ trả lại kho · `INV-012` số câu của một vòng là con số cố định · `INV-013` tín hiệu không giành quyền không gián đoạn đồng hồ · `INV-014` chỉ ba chỗ chặn cứng **của luật chơi** — chặn do giới hạn phiên bản là hạng riêng, xem §9.4 · `INV-015` đồng hồ khoá thí sinh không khoá admin · `INV-016` đồng hồ không bao giờ đóng băng · `INV-017` đáp án chỉ rời server tới phiên giữ `PERM-045` · `INV-018` điểm được phép âm · `INV-019` bị loại tước quyền không tước điểm · `INV-020` thứ tự vòng và lượt là khuyến nghị · `INV-021` lớp phủ không đổi trạng thái bên dưới · `INV-022` toàn bộ trạng thái trận nằm ở hai thứ — nhật ký sự kiện và vòng nào đang mở.
 
 ---
 
@@ -407,7 +408,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Primary actor**: ACTOR-002 người ra đề
 - **User value**: Giải `PS-3` và `PS-6` — kho tập trung, tìm kiếm được, và đề kín tới lúc công bố.
 - **Scope**: Soạn câu với metadata và media · ba kiểu nhập đáp án + kênh thực hành · vòng duyệt `DRAFT` → `ACTIVE` · bộ đề · cờ hiển thị **dẫn xuất** và dấu vết `everPublic` một chiều · tìm kiếm toàn văn, lọc, sắp xếp · cờ đã-dùng theo contest.
-- **Out of scope**: Đánh phiên bản khi sửa câu đã duyệt (`product-discovery.md` §8 nêu là mục cắt được); chặn sao chép đề (NON-GOAL-007).
+- **Out of scope**: Chặn sao chép đề (NON-GOAL-007); **màn so sánh diff và thao tác quay về bản cũ** của phiên bản câu hỏi — bản tối giản thuộc v1 qua `PRD-REQ-115`, phần còn lại hoãn.
 - **Related journeys**: JOURNEY-001, JOURNEY-002
 - **Related game rules**: `GR-031`, `GR-027`
 - **Dependencies**: EPIC-001
@@ -433,7 +434,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Primary actor**: ACTOR-001 admin
 - **User value**: Giải `PS-1` — mọi thời gian, số câu và mức điểm là cấu hình.
 - **Scope**: Tạo contest · nút **"Áp dụng luật 2026"** áp preset · cấu hình từng vòng · chọn **mode trả lời** ở cấp contest · gán ghế và vị trí · chọn danh sách câu · chủ đề và âm thanh · kiểm kho đề trước khi bắt đầu.
-- **Out of scope**: Playlist tuỳ ý (NON-GOAL-011); số hàng ngang ≠ 4 (`QĐ-068`); luật cho số ghế ≠ 4 (NON-GOAL-012); phạm vi phân định hoà ≠ vị trí nhất (NON-GOAL-017).
+- **Out of scope**: Playlist tuỳ ý (NON-GOAL-011); số hàng ngang ≠ 4 (`QĐ-068`); luật cho số ghế **trên** 4 (NON-GOAL-012); phạm vi phân định hoà ≠ vị trí nhất (NON-GOAL-017). Hàng rào số ghế và cơ chế **ghế bỏ thi** nằm ở EPIC-005 (`PRD-REQ-114`), không ở cửa tạo contest.
 - **Related journeys**: JOURNEY-002
 - **Related game rules**: `GR-031`
 - **Dependencies**: EPIC-002
@@ -458,7 +459,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Goal**: Trận chạy đúng luật O26, và mọi con số truy nguyên được.
 - **Primary actor**: ACTOR-007 server *(thi hành)*; ACTOR-001 admin *(phán quyết)*
 - **User value**: Kết quả trận đúng và giải thích được — đây là lý do tồn tại của sản phẩm.
-- **Scope**: Năm vòng và luật từng vòng · điểm là hàm của nhật ký sự kiện · hoàn nguyên bằng sự kiện đảo ngược · hàng đợi tín hiệu và quy tắc chặn/không chặn · server time là nguồn sự thật · rút đề và quy tắc không lặp câu · phạm vi hiển thị đáp án · mất kết nối và giữ ghế.
+- **Scope**: Năm vòng và luật từng vòng · điểm là hàm của nhật ký sự kiện · hoàn nguyên bằng sự kiện đảo ngược · hàng đợi tín hiệu và quy tắc chặn/không chặn · **kích hoạt tay một tín hiệu khác sau phán quyết Huỷ kết quả** (`QĐ-104`) · server time là nguồn sự thật · rút đề và quy tắc không lặp câu · phạm vi hiển thị đáp án · mất kết nối và giữ ghế.
 - **Out of scope**: Mọi đường máy tự chấm (NON-GOAL-001); luật đa ghế (NON-GOAL-012); luật thi đội (NON-GOAL-013).
 - **Related journeys**: JOURNEY-005
 - **Related game rules**: `GR-001` → `GR-037` *(toàn bộ)*
@@ -471,7 +472,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Goal**: Người vận hành luôn có đường sửa mọi sai lầm mà không mất lịch sử.
 - **Primary actor**: ACTOR-001 admin
 - **User value**: Giải `PS-7` — có công cụ đối chiếu đáp án; và trận không bao giờ kẹt.
-- **Scope**: Bốn mốc bấm của một câu · phán quyết Đúng / Sai / Huỷ kết quả · màn chấm với tô khác biệt ký tự và lịch sử bài gửi · duyệt và từ chối tín hiệu · điều chỉnh điểm thủ công có lý do bắt buộc · bỏ / chạy lại / kết thúc khẩn cấp vòng · mở và đóng đáp án, ô chữ, màn công bố, banner tạm dừng · vô hiệu hoá và kích hoạt lại ghế · ba hạng cảnh báo giao diện.
+- **Scope**: Bốn mốc bấm của một câu · phán quyết Đúng / Sai / Huỷ kết quả · màn chấm với tô khác biệt ký tự và lịch sử bài gửi · duyệt và từ chối tín hiệu · **bề mặt kích hoạt tay một tín hiệu trong hàng đợi** *(luật ở EPIC-006, `PRD-REQ-113`)* · điều chỉnh điểm thủ công có lý do bắt buộc · bỏ / chạy lại / kết thúc khẩn cấp vòng · mở và đóng đáp án, ô chữ, màn công bố, banner tạm dừng · vô hiệu hoá và kích hoạt lại ghế · ba hạng cảnh báo giao diện.
 - **Out of scope**: Bất kỳ cơ chế nào tự cộng trừ điểm (NON-GOAL-001); tính lại thứ hạng tự động sau khi đổi phán quyết (`QĐ-014`).
 - **Related journeys**: JOURNEY-005, JOURNEY-006
 - **Related game rules**: `GR-026` → `GR-034`
@@ -651,7 +652,8 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-002 · **Related epic**: EPIC-002 · **Related journey**: JOURNEY-001 · **Related game rules**: `GR-018`, `GR-013`
 - **Priority**: P1 · **Rationale**: Nguồn ngoài gắn chặt thời gian với mức điểm; dự án cố ý tổng quát hoá vượt nguồn để cùng mức 20đ có câu 15 giây và câu 40 giây.
 - **Acceptance intent**: Hai câu cùng mức điểm, khác thời lượng ⇒ đồng hồ chạy đúng theo từng câu.
-- **Source**: `TERM-045` · `GOAL-004` · `CLAUDE.md` §Luật chơi & đề thi · **Status**: CONFIRMED
+- **Note**: *(ngoại lệ có nguồn, `QĐ-106`)* Vòng **Vượt chướng ngại vật** không theo mục này: câu hàng ngang và câu ô trung tâm **không** khai thời lượng riêng mà dùng **một giá trị cấu hình cấp vòng** *(preset 15 giây)*, và vòng còn một giá trị cấp vòng **thứ hai, độc lập** cho **cửa sổ giải Chướng ngại vật sau gợi ý cuối** *(preset 15 giây)*. Lý do: bốn hàng ngang thuộc **cùng một bộ** và chạy trong cùng một lượt trình diễn (`PRD-REQ-092`), nên bốn đồng hồ khác nhau không có căn cứ sân khấu; còn ở Về đích thì thời lượng gắn với **mức điểm của câu** nên metadata từng câu là đúng. Ngoại lệ này **không** đụng `PRD-REQ-020` — cả hai giá trị vẫn là cấu hình, chỉ ở cấp vòng.
+- **Source**: `TERM-045` · `GOAL-004` · `QĐ-106` *(ngoại lệ VCNV)* · `CLAUDE.md` §Luật chơi & đề thi · **Status**: CONFIRMED
 
 **PRD-REQ-009 — Ba kiểu nhập đáp án, đáp án luôn là chuỗi**
 - **Description**: Câu hỏi MUST hỗ trợ ba kiểu nhập — nhập chữ, chọn một phương án, sắp thứ tự — và kiểu nhập chỉ quyết định **widget trên máy thí sinh**. Đáp án và bài làm MUST lưu dưới dạng chuỗi ở cả ba kiểu. Hệ thống MUST NOT có nhánh chấm riêng cho kiểu nào.
@@ -673,6 +675,14 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Priority**: P2 · **Rationale**: Thêm một vai chỉ để duyệt làm phình mô hình quyền mà không thêm bảo đảm nào.
 - **Acceptance intent**: Câu ở nháp không xuất hiện trong danh sách chọn được cho contest.
 - **Source**: `QĐ-064` · `CLAUDE.md` §UX *(dashboard admin)* · **Status**: CONFIRMED
+
+**PRD-REQ-115 — Vòng đời dữ liệu câu hỏi: mã hiển thị duy nhất, xoá mềm, phiên bản theo cú bấm Save**
+- **Description**: `displayId` của một câu hỏi MUST **duy nhất trên toàn hệ thống**; hệ thống MUST từ chối lưu một câu mới hoặc một bản sửa mang mã đã tồn tại ở câu khác. Câu MUST mang thêm một **định danh nội bộ ổn định**, tách khỏi `displayId` và không đổi khi `displayId` bị sửa — đây MUST là thứ đi trong gói xuất/nhập. Hệ thống MUST hỗ trợ **xoá mềm** một câu ở **cả** `DRAFT` lẫn `ACTIVE`: câu đã xoá MUST biến khỏi tìm kiếm và khỏi danh sách chọn cho contest, và MUST NOT làm mất bất kỳ dữ liệu nào đã ghi — `everPublic`, cờ đã-dùng, và mọi tham chiếu từ nhật ký của trận cũ. Câu `ACTIVE` MUST sửa được kể cả sau khi đã hiển thị trong một trận; **mỗi cú bấm Save MUST tạo một phiên bản mới**, và mỗi lần một câu được hiển thị trong một trận thì trận MUST ghi lại **phiên bản nào** đã dùng, đủ để in lại biên bản đúng nội dung đã lên sóng. Ở v1, hệ thống MUST chỉ cần **lưu và xem lại nội dung từng phiên bản**; màn **so sánh diff** và thao tác **quay về bản cũ** MUST NOT thuộc v1.
+- **Actor**: ACTOR-002, ACTOR-001 · **Related epic**: EPIC-002, EPIC-006, EPIC-010 · **Related journey**: JOURNEY-001, JOURNEY-007 · **Related game rules**: `GR-031` · `INV-001`, `INV-022`
+- **Priority**: P2 · **Rationale**: Xoá cứng phá `everPublic` — hàng rào chống rò đề — và làm biên bản trận cũ trỏ vào hư không; nhưng kho đề dùng nhiều mùa phải có đường gỡ câu hỏng. Phiên bản giải một lỗi thật: sửa một câu sau trận A rồi in biên bản trận A sẽ in ra nội dung **mới**, sai với thứ đã lên sóng — mà biên bản là công cụ phân xử khiếu nại (`PRD-REQ-079`). Khoá sửa câu đã lên sóng thì không được, vì một lỗi chính tả phải sửa được ngay.
+- **Acceptance intent**: Sửa và Save một câu đã dùng ở trận A ⇒ biên bản trận A vẫn in đúng nội dung lúc phát sóng, còn kho đề hiện bản mới; xoá mềm một câu ⇒ nó biến khỏi tìm kiếm nhưng hàng rào `everPublic` với các contest cũ **không** đổi.
+- **Note**: Mục này **lật** phần loại trừ *"đánh phiên bản khi sửa câu đã duyệt"* của EPIC-002 ở §11 và §20.1 — chủ dự án đưa vào v1 ngày 2026-07-31, ở **bản tối giản**. Vế *"trận ghi phiên bản nào đã dùng"* thuộc **nhật ký sự kiện của trận** (`INV-022`) nên chủ sở hữu là EPIC-006, không phải kho đề.
+- **Source**: `QĐ-107` · `QĐ-071`, `QĐ-077`, `QĐ-044` · **Status**: CONFIRMED
 
 **PRD-REQ-012 — Cờ hiển thị của câu là giá trị DẪN XUẤT, chỉ đọc**
 - **Description**: Cờ hiển thị của một câu MUST bằng *public* khi và chỉ khi câu đang thuộc ít nhất một bộ đề public, ngược lại *private*. Không vai nào MUST được đặt trực tiếp cờ này; người ra đề làm một câu thành public bằng cách đưa nó vào một bộ đề public.
@@ -814,7 +824,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-004 · **Related journey**: JOURNEY-002, JOURNEY-004 · **Related game rules**: `GR-016`, `GR-007`
 - **Priority**: P1 · **Rationale**: Vị trí là đầu vào của hai luật — thứ tự chọn hàng ngang, và phá hoà thứ tự lượt Về đích; đổi giữa trận làm hai luật đó mất nghĩa.
 - **Acceptance intent**: Sau khi vòng đầu tiên đã chạy, không có đường nào đổi vị trí.
-- **Note**: *(làm rõ 2026-07-30, phiên đối chiếu spec ↔ PRD)* Số ghế **KHÔNG** cùng khuôn với ba khoá cứng `PRD-REQ-024`, `PRD-REQ-025`, `PRD-REQ-105` — ba mục đó nói thẳng *"cửa tạo contest MUST NOT cho chọn giá trị khác"*, còn mục này đòi **giao diện hỗ trợ 1-12**. Hàng rào của v1 vì thế nằm ở **cú bấm bắt đầu trận**: bước gán ghế nhận 1-12 cho cả contest official lẫn practice, và server chặn cứng cú bắt đầu một trận có số ghế ≠ 4 vì v1 không có đường xử lý luật cho số khác (`NON-GOAL-012`, `QĐ-007`). Đặt hàng rào ở bước gán ghế sẽ buộc v1.5 dựng lại giao diện — đúng cái `QĐ-007` chốt là không làm. — `specs/004-contest-builder-luat` FR-013, FR-030.
+- **Note**: *(làm rõ 2026-07-30, sửa 2026-07-31 theo `QĐ-105`)* Số ghế **KHÔNG** cùng khuôn với ba khoá cứng `PRD-REQ-024`, `PRD-REQ-025`, `PRD-REQ-105` — ba mục đó nói thẳng *"cửa tạo contest MUST NOT cho chọn giá trị khác"*, còn mục này đòi **giao diện hỗ trợ 1-12**. Hàng rào của v1 nằm ở **cú bấm bắt đầu trận** và nó chặn **số ghế > 4**, không phải *"≠ 4"*: bước gán ghế nhận 1-12 cho cả contest official lẫn practice; trận **dưới** 4 ghế bắt đầu được và chạy bằng **ghế bỏ thi** theo `PRD-REQ-114`; chỉ trận **trên** 4 ghế bị chặn, vì thang điểm Tăng tốc chỉ định nghĩa cho 4 đơn vị điểm (`NON-GOAL-012`, `QĐ-007`, `QĐ-105`). Đặt hàng rào ở bước gán ghế sẽ buộc v1.5 dựng lại giao diện — đúng cái `QĐ-007` chốt là không làm. — `specs/004-contest-builder-luat` FR-013, FR-030.
 - **Source**: `QĐ-007` · `TERM-002` · `GR-016` · **Status**: CONFIRMED
 
 ### EPIC-005 — Phòng thi và vòng đời trận
@@ -832,6 +842,14 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Priority**: P1 · **Rationale**: Nếu cấu hình đổi được giữa trận thì nhật ký sự kiện không dựng lại được kết quả.
 - **Acceptance intent**: Sửa contest sau khi trận đã bắt đầu không đổi hành vi của trận đó.
 - **Source**: `EVENT-001`, `T-001` · `QĐ-075`, `QĐ-062` · **Status**: CONFIRMED
+
+**PRD-REQ-114 — Trận dưới 4 thí sinh chạy được bằng GHẾ BỎ THI; trên 4 thì chặn**
+- **Description**: Cú bấm **bắt đầu trận** MUST bị **chặn cứng, không ép được** khi số ghế đã gán **lớn hơn 4**, kèm thông điệp nêu rõ v1 chưa có đường xử lý luật cho số ghế đó. Số ghế **từ 1 đến 4** MUST bắt đầu được: hệ thống MUST bù các ghế thiếu thành **ghế bỏ thi** — đặt trạng thái **vô hiệu hoá** ngay từ trước cú bấm bắt đầu, điểm **luôn 0**, không thao tác được gì — và MUST áp **nguyên luật 4 ghế** cho trận đó. Ghế bỏ thi MUST giữ **vị trí** của nó và MUST xuất hiện trên bảng điểm, bảng xếp hạng và biên bản, **xếp hạng bình thường như một ghế 0đ**. Phép tìm nhóm hoà cần phân định MUST **chỉ xét ghế hoạt động**. Ghế bỏ thi MUST **vẫn được cấp lượt** ở Khởi động lượt riêng và Về đích, và admin MUST bỏ qua lượt đó **bằng tay**; mọi công thức kiểm kho đề MUST giữ nguyên mẫu số là **số ghế đã gán**. Hàng rào này MUST áp như nhau cho trận official lẫn practice.
+- **Actor**: ACTOR-001, ACTOR-007 · **Related epic**: EPIC-005, EPIC-006, EPIC-004 · **Related journey**: JOURNEY-002, JOURNEY-004, JOURNEY-005 · **Related game rules**: `GR-036` C5b, `GR-020` C6, `GR-022`, `GR-016`, `GR-017` §Biên · `INV-014`, `INV-018`
+- **Priority**: P1 · **Rationale**: *"Khác 4 thì chặn"* cấm luôn những trận mà luật 4 ghế **chạy đúng không cần sửa gì**: Tăng tốc xếp hạng chỉ trên tập người được chấm Đúng nên ghế bỏ thi không giữ chỗ trong thang; VCNV có luật quay lại vị trí số 1 nên bốn hàng ngang vẫn được hỏi hết; cướp quyền đã có `GR-020` C6. Thứ duy nhất thiếu khi số ghế **lớn hơn** 4 là **thang điểm** — không nguồn nào cho. Dùng lại cơ chế **vô hiệu hoá ghế** thay vì đẻ khái niệm *"trận N ghế"* giữ được mọi đường xử lý hiện có nguyên vẹn.
+- **Acceptance intent**: Gán 2 thí sinh rồi bắt đầu trận ⇒ trận chạy trọn bốn vòng, hai ghế còn lại hiện 0đ với nhãn bỏ thi; gán 5 thí sinh rồi bắt đầu ⇒ server từ chối, không ép qua được, phép gán ghế giữ nguyên.
+- **Note**: Chặn ở đây thuộc hạng **giới hạn phiên bản** của §9.4, **không** phải chỗ chặn cứng thứ tư của `INV-014`. Mệnh đề *"nhóm hoà chỉ xét ghế hoạt động"* tồn tại để loại một ngõ cụt: `INV-018` cho phép điểm âm, nên về lý thuyết mọi thí sinh thật cùng âm thì hai ghế bỏ thi 0đ thành nhóm hoà dẫn đầu và không ai bấm chuông được. Chủ dự án đánh giá ca này không xảy ra trên thực tế.
+- **Source**: `QĐ-105` · `QĐ-007`, `QĐ-003`, `QĐ-047` · `GR-036` C5b · **Status**: CONFIRMED
 
 **PRD-REQ-029 — LOBBY là cửa vào và cửa ra duy nhất của mọi vòng**
 - **Description**: Trạng thái nghỉ của trận MUST có đúng **một** giá trị, dùng cả trước vòng đầu tiên lẫn giữa hai vòng. Mọi vòng MUST vào và ra qua trạng thái này. Hệ thống MUST NOT có đường đi thẳng từ vòng này sang vòng khác.
@@ -896,14 +914,16 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-006 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-026` · `INV-009`, `INV-010`
 - **Priority**: P1 · **Rationale**: Cơ chế tính lại tự động sẽ là đường code **duy nhất** tự sinh điểm không qua người, phá `PRD-REQ-036`.
 - **Acceptance intent**: Bấm chấm lần hai không đổi điểm và không sinh sự kiện.
-- **Source**: `QĐ-014` · `INV-009` · **Status**: CONFIRMED
+- **Note**: *"Đúng một phán quyết"* MUST đọc theo đơn vị **bộ ba** *(câu, thí sinh, loại phán quyết)*, không phải *"mỗi câu đúng một cú bấm chấm"* — một câu hợp lệ mang nhiều phán quyết ở các vòng nhiều người: Về đích chấm người thi chính rồi chấm người cướp, câu hàng ngang VCNV chấm **từng** thí sinh, và `PRD-REQ-113` cho phép chấm thêm người được **kích hoạt tay** sau một cú *Huỷ kết quả*. Lệnh cấm ở đây nhắm vào việc **chấm lại cùng một bộ ba** và vào mọi cơ chế **tự tính lại** thứ hạng.
+- **Source**: `QĐ-014` · `QĐ-104` *(vế đơn vị chống trùng)* · `INV-009` · **Status**: CONFIRMED
 
 **PRD-REQ-038 — Phán quyết có hai hay ba lựa chọn tuỳ hình phạt của vòng**
 - **Description**: Ở vòng mà *Sai* trừ 0 điểm, admin MUST có hai lựa chọn Đúng / Sai. Ở vòng mà *Sai* có hình phạt, MUST có thêm lựa chọn thứ ba **Huỷ kết quả**. Lựa chọn thứ ba MUST **luôn** có mặt khi câu chỉ có bản gửi quá hạn, kể cả ở vòng *Sai* trừ 0.
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-006, EPIC-007 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-026`, `GR-004`, `GR-020`, `GR-021` · bảng §2.2
 - **Priority**: P1 · **Rationale**: Không có lựa chọn thứ ba thì mọi cách khép một câu bất thường đều phải trừ điểm oan ai đó.
 - **Acceptance intent**: Số nút chấm đổi theo vòng; không dùng chung một bố cục hai nút cho mọi vòng.
-- **Source**: `QĐ-061` · `game-rules.md` §2.2 · `TERM-029` · **Status**: CONFIRMED
+- **Note**: Một ngoại lệ có nguồn — tín hiệu *"Mở chướng ngại vật"* MUST có **ba** lựa chọn dù chấm *Sai* ở đó không trừ điểm *(hình phạt là **bị loại khỏi vòng**)*: *Huỷ kết quả* là đường khép một tín hiệu **đã xác nhận** mà **không loại** thí sinh, và là trigger của `PRD-REQ-113`. Xem `GR-009` C6b và bảng §13.2.
+- **Source**: `QĐ-061` · `QĐ-104` *(ngoại lệ tín hiệu Chướng ngại vật)* · `game-rules.md` §2.2 · `TERM-029` · **Status**: CONFIRMED
 
 **PRD-REQ-039 — Điểm là hàm của nhật ký sự kiện; hoàn nguyên là THÊM sự kiện**
 - **Description**: Điểm MUST được tính lại từ toàn bộ nhật ký sự kiện, MUST NOT là một con số bị ghi đè trực tiếp. Hoàn nguyên MUST thực hiện bằng cách **thêm** sự kiện đảo ngược. Nhật ký MUST linear, chỉ thêm, và **không bao giờ bị xoá**.
@@ -948,7 +968,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Source**: `QĐ-020`, `QĐ-024`, `QĐ-025` · `GR-032` · `TERM-026` · **Status**: CONFIRMED
 
 **PRD-REQ-045 — Hàng đợi chỉ CHẶN ở Vượt chướng ngại vật**
-- **Description**: Ở Vượt chướng ngại vật — chọn hàng ngang và bấm *"Mở chướng ngại vật"* — tín hiệu MUST chờ admin duyệt mới có hiệu lực. Ở Khởi động lượt chung, cướp quyền Về đích, và Câu hỏi phụ, tín hiệu MUST có hiệu lực ngay theo server timestamp; hàng đợi ở đó là lưới an toàn để admin can thiệp khi có sự cố.
+- **Description**: Ở Vượt chướng ngại vật — chọn hàng ngang và bấm *"Mở chướng ngại vật"* — tín hiệu MUST chờ admin duyệt mới có hiệu lực. Ở Khởi động lượt chung, cướp quyền Về đích, và Câu hỏi phụ, tín hiệu MUST có hiệu lực ngay theo server timestamp; hàng đợi ở đó là lưới an toàn để admin can thiệp khi có sự cố — **cơ chế** của lưới an toàn đó là `PRD-REQ-113`.
 - **Actor**: ACTOR-001, ACTOR-007 · **Related epic**: EPIC-006 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-032`, `GR-007`, `GR-009`
 - **Priority**: P1 · **Rationale**: Tiêu chí phân biệt: tín hiệu *một chiều, hậu quả nặng, không bị ép thời gian* ⇒ chặn. Tín hiệu *đua tốc độ, cửa sổ chặt* ⇒ không chặn, server phân xử ngay.
 - **Acceptance intent**: Ở VCNV, tín hiệu chưa duyệt không sinh hệ quả nào; ở Khởi động lượt chung, có chuông là tính ngay.
@@ -960,6 +980,14 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Priority**: P1 · **Rationale**: Đây là **chỗ sửa lỗi bấm nhầm của thí sinh**, nên nó cố ý không phải hình phạt; nếu reject làm mất lượt, admin sẽ ngại dùng cơ chế sửa lỗi.
 - **Acceptance intent**: Sau khi bị từ chối, thí sinh chọn lại được; ô chữ và kho đề không đổi.
 - **Source**: `QĐ-022` · `INV-008` · `TERM-027` · **Status**: CONFIRMED
+
+**PRD-REQ-113 — Admin KÍCH HOẠT TAY một tín hiệu khác khi người giữ quyền bị Huỷ kết quả**
+- **Description**: Khi người đang giữ quyền trả lời bị chấm **Huỷ kết quả**, admin MUST **kích hoạt tay** được **một tín hiệu còn hiệu lực** trong hàng đợi để người phát tín hiệu đó thành người giữ quyền mới. Phạm vi MUST là **mọi vòng có giành quyền bằng chuông** — Khởi động lượt chung, cướp quyền Về đích, Câu hỏi phụ, và tín hiệu *"Mở chướng ngại vật"* của Vượt chướng ngại vật. Trigger MUST **chỉ** là phán quyết *Huỷ kết quả*; chấm *Sai* MUST NOT mở đường này. Tập ứng viên MUST gồm đúng hai nhóm — tín hiệu **trơ chưa từng được xử lý**, và ghế **vừa bị chấm Huỷ kết quả** ở chính câu đó *(chính vòng đó ở VCNV)* — và MUST loại ghế **bị loại** khỏi vòng VCNV cùng ghế đang bị **vô hiệu hoá**; ứng viên MUST còn hiệu lực với **đích** của tín hiệu. Hệ thống MUST **khuyến nghị** tín hiệu sớm nhất chưa xử lý và MUST cho admin chọn khác; lệch khuyến nghị ⇒ **dialog cảnh báo lệch luật** Yes/No nêu ghế bị vượt và thứ tự gốc, ép được, MUST NOT bắt nhập lý do, và MUST NOT trở thành một chỗ **chặn cứng** thứ tư. Ba tham số: **đồng hồ** — cấp lại **trọn** cửa sổ suy nghĩ của vòng tính từ mốc bấm kích hoạt *(Khởi động lượt chung 3 giây · Câu hỏi phụ 15 giây · Về đích và tín hiệu Chướng ngại vật không có cửa sổ trả lời riêng nên không mở cửa sổ nào)*; **số lần** — **một lần cho mỗi CÂU** ở ba vòng chuông, **một lần cho mỗi phán quyết Huỷ kết quả** ở VCNV và không có trần tổng; **hình phạt** — **y hệt** người giành quyền bình thường của vòng đó, MUST NOT có bảng điểm riêng. Tín hiệu *"Mở chướng ngại vật"* MUST có **ba** lựa chọn phán quyết — Đúng / Sai / **Huỷ kết quả**. Mốc **câu khép** MUST lùi tới sau khi người được kích hoạt đã được chấm; trước mốc mới đó server MUST NOT công bố đáp án. Mọi cú kích hoạt MUST vào nhật ký thao tác.
+- **Actor**: ACTOR-001, ACTOR-007 · **Related epic**: EPIC-006, EPIC-007 · **Related journey**: JOURNEY-005, JOURNEY-006 · **Related game rules**: `GR-032` §Kích hoạt tay, `GR-009` C6b, `GR-037` C8b, `GR-003`, `GR-020`, `GR-023` · `INV-006`, `INV-008`
+- **Priority**: P2 · **Rationale**: `PRD-REQ-044` giữ mọi tín hiệu thua tốc độ ở trạng thái **trơ** và hứa rằng hàng đợi là *"lưới an toàn để admin can thiệp khi có sự cố"* — nhưng lời hứa đó **không có cơ chế**; đây là cơ chế duy nhất của nó. *Huỷ kết quả* là trigger duy nhất vì nó **đã** mang nghĩa *"lượt này coi như không xảy ra"* (`QĐ-061`); mở thêm cho *Sai* sẽ biến một câu thành chuỗi cướp quyền liên tiếp, mà số học `−5` và `−½ giá trị câu` viết cho **đúng một** người.
+- **Acceptance intent**: Sau một cú *Huỷ kết quả*, admin trao được lượt cho một ghế còn tín hiệu trong hàng đợi; ghế đó nhận **trọn** cửa sổ suy nghĩ mới và **cùng** số học của vòng; đáp án không rời server tới thí sinh, khán giả hay lớp phủ cho tới khi ghế đó được chấm; chọn lệch khuyến nghị chỉ gặp dialog cảnh báo, không bị chặn.
+- **Note**: Đây là **biến thể ngoài luật gốc O26** — luật gốc chỉ có **một** người giành quyền cho mỗi câu (`traceability.md` §Biến thể ngoài luật O26). Hai hệ quả sửa thẳng vào phần khác của chính tài liệu này: bảng §13.2 nay mang một ngoại lệ cho tín hiệu Chướng ngại vật, và `INV-009` ở §9.5 đọc là *"một câu **KHÉP** một lần"* với đơn vị chống trùng là bộ ba *(câu, thí sinh, loại phán quyết)*.
+- **Source**: `QĐ-104` · `QĐ-020`, `QĐ-024`, `QĐ-002`, `QĐ-003` · `GR-032` §Kích hoạt tay · `game-state-machine.md` `EVENT-052`, `T-097`→`T-100` · **Status**: CONFIRMED
 
 **PRD-REQ-047 — Rút đề trong danh sách đã gán; câu đã HIỂN THỊ không bao giờ trả lại kho**
 - **Description**: Người tạo contest MUST chọn danh sách câu trước khi bắt đầu trận; hệ thống MUST NOT tự lấy đề. Server MUST rút ngẫu nhiên **trong danh sách đã gán**, loại câu đã dùng, và MUST phát một sự kiện rút đề để phát lại được. Ranh giới *đã dùng* MUST là **đã hiển thị cho thí sinh** — không phải *đã chấm*, không phải *đã rút*. Câu đã rút mà chưa hiển thị MUST được trả lại kho. Phạm vi không-lặp-câu MUST là **toàn contest, xuyên mọi trận**.
@@ -983,7 +1011,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Source**: `QĐ-051`, `QĐ-062`, `QĐ-080` · `GR-037` · `INV-017` · `TERM-057` · **Status**: CONFIRMED
 
 **PRD-REQ-088 — Mốc công bố là CÂU KHÉP, không phải "đã chấm"**
-- **Description**: Hệ thống MUST công bố đáp án tại mốc **câu khép** — thời điểm không còn ai được trả lời câu đó nữa. Ở Khởi động, Vượt chướng ngại vật và Tăng tốc, mốc này MUST trùng với cú bấm chấm. Ở **Về đích**, khi người thi chính bị chấm Sai, hệ thống MUST NOT công bố đáp án trong lúc cửa sổ cướp quyền còn mở; câu chỉ khép khi cửa sổ đóng **và** người cướp đã được chấm, hoặc hết cửa sổ không ai bấm. Ba ca biên: câu **bị bỏ qua** MUST vẫn công bố; phán quyết **Huỷ kết quả** MUST NOT tự công bố; đáp án **Chướng ngại vật** MUST NOT theo cơ chế này. Công bố MUST là một chiều ở phía engine; quyền đóng hiển thị thủ công của admin MUST giữ nguyên.
+- **Description**: Hệ thống MUST công bố đáp án tại mốc **câu khép** — thời điểm không còn ai được trả lời câu đó nữa. Ở Khởi động, Vượt chướng ngại vật và Tăng tốc, mốc này MUST trùng với cú bấm chấm. Ở **Về đích**, khi người thi chính bị chấm Sai, hệ thống MUST NOT công bố đáp án trong lúc cửa sổ cướp quyền còn mở; câu chỉ khép khi cửa sổ đóng **và** người cướp đã được chấm, hoặc hết cửa sổ không ai bấm. Khi admin **kích hoạt tay** một tín hiệu khác theo `PRD-REQ-113`, mốc câu khép MUST **lùi** tới sau khi người được kích hoạt đã được chấm. Ba ca biên: câu **bị bỏ qua** MUST vẫn công bố; phán quyết **Huỷ kết quả** MUST NOT tự công bố; đáp án **Chướng ngại vật** MUST NOT theo cơ chế này. Công bố MUST là một chiều ở phía engine; quyền đóng hiển thị thủ công của admin MUST giữ nguyên.
 - **Actor**: ACTOR-007, ACTOR-001 · **Related epic**: EPIC-006 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-037`, `GR-020`, `GR-008`, `GR-012` · `INV-017`
 - **Priority**: P1 · **Rationale**: Ở Về đích, cú bấm *chấm Sai* **chính là** cú mở cửa sổ cướp quyền. Công bố tại mốc đó thì người cướp chỉ việc đọc lại đáp án vừa hiện — cơ chế chuyển điểm lớn nhất trận bị xoá sổ và vòng quyết định thành cuộc thi bấm chuột. Đây là **sai luật gốc**, không phải lệch trải nghiệm.
 - **Acceptance intent**: Ở Về đích, đáp án không xuất hiện trên bất kỳ kênh nào của thí sinh, khán giả hay lớp phủ trong khoảng từ cú bấm chấm Sai tới khi người cướp được chấm.
@@ -1369,7 +1397,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 | Bảng | Nội dung |
 |---|---|
 | **Số câu theo luật** | Khởi động riêng **6**/thí sinh · chung **12** · VCNV **4+1** · Tăng tốc **4** · Về đích **3**/gói · Câu hỏi phụ **3**. Biên *"lớn hơn max"* **không tồn tại** |
-| **Phán quyết hai hay ba lựa chọn** | Chỉ nhị phân khi *Sai* trừ **0** điểm; có hình phạt ⇒ thêm **Huỷ kết quả** |
+| **Phán quyết hai hay ba lựa chọn** | Chỉ nhị phân khi *Sai* trừ **0** điểm; có hình phạt ⇒ thêm **Huỷ kết quả**. **Ngoại lệ** *(`PRD-REQ-113`, `GR-009` C6b)*: tín hiệu *"Mở chướng ngại vật"* có **ba** lựa chọn dù *Sai* không trừ điểm — *Huỷ kết quả* ở đó là đường khép một tín hiệu đã xác nhận mà **không loại** thí sinh |
 | **Bản gửi quá hạn** | Giữ, tô đỏ, không tự ghi đè, không tự loại; chỉ có bản quá hạn ⇒ thêm **Huỷ kết quả** |
 | **Kênh trả lời quyết định lúc nào chấm được** | **Nói** ⇒ chấm bất cứ lúc nào · **Gõ** ⇒ nút chấm khoá tới hết giờ · **Thực hành** ⇒ nút chấm sống suốt |
 
@@ -1378,7 +1406,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 | Nhóm | Rule | Nội dung cốt lõi |
 |---|---|---|
 | **Khởi động** | `GR-001` → `GR-006` | Lượt riêng: 6 câu × 3 giây, đúng **+10**, sai **0**. Lượt chung: 12 câu, giành quyền bằng chuông, đúng **+10**, sai hoặc bấm rồi im lặng **−5**. Cửa sổ chuông là **một khoảng liên tục** từ mốc hiển thị câu qua thời gian MC đọc + 3 giây. Cửa sổ rỗng ⇒ **câu bị bỏ qua và vẫn tính là đã dùng**. Ghi nhận **bản cuối cùng** |
-| **Vượt chướng ngại vật** | `GR-007` → `GR-012` | Mỗi thí sinh tối đa **1 lượt chọn** hàng ngang, bắt đầu từ vị trí 1, quay vòng khi đã có người bị loại. Hàng ngang **luôn gõ máy**, 15 giây, đúng **+10 cho mỗi người**; **≥1 người đúng ⇒ miếng ghép mở**. Băng điểm Chướng ngại vật **60/50/40/30**, sau gợi ý cuối **20** *(sàn)*, đếm theo số hàng ngang **đã hỏi**. Giải sai ⇒ **bị loại khỏi vòng, KHÔNG trừ điểm**. Ô trung tâm **luôn tới được** vì cả 4 hàng luôn được hỏi hết |
+| **Vượt chướng ngại vật** | `GR-007` → `GR-012` | Mỗi thí sinh tối đa **1 lượt chọn** hàng ngang, bắt đầu từ vị trí 1, quay vòng khi đã có người bị loại. Hàng ngang **luôn gõ máy**, đúng **+10 cho mỗi người**; vòng có **hai** giá trị thời gian cấp vòng *(giờ suy nghĩ mỗi câu — dùng chung cho hàng ngang và ô trung tâm; và cửa sổ giải Chướng ngại vật sau gợi ý cuối)*, preset đặt **15 giây** cho cả hai (`QĐ-106`); **≥1 người đúng ⇒ miếng ghép mở**. Băng điểm Chướng ngại vật **60/50/40/30**, sau gợi ý cuối **20** *(sàn)*, đếm theo số hàng ngang **đã hỏi**. Giải sai ⇒ **bị loại khỏi vòng, KHÔNG trừ điểm**. Ô trung tâm **luôn tới được** vì cả 4 hàng luôn được hỏi hết |
 | **Tăng tốc** | `GR-013` → `GR-015` | 4 câu, 20/20/30/30 giây, **luôn gõ máy**. Thang **40/30/20/10** theo thứ hạng tốc độ, **chỉ tính trên tập người được chấm ĐÚNG**; người sai không giữ chỗ. Đồng thời gian tới **mili-giây** ⇒ cùng mức điểm, bậc kế nhảy qua. Ghi nhận **bản cuối**; bản trùng nội dung không cập nhật mốc |
 | **Về đích** | `GR-016` → `GR-021` | Thứ tự lượt theo điểm cao nhất, hoà thì **số vị trí nhỏ nhất**, tính lại sau mỗi lượt. Gói **3 câu** từ hai mức **{20, 30}**. Cướp quyền: cửa sổ **5 giây**, cướp đúng ⇒ **chuyển điểm**, cướp sai ⇒ **−½ giá trị câu**; người cướp tính **bản ĐẦU TIÊN**. Ngôi sao hy vọng **1 lần/thí sinh/lần chạy vòng**: đúng ⇒ **×2**, sai ⇒ **−giá trị câu, đúng một lần**. Câu thực hành có **hai pha thời gian** |
 | **Câu hỏi phụ** | `GR-022` → `GR-025` | Kích hoạt tại cú bấm **chốt trận** khi có hoà ở vị trí cần phân định. **3 câu × 15 giây**, cả hai con số **cố định, không cấu hình**. **Không cộng, không trừ điểm** — chỉ đổi thứ hạng. Chuông **không sống trước mốc start timer**. Hết 3 câu chưa phân định ⇒ **bốc thăm**, admin xác nhận |
@@ -1389,13 +1417,13 @@ Mười hai rule không đến từ luật gốc — chúng tồn tại vì đâ
 
 | Rule | Nội dung |
 |---|---|
-| `GR-026` | **Phán quyết của admin** — máy không chấm; một câu đúng một phán quyết; phán quyết là điều kiện chuyển câu |
+| `GR-026` | **Phán quyết của admin** — máy không chấm; một câu **khép** một lần *(đơn vị chống trùng: bộ ba câu · thí sinh · loại phán quyết)*; phán quyết là điều kiện chuyển câu |
 | `GR-027` | **Chuẩn hoá và tô nổi bật** — công cụ giúp admin nhìn ra chỗ khác, **không** phải cơ chế chấm |
 | `GR-028` | **Điểm là hàm của nhật ký sự kiện** — chỉ thêm, tất định, phát lại được |
 | `GR-029` | **Điều chỉnh điểm thủ công** — van thoát cho mọi sai sót, lý do bắt buộc, không tự hoàn nguyên |
 | `GR-030` | **Bỏ vòng · chạy lại vòng · kết thúc sớm** — ba cửa ra chủ động, đều thuộc hạng phá huỷ |
 | `GR-031` | **Rút đề và không lặp câu** — ranh giới *đã dùng* = **đã hiển thị**; kiểm kho tại cửa vào từng vòng |
-| `GR-032` | **Hàng đợi tín hiệu** — FIFO thuần theo server timestamp, chỉ chặn ở VCNV, lịch sử không xoá |
+| `GR-032` | **Hàng đợi tín hiệu** — FIFO thuần theo server timestamp, chỉ chặn ở VCNV, lịch sử không xoá; **§Kích hoạt tay** là can thiệp ngoại lệ của admin sau một cú *Huỷ kết quả* (`PRD-REQ-113`) |
 | `GR-033` | **Mốc thời gian do admin bấm** — hai thao tác, thứ tự cố định, không gộp |
 | `GR-034` | **Chuông chỉ nhận click chuột** — không phím tắt, tự khoá ngay |
 | `GR-035` | **Server time là nguồn sự thật duy nhất** — mili-giây, biên đóng, đồng hồ đơn điệu |
@@ -1427,17 +1455,18 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | FS-05 | Soạn câu hỏi với metadata, media, ba kiểu nhập, và kênh thực hành | EPIC-002 | PRD-REQ-007, 008, 009, 010 |
 | FS-06 | Vòng duyệt đề và tìm kiếm kho đề | EPIC-002 | PRD-REQ-011, 014 |
 | FS-07 | Cờ hiển thị dẫn xuất và hàng rào đề đã từng public | EPIC-002 | PRD-REQ-012, 013 |
+| **FS-07b** | **Vòng đời dữ liệu câu hỏi: mã hiển thị duy nhất, xoá mềm, phiên bản theo cú Save** | EPIC-002, EPIC-006 | PRD-REQ-115 |
 | FS-08 | Xuất và nhập gói contest; giữ đúng cờ theo câu và theo contest; định danh câu ổn định qua nhập/xuất | EPIC-003 | PRD-REQ-016, 017, 018 |
 | **FS-08b** | **Đánh dấu "đã dùng" hàng loạt bằng tay, và bản kê câu đã dùng xuất/nhập được** | EPIC-003 | PRD-REQ-094, 095 |
 | FS-09 | Cấu hình luật đầy đủ + preset O26 áp bằng một thao tác | EPIC-004 | PRD-REQ-020, 021, 022 |
 | FS-10 | Mode trả lời cấp contest, chụp vào trận | EPIC-004 | PRD-REQ-023 |
-| FS-11 | Khoá cứng của v1: bốn vòng, bốn hàng ngang, luật cho bốn thí sinh | EPIC-004 | PRD-REQ-024, 025, 026 |
+| FS-11 | Khoá cứng của v1: bốn vòng, bốn hàng ngang, luật cho tối đa bốn thí sinh | EPIC-004, EPIC-005 | PRD-REQ-024, 025, 026, **114** |
 | FS-12 | Vòng đời trận: LOBBY, đóng băng cấu hình, bốn cửa ra, chốt và huỷ trận | EPIC-005 | PRD-REQ-027…034 |
 | FS-13 | Sửa danh sách câu tại cửa vào vòng | EPIC-005 | PRD-REQ-035 |
 | FS-14 | Engine chấm điểm không tự phán quyết | EPIC-006 | PRD-REQ-036, 037, 038 |
 | FS-15 | Nhật ký sự kiện và mô hình điểm hoàn nguyên được | EPIC-006 | PRD-REQ-039, 040, 041 |
 | FS-16 | Đồng hồ server và mốc do admin bấm | EPIC-006 | PRD-REQ-042, 043 |
-| FS-17 | Hàng đợi tín hiệu và quy tắc duyệt/từ chối | EPIC-006 | PRD-REQ-044, 045, 046 |
+| FS-17 | Hàng đợi tín hiệu, quy tắc duyệt/từ chối, và **kích hoạt tay sau một cú Huỷ kết quả** | EPIC-006, EPIC-007 | PRD-REQ-044, 045, 046, **113** |
 | FS-18 | Rút đề, không lặp câu, kiểm kho tại cửa vào từng vòng | EPIC-006 | PRD-REQ-047, 048 |
 | FS-19 | Phạm vi hiển thị đáp án theo vai | EPIC-006, EPIC-009 | PRD-REQ-049 |
 | FS-20 | Mất kết nối, giữ ghế, khôi phục giữa câu | EPIC-006, EPIC-008 | PRD-REQ-050 |
@@ -1710,11 +1739,11 @@ Thời gian admin bỏ ra để chọn từng ấy câu **là** `METRIC-005`, kh
 | Epic | Tên | Ghi chú phạm vi |
 |---|---|---|
 | EPIC-001 | Xác thực và phân quyền | Đầy đủ |
-| EPIC-002 | Kho đề và bộ đề | Trừ đánh phiên bản khi sửa câu đã duyệt |
+| EPIC-002 | Kho đề và bộ đề | Đầy đủ, **gồm** phiên bản câu hỏi bản **tối giản** *(lưu bản theo cú Save; chưa có màn diff và revert — `PRD-REQ-115`)* |
 | EPIC-003 | Nhập/xuất và gói contest | Đầy đủ, **gồm** danh sách người tham gia đã mã hoá |
 | EPIC-004 | Contest builder và luật tuỳ biến | Có **ba khoá cứng cấu hình** của v1 — bốn vòng, bốn hàng ngang, phân định hoà chỉ vị trí nhất |
 | EPIC-005 | Phòng thi và vòng đời trận | Đầy đủ |
-| EPIC-006 | Game engine và luật thi đấu | Luật cho **đúng 4 thí sinh** |
+| EPIC-006 | Game engine và luật thi đấu | Luật cho **tối đa 4 thí sinh** — dưới 4 chạy bằng **ghế bỏ thi** (`PRD-REQ-114`), trên 4 bị chặn ở cú bắt đầu trận |
 | EPIC-007 | Điều khiển và can thiệp của admin | Đầy đủ |
 | EPIC-008 | Trải nghiệm thí sinh | Đầy đủ |
 | EPIC-009 | Trình diễn | Đầy đủ |
@@ -1724,15 +1753,15 @@ Thời gian admin bỏ ra để chọn từng ấy câu **là** `METRIC-005`, kh
 
 ### 20.2 Requirement thuộc MVP
 
-Tổng **102 yêu cầu** *(098 cũ + 104, 105, 106, 107; dãy 099-103 thuộc `roadmap-post-v1.md`)*, phân bố theo độ ưu tiên:
+Tổng **110 yêu cầu** *(098 cũ + 104, 105, 106, 107 + 108→112 + 113, 114, 115; dãy 099-103 thuộc `roadmap-post-v1.md`)*, phân bố theo độ ưu tiên. *(Con số của bản 2.2.1 khai 102 vì bỏ sót dãy `108`→`112`; đã đếm lại từ bản 2.3.0.)*
 
 | Priority | Nghĩa | Số lượng | Danh sách `PRD-REQ-*` |
 |---|---|---|---|
-| **P1** | Không có thì không chạy được một trận | **67** | 001, 002, 003, 004, 007, 008, 009, 013, 014, 016, 017, 020, 021, 023, 024, 025, 026, 027, 028, 029, 030, 031, 032, 033, 035, 036, 037, 038, 039, 040, 041, 042, 043, 044, 045, 046, 047, 048, 049, 050, 051, 052, 054, 055, 056, 057, 058, 059, 062, 064, 065, 066, 067, 068, 069, 070, 073, 074, 082, 085, 088, 089, 092, **104**, **105**, **106**, **107** |
-| **P2** | Cần cho v1 nhưng trận vẫn chạy được nếu thiếu | **27** | 005, 006, 010, 011, 012, 015, 019, 034, 053, 060, 061, 063, 071, 072, 075, 076, 077, 079, 083, 086, 087, 090, 093, 094, 095, 096, 098 |
+| **P1** | Không có thì không chạy được một trận | **72** | 001, 002, 003, 004, 007, 008, 009, 013, 014, 016, 017, 020, 021, 023, 024, 025, 026, 027, 028, 029, 030, 031, 032, 033, 035, 036, 037, 038, 039, 040, 041, 042, 043, 044, 045, 046, 047, 048, 049, 050, 051, 052, 054, 055, 056, 057, 058, 059, 062, 064, 065, 066, 067, 068, 069, 070, 073, 074, 082, 085, 088, 089, 092, **104**, **105**, **106**, **107**, **108**, **109**, **110**, **112**, **114** |
+| **P2** | Cần cho v1 nhưng trận vẫn chạy được nếu thiếu | **30** | 005, 006, 010, 011, 012, 015, 019, 034, 053, 060, 061, 063, 071, 072, 075, 076, 077, 079, 083, 086, 087, 090, 093, 094, 095, 096, 098, **111**, **113**, **115** |
 | **P3** | Phần cắt được của v1 | **8** | 018, 022, 078, 080, 081, 084, 091, 097 |
 
-**Toàn bộ 102 yêu cầu ở trạng thái `CONFIRMED`.** Không yêu cầu nào mang `NEEDS CLARIFICATION`, không yêu cầu nào ở trạng thái `CONFLICT`.
+**Toàn bộ 110 yêu cầu ở trạng thái `CONFIRMED`.** Không yêu cầu nào mang `NEEDS CLARIFICATION`, không yêu cầu nào ở trạng thái `CONFLICT`.
 
 ### 20.3 Lý do ưu tiên
 
@@ -1835,6 +1864,9 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | PRD-REQ-044 | GOAL-006 | EPIC-006 | J5 | SV | `GR-032` · `INV-006` | `QĐ-020`, `QĐ-024` | CONFIRMED |
 | PRD-REQ-045 | GOAL-006 | EPIC-006 | J5 | AD, SV | `GR-032`, `GR-007`, `GR-009` | `QĐ-021` | CONFIRMED |
 | PRD-REQ-046 | GOAL-006 | EPIC-006, EPIC-008 | J5 | AD, TS | `GR-032`, `GR-007` · `INV-008` | `QĐ-022`, `TERM-027` | CONFIRMED |
+| PRD-REQ-113 | GOAL-007 | EPIC-006, EPIC-007 | J5, J6 | AD, SV | `GR-032` §Kích hoạt tay, `GR-009` C6b, `GR-037` C8b · `INV-006`, `INV-008` | `QĐ-104` | CONFIRMED |
+| PRD-REQ-114 | GOAL-002 | EPIC-005, EPIC-006, EPIC-004 | J2, J4, J5 | AD, SV | `GR-036` C5b, `GR-020` C6, `GR-022`, `GR-017` §Biên · `INV-014`, `INV-018` | `QĐ-105`, `QĐ-007` | CONFIRMED |
+| PRD-REQ-115 | GOAL-005 | EPIC-002, EPIC-006, EPIC-010 | J1, J7 | ST, AD | `GR-031` · `INV-001`, `INV-022` | `QĐ-107` | CONFIRMED |
 | PRD-REQ-047 | GOAL-005 | EPIC-006, EPIC-002 | J2, J5 | AD, SV | `GR-031` · `INV-011` | `QĐ-041`, `QĐ-044` | CONFIRMED |
 | PRD-REQ-048 | GOAL-007 | EPIC-006 | J5, J6 | SV | `GR-031`, `GR-005` · `INV-012` | `QĐ-042`, `QĐ-003` | CONFIRMED |
 | PRD-REQ-049 | GOAL-005 | EPIC-006, EPIC-009 | J5 | AD, MC, OV | `GR-037` · `INV-017` | `QĐ-051`, `QĐ-062`, `QĐ-080` | CONFIRMED |
@@ -1912,26 +1944,26 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | Game rule | Requirement |
 |---|---|
 | `GR-001` → `GR-006` *(Khởi động)* | 015, 036, 038, 041, 052, 065, 072 |
-| `GR-007` → `GR-012` *(VCNV)* | 026, 045, 046, 058, 068, 069 |
+| `GR-007` → `GR-012` *(VCNV)* | 026, 045, 046, 058, 068, 069, 113 |
 | `GR-013` → `GR-015` *(Tăng tốc)* | 008, 040, 052, 053, 065, 066, 090 |
-| `GR-016` → `GR-021` *(Về đích)* | 008, 010, 026, 038, 041, 054, 069, 070, 090, 092 |
-| `GR-022` → `GR-025` *(Câu hỏi phụ)* | 024, 032, 034, 075, 092, 105 |
+| `GR-016` → `GR-021` *(Về đích)* | 008, 010, 026, 038, 041, 054, 069, 070, 090, 092, 114 |
+| `GR-022` → `GR-025` *(Câu hỏi phụ)* | 024, 032, 034, 075, 092, 105, 114 |
 | `GR-026` *(phán quyết)* | 004, 036, 037, 038, 051, 062, 063 |
 | `GR-027` *(chuẩn hoá, tô nổi bật)* | 009, 015, 036, 051 |
 | `GR-028` *(điểm là hàm event log)* | 039, 040, 067, 075, 079, 101, 102 |
 | `GR-029` *(điều chỉnh điểm)* | 005, 033, 055 |
 | `GR-030` *(bỏ / chạy lại / kết thúc sớm)* | 005, 029, 030, 031, 056, 077, 079 |
 | `GR-031` *(rút đề, không lặp câu)* | 007, 011, 012, 013, 014, 016, 017, 027, 028, 035, 047, 048, 060, 081, 104 · *(099, 100 ở `roadmap-post-v1.md`)* |
-| `GR-032` *(hàng đợi tín hiệu)* | 044, 045, 046, 059 |
+| `GR-032` *(hàng đợi tín hiệu, §Kích hoạt tay)* | 044, 045, 046, 059, 113 |
 | `GR-033` *(mốc admin bấm)* | 043 |
 | `GR-034` *(chuông chỉ click chuột)* | 064, 065, 068, 071, 072 |
 | `GR-035` *(server time)* | 042, 052, 076 |
-| `GR-036` *(mất kết nối, giữ ghế)* | 050, 061 |
-| `GR-037` *(phạm vi hiển thị đáp án)* | 001, 002, 003, 028, 049, 057, 073, 074, 082, 107 |
+| `GR-036` *(mất kết nối, giữ ghế)* | 050, 061, 114 |
+| `GR-037` *(phạm vi hiển thị đáp án)* | 001, 002, 003, 028, 049, 057, 073, 074, 082, 107, 113 |
 
 ### 22.3 Đối chiếu ngược: Quyết định mới → Requirement chịu ảnh hưởng
 
-> Thay cho bảng *Open question → Requirement* của bản 2.1.0. Không còn câu hỏi mở nào để đối chiếu; bảng này ghi tám quyết định phân xử chúng và những mục đã sửa theo.
+> Thay cho bảng *Open question → Requirement* của bản 2.1.0. Không còn câu hỏi mở nào để đối chiếu; bảng này ghi các quyết định phân xử chúng và những mục đã sửa theo. `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001` và `108`→`112`; `QĐ-097`→`103` truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen`, không sinh `PRD-REQ` riêng.
 
 | Quyết định | Requirement chịu ảnh hưởng |
 |---|---|
@@ -1943,6 +1975,10 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | `QĐ-090` bỏ biệt danh | **083** *(nay là hạn lưu trữ)* · NON-GOAL-018 · ASSUMPTION-005, RISK-007 |
 | `QĐ-091` hạn lưu trữ | **083** · 080 · NFR-33, NFR-34, NFR-35b |
 | `QĐ-092` bộ chỉ số | METRIC-005 → METRIC-011 *(chốt)*; bốn chỉ số hoãn chuyển sang `roadmap-post-v1.md` §8.3 |
+| `QĐ-104` admin kích hoạt tay một tín hiệu | **113** *(mới)* · 037, 038, 044, 045, 088 · §8.2 bước 5 · §9.5 `INV-009` · §13.2 bảng *Phán quyết hai hay ba lựa chọn* · §11 EPIC-006, EPIC-007 |
+| `QĐ-105` dưới 4 thí sinh chạy bằng ghế bỏ thi | **114** *(mới)* · 026 · NON-GOAL-012 · §9.4 *(hạng chặn do giới hạn phiên bản)* · §9.5 `INV-014` · §20.1 EPIC-006 |
+| `QĐ-106` VCNV có hai giá trị thời gian cấp vòng | 008 *(Note ngoại lệ)* · 020 · §13.3 dòng VCNV |
+| `QĐ-107` vòng đời dữ liệu câu hỏi | **115** *(mới)* · 007, 011 · §11 EPIC-002 *(bỏ phần loại trừ đánh phiên bản)* · §20.1 EPIC-002 |
 
 ---
 

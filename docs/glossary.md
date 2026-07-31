@@ -387,8 +387,8 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 
 - **Giá trị**: Khởi động **+10** đúng, **−5** sai ở lượt chung · VCNV hàng ngang **10**, Chướng ngại vật **60/50/40/30** và **20** sau gợi ý cuối, ô trung tâm **10** · Tăng tốc **40/30/20/10** theo thứ hạng tốc độ · Về đích **{20, 30}**
 - **Đừng nhầm với**: **thời gian KHÔNG suy ra từ mức điểm** — `timeSeconds` là metadata **từng câu** (TERM-045) · giá trị **lẻ** không phát sinh dưới luật 2026; nếu admin cấu hình mức lẻ thì `phạt = value / 2` bằng **phép chia số nguyên**, làm tròn xuống theo **độ lớn**
-- **Phạm vi**: thang điểm cho số ghế ≠ 4 là `[v1.5]`
-- **Nguồn**: luật gốc · `QĐ-007`, `QĐ-058`
+- **Phạm vi**: thang điểm cho số ghế **trên** 4 là `[v1.5]`; dưới 4 thì thuộc v1 qua **ghế bỏ thi** (`QĐ-105`)
+- **Nguồn**: luật gốc · `QĐ-007`, `QĐ-058`, `QĐ-105`
 
 ### TERM-035 — Cướp quyền
 
@@ -413,8 +413,8 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 
 - **Giá trị**: 40/30/20/10 cho 4 đơn vị điểm; độ phân giải đồng thời gian = **millisecond**
 - **Đừng nhầm với**: thứ hạng chỉ tính trên **tập người được chấm ĐÚNG** — người sai **không giữ chỗ** trong thang · **bản nội dung y hệt bản trước không cập nhật mốc**: cập nhật mốc cho một bản không đổi nội dung cho phép thí sinh **tự làm xấu** thứ hạng của mình
-- **Phạm vi**: thang cho số ghế ≠ 4 là `[v1.5]`
-- **Nguồn**: luật gốc §Tăng tốc · `QĐ-059`
+- **Phạm vi**: thang cho số ghế **trên** 4 là `[v1.5]`; dưới 4 dùng chính thang này vì ghế bỏ thi **không giữ chỗ** *(chúng không bao giờ được chấm Đúng — `QĐ-105`)*
+- **Nguồn**: luật gốc §Tăng tốc · `QĐ-059`, `QĐ-105`
 
 ### TERM-038 — Kết quả
 

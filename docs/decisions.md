@@ -153,6 +153,26 @@ Mọi lệch luật khác **chỉ cảnh báo**.
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
+### QĐ-105 — Dưới 4 thí sinh vẫn chạy được bằng GHẾ BỎ THI; trên 4 thì chặn
+
+**Quyết định.** Hàng rào số ghế của v1 nằm ở **cú bấm bắt đầu trận**, và nó **không** phải *"khác 4 thì chặn"*. Năm vế:
+
+1. **Trên 4 ghế ⇒ chặn cứng, không ép được.** Thang điểm Tăng tốc `40/30/20/10` chỉ định nghĩa cho **đúng 4 đơn vị điểm** (`GR-013` C5, `GR-014`); chạy 5-12 ghế là chạy vào một nhánh không ai đặc tả. Bước **gán ghế** vẫn nhận 1-12 (`QĐ-007`) — chỉ cú **bắt đầu trận** mới đòi.
+2. **Dưới 4 ghế ⇒ trận chạy được, vẫn áp LUẬT 4 GHẾ.** Ghế thiếu người được bù thành **ghế bỏ thi**: đúng cơ chế **vô hiệu hoá ghế** đã có (`GR-036` C5, `TERM-032`), đặt ngay từ trước cú bấm bắt đầu trận. Ghế bỏ thi ở lại trận, giữ **vị trí**, điểm **luôn 0**, không thao tác được gì.
+3. **Xếp hạng bình thường** — ghế bỏ thi vào bảng điểm và bảng xếp hạng với **0đ**, không có luật ưu tiên hay xếp cuối riêng. **Nhưng phép tìm nhóm hoà cần phân định chỉ xét ghế HOẠT ĐỘNG.**
+4. **Lượt vẫn được cấp** — ghế bỏ thi vẫn có 6 câu Khởi động lượt riêng và một lượt Về đích; **admin bỏ qua bằng tay**. Mọi công thức pre-flight giữ nguyên theo **số ghế đã gán** (`GR-017` §Biên: `3 × số ghế` mỗi mức), không đổi mẫu số.
+5. **Chặn cứng theo GIỚI HẠN PHIÊN BẢN là một hạng riêng**, không phải chỗ chặn cứng thứ tư của `QĐ-003`. Ba chỗ chặn cứng của `INV-014` là chặn của **luật chơi** và giữ nguyên con số ba. Hạng mới chỉ chứa đúng một mục — số ghế > 4 — và **biến mất hoàn toàn** khi v1.5 mở khoá luật đa ghế, thay vì buộc phải sửa một bất biến.
+
+**Vì sao.** *"Khác 4 thì chặn"* cấm luôn cả những trận mà luật 4 ghế **chạy đúng không cần sửa gì**: Tăng tốc xếp hạng **chỉ trên tập người được chấm Đúng** nên ghế bỏ thi không giữ chỗ trong thang; VCNV có luật **quay lại vị trí số 1** khi còn hàng ngang chưa chọn (`GR-007` C4) nên 4 hàng ngang vẫn được hỏi hết với 2 người; cướp quyền đã có `GR-020` C6 *(admin quyết, máy cảnh báo)*. Cái thiếu duy nhất khi số ghế **lớn hơn** 4 là **thang điểm** — thứ không nguồn nào cho.
+
+Chọn **ghế bỏ thi** thay vì *"trận N ghế"* vì nó không đẻ luật mới: mọi đường xử lý vẫn thấy đúng 4 ghế, và trạng thái *bỏ thi* là cờ **đã có sẵn** cho ca thí sinh bỏ cuộc giữa trận.
+
+**Vì sao vế 3 có mệnh đề "chỉ xét ghế hoạt động".** `INV-018` cho phép điểm âm, nên về lý thuyết mọi thí sinh thật cùng âm thì hai ghế bỏ thi 0đ thành nhóm hoà **dẫn đầu**, và `GR-022` sẽ đòi phân định cho hai ghế không có người bấm chuông — trong khi `INV-014` chặn cứng *"Câu hỏi phụ cần ≥2 thí sinh"* ⇒ trận **kẹt ở LOBBY**. Chủ dự án đánh giá ca này **không xảy ra trên thực tế**; mệnh đề giữ lại chỉ để hệ thống **không có ngõ cụt**, không phải để mô tả một tình huống được trông đợi.
+
+**Hệ quả.** `NON-GOAL-012` phải đọc lại: v1 không có đường xử lý luật cho số ghế **> 4**; số ghế **< 4** đi qua đường ghế bỏ thi. Số dư *"đúng 12 câu"* nuôi vòng Câu hỏi phụ (`GR-017` §Biên, `QĐ-081`) **không đổi**, vì mẫu số vẫn là số ghế đã gán.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-007`, `QĐ-003`, `QĐ-002` · cơ chế mượn lại: `GR-036` C5, `GR-020` C6, `GR-007` C4
+
 ### QĐ-068 — v1 khoá cứng BỐN hàng ngang VCNV; cấu hình vẫn nhận 5-8
 
 **Quyết định.** v1 **khoá cứng `rowCount = 4`**. Mô hình dữ liệu, RuleConfig và giao diện vẫn nhận **5-8** để phiên bản sau chỉ việc mở khoá, nhưng **engine-path cho ≠ 4 chưa tồn tại** và cửa tạo contest **không cho chọn** giá trị khác.
@@ -733,6 +753,24 @@ Và là **cùng lỗ hổng với `QĐ-063`** nhìn từ hướng khác: ở đ�
 **Hệ quả.** Không viết nhánh mới — cửa của `QĐ-043` và luồng import **gọi lại đúng** hàng rào đã có. Không thêm chỗ chặn cứng nào: `QĐ-003` giữ nguyên **ba** chỗ, vì đây vẫn là **cùng một** hàng rào, chỉ được gọi ở nhiều điểm hơn. Vẫn ép được — chỉ là ép có dấu vết.
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-107 — Vòng đời dữ liệu câu hỏi: mã hiển thị DUY NHẤT, xoá MỀM, phiên bản theo cú bấm Save
+
+**Quyết định.** Ba vế, đều thuộc kho đề và đều là **hạ tầng dữ liệu**, không phải luật chơi:
+
+1. **Mã hiển thị duy nhất toàn hệ thống.** `displayId` của một câu **không được trùng** với câu nào khác; hệ thống từ chối lưu bản mới hoặc bản sửa mang mã đã tồn tại. Mã mang một tiền tố ngắn chỉ loại câu. Câu vẫn có thêm một **định danh nội bộ ổn định** riêng, không đổi kể cả khi `displayId` bị sửa — đây mới là thứ đi trong gói xuất/nhập (`QĐ-071`).
+2. **Xoá MỀM, không xoá cứng.** Câu xoá được ở **cả** `DRAFT` lẫn `ACTIVE`; câu đã xoá biến khỏi tìm kiếm và khỏi danh sách chọn cho contest, nhưng **không mất dữ liệu nào** — `everPublic`, cờ đã-dùng, và mọi tham chiếu từ nhật ký của các trận cũ đều giữ nguyên.
+3. **Phiên bản theo cú bấm Save — bản TỐI GIẢN ở v1.** Câu `ACTIVE` sửa được tự do, kể cả sau khi đã lên sóng; **mỗi cú bấm Save tạo một phiên bản mới**, và mỗi lần một câu được hiển thị trong một trận thì trận ghi lại **phiên bản nào** đã dùng. v1 chỉ cần **lưu và xem lại nội dung từng phiên bản**; **màn so sánh diff và thao tác quay về bản cũ KHÔNG thuộc v1**.
+
+**Vì sao.** Vế 2: xoá cứng phá `everPublic` — hàng rào chống rò đề — và làm biên bản trận cũ trỏ vào hư không. Nhưng kho đề dùng nhiều mùa **phải** có đường gỡ câu hỏng, nếu không nó chỉ phình ra.
+
+Vế 3 giải một lỗi thật: sửa một câu sau trận A rồi in biên bản trận A sẽ in ra nội dung **mới**, sai với thứ đã lên sóng — mà biên bản là công cụ phân xử khiếu nại (`QĐ-077`). Không khoá sửa câu đã lên sóng, vì kho đề là tài sản dùng lại và một lỗi chính tả phải sửa được ngay.
+
+**Vì sao chỉ TỐI GIẢN.** Đây từng là mục PRD **chỉ định để cắt** nếu hụt thời gian. Phần thật sự cần cho tính đúng đắn là **lưu bản và biết trận đã dùng bản nào**; màn diff và revert là tiện nghi cho người soạn đề, hoãn được mà không mất gì.
+
+**Hệ quả.** `PRD.md` §11 EPIC-002 và §20.1 phải bỏ mệnh đề *"trừ đánh phiên bản khi sửa câu đã duyệt"*. Vế *"trận ghi phiên bản nào đã dùng"* thuộc **nhật ký sự kiện của trận** (`INV-022`), tức EPIC-006, không phải kho đề.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-071` *(`everPublic` một chiều)*, `QĐ-077` *(biên bản theo lần chạy)*, `QĐ-044`
 
 ### QĐ-082 — VCNV chọn theo BỘ; hàng ngang không phải câu độc lập
 
@@ -1351,6 +1389,25 @@ Rào này bắt buộc: nếu để mặc định quét cả tín hiệu CNV đa
 | Công bố Chướng ngại vật | Thao tác **thủ công** của admin, **tuỳ chọn** — vòng vẫn kết thúc được mà không công bố |
 
 *Nguồn*: `[LUẬT GỐC]`
+
+### QĐ-106 — VCNV có HAI giá trị thời gian cấp vòng, không phải một và không phải ba
+
+**Quyết định.** Vòng Vượt chướng ngại vật mang **đúng hai** giá trị thời gian, cả hai là **cấu hình cấp vòng**:
+
+1. **Thời gian suy nghĩ mỗi câu** — dùng chung cho **câu hàng ngang** và **câu ô trung tâm**. Preset `O26_DEFAULT@1` đặt **15 giây**.
+2. **Cửa sổ giải Chướng ngại vật sau gợi ý cuối** — một giá trị **riêng**, đổi độc lập. Preset đặt **15 giây**.
+
+Câu VCNV **không** khai thời lượng theo từng câu: người soạn đề không nhập `timeSeconds` cho hàng ngang hay ô trung tâm, và nếu dữ liệu có mang giá trị đó thì engine **bỏ qua**.
+
+**Vì sao hai, không phải một.** Nguồn nói **hai** con số 15 giây ở **hai câu khác nhau** và cho **hai đại lượng khác nhau**: *"Thời gian suy nghĩ cho mỗi từ hàng ngang là 15 giây"* và *"Các thí sinh sẽ có 15 giây suy nghĩ để **đưa ra Chướng ngại vật**"*. Chúng chỉ **trùng giá trị**. Gộp vào một knob thì đổi giờ hàng ngang sẽ kéo cửa sổ giải Chướng ngại vật đổi theo — một hành vi **không nguồn nào cho**.
+
+**Vì sao không phải ba.** Nguồn **không nói** thời lượng suy nghĩ của câu ô trung tâm — chỗ trống này từng là `OQ-001`. Đẻ một knob thứ ba cho nó là bịa một trục cấu hình mà không ai cần; cho nó **dùng chung** knob với hàng ngang là lựa chọn ít giả định nhất, vì cả hai đều là *"một câu hỏi, thí sinh gõ máy, trong vòng VCNV"*.
+
+**Vì sao không khai theo từng câu.** Đây là **ngoại lệ có chủ đích** của `QĐ` về thời lượng là metadata từng câu. Bốn hàng ngang chạy trong **cùng một lượt trình diễn** và thuộc **cùng một bộ** (`QĐ-082`); để mỗi câu một đồng hồ thì bốn hàng ngang của một bộ có thể có bốn thời lượng khác nhau mà không lý do sân khấu nào biện minh. Về đích thì ngược lại — ở đó thời lượng gắn với **mức điểm của câu**, nên metadata từng câu là đúng.
+
+**Hệ quả.** `PRD-REQ-008` phải mang một Note ghi rõ VCNV là ngoại lệ. `PRD-REQ-020` không bị đụng: cả hai giá trị đều **là cấu hình**, chỉ là cấu hình cấp vòng thay vì cấp câu.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · luật gốc §Vượt chướng ngại vật *(hai mệnh đề 15 giây)* · nền: `QĐ-082`, `GR-008`, `GR-011`
 
 ### QĐ-058 — Về đích: bốn chỗ đọc nguồn đã giải quyết
 

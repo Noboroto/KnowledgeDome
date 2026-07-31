@@ -200,7 +200,7 @@ EPIC-005 phủ **vòng đời của một trận** — từ lúc trận được
 - **FR-015**: Khi hết playlist các vòng, hệ thống MUST chỉ **gợi ý** chốt trận cho admin, MUST NOT tự động chuyển trận sang `FINISHED` hoặc `TIE_BREAK`. *(US-005 · PRD-REQ-032 · GR-022 · AC-012)*
 - **FR-016**: Phép tính bảng điểm tích luỹ và điều kiện hoà MUST chạy tại đúng thời điểm admin bấm **Chốt trận**, trên bảng điểm ở **đúng mốc đó** — bao gồm mọi lần điều chỉnh điểm thủ công đã thực hiện trước đó ở `LOBBY`. *(US-005 · PRD-REQ-032 · GR-022 · AC-012, AC-013)*
 - **FR-017**: Phạm vi phân định hoà (`tieBreakPositions`) MUST luôn chỉ gồm **vị trí Nhất** ở v1; giao diện tạo/cấu hình contest MUST NOT cho chọn giá trị khác, và server MUST từ chối mọi **request ghi** `tieBreakPositions ≠ [1]` cho một contest v1, bất kể request đến từ giao diện hay gọi thẳng API (zero-trust — FR-034). Vế *"mô hình dữ liệu vẫn nhận không lỗi cấu trúc"* của `PRD-REQ-105` MUST được đọc là **sức chứa của schema/kiểu dữ liệu** (chuẩn bị cho phiên bản sau), MUST NOT được đọc là một đường ghi hợp lệ qua API cấu hình contest của v1 — khớp `specs/004-contest-builder-luat` FR-008 (§Clarifications 2026-07-30 của spec 004; đồng bộ tại phiên đối chiếu PRD 2026-07-30). *(US-005 · PRD-REQ-105 · GR-022 · `CLAUDE.md` §Nguyên tắc code (zero-trust) · AC-014)*
-- **FR-018**: Khi bấm Chốt trận và có ≥2 người cùng điểm cao nhất ở vị trí Nhất (và nhóm đó chưa có `TIE_BREAK_RESOLVED` còn hiệu lực) **và** đủ 3 câu khả dụng cho vòng Câu hỏi phụ, hệ thống MUST chuyển trận sang `TIE_BREAK`. Khi chỉ có đúng một người điểm cao nhất, hệ thống MUST đóng sổ thẳng sang `FINISHED` với nhãn "hoàn thành". Khi có hoà nhưng ở vị trí khác vị trí Nhất, hệ thống MUST đóng sổ sang `FINISHED` và MUST ghi cả nhóm đó **đồng hạng**, hạng kế tiếp MUST nhảy qua đúng số người đồng hạng. Khi đủ điều kiện hoà ở vị trí Nhất nhưng **không đủ 3 câu khả dụng**, hệ thống MUST giữ trận ở `LOBBY` — Chốt trận bị chặn cứng cùng cơ chế "cửa vào vòng thiếu câu", MUST NOT chuyển trận sang `TIE_BREAK` trước rồi mới chặn ở cửa vào câu đầu tiên (§Clarifications 2026-07-30). *(US-005 · PRD-REQ-032, PRD-REQ-105 · GR-022 C1–C4 · AC-012, AC-015, AC-016, AC-032)*
+- **FR-018**: Khi bấm Chốt trận và có ≥2 người cùng điểm cao nhất ở vị trí Nhất (và nhóm đó chưa có `TIE_BREAK_RESOLVED` còn hiệu lực) **và** đủ 3 câu khả dụng cho vòng Câu hỏi phụ, hệ thống MUST chuyển trận sang `TIE_BREAK`. Khi chỉ có đúng một người điểm cao nhất, hệ thống MUST đóng sổ thẳng sang `FINISHED` với nhãn "hoàn thành". Khi có hoà nhưng ở vị trí khác vị trí Nhất, hệ thống MUST đóng sổ sang `FINISHED` và MUST ghi cả nhóm đó **đồng hạng**, hạng kế tiếp MUST nhảy qua đúng số người đồng hạng. Khi đủ điều kiện hoà ở vị trí Nhất nhưng **không đủ 3 câu khả dụng**, hệ thống MUST giữ trận ở `LOBBY` — đây MUST được đọc là **chính** chỗ chặn cứng *"cửa vào vòng thiếu câu"* của `INV-014` áp tại cú bấm Chốt trận *(vì cú bấm đó là cửa vào của vòng `TIE_BREAK`)*, MUST NOT là một chỗ chặn cứng **mới**; hệ thống MUST NOT chuyển trận sang `TIE_BREAK` trước rồi mới chặn ở cửa vào câu đầu tiên (§Clarifications 2026-07-30). Phép tìm nhóm hoà MUST chỉ xét **ghế hoạt động** (FR-036). *(US-005 · PRD-REQ-032, PRD-REQ-105 · GR-022 C1–C4 · AC-012, AC-015, AC-016, AC-032)*
 - **FR-019**: Khi bấm Chốt trận **lần hai** sau khi `TIE_BREAK` đã phân định và bảng điểm không đổi so với lúc phân định, hệ thống MUST đóng sổ trực tiếp theo thứ hạng đã phân định, MUST NOT đưa trận vào lại `TIE_BREAK`. *(US-005 · GR-022 C7 · AC-017)*
 - **FR-020**: Nếu admin điều chỉnh điểm làm nhóm hoà đã có `TIE_BREAK_RESOLVED` **thay đổi** (không còn bằng điểm nhau ở đúng vị trí đó), hệ thống MUST coi sự kiện phân định cũ là **mất đối tượng** (không xoá, không đánh dấu vô hiệu, không cảnh báo) và MUST chạy lại phép phân định hoà trên bảng điểm mới tại cú bấm Chốt trận kế tiếp. *(US-005 · GR-022 C8 · AC-018)*
 - **FR-021**: Trận ở trạng thái `FINISHED` MUST là terminal: hệ thống MUST NOT cho điều chỉnh điểm, chạy lại vòng, bỏ vòng, hay sửa phán quyết của bất kỳ câu nào thuộc trận đó, bất kể yêu cầu tới từ giao diện hay gọi thẳng API. *(US-006 · PRD-REQ-033 · GR-029 C6 · AC-019)*
@@ -216,6 +216,8 @@ EPIC-005 phủ **vòng đời của một trận** — từ lúc trận được
 - **FR-031**: Chỉ định một câu làm Câu hỏi phụ MUST là một **đặt chỗ có hiệu lực từ thời điểm chỉ định**: câu đó MUST bị loại khỏi phép rút của các vòng mở **sau đó**, và pre-flight của các vòng đó MUST phản ánh đúng chi phí câu bị giữ chỗ. Chỉ định ở `LOBBY` **trước** một vòng nguồn còn phải chạy MUST làm tăng số câu vòng đó cần; chỉ định ở `LOBBY` **cuối** (sau khi mọi vòng nguồn đã chạy) MUST không tốn thêm câu nào từ kho gốc. *(US-009 · PRD-REQ-091 · GR-023 · AC-027, AC-029)*
 - **FR-032**: Chỉ định **ít hơn 3 câu** cho Câu hỏi phụ MUST được hệ thống tự bù phần thiếu theo thứ tự ưu tiên rút của `GR-023` (Về đích → Khởi động → VCNV) tại thời điểm vòng Câu hỏi phụ mở, và MUST NOT chặn cứng vì lý do chỉ định chưa đủ 3 câu. Không chỉ định gì MUST khiến hệ thống rút hoàn toàn theo thứ tự ưu tiên đó. Hệ thống MUST NOT áp giới hạn trên cho số câu chỉ định — chỉ định **nhiều hơn 3 câu** MUST được chấp nhận, và khi vòng Câu hỏi phụ mở, hệ thống MUST chỉ dùng **3 câu đầu tiên** theo thứ tự đã chỉ định, phần dư MUST giữ nguyên chỉ định (không tự gỡ) (§Clarifications 2026-07-30). *(US-009 · PRD-REQ-091 · GR-023 · AC-030, AC-034)*
 - **FR-033**: Hệ thống MUST NOT cho chỉ định làm Câu hỏi phụ một câu **đã hiển thị** — cùng ranh giới "đã hiển thị" dùng cho quy tắc không-lặp-câu (`GR-031`). *(US-009 · PRD-REQ-091 · GR-031 C6 · AC-031)*
+- **FR-035**: Cú bấm **bắt đầu trận** MUST kiểm số ghế đã gán trước khi đóng băng cấu hình (FR-004). Số ghế **lớn hơn 4** MUST bị **chặn cứng, không ép được**, kèm thông điệp nêu rõ v1 chưa có thang điểm cho số ghế đó; phép gán ghế MUST giữ nguyên khi cú bắt đầu bị chặn. Số ghế **từ 1 đến 4** MUST bắt đầu được, và hệ thống MUST bù các ghế thiếu thành **ghế bỏ thi**: đặt trạng thái vô hiệu hoá ngay **trước** mốc đóng băng, điểm **luôn 0**, không thao tác được gì, giữ nguyên **vị trí**. Trận đó MUST áp **nguyên luật 4 ghế**. Hàng rào này MUST áp như nhau cho trận `official` lẫn `practice`, và MUST thi hành ở server theo FR-034. Chặn ở đây thuộc hạng **giới hạn phiên bản** của `PRD §9.4`, MUST NOT được đọc là chỗ chặn cứng thứ tư của `INV-014`. *(US-002 · PRD-REQ-114, PRD-REQ-028 · GR-036 C5b, GR-020 C6 · `QĐ-105` · AC-035, AC-036)*
+- **FR-036**: Ghế bỏ thi MUST xuất hiện trên bảng điểm, bảng xếp hạng và biên bản, và MUST được **xếp hạng bình thường như một ghế 0đ**. Phép tìm nhóm hoà của FR-018 MUST **chỉ xét ghế hoạt động** — ghế bỏ thi MUST NOT là ứng viên phân định. Ghế bỏ thi MUST **vẫn được cấp lượt** ở Khởi động lượt riêng và Về đích, và admin MUST bỏ qua lượt đó **bằng tay**; mọi phép kiểm kho đề MUST giữ nguyên mẫu số là **số ghế đã gán** (`GR-017` §Biên). *(US-002, US-005 · PRD-REQ-114 · GR-022, GR-016, GR-017 §Biên, GR-036 C5b · `QĐ-105` · AC-037)*
 - **FR-034**: Mọi validate và chặn/khoá mô tả ở các FR trên (bốn cửa ra, chốt trận, đóng sổ terminal, huỷ trận, sửa danh sách câu, đặt chỗ Câu hỏi phụ) MUST được **server thực thi**, bất kể yêu cầu đến từ giao diện admin hay gọi thẳng API/socket; giao diện MUST chỉ là lớp tăng cường UX (ẩn nút, disable, báo lỗi nhanh), MUST NOT là hàng rào duy nhất. *(US-004 → US-009 · `CLAUDE.md` §Nguyên tắc code — zero-trust · AC-019, AC-025)*
 
 ### Key Entities
@@ -247,10 +249,10 @@ EPIC-005 phủ **vòng đời của một trận** — từ lúc trận được
 - Tạo contest, áp preset luật `O26_DEFAULT@1`, cấu hình từng vòng, chọn mode trả lời cấp contest, gán ghế và vị trí, chọn danh sách câu hỏi **ban đầu**, cấu hình chủ đề và âm thanh — tất cả thuộc EPIC-004 (`specs/004-contest-builder-luat`).
 - Soạn câu hỏi, bộ đề, vòng duyệt `DRAFT` → `ACTIVE` — thuộc EPIC-002 (`specs/002-kho-de-bo-de`).
 - Nhập/xuất gói contest, chuyển sang bản portable — thuộc EPIC-003 (`specs/003-nhap-xuat-goi-contest`).
-- Cơ chế rút đề theo bộ của VCNV, thể thức ba câu và chuông của Câu hỏi phụ, chấm điểm, hàng đợi tín hiệu, mốc thời gian trong một câu, mất kết nối và giữ ghế (`GR-036` chi tiết), server time — thuộc EPIC-006 (Game engine và luật thi đấu), chưa có spec riêng tại thời điểm viết tài liệu này.
-- Bốn mốc bấm của một câu, màn chấm chi tiết với tô khác biệt ký tự, duyệt/từ chối tín hiệu, ba hạng cảnh báo giao diện — thuộc EPIC-007 (Điều khiển và can thiệp của admin), chưa có spec riêng tại thời điểm viết tài liệu này.
-- Xác thực, phân quyền, một phiên giữ quyền điều khiển, giành quyền điều khiển khi mất kết nối — thuộc EPIC-001, chưa có spec riêng tại thời điểm viết tài liệu này.
-- Luật cho số ghế ≠ 4 (`NON-GOAL-012`) và playlist tuỳ ý (`NON-GOAL-011`) — không thuộc v1 dưới bất kỳ epic nào.
+- Cơ chế rút đề theo bộ của VCNV, thể thức ba câu và chuông của Câu hỏi phụ, chấm điểm, hàng đợi tín hiệu, **kích hoạt tay một tín hiệu sau một cú *Huỷ kết quả*** (`PRD-REQ-113`, `QĐ-104`), mốc thời gian trong một câu, mất kết nối và giữ ghế (`GR-036` chi tiết), server time — thuộc EPIC-006 (`specs/006-game-engine-luat-thi-dau`).
+- Bốn mốc bấm của một câu, màn chấm chi tiết với tô khác biệt ký tự, duyệt/từ chối tín hiệu, **bề mặt giao diện của kích hoạt tay**, ba hạng cảnh báo giao diện — thuộc EPIC-007 (Điều khiển và can thiệp của admin), chưa có spec riêng tại thời điểm viết tài liệu này.
+- Xác thực, phân quyền, một phiên giữ quyền điều khiển, giành quyền điều khiển khi mất kết nối — thuộc EPIC-001 (`specs/001-xac-thuc-phan-quyen`).
+- Luật cho số ghế **trên 4** (`NON-GOAL-012`) và playlist tuỳ ý (`NON-GOAL-011`) — không thuộc v1 dưới bất kỳ epic nào. *(Trận **dưới** 4 ghế thì **thuộc** feature này qua FR-035, FR-036 — xem `PRD-REQ-114`, `QĐ-105`.)*
 
 ## Open Questions
 
@@ -261,7 +263,7 @@ Không còn `NEEDS CLARIFICATION` nào treo. Điểm duy nhất từng treo — 
 | User story | PRD requirement | Game rules | Functional requirements | Acceptance scenarios |
 |---|---|---|---|---|
 | US-001 | PRD-REQ-027 | GR-031 | FR-001, FR-002, FR-003 | AC-001, AC-002, AC-032 |
-| US-002 | PRD-REQ-028 | GR-031, GR-037 | FR-004, FR-005 | AC-003, AC-004 |
+| US-002 | PRD-REQ-028, PRD-REQ-114 | GR-031, GR-037, GR-036 C5b, GR-020 C6 | FR-004, FR-005, FR-035, FR-036 | AC-003, AC-004, AC-035, AC-036, AC-037 |
 | US-003 | PRD-REQ-029, PRD-REQ-030 | GR-030 C4, INV-020 | FR-006, FR-007, FR-008 | AC-005, AC-006, AC-007 |
 | US-004 | PRD-REQ-031 | GR-030 (C1–C5) | FR-009, FR-010, FR-011, FR-012, FR-013, FR-014 | AC-008, AC-009, AC-010, AC-011 |
 | US-005 | PRD-REQ-032, PRD-REQ-105 | GR-022 (C1–C8) | FR-015, FR-016, FR-017, FR-018, FR-019, FR-020 | AC-012, AC-013, AC-014, AC-015, AC-016, AC-017, AC-018, AC-032 |
@@ -442,6 +444,21 @@ Không còn `NEEDS CLARIFICATION` nào treo. Điểm duy nhất từng treo — 
 **Given** trận đang ở `LOBBY`, admin chỉ định 5 câu còn khả dụng làm đặt chỗ Câu hỏi phụ (nhiều hơn mức 3 câu cần dùng),
 **When** vòng Câu hỏi phụ mở,
 **Then** hệ thống dùng đúng **3 câu đầu tiên** theo thứ tự đã chỉ định cho ba câu của vòng, và **2 câu dư** vẫn giữ nguyên trạng thái đã chỉ định (không tự gỡ, không báo lỗi) dù không được dùng trong vòng đó.
+
+**AC-035** — *Related user story*: US-002 · *Related FR*: FR-035 · *PRD*: `PRD-REQ-114`
+**Given** một contest đã gán **5 ghế** *(giao diện gán ghế cho phép tới 12 — `specs/004` FR-030)*, kho đề đủ cho mọi vòng,
+**When** admin bấm **bắt đầu trận**, kể cả khi yêu cầu được gửi thẳng tới API,
+**Then** server **từ chối, không có đường ép qua** kèm thông điệp nêu rõ v1 chưa có thang điểm cho hơn 4 đơn vị điểm · cấu hình **chưa** bị đóng băng · **phép gán 5 ghế giữ nguyên**, không ghế nào bị xoá · hành vi **y hệt** với contest `practice`.
+
+**AC-036** — *Related user story*: US-002 · *Related FR*: FR-035 · *PRD*: `PRD-REQ-114`
+**Given** một contest chỉ gán **2 thí sinh** vào ghế, kho đề đủ,
+**When** admin bấm **bắt đầu trận**,
+**Then** trận bắt đầu bình thường · hai ghế còn lại tồn tại ở trạng thái **bỏ thi** *(vô hiệu hoá, 0đ, giữ vị trí)* ngay từ trước mốc đóng băng cấu hình · trận chạy trọn bốn vòng theo **nguyên luật 4 ghế** · hai ghế bỏ thi **không** phát được tín hiệu nào.
+
+**AC-037** — *Related user story*: US-002, US-005 · *Related FR*: FR-036 · *PRD*: `PRD-REQ-114`
+**Given** trận hai thí sinh thật ở AC-036 đã chạy xong, A được 90đ, B được 40đ, hai ghế bỏ thi 0đ,
+**When** admin bấm **Chốt trận**,
+**Then** bảng xếp hạng ghi đủ **bốn** ghế theo điểm — A hạng nhất, B hạng nhì, hai ghế bỏ thi **đồng hạng ba** với 0đ · phép tìm nhóm hoà **chỉ xét A và B** nên nhóm hai ghế bỏ thi **không** kích hoạt `TIE_BREAK` · biên bản in đủ bốn ghế kèm nhãn *bỏ thi*.
 
 ## Assumptions
 

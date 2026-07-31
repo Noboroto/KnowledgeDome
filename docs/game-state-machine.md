@@ -9,7 +9,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn — **source of truth duy nhất** |
-| `decisions.md` | **Vì sao** — 104 quyết định `QĐ-001` → `QĐ-104`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 107 quyết định `QĐ-001` → `QĐ-107`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; tài liệu này dùng đúng tên ở đó |
 | `game-rules.md` | Rule `GR-*`; **mọi transition ở đây phải trỏ về ≥1 `GR-*`** |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |

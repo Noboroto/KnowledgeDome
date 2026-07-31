@@ -50,9 +50,11 @@ Phần chưa migrate — spec RuleConfig v2, kiến trúc kỹ thuật, 12 kế 
 | **v1.5 — Practice + luật đa ghế** | `matchPurpose: practice`, bộ đề public + share-link, giao diện luyện tập solo, vai trainer, retention riêng theo `matchPurpose` *(giá trị mặc định ở `QĐ-091`)* · **luật cho 1-12 thí sinh** — chỉ ship luật và sửa controller, **không** migrate schema |
 | **v2 — Teams** | Thi đội: bấm chuông cá nhân, điểm về đội |
 
-**Luật v1 chỉ đặc tả cho ĐÚNG 4 THÍ SINH** (`QĐ-007`). Luật gốc O26 viết cho đúng 4 người; **không phát minh luật cho số ghế khác**.
+**Luật v1 đặc tả cho TỐI ĐA 4 THÍ SINH** (`QĐ-007`, `QĐ-105`). Luật gốc O26 viết cho đúng 4 người; **không phát minh luật cho số ghế lớn hơn**.
 
-Nhưng **lưu trữ dữ liệu và giao diện vẫn làm cho 1-12 người ngay từ v1** — schema, seat model, `scoringUnit`, RuleConfig dạng mảng và toàn bộ UI. Chỉ **đường xử lý luật** cho số ghế ≠ 4 là chưa có.
+Trận **dưới 4 thí sinh vẫn chạy được ở v1**: ghế thiếu người thành **ghế bỏ thi** — vô hiệu hoá từ đầu trận, điểm luôn 0, xếp hạng bình thường nhưng không tham gia phép phân định hoà — và trận áp **nguyên luật 4 ghế** (`QĐ-105`). Trận **trên 4 ghế** bị **chặn cứng ở cú bấm bắt đầu trận**, vì thang điểm Tăng tốc chỉ định nghĩa cho 4 đơn vị điểm.
+
+Nhưng **lưu trữ dữ liệu và giao diện vẫn làm cho 1-12 người ngay từ v1** — schema, seat model, `scoringUnit`, RuleConfig dạng mảng và toàn bộ UI. Chỉ **thang điểm** cho hơn 4 ghế là chưa có.
 
 **Schema chuẩn bị ĐẦY ĐỦ ngay từ v1** — `Team`, `seat.teamId`, `scoringUnit`, `matchPurpose`, `visibility`/`everPublic`, ACL, retention. Không để dành schema cho phiên bản sau; v1 chỉ chưa bật engine-path tương ứng.
 

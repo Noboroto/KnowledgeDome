@@ -10,7 +10,7 @@
 
 | File | Vai trò |
 |---|---|
-| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-104` |
+| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-107` |
 | `game-rules.md` · `game-state-machine.md` | Luật và vận hành |
 | `traceability.md` | Truy nguyên rule ↔ luật gốc ↔ `QĐ-*` |
 | `plans/**` | **Bản nháp.** Mọi trích dẫn dưới đây là **bối cảnh**, không phải requirement |

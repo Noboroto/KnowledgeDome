@@ -11,7 +11,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
-| `decisions.md` | **Vì sao** — 104 quyết định `QĐ-001` → `QĐ-104`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 107 quyết định `QĐ-001` → `QĐ-107`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; file này dùng đúng tên ở đó |
 | `game-state-machine.md` | Máy trạng thái: `STATE-*` · `EVENT-*` · `T-*` · `INV-*`. Mọi rule ở đây phải khớp với một hoặc nhiều transition ở đó |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -420,7 +420,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Điều kiện.**
 
-- Hàng ngang **luôn trả lời bằng máy**, bất kể mode contest. Thời gian suy nghĩ **15 giây**.
+- Hàng ngang **luôn trả lời bằng máy**, bất kể mode contest. Thời gian suy nghĩ lấy từ **giá trị cấu hình cấp vòng** *"thời gian suy nghĩ mỗi câu VCNV"*, preset đặt **15 giây** (`QĐ-106`). Câu hàng ngang **không** khai `timeSeconds` riêng; dữ liệu có mang thì engine bỏ qua.
 - Đúng **+10** cho **mỗi** người được chấm đúng · Sai **0**, không trừ.
 - **≥1 người đúng ⇒ miếng ghép mở.** Không ai đúng ⇒ miếng ghép **không** mở.
 - **Không thứ gì tự lộ khi HẾT GIỜ** — hết giờ chỉ khoá ô nhập, không mở gì cả.
@@ -580,9 +580,9 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 **Điều kiện.**
 
 - Điều kiện kích hoạt phải đọc theo **hai chủ ngữ khác nhau** của nguồn: *"từ hàng ngang được mở"* **≠** *"miếng ghép được mở"*. Cả 4 hàng ngang **luôn được hỏi hết**, nên giai đoạn này **luôn tới được**.
-- Câu ô trung tâm: đúng **+10** và ô mở; sai thì ô **không** mở.
+- Câu ô trung tâm: đúng **+10** và ô mở; sai thì ô **không** mở. Thời gian suy nghĩ dùng **cùng** giá trị cấu hình cấp vòng với câu hàng ngang — nguồn không nói riêng cho câu này (`QĐ-106`).
 - Sau gợi ý cuối, giải đúng Chướng ngại vật chỉ được **20 điểm** — mốc này gắn với việc **gợi ý cuối đã được đưa ra**, **không** phụ thuộc câu ô trung tâm đúng hay sai.
-- Cửa sổ giải Chướng ngại vật sau gợi ý cuối: **15 giây**.
+- Cửa sổ giải Chướng ngại vật sau gợi ý cuối: một **giá trị cấu hình cấp vòng RIÊNG**, đổi độc lập với thời gian suy nghĩ mỗi câu; preset đặt **15 giây**. Nguồn nói hai con số này ở hai mệnh đề khác nhau cho hai đại lượng khác nhau — chúng chỉ **trùng giá trị** (`QĐ-106`).
 
 **Bảng quyết định**
 
@@ -1024,7 +1024,8 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C3 | Câu 20đ, A sai, **không ai bấm** trong 5 giây | A giữ nguyên kết quả của mình; không ai được cộng |
 | C4 | B gửi ba bản: `"Paris"` @100 → `"London"` @150 → `"Berlin"` @200 | Chấm trên **bản ĐẦU `"Paris"`** |
 | C5 | Câu 20đ, A **có NSHV** và bị chấm Sai; B cướp đúng | **A −20 · B +20.** A mất giá trị câu **ĐÚNG MỘT LẦN** — hình phạt NSHV **thay thế** phần nợ của transfer |
-| C6 `[v1.5]` | Số ghế ≠ 4 | v1 đặc tả cho đúng 4 nên *"3 thí sinh còn lại"* luôn đúng nghĩa. Riêng ca **runtime tụt dưới 4 giữa trận** đã chốt: **admin quyết**, hệ thống chỉ cảnh báo |
+| C6 | Số ghế **dưới** 4 | **Thuộc v1** (`QĐ-105`): ghế thiếu người là **ghế bỏ thi** — vô hiệu hoá từ đầu trận, 0đ — nên *"3 thí sinh còn lại"* vẫn đúng nghĩa về cấu trúc, chỉ là số người **cướp được** ít đi. Ca **runtime tụt dưới 4 giữa trận** xử y hệt: **admin quyết**, hệ thống chỉ cảnh báo |
+| C6b `[v1.5]` | Số ghế **trên** 4 | **Không tồn tại ở v1** — cú bấm bắt đầu trận bị **chặn cứng** vì thang điểm Tăng tốc chỉ định nghĩa cho 4 đơn vị điểm (`QĐ-105`, `GR-013` C5) |
 
 **Không đổi gì.** Điểm của những người **không bấm** · các câu trước · bản gửi của người thi chính.
 
@@ -1118,7 +1119,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - Hết vòng Về đích, trận **về `LOBBY`** — **chưa** đóng sổ, **chưa** tính hoà, **chưa** có thứ hạng. Admin vẫn sửa điểm được ở đây.
 - Phép phân định hoà chạy **tại cú bấm Chốt trận**, trên bảng điểm **ở đúng mốc đó** ⇒ điểm admin vừa sửa **được tính vào**.
 - Có hoà **trong `tieBreakPositions`** ⇒ `TIE_BREAK`; không thì `FINISHED`. **v1 khoá cứng `tieBreakPositions = [1]`** — chỉ phân định vị trí **NHẤT**, cửa tạo contest không cho chọn giá trị khác (`QĐ-085`). Cấu hình vẫn **nhận** danh sách nhiều vị trí mà không lỗi cấu trúc, nhưng **không có đường xử lý** cho chúng ⇒ ở v1, mọi ca dưới đây đọc `tieBreakPositions` như tập một phần tử.
-- Nhóm hoà phải có **≥ 2** người.
+- Nhóm hoà phải có **≥ 2** người, và phép tìm nhóm hoà **chỉ xét ghế HOẠT ĐỘNG** — ghế **bỏ thi** *(0đ, vô hiệu hoá từ đầu — `QĐ-105`, `GR-036` C5b)* vẫn nằm trên bảng xếp hạng nhưng **không** là ứng viên phân định. Nếu không, hai ghế bỏ thi cùng 0đ có thể thành nhóm dẫn đầu ở một trận mà mọi thí sinh thật đều âm điểm (`INV-018` cho phép), và trận **kẹt** vì không ai bấm chuông được. Chủ dự án đánh giá ca này không xảy ra trên thực tế; mệnh đề tồn tại chỉ để loại ngõ cụt.
 - Phải có đủ **3 câu khả dụng** cho vòng này, kiểm ở **cửa vào vòng**. **Không có kho Câu hỏi phụ riêng** — đề rút từ ba kho nguồn *(Về đích · Khởi động · VCNV)*, xem `GR-023` và `QĐ-081`.
 
 **Bảng quyết định**
@@ -1808,6 +1809,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C3 | Admin phán quyết sau khi quá ngưỡng | **Hai** lựa chọn: **giữ** · **gia hạn**. Cả hai đều không phá gì, chỉ nói *"chờ tiếp"* |
 | C4 | Quá ngưỡng **giữa một vòng đang chạy** | Vòng **chạy tiếp bình thường** — hệ thống không dừng vì một ghế mất kết nối |
 | C5 | Admin **vô hiệu hoá** một ghế | Ghế **mất quyền thao tác** nhưng **ở lại trong trận**: nguyên điểm, nguyên vị trí, vẫn trên bảng điểm và bảng xếp hạng. Tín hiệu lỡ tới vào lịch sử nhưng **TRƠ**. Qua dialog Yes/No + lý do, vào audit |
+| C5b | Trận có **dưới 4** thí sinh thật | Ghế thiếu người được đặt **bỏ thi** — chính là C5 nhưng bật **từ trước cú bấm bắt đầu trận**, và điểm **luôn 0**. Ghế bỏ thi **vẫn được cấp lượt** ở Khởi động lượt riêng và Về đích; **admin bỏ qua bằng tay** *(bỏ qua trước mốc hiển thị ⇒ câu chưa tiêu, trả lại kho — `GR-031` C7)*. Xếp hạng bình thường như một ghế 0đ, **nhưng không** là ứng viên của phép tìm nhóm hoà cần phân định (`QĐ-105`, `GR-022`) |
 | C6 | Admin **kích hoạt lại** | Thi tiếp bình thường. **KHÔNG hoàn nguyên gì** — điểm ghi trong lúc bị vô hiệu hoá giữ nguyên |
 | C7 | Ghế bị vô hiệu hoá **giữa một câu đang mở** | Xử **y như ghế không trả lời**: mặc định **SAI** khi admin chốt câu. Thấy bất công ⇒ admin **cộng tay** (`GR-029`) |
 | C8 | Quay lại **giữa một câu, đồng hồ đang chạy** | Client dựng lại **đúng màn đang thi**: câu đang mở · **hạn chót theo server time** · bản gửi gần nhất **của chính ghế đó** · các cờ ghế còn hiệu lực · bàn cờ VCNV · điểm công khai · lớp phủ đang bật. **Đồng hồ KHÔNG đặt lại** — mất kết nối **không mua thêm thời gian**. Gói khôi phục **không chứa đáp án** và **không chứa bài của ghế khác** |

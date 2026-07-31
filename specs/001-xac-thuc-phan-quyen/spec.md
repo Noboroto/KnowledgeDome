@@ -286,6 +286,12 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 - **When** thí sinh, khán giả và lớp phủ nhận cập nhật
 - **Then** đáp án của câu Huỷ kết quả **không tự công bố** *(admin vẫn mở tay được)* · đáp án Chướng ngại vật **không đi theo cơ chế này** mà theo `GR-012` — nằm ngoài phạm vi feature · không sinh sự kiện điểm nào
 
+**AC-017a — `GR-037` C8b: đang chờ admin kích hoạt tay một tín hiệu khác**
+- **US**: US-002 · **FR**: FR-008, FR-009 · **GR**: `GR-037` C8b · **PRD**: `PRD-REQ-113`
+- **Given** `revealAnswerAfterJudge` **BẬT**; một vòng có giành quyền bằng chuông; người đang giữ quyền vừa bị chấm **Huỷ kết quả**; hàng đợi còn tín hiệu hợp lệ và admin **chưa** kích hoạt tay ai
+- **When** thí sinh, khán giả hoặc lớp phủ yêu cầu đáp án chuẩn của câu đó
+- **Then** server **không trả** — câu **chưa khép** vì mốc đã **lùi** tới sau khi người được kích hoạt được chấm · server cũng **chưa từng đẩy** đáp án xuống ba kênh này từ trước *(kiểm ở phía truyền)* · **cơ chế** kích hoạt tay thuộc EPIC-006 *(xem §8)*; feature này chỉ phủ vế **đáp án không rời server**
+
 ### US-003 — Vai và ràng buộc loại trừ
 
 **AC-018 — Rejection: không gán được vai thứ hai**
@@ -584,7 +590,7 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 - **FR-005**: Khán giả và máy dựng stream MUST vào được phòng bằng **đúng một URL**, với mã phòng nằm trong URL — không tài khoản, không vai, không bước nhập mã, không bước chờ duyệt. · US-002 · `PRD-REQ-001` · `GR-037` · AC-006, AC-007
 - **FR-006**: Màn khán giả và lớp phủ MUST nhận cập nhật qua kênh **một chiều server → client**, cộng một lời gọi đọc để lấy ảnh chụp trạng thái lúc vào phòng; hai kênh này MUST NOT có đường gửi sự kiện lên server. · US-002 · `PRD-REQ-107` · `GR-037` · AC-007, AC-008
 - **FR-007**: Kênh hai chiều MUST chỉ dành cho vai đã xác thực — admin, thí sinh, MC. · US-002 · `PRD-REQ-107` · `GR-037` · AC-008, AC-009
-- **FR-008**: Đáp án chuẩn MUST rời server theo đúng bảng quyết định của `GR-037`, và cửa kiểm MUST hỏi **permission đọc đáp án của câu đang chạy** *(`PERM-045`)*, MUST NOT hỏi tên vai: phiên **giữ** permission đó nhận **mọi lúc** kèm audit *(C1, C2)*; phiên **không giữ** — thí sinh, khán giả và lớp phủ — **chỉ** nhận khi cờ `revealAnswerAfterJudge` **BẬT** **và** câu **đã khép** *(C3, C4, C5)*; câu bị bỏ qua vẫn công bố *(C7)*; cửa sổ cướp quyền Về đích đang mở thì **không** công bố *(C6)*; câu khép bằng **Huỷ kết quả** **không tự** công bố *(C8)*; đáp án Chướng ngại vật nằm ngoài rule này *(C9)*. · US-002 · `PRD-REQ-001`, `PRD-REQ-002` · `GR-037` · AC-010…AC-017
+- **FR-008**: Đáp án chuẩn MUST rời server theo đúng bảng quyết định của `GR-037`, và cửa kiểm MUST hỏi **permission đọc đáp án của câu đang chạy** *(`PERM-045`)*, MUST NOT hỏi tên vai: phiên **giữ** permission đó nhận **mọi lúc** kèm audit *(C1, C2)*; phiên **không giữ** — thí sinh, khán giả và lớp phủ — **chỉ** nhận khi cờ `revealAnswerAfterJudge` **BẬT** **và** câu **đã khép** *(C3, C4, C5)*; câu bị bỏ qua vẫn công bố *(C7)*; cửa sổ cướp quyền Về đích đang mở thì **không** công bố *(C6)*; câu khép bằng **Huỷ kết quả** **không tự** công bố *(C8)*; trong lúc đang chờ admin **kích hoạt tay** một tín hiệu khác sau một cú *Huỷ kết quả* thì **không trả**, vì mốc câu khép đã **lùi** *(C8b — `PRD-REQ-113`, `GR-032` §Kích hoạt tay)*; đáp án Chướng ngại vật nằm ngoài rule này *(C9)*. · US-002 · `PRD-REQ-001`, `PRD-REQ-002`, `PRD-REQ-113` · `GR-037` · AC-010…AC-017, AC-017a
 - **FR-009**: Server MUST đẩy đáp án **chỉ tại đúng mốc câu khép**; MUST NOT đẩy sớm xuống client rồi dựa vào một cờ hiển thị phía client để giấu. · US-002 · `PRD-REQ-002` · `GR-037` §Cấm · AC-014
 
 ### Nhóm C — Vai hệ thống, vai vận hành, ràng buộc loại trừ
@@ -717,6 +723,7 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 | Vòng đời trận, mã phòng được **sinh ra** như thế nào, đóng băng cấu hình | EPIC-005 |
 | Nội dung của bảy thao tác phá huỷ *(bỏ vòng làm gì, chạy lại làm gì)* và toàn bộ bảng quyết định `GR-029`, `GR-030` ngoài vế permission | EPIC-006, EPIC-007 |
 | Phán quyết Đúng/Sai và bảng quyết định `GR-026` ngoài vế *"ai được bấm"* | EPIC-007 |
+| Cơ chế **kích hoạt tay** một tín hiệu sau một cú *Huỷ kết quả* — tập ứng viên, ba tham số, giới hạn số lần | EPIC-006 *(`PRD-REQ-113`, `specs/006` FR-034a→FR-034e)* — feature này chỉ chạm hệ quả **mốc câu khép lùi** ở `GR-037` C8b *(FR-008, AC-017a)* |
 | Màn khán giả và lớp phủ **trông như thế nào**, màn MC chữ lớn | EPIC-009 *(`PRD-REQ-073`, `074`)* |
 | Nhật ký thao tác chung cho mọi vai, hạn lưu trữ, xuất biên bản trước khi dọn dữ liệu | EPIC-011 *(`PRD-REQ-081`…)* — feature này chỉ yêu cầu ghi nhật ký ở đúng ba chỗ mà `PRD-REQ-002`, `004` và `GR-037` tự đòi |
 | Hai hồ sơ triển khai, giới hạn kích thước media | EPIC-012 *(`PRD-REQ-085`, `098`)* |
@@ -765,7 +772,7 @@ Ba câu hỏi từng treo ở mục này đã được chủ dự án phân xử
 | User story | PRD requirement | Game rules | Functional requirements | Acceptance scenarios |
 |---|---|---|---|---|
 | **US-001** — Đăng nhập và kiểm quyền ở server | `PRD-REQ-002` | `GR-037` | FR-001 → FR-004 | AC-001 → AC-005 |
-| **US-002** — Vào phòng công khai bằng URL, không đường ghi | `PRD-REQ-001`, `PRD-REQ-107` | `GR-037` | FR-005 → FR-009 | AC-006 → AC-017 |
+| **US-002** — Vào phòng công khai bằng URL, không đường ghi | `PRD-REQ-001`, `PRD-REQ-107`, `PRD-REQ-113` *(vế mốc câu khép lùi)* | `GR-037` | FR-005 → FR-009 | AC-006 → AC-017, AC-017a |
 | **US-003** — Mỗi tài khoản một vai, gán theo phạm vi | `PRD-REQ-003`, `PRD-REQ-006` | `GR-037` | FR-010 → FR-013, FR-028 | AC-018 → AC-022, AC-041 |
 | **US-004** — Một phiên giữ quyền; chuyển giao và giành lại được | `PRD-REQ-004`, `PRD-REQ-108` | `GR-026`, `GR-036` | FR-014 → FR-023 *(gồm FR-020b, FR-021a, FR-021b)*, FR-033 | AC-023 → AC-034, AC-048, AC-056, AC-057, AC-060 → AC-062 |
 | **US-005** — Phân quyền theo vai và permission cho thao tác phá huỷ | `PRD-REQ-005`, `109`, `110`, `111`, `112` | `GR-026`, `GR-029`, `GR-030`, `GR-032` | FR-024 → FR-033 *(gồm FR-030b)* | AC-035 → AC-048, AC-058 |
@@ -784,6 +791,7 @@ Ba câu hỏi từng treo ở mục này đã được chủ dự án phân xử
 | `GR-037` C6 | Về đích, cửa sổ cướp đang mở ⇒ không trả | AC-016 |
 | `GR-037` C7 | Câu bị bỏ qua, reveal BẬT ⇒ trả | AC-015 |
 | `GR-037` C8 | Câu khép bằng Huỷ kết quả ⇒ không tự trả | AC-017 |
+| `GR-037` C8b | Đang chờ admin **kích hoạt tay** một tín hiệu khác ⇒ không trả, câu chưa khép | AC-017a |
 | `GR-037` C9 | Đáp án Chướng ngại vật ⇒ ngoài rule này | AC-017 |
 | `GR-026` §Đồng thời | Không có hai luồng thao tác admin song song | AC-026 |
 | `GR-026` C1/C2 §"điểm chỉ chốt khi admin bấm" | Chỉ phiên giữ quyền mới sinh được sự kiện phán quyết | AC-025, AC-026 |
