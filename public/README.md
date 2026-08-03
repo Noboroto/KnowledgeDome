@@ -5,8 +5,10 @@ Bộ demo TĨNH (vanilla HTML/CSS/JS, không build step, không CDN) mô phỏng
 dùng để duyệt/sửa design & animation trước khi code hệ thống thật.
 
 Spec tham chiếu:
-- `plans/260711-2340-olympia-contest-system/research/ruleconfig-v2-spec.md` (engine chính)
-- `plans/260711-2340-olympia-contest-system/research/rules-2026.md` (luật gốc O26)
+- `docs/game-rules.md` · `docs/game-state-machine.md` (luật và vận hành)
+- `docs/source/fandom-olympia-26-luat-choi.md` (luật gốc O26)
+
+> Demo này làm **trước** tài liệu nên có chỗ lệch. Lệch thì **demo sai** — `docs/` thắng.
 
 ## Chạy local
 

@@ -1,7 +1,7 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: TEMPLATE (chưa khởi tạo) → 1.0.0 → 1.1.0 → 1.2.0 → 1.3.0
+Version change: TEMPLATE (chưa khởi tạo) → 1.0.0 → 1.1.0 → 1.2.0 → 1.3.0 → 1.4.0
 Bump rationale: Lần phê chuẩn đầu tiên — mọi placeholder được thay bằng nội dung cụ thể,
   toàn bộ nguyên tắc là mới (MAJOR-level khởi tạo, đánh số 1.0.0 theo quy ước ratification).
 
@@ -71,6 +71,27 @@ AMENDMENT 1.3.0 (2026-07-29) — ĐÓNG TODO(DOCS_MIGRATION)
   Templates đã rà lại (mục (d) của quy tắc Sửa đổi): `.specify/templates/` — spec-template.md,
   plan-template.md, tasks-template.md, checklist-template.md, constitution-template.md
   đều KHÔNG tham chiếu `plans/**` hay trạng thái chuyển tiếp. Không cần sửa file nào.
+
+AMENDMENT 1.4.0 (2026-07-31) — ĐỔI QUYỀN SỞ HỮU SANG CLAUDEKIT
+  Chỉ đạo chủ dự án: (1) ClaudeKit thực thi việc tạo plan và implement, không phải Spec Kit;
+  (2) mọi tài liệu mang prefix timestamp `yyyyMMdd-HHmmss <topic>`, ngoại lệ `docs/` và `specs/`.
+
+  Mục bị ảnh hưởng:
+    - "Ràng buộc tài liệu & phạm vi" → thứ bậc nguồn nêu rõ `plan.md` nằm ở `plans/**`;
+      thêm bullet "Quyền sở hữu công cụ" (Spec Kit chỉ giữ `spec.md`; ClaudeKit giữ `plan.md`,
+      `tasks.md`, implement, review, test) và bullet "Đặt tên tài liệu".
+    - "Nguồn đã migrate xong" → bullet `plans/**` viết lại thành vị thế hiện hành: nơi ClaudeKit
+      đặt plan, vẫn "không phải nguồn requirement". Mô tả lịch sử về thư mục `plans/` cũ đã GỠ
+      khỏi constitution và `CLAUDE.md` theo chỉ đạo chủ dự án — nó chỉ còn trong lịch sử git.
+    - KHÔNG nguyên tắc I–VI nào bị sửa.
+
+  Bump MINOR: đổi quy tắc quyền sở hữu và thêm quy tắc đặt tên — mở rộng hướng dẫn đáng kể,
+  nhưng không đụng phạm vi nguồn có thẩm quyền (vẫn chỉ `docs/` sinh requirement) nên không MAJOR.
+  Câu cấm "KHÔNG tạo plan song song ngoài Spec Kit" (1.2.0) bị GỠ vì nay ClaudeKit là đường duy nhất.
+
+  Templates đã rà lại: `.specify/templates/` — spec-template.md, plan-template.md,
+  tasks-template.md, checklist-template.md, constitution-template.md đều không khai công cụ
+  sở hữu và không tham chiếu đường dẫn `plans/`. Không cần sửa file nào.
 -->
 
 # KnowledgeDome Constitution
@@ -169,10 +190,16 @@ làm là phần chạy được.
 - **Thứ bậc nguồn** (định nghĩa đầy đủ tại `CLAUDE.md` → "Product and Specification Workflow";
   KHÔNG sao chép lại ở đây để tránh hai bản sự thật):
   `docs/source/` (tài liệu gốc, chỉ đọc) → `docs/PRD.md` (requirement cấp sản phẩm, truy được
-  về `docs/source/`) → `specs/<feature>/spec.md` → `plan.md` → `tasks.md`.
+  về `docs/source/`) → `specs/<feature>/spec.md` → `plans/**/plan.md` → `specs/<feature>/tasks.md`.
   Tầng dưới MUST truy nguyên về tầng trên; `spec.md` thắng mọi mô tả không chính thức trong
-  chat hoặc plan. Spec Kit sở hữu `specs/**`; KHÔNG tạo plan song song ngoài Spec Kit cho
-  feature đã do Spec Kit quản lý, trừ khi được yêu cầu rõ ràng.
+  chat hoặc plan.
+- **Quyền sở hữu công cụ**: Spec Kit sở hữu **duy nhất** `specs/<feature>/spec.md`. ClaudeKit
+  sở hữu mọi tầng từ đó trở xuống — `plan.md`, `tasks.md` và toàn bộ việc implement, review,
+  test. Plan MUST do ClaudeKit tạo, kể cả cho feature đã có spec; đây KHÔNG còn là "plan song
+  song" mà là đường duy nhất.
+- **Đặt tên tài liệu**: mọi tài liệu MUST mang prefix timestamp `yyyyMMdd-HHmmss <topic>`
+  (24 giờ, UTC+7 lúc tạo) — ở tên thư mục khi nhiều file, ở tên file khi một file. Ngoại lệ
+  duy nhất là `docs/` và `specs/`, giữ tên ổn định vì bị tham chiếu chéo bằng đường dẫn cố định.
 
 ### Nguồn đã migrate xong (2026-07-29)
 
@@ -186,10 +213,9 @@ làm là phần chạy được.
 - **`docs/reviews/**` là KHO LƯU, không phải nguồn.** Nó ghi lại các đợt rà soát và đề xuất
   `GRR-*`. Dùng được để *phát hiện* câu hỏi và mâu thuẫn; MUST NOT trích như requirement.
   Cùng vị thế: `public/` (demo tĩnh, làm trước tài liệu nên có chỗ lệch — lệch thì demo sai).
-- **`plans/**` đã bị XOÁ khỏi repo.** Nó từng là bản nháp planning và chưa bao giờ là nguồn.
-  Phần chưa migrate — spec RuleConfig v2, kiến trúc kỹ thuật, kế hoạch theo phase, red-team,
-  khảo sát UX, hồ sơ portable — chỉ còn trong lịch sử git. Lấy ra tham khảo **kỹ thuật** thì
-  được; trích như requirement thì MUST NOT, y như trước khi xoá.
+- **`plans/**` KHÔNG phải nguồn requirement.** Đây là nơi ClaudeKit đặt kế hoạch kỹ thuật —
+  **tầng dưới** của `spec.md`, phải truy nguyên lên, và MUST NOT là nơi một requirement
+  nghiệp vụ ra đời.
 - **Mật độ marker `[NEEDS CLARIFICATION]` trong spec nay là TÍN HIỆU, không còn là trạng thái
   nền.** `docs/PRD.md` bản 2.2.0 khai 0 CONFLICT và 0 NEEDS CLARIFICATION trên 102 requirement.
   Một spec sinh ra với nhiều marker nghĩa là **hoặc** feature đó chạm vào vùng `docs/` thật sự
@@ -241,4 +267,4 @@ còn tồn đọng không chặn việc *viết* spec, nhưng chặn việc impl
   đơn giản hơn đã bị loại và vì sao.
 - **Hướng dẫn vận hành hằng ngày**: `CLAUDE.md` (quy ước code, UX, bảo mật, commit).
 
-**Version**: 1.3.0 | **Ratified**: 2026-07-23 | **Last Amended**: 2026-07-29
+**Version**: 1.4.0 | **Ratified**: 2026-07-23 | **Last Amended**: 2026-07-31

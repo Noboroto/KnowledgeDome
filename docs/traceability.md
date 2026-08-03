@@ -9,11 +9,11 @@
 | Ký hiệu | Là gì | Vị thế |
 |---|---|---|
 | **Luật gốc** | `source/fandom-olympia-26-luat-choi.md` — bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26), lấy 2026-07-23 | **Source of truth duy nhất về LUẬT** |
-| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-107` | Source of truth về **lựa chọn sản phẩm** |
+| **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-110` | Source of truth về **lựa chọn sản phẩm** |
 | **Rule** | `game-rules.md` — `GR-001` → `GR-037` | Đặc tả nghiệp vụ **chuẩn tắc** |
 | **Máy trạng thái** | `game-state-machine.md` — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` | Đặc tả **chuẩn tắc** phần vận hành |
 | **Thuật ngữ** | `glossary.md` — `TERM-001` → `TERM-058` | Tên gọi chuẩn |
-| `plans/**` | Bản nháp planning, **đã xoá 29/07** | **KHÔNG phải nguồn.** Chỉ còn trong lịch sử git; không trích như requirement |
+| `plans/**` | Kế hoạch kỹ thuật do ClaudeKit tạo | **KHÔNG phải nguồn.** Tầng dưới của spec; không trích như requirement |
 | `reviews/` | Kho lưu thảo luận, đề xuất `GRR-*` | **KHÔNG phải nguồn** |
 | Athena | `D:\Github\Athena-Intelligent-Olympia` | **Tiền lệ**, không phải thẩm quyền. Dùng để phát hiện nhánh thiếu và xếp thứ tự việc kiểm thử |
 

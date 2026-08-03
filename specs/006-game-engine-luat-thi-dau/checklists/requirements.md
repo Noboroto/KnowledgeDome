@@ -2,6 +2,7 @@
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-07-30
+**Last validated**: 2026-08-03 *(sau audit chéo trong phiên `/speckit-clarify` của `specs/008`)*
 **Feature**: [spec.md](../spec.md)
 
 ## Content Quality
@@ -30,6 +31,20 @@
 - [x] No implementation details leak into specification
 
 ## Notes
+
+### Hợp nhất sau audit chéo 2026-08-03
+
+Đợt audit chéo chạy trong phiên `/speckit-clarify` của `specs/008` phát hiện **hai mâu thuẫn** giữa spec này và các phán quyết mới của chủ dự án. Cả hai đã được phân xử theo hướng **lan phán quyết**, và spec này đã sửa:
+
+| Mã | Spec này khai *(trước)* | Phán quyết | Đã sửa |
+|---|---|---|---|
+| `XCONF-1` | FR-097: người cướp tính **bản ĐẦU TIÊN** *(theo `GR-020`)* | **Bản CUỐI** — nguyên tắc hai trục: *giành lượt lấy người đầu tiên; đáp án lấy bản cuối cùng*. `GR-020` áp nhầm trục | FR-097 · AC-170 |
+| `XCONF-2` | FR-077: mỗi ghế phát tối đa **một tín hiệu** cho cả vòng *(theo `GR-009`)* | Hạn mức đếm theo **PHÁN QUYẾT** — *Huỷ kết quả* / *bấm No* **không** tiêu hạn mức, ghế bấm lại được | FR-077 · AC-118 · **AC-118a** *(mới)* |
+| `XCONF-3` | — | Không phải mâu thuẫn; `PRD-REQ-113` đã khai *"không có trần tổng"*. Chỉ cần sửa **câu chữ** của `GR-032` §Kích hoạt tay | *(không sửa spec)* |
+
+**Spec này không sai về quy trình** — nó chép đúng `GR-020` và `GR-009` tại thời điểm viết. Chỗ sai nằm ở `docs/`, và cả `specs/006` lẫn `specs/008` đều là tầng dưới phải sửa theo. Chi tiết và bộ sửa `docs/` đầy đủ: `specs/008` §Clarifications 2026-08-03 và §Open Questions.
+
+✅ **Cổng truy nguyên đã thoả (2026-08-03)** — `docs/` đã cập nhật: `QĐ-111` *(khoá chuông gắn với phán quyết)* và `QĐ-113` *(nguyên tắc hai trục)* đã ghi vào `docs/decisions.md`; `GR-009`, `GR-018`, `GR-020`, `GR-032`, `GR-034`, `PRD-REQ-064`, `STATE-028`, `T-063` và `EVENT-040` đã sửa theo. Bộ thay đổi đầy đủ: `specs/008/checklists/requirements.md` §`docs/` đã cập nhật.
 
 ### Về mục "No [NEEDS CLARIFICATION] markers remain" *(cập nhật 2026-07-30, sau `/speckit-clarify`)*
 

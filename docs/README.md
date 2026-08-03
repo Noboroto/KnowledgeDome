@@ -2,9 +2,7 @@
 
 Nền tảng tổ chức thi đấu gameshow kiến thức tuỳ biến theo mô hình *Đường lên đỉnh Olympia* (luật O26).
 
-Thư mục này là **nguồn sự thật của dự án**. Mọi thứ ngoài nó — `public/`, ghi chú trong chat — đều **không** phải requirement.
-
-> **`plans/` đã bị xoá ngày 2026-07-29** sau khi migrate xong. Nó từng là bản nháp planning và chưa bao giờ là nguồn. Phần chưa migrate *(spec RuleConfig v2, kiến trúc kỹ thuật, kế hoạch theo phase, red-team, khảo sát UX, hồ sơ portable)* chỉ còn trong **lịch sử git**; tài liệu trong `reviews/` và `source/` vẫn nhắc tới đường dẫn cũ vì chúng ghi lại **lịch sử**, không phải chỉ chỗ đọc.
+Thư mục này là **nguồn sự thật của dự án**. Mọi thứ ngoài nó — `plans/`, `public/`, ghi chú trong chat — đều **không** phải requirement.
 
 ---
 
@@ -36,7 +34,7 @@ Bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia
 
 ### [`decisions.md`](decisions.md) — vì sao
 
-**107 quyết định `QĐ-001` → `QĐ-107`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
+**115 quyết định `QĐ-001` → `QĐ-115`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
 
 Chia theo chủ đề: nguyên tắc nền · phạm vi phiên bản · điểm và event log · hai mode trả lời · tín hiệu và hàng đợi · đồng hồ · điều khiển trận · kho đề · ghế và kết nối · hiển thị và bảo mật · theo vòng · mô hình dữ liệu và quyền.
 
@@ -114,7 +112,7 @@ Biên bản rà soát và đề xuất `GRR-*` của giai đoạn 2026-07. **Kh�
 
 | Mã | Ở đâu | Là gì |
 |---|---|---|
-| `QĐ-001` → `QĐ-107` | `decisions.md` | Quyết định |
+| `QĐ-001` → `QĐ-115` | `decisions.md` | Quyết định |
 | `GR-001` → `GR-037` | `game-rules.md` | Rule luật chơi |
 | `TERM-001` → `TERM-062` | `glossary.md` | Thuật ngữ |
 | `PERM-001` → `PERM-061` | `permissions.md` | Permission |

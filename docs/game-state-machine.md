@@ -9,7 +9,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn — **source of truth duy nhất** |
-| `decisions.md` | **Vì sao** — 107 quyết định `QĐ-001` → `QĐ-107`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 110 quyết định `QĐ-001` → `QĐ-110`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; tài liệu này dùng đúng tên ở đó |
 | `game-rules.md` | Rule `GR-*`; **mọi transition ở đây phải trỏ về ≥1 `GR-*`** |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -120,7 +120,7 @@ stateDiagram-v2
 
 > **Bốn mốc đầu đều là NÚT BẤM CỦA ADMIN, thứ tự cố định, không gộp được** (`QĐ-028`).
 >
-> Ở vòng **gõ máy**, cạnh `S019 → S021` **không tồn tại** — nút chấm khoá tới khi hết giờ (`QĐ-030`).
+> Ở vòng **gõ máy**, cạnh `S019 → S021` **không tồn tại** — nút chấm khoá tới **`hạn chót + padding`**, riêng Khởi động tới `hạn chót` (`QĐ-030`, `QĐ-109`).
 >
 > **Ở VCNV còn một nút thứ NĂM đứng TRƯỚC cả bốn mốc này: *mở hàng ngang*** — nó thuộc [[#Sơ đồ 7 — Cấp Ô CHỮ|Sơ đồ 7]] và **độc lập** với hai mốc kia (`QĐ-052`). Mở một ô mà **không** hiển thị câu nào là hợp lệ.
 
@@ -153,7 +153,7 @@ stateDiagram-v2
     S011: STATE-011 · XẾP LƯỢT<br/>điểm cao nhất đi trước<br/>hoà ⇒ số vị trí nhỏ nhất
     S012: STATE-012 · CHỌN GÓI<br/>3 mức từ 20 hoặc 30<br/>chủ thể theo MODE
     S014: STATE-014 · THỰC HÀNH người thi chính<br/>30 giây câu 20đ · 60 giây câu 30đ
-    S013: STATE-013 · CỬA SỔ CƯỚP QUYỀN<br/>5 giây · hàng đợi KHÔNG chặn<br/>người cướp tính bản ĐẦU TIÊN
+    S013: STATE-013 · CỬA SỔ CƯỚP QUYỀN<br/>5 giây · hàng đợi KHÔNG chặn<br/>người cướp tính bản CUỐI CÙNG
     S015: STATE-015 · THỰC HÀNH người cướp<br/>20 giây câu 20đ · 40 giây câu 30đ<br/>KHÁC cửa sổ chuông 5 giây
     S011 --> S012: admin chốt người thi
     S012 --> S014: câu được khai là thực hành
@@ -428,7 +428,7 @@ stateDiagram-v2
 - **Mô tả**: cửa sổ **5 giây** để các thí sinh **khác** bấm chuông giành quyền sau khi người thi chính bị chấm Sai. Hàng đợi **không chặn** — có chuông là tính ngay.
 - **Vào**: admin bấm **Sai** (hoặc *"không đạt"* ở câu thực hành) cho người thi chính.
 - **Cho phép**: thí sinh khác bấm chuông · admin chấm người cướp Đúng / Sai / **Huỷ kết quả**.
-- **Cấm**: người thi chính bấm chuông cướp câu của chính mình · người cướp đặt NSHV trên câu đang cướp · ghi nhận **bản cuối** của người cướp — người cướp chỉ tính **bản ĐẦU TIÊN**.
+- **Cấm**: người thi chính bấm chuông cướp câu của chính mình · người cướp đặt NSHV trên câu đang cướp · đặt một `hạn chót` **riêng** cho người cướp — vòng này không có, và mốc đóng là **cú bấm chấm của admin** (`QĐ-113`).
 - **Ra**: có người giành quyền và đã được chấm · hoặc hết **5 giây** không ai bấm ⇒ câu khép lại.
 - **Nguồn**: luật gốc §Về đích đoạn 5 · `QĐ-021` · `GR-018` → `GR-021`
 
@@ -591,12 +591,15 @@ stateDiagram-v2
 
 ### STATE-028 — chuông đã khoá `[phạm vi CÂU]`
 
-- **Mô tả**: nút chuông **tự khoá ngay khi bấm**, ở frontend, **trước khi gửi tín hiệu** ⇒ một ghế chỉ phát được **một** tín hiệu chuông cho một câu. Áp cho **mọi nút được xếp là chuông**, gồm nút *"Mở chướng ngại vật"* — nên ở VCNV mỗi ghế chỉ phát một tín hiệu cho cả vòng.
+- **Mô tả**: nút chuông **tự khoá ngay khi bấm**, ở frontend, **trước khi gửi tín hiệu** ⇒ một ghế chỉ phát được **một** tín hiệu chuông **đang chờ xử lý** tại một thời điểm. Áp cho **mọi nút được xếp là chuông**, gồm nút *"Mở chướng ngại vật"*. Khoá này phục vụ **chống một cú bấm thành hai tín hiệu**; nó **không** phải cơ chế đánh dấu *"ghế đã tiêu lượt"* (`QĐ-111`).
 - **Vào**: thí sinh bấm chuông.
 - **Cho phép**: — (chỉ đọc)
 - **Cấm**: áp cơ chế này cho **nút gửi đáp án** (không khoá) hoặc **thao tác chọn hàng ngang** (có cơ chế riêng).
-- **Ra**: câu kết thúc ⇒ gỡ khoá cho mọi ghế.
-- **Nguồn**: `QĐ-023` · `GR-004`, `GR-009`, `GR-034`
+- **Ra** *(hai nhánh theo loại nút — `QĐ-111`)*:
+  - **Chuông thường** *(Khởi động lượt chung · cướp quyền Về đích · Câu hỏi phụ)*: **câu kết thúc** ⇒ gỡ khoá cho mọi ghế.
+  - **Nút *"Mở chướng ngại vật"***: khoá thành **vĩnh viễn trong lần chạy vòng** khi tín hiệu đã đi qua phán quyết **Đúng** hoặc **Sai**; **Huỷ kết quả** hoặc admin **bấm No** ⇒ **gỡ khoá cho ghế đó**, ghế bấm lại được trong cùng vòng.
+- **Hiển thị**: khi đang khoá, nút **vẫn render** kèm **nhãn** nêu lý do — nhóm *khoá theo luật chơi* của `QĐ-112`, không phải nhóm ẩn.
+- **Nguồn**: `QĐ-023`, `QĐ-111`, `QĐ-112` · `GR-004`, `GR-009`, `GR-034`
 
 ---
 
@@ -676,12 +679,21 @@ stateDiagram-v2
 
 ### STATE-035 — dialog xác nhận của admin `[F.2]`
 
-- **Mô tả**: hộp thoại Yes/No cho một thao tác **không hoàn tác được**. Hai hạng: **thường** (mở đáp án, mở ô chữ, xác nhận tín hiệu) và **phá huỷ** (bỏ vòng, chạy lại vòng, kết thúc vòng khẩn cấp, huỷ trận, điều chỉnh điểm) — hạng phá huỷ **không tắt được** và **bắt nhập lý do**.
-- **Vào**: admin kích hoạt một thao tác thuộc hai hạng trên.
+- **Mô tả**: hộp thoại cho một thao tác **không hoàn tác được**. **BA tầng**, phân biệt bằng **cách thoát** (`QĐ-108`); *"bắt nhập lý do"* là **trục độc lập**, không suy ra từ tầng:
+
+| Tầng | Thao tác | `Esc` | Click ra ngoài | Bắt lý do | Phím tắt `Y`/`N` |
+|---|---|---|---|---|---|
+| **Phá huỷ** | bỏ vòng · chạy lại vòng · kết thúc vòng khẩn cấp · huỷ trận | không đóng | không đóng | **có** | **không** |
+| **Điều chỉnh điểm** | điều chỉnh điểm thủ công | **đóng, KHÔNG lưu thay đổi** | **không đóng** | **có** | có |
+| **Yes/No thường** | mở đáp án · mở ô chữ · xác nhận tín hiệu · **cảnh báo lệch luật** *(`STATE-036`)* | đóng = **No** | đóng = **No** | không | có |
+
+- **Vào**: admin kích hoạt một thao tác thuộc ba tầng trên.
 - **Cho phép**: Yes ⇒ thao tác thực thi (sinh event **riêng**, không phải của dialog) · No ⇒ không có gì xảy ra.
-- **Cấm**: tự đóng theo bộ đếm · bấm Yes hai lần (nút một chiều, tự tắt).
-- **Ra**: admin bấm Yes hoặc No.
-- **Nguồn**: `QĐ-005`, `QĐ-060` · `GR-029`, `GR-030`, `GR-036`
+- **Cấm**: tự đóng theo bộ đếm · bấm Yes hai lần (nút một chiều, tự tắt) · **gán phím tắt cho tầng phá huỷ** — ở đó admin đang gõ lý do, cùng lập luận `QĐ-023`.
+- **Ra**: admin bấm Yes hoặc No, hoặc thoát theo đúng cách thoát của tầng.
+- **Nguồn**: `QĐ-005`, `QĐ-060`, `QĐ-072`, `QĐ-108` · `GR-029`, `GR-030`, `GR-036`
+
+> **Điều chỉnh điểm KHÔNG còn nằm ở hạng phá huỷ.** Nó có **hai** thuộc tính mà không tầng nào khác có cùng lúc — **đổi bảng điểm** như thao tác phá huỷ, nhưng được dùng **thường xuyên** vì là van thoát duy nhất cho mọi sai lầm trong trận. Xếp vào phá huỷ thì khoá cứng đường thoát nhanh; xếp vào Yes/No thường thì một click chệch làm mất cả lượng điểm lẫn lý do vừa gõ.
 
 ### STATE-036 — dialog cảnh báo conflict luật `[F.2]`
 
@@ -727,12 +739,18 @@ stateDiagram-v2
 
 ### STATE-040 — banner tạm dừng `[F.3]`
 
-- **Mô tả**: lớp phủ **KHÔNG CHỮ** do admin chủ động bật. **Hai tác dụng trên hai loại màn**: máy thí sinh — chặn **toàn bộ** thao tác; viewer/overlay — báo hiệu **trận đang tạm dừng**, thuần thị giác. **Không text, không lý do** — khán giả tự hiểu từ bối cảnh sân khấu. Là lớp phủ **duy nhất** chặn thao tác mà **không gắn với một thao tác cụ thể** nào.
+- **Mô tả**: lớp phủ **KHÔNG CHỮ** do admin chủ động bật. **Hai tác dụng trên hai loại màn**: máy thí sinh — **che TOÀN BỘ màn** *(không thấy bảng điểm, đồng hồ, câu hỏi — `QĐ-115`)* **và** chặn **toàn bộ** thao tác; viewer/overlay — báo hiệu **trận đang tạm dừng**, thuần thị giác. **Không text, không lý do** — khán giả tự hiểu từ bối cảnh sân khấu. Là lớp phủ **duy nhất** chặn thao tác mà **không gắn với một thao tác cụ thể** nào.
 - **Vào**: admin bấm mở banner, **và không có cửa sổ thời gian nào đang đếm**. Đây là **điều kiện cứng của trạng thái**: khi có đồng hồ chạy thì nút **không bật**.
 - **Cho phép**: **admin làm mọi thứ như thường** — banner **không phủ máy admin** · admin bấm đóng banner.
 - **Cấm**: **mọi thao tác từ máy thí sinh** · **hiển thị bất kỳ chữ nào** trên banner, gồm cả lý do, tên người bấm, hay đồng hồ · **start timer trong lúc banner đang bật** · **tự đóng theo bộ đếm**.
-- **Ra**: admin bấm đóng. Trạng thái bên dưới lộ lại **nguyên vẹn**.
-- **Nguồn**: `QĐ-050` · `GR-035`
+- **Ra**: admin bấm đóng. Trạng thái bên dưới lộ lại **nguyên vẹn** — tức trạng thái **hiện tại**, không phải trạng thái đã lưu lúc banner bật.
+- **Nguồn**: `QĐ-050`, `QĐ-115` · `GR-035`
+
+> **Trên máy thí sinh, banner CHE TOÀN BỘ màn** (`QĐ-115`) — thí sinh **không thấy** bảng điểm, **không thấy** đồng hồ, **không thấy** câu hỏi. Đây là **ngoại lệ tường minh** của `PRD-REQ-067`.
+>
+> **Che ≠ đổi.** Dữ liệu bên dưới **vẫn chảy**: server vẫn đẩy, client vẫn nhận, banner chỉ phủ lên trên. Nhờ vậy §Ra *"lộ lại nguyên vẹn"* đọc đúng nghĩa — tắt banner là thấy **trạng thái hiện tại**, kể cả điểm đã đổi trong lúc che. `INV-021` **không** bị đụng.
+>
+> **Vế đồng hồ không tồn tại**: banner và đồng hồ **loại trừ lẫn nhau** *(xem §Vào)*, nên không có đồng hồ nào để chạy hay để đóng băng dưới banner. `INV-016` **không** bị đụng.
 
 **Bốn ràng buộc suy ra, không phải luật mới:**
 
@@ -933,7 +951,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 - **Actor**: Admin (MC quyết bằng lời, admin bấm)
 - **Mô tả**: phán quyết chốt kết quả một câu cho một thí sinh. **Máy không bao giờ tự chấm.** Gợi ý so khớp (highlight ký tự khác) **chỉ là gợi ý**.
 - **Hợp lệ ở**: `STATE-019` (chỉ vòng **nói**) · `STATE-020` (mọi vòng).
-- **Không hợp lệ ở**: `STATE-019` ở vòng **gõ máy** — nút chấm khoá tới khi hết giờ · `STATE-021` — đã chấm · câu thuộc vòng **đã bị bỏ** ⇒ toast.
+- **Không hợp lệ ở**: `STATE-019` ở vòng **gõ máy** — nút chấm khoá tới **`hạn chót + padding`**, riêng Khởi động tới `hạn chót` (`QĐ-109`) · `STATE-021` — đã chấm · câu thuộc vòng **đã bị bỏ** ⇒ toast.
 - **Nguồn**: `QĐ-001`, `QĐ-010`, `QĐ-014` · `GR-026`
 
 ### EVENT-013 — Chấm SAI
@@ -959,13 +977,14 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 - **Không hợp lệ ở**: sau khi đã bấm — nút tự tắt.
 - **Nguồn**: `QĐ-044`, `QĐ-060` · `GR-005`
 
-### EVENT-016 — Công bố đáp án (mốc cắt Khởi động)
+### EVENT-016 — Công bố đáp án `[BÍ DANH — không phải một mốc riêng]`
 
 - **Actor**: Admin
-- **Mô tả**: ánh xạ của mốc *"MC công bố đáp án"*. Là **mốc cắt** để xác định bản đáp án được ghi nhận ở vòng Khởi động, mode nhập liệu.
-- **Hợp lệ ở**: `STATE-019`, `STATE-020` ở vòng Khởi động, mode nhập liệu.
-- **Không hợp lệ ở**: mode sân khấu — không có bản gửi nào để cắt.
-- **Nguồn**: `QĐ-027` · `GR-006`
+- **Mô tả**: **KHÔNG còn là một sự kiện riêng.** Mã này nay chỉ là **bí danh** của cú bấm **mở đáp án** chung của admin (`QĐ-048`), giữ lại để các tham chiếu cũ không trỏ vào hư không.
+- **Vai trò cũ đã bị GỠ**: nó từng là **mốc cắt** xác định bản đáp án được ghi nhận ở vòng Khởi động. `QĐ-110` đã bỏ vai trò đó — **`hạn chót` của câu là hạn nhận bài duy nhất**, và bản được ghi nhận là bản hợp lệ **cuối cùng trước `hạn chót`**.
+- **Vì sao gỡ**: mốc cắt tạo ra **ba thứ cùng đóng một cửa nhận bài** mà không cái nào thắng — `hạn chót` của đồng hồ, cú bấm của admin, và *"chấm xong thì nút gửi khoá lại"*. Không tổ hợp nào trong ba được quy định thứ tự, nên mọi hiện thực đều là một lựa chọn ngầm.
+- **Hệ quả về số mốc**: một câu có tối đa **bốn** mốc bấm — **hiển thị câu** · **start timer** · **bắt đầu thực hành** *(chỉ câu thực hành)* · **phán quyết**.
+- **Nguồn**: `QĐ-027`, `QĐ-048`, `QĐ-110` · `GR-006`
 
 ## C. Admin — VCNV
 
@@ -1205,8 +1224,8 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 - **Mô tả**: nút gửi **KHÔNG bị khoá sau khi gửi**; sửa và gửi lại bao nhiêu lần cũng được. **Luôn ghi nhận bản CUỐI CÙNG** trong các bản hợp lệ. **Bản rỗng không phải một đáp án** — bỏ qua, giữ bản hợp lệ trước đó. Nội dung được **trim** hai đầu.
 - **Hợp lệ ở**: `STATE-019` — mọi vòng gõ máy, và mode nhập liệu.
 - **Không hợp lệ ở**: mode sân khấu ở Khởi động / Về đích / Câu hỏi phụ — **nút gửi không tồn tại** · sau khi admin đã chấm.
-- **Ngoại lệ**: người **cướp quyền** ở Về đích chỉ tính **bản ĐẦU TIÊN** — ngược với mọi chỗ khác.
-- **Nguồn**: `QĐ-029`, `QĐ-059` · `GR-006`, `GR-008`, `GR-015`, `GR-018`
+- **Không có ngoại lệ nào.** Người **cướp quyền** ở Về đích cũng tính **bản CUỐI CÙNG** như mọi vai, theo **nguyên tắc hai trục** (`QĐ-113`) — vòng đó không có `hạn chót` riêng, và mốc đóng là **cú bấm chấm của admin**.
+- **Nguồn**: `QĐ-029`, `QĐ-059`, `QĐ-113` · `GR-006`, `GR-008`, `GR-015`, `GR-018`, `GR-020`
 
 ### EVENT-041 — Chọn gói câu
 
@@ -1359,7 +1378,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | T-033 | `STATE-018` / `STATE-021` (lượt chung) | `EVENT-037` Bấm chuông | Trong cửa sổ; **đã có** người giành quyền | `STATE-032` Tín hiệu trơ | Ghi vào lịch sử kèm timestamp; **không** đổi người giữ quyền, **không** mở lại chuông | `GR-003` |
 | T-034 | `STATE-019` (lượt chung) | `EVENT-044` Hết giờ | 0 tín hiệu chuông trong cửa sổ 3 giây | `STATE-017` của câu kế | Câu **bị bỏ qua**, không ai đổi điểm; câu vẫn tính **đã dùng** | `GR-005` |
 | T-035 | `STATE-019` (mode nhập liệu) | `EVENT-040` Gửi đáp án | Bản khác rỗng sau trim; tới **trong hạn** (biên **đóng**) | `STATE-019` | Thay bản được ghi nhận; lịch sử các bản đã gửi **không xoá** | `GR-006` |
-| T-036 | `STATE-020` | `EVENT-040` Gửi đáp án | Bản tới **sau** mốc cắt | `STATE-020` | Giữ **cả hai** bản; bản quá hạn tô **đỏ**; không tự ghi đè bản hợp lệ | `GR-006` |
+| T-036 | `STATE-020` | `EVENT-040` Gửi đáp án | Bản tới **sau `hạn chót`**, trong cửa sổ giữ bản tới muộn | `STATE-020` | Giữ **cả hai** bản; bản quá hạn tô **đỏ**; không tự ghi đè bản hợp lệ. Sau `hạn chót + padding` server **từ chối** — trừ Khởi động, vốn không có biên trên | `GR-006`, `GR-035` C6b, C6c · `QĐ-109` |
 
 ## D. Vòng VCNV
 
@@ -1401,7 +1420,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | T-060 | `STATE-020` (câu có NSHV) | `EVENT-012` Chấm Đúng | — | `STATE-021` | **+2× giá trị câu** — 20 ⇒ +40 · 30 ⇒ +60 | `GR-021` |
 | T-061 | `STATE-020` (câu có NSHV) | `EVENT-013` Chấm Sai | — | `STATE-013` | **−giá trị câu ĐÚNG MỘT LẦN**, bất kể có ai cướp hay không — hình phạt NSHV **thay thế** phần nợ của transfer | `GR-021` |
 | T-062 | `STATE-013` | `EVENT-037` Bấm chuông | Người bấm **không phải** người thi chính; trong 5 giây | `STATE-030` | Người sớm nhất theo server timestamp giành quyền; cùng mốc ⇒ hàng đợi tự quyết | `GR-020` |
-| T-063 | `STATE-013` | `EVENT-012` Chấm Đúng (người cướp) | — | `STATE-021` | **Transfer**: người sai **−giá trị câu**, người cướp **+giá trị câu**. Bản được chấm là **bản ĐẦU TIÊN** của người cướp | `GR-020` |
+| T-063 | `STATE-013` | `EVENT-012` Chấm Đúng (người cướp) | — | `STATE-021` | **Transfer**: người sai **−giá trị câu**, người cướp **+giá trị câu**. Bản được chấm là **bản CUỐI CÙNG** của người cướp (`QĐ-113`) | `GR-020` |
 | T-064 | `STATE-013` | `EVENT-013` Chấm Sai (người cướp) | — | `STATE-021` | Người cướp **−½ giá trị câu** (chia số nguyên, làm tròn xuống theo **độ lớn**); người thi chính **không** được hoàn lại | `GR-020` |
 | T-065 | `STATE-013` | `EVENT-044` Hết giờ | Không ai bấm trong 5 giây | `STATE-021` | Người thi chính giữ nguyên kết quả; không ai được cộng | `GR-020` |
 | T-066 | `STATE-019` (câu thực hành) | `EVENT-011` Bắt đầu thực hành | Câu được khai là thực hành; start timer đã bấm | `STATE-014` | Đếm **30 giây** (câu 20đ) hoặc **60 giây** (câu 30đ) | `GR-019` |
@@ -1481,7 +1500,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 # Invalid transitions
 
 > **Ba hạng outcome, không được trộn** — xem [[#Quy ước đọc|Quy ước đọc]]:
-> - **KHÔNG CÓ TÍN HIỆU** (phía thí sinh): nút **không hiển thị**, bấm **không phản hồi** ⇒ không sự kiện nào được tạo. Đây **không phải** drop — không có gì để drop.
+> - **KHÔNG CÓ TÍN HIỆU** (phía thí sinh): bấm **không phản hồi** ⇒ không sự kiện nào được tạo. Đây **không phải** drop — không có gì để drop. **Kết cục hiển thị của hạng này có HAI dạng** (`QĐ-112`): control **mất nghĩa** ở pha hiện tại ⇒ **không render**; control **có nghĩa nhưng ghế này bị luật cấm** ⇒ **render vô hiệu hoá kèm nhãn**. Cả hai đều cho ra *không có tín hiệu*.
 > - **TOAST** (phía admin): nút không bật; nếu tín hiệu vẫn tới thì server từ chối. **Không ép được.**
 > - **DIALOG CẢNH BÁO**: lệch luật nhưng **ép được**.
 
@@ -1490,7 +1509,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | Trận **chưa đóng sổ** *(`STATE-001`→`007`, `016`)* | Thao tác quản trị làm **GIẢM** quyền của một tài khoản dính tới trận đó — gỡ permission khỏi túi vai · thu hồi phép gán vai · vô hiệu hoá tài khoản | Thu hồi quyền của phiên đang giữ quyền điều khiển làm **khoá chết trận**: mất `PERM-041` thì không chấm được, mà phán quyết là **điều kiện chuyển câu**; mọi lối thoát đóng cùng lúc | **TOAST** invalid state. **Cấp THÊM quyền vẫn được, hiệu lực ngay** | `QĐ-095` · `INV-010`, `GR-026` |
 | `STATE-018` ở **Câu hỏi phụ** | `EVENT-037` Bấm chuông | Chuông **chưa sống** trước mốc start timer | KHÔNG CÓ TÍN HIỆU; **server cũng từ chối** (zero-trust) | `GR-024`, `GR-034` |
 | Ngoài cửa sổ chuông | `EVENT-037` | Cửa sổ đã đóng | KHÔNG CÓ TÍN HIỆU | `GR-003`, `GR-034` |
-| `STATE-028` Chuông đã khoá | `EVENT-037` | Nút tự khoá **trước khi gửi** ⇒ không có cú bấm thứ hai | KHÔNG CÓ TÍN HIỆU (server vẫn phải bỏ qua nếu nhận được) | `GR-034` |
+| `STATE-028` Chuông đã khoá | `EVENT-037` | Nút tự khoá **trước khi gửi** ⇒ không có cú bấm thứ hai | KHÔNG CÓ TÍN HIỆU — nút **vẫn render kèm nhãn** *(nhóm khoá theo luật chơi)*; server vẫn phải bỏ qua nếu nhận được | `GR-034`, `QĐ-111`, `QĐ-112` |
 | `STATE-018` trở đi | `EVENT-042` Đặt NSHV | Cửa sổ NSHV **đã đóng** tại mốc hiển thị câu; ngôi sao **vẫn chưa dùng** | KHÔNG CÓ TÍN HIỆU | `GR-021` |
 | `STATE-026` NSHV đã dùng | `EVENT-042` | Một lần cho mỗi lần chạy vòng | KHÔNG CÓ TÍN HIỆU (nút disabled) | `GR-021` |
 | Mode **sân khấu** | `EVENT-042` từ máy thí sinh | Máy thí sinh **không render** nút NSHV — thí sinh nói miệng, admin bấm | KHÔNG CÓ TÍN HIỆU | `GR-021` |
@@ -1500,13 +1519,13 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | `STATE-009`, hàng ngang đã mở | `EVENT-039` | Hàng đã mở không còn là mục tiêu chọn được | KHÔNG CÓ TÍN HIỆU | `GR-007` |
 | `STATE-022` Ghế bị loại khỏi VCNV | Mọi sự kiện của thí sinh trong VCNV | Máy thí sinh không hiển thị gì | KHÔNG CÓ TÍN HIỆU | `GR-010` |
 | `STATE-025` Ghế bị vô hiệu hoá | **Mọi** sự kiện của thí sinh | Máy ghế bị chặn toàn bộ; **server enforce** | Tín hiệu vào lịch sử với kết cục **`STATE-032` TRƠ** — **không drop** | `GR-036` |
-| `STATE-040` Banner tạm dừng đang bật | **Mọi** sự kiện của thí sinh | Banner chặn toàn bộ; **server enforce**, không tin client | Như trên | `GR-035` |
+| `STATE-040` Banner tạm dừng đang bật | **Mọi** sự kiện của thí sinh | Banner **che toàn bộ màn thí sinh** và chặn toàn bộ thao tác; **server enforce**, không tin client. Dữ liệu bên dưới vẫn chảy — **che ≠ đổi** | Như trên | `GR-035`, `QĐ-115`, `INV-021` |
 | `STATE-008` FINISHED | `EVENT-037` Bấm chuông | Trận đã đóng sổ | Ghi lịch sử, **không có hiệu lực** | — |
 | `STATE-017` Câu chưa hiển thị | `EVENT-010` Start timer | Hai mốc có **thứ tự cố định**: hiển thị trước | Nút chưa bật | `GR-033` |
 | `STATE-019` trở đi | `EVENT-010` Start timer | Nút **tự khoá** sau lần bấm đầu | Nút disabled | `GR-033` |
 | `STATE-040` Banner đang bật | `EVENT-010` Start timer | Chiều còn lại của ràng buộc loại trừ — phải đóng banner trước | **TOAST** | `GR-035` |
 | Đang có đồng hồ chạy | `EVENT-034` Mở banner | Banner và đồng hồ **loại trừ lẫn nhau** | **TOAST** | `GR-035` |
-| `STATE-019` ở vòng **gõ máy** | `EVENT-012` / `EVENT-013` Chấm | Nút chấm **khoá tới khi hết giờ** — tránh chấm khi thí sinh còn đang sửa | Nút disabled | `GR-006` |
+| `STATE-019` ở vòng **gõ máy** | `EVENT-012` / `EVENT-013` Chấm | Nút chấm **khoá tới `hạn chót + padding`** — tránh chấm khi thí sinh còn đang sửa, **và** khi một bản tới muộn còn có thể tới. Riêng **Khởi động** mở ngay tại `hạn chót` | Nút disabled | `GR-006`, `QĐ-109` |
 | `STATE-021` Đã chấm | `EVENT-012` / `EVENT-013` Chấm lại | Một câu chỉ đi qua **đúng một** phán quyết | Nút disabled; server từ chối phán quyết lặp | `GR-026` |
 | Câu Tăng tốc **đã chốt** | Đổi phán quyết của **một** người | Bảng điểm của câu là **chung cuộc** — event điểm toàn bảng **không sửa từng phần** | **Thao tác không tồn tại**; sửa sai qua `EVENT-028` | `GR-029` |
 | Câu thuộc vòng **đã bị bỏ** | `EVENT-012` Chấm Đúng | Không sinh event điểm cho vòng đã bỏ | **TOAST** | `GR-030` |
@@ -1614,7 +1633,7 @@ Mọi lệch luật khác chỉ **cảnh báo**, admin ép được. Thao tác �
 
 ### INV-015 — Đồng hồ và lớp phủ khoá THÍ SINH, không khoá ADMIN
 
-Hai ngoại lệ tường minh: nút **start timer** tự khoá sau lần bấm đầu, và ở vòng thí sinh **gõ đáp án** thì nút **chấm** khoá tới khi hết giờ. — `QĐ-030`
+Hai ngoại lệ tường minh: nút **start timer** tự khoá sau lần bấm đầu, và ở vòng thí sinh **gõ đáp án** thì nút **chấm** khoá tới **`hạn chót + padding`** *(Khởi động: tới `hạn chót`)*. — `QĐ-030`, `QĐ-109`
 
 ### INV-016 — Đồng hồ không bao giờ ĐÓNG BĂNG
 

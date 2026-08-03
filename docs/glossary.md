@@ -395,7 +395,7 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 **Định nghĩa.** Khi người thi chính ở Về đích trả lời **sai**, các thí sinh **khác** giành quyền bằng cách bấm chuông **trong 5 giây**. Cướp đúng ⇒ **transfer**: người sai **−value**, người cướp **+value**. Cướp sai ⇒ người cướp **−½ value**, người thi chính **không** được hoàn lại.
 
 - **Tên khác**: steal · transfer
-- **Đừng nhầm với**: **5 giây là cửa sổ bấm chuông**, không phải thời gian trả lời hay thời gian thực hành (20/40 giây) · **ghi nhận đáp án ngược nhau**: người thi chính tính **bản cuối**, người cướp chỉ tính **bản ĐẦU TIÊN** · `stealMode: 'add'` là option hợp lệ của hệ thống nhưng **không dùng** cho preset O26
+- **Đừng nhầm với**: **5 giây là cửa sổ bấm chuông**, không phải thời gian trả lời hay thời gian thực hành (20/40 giây) · **ghi nhận đáp án giống nhau**: người thi chính và người cướp **đều** tính **bản CUỐI CÙNG**, theo nguyên tắc hai trục (`QĐ-113`) — vế *"người cướp tính bản đầu tiên"* đã bị gỡ · `stealMode: 'add'` là option hợp lệ của hệ thống nhưng **không dùng** cho preset O26
 - **Nguồn**: luật gốc §Về đích · `QĐ-058`
 
 ### TERM-036 — Ngôi sao hy vọng

@@ -440,6 +440,8 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Quyết định.** **Không gán hotkey** cho chuông — tránh bấm nhầm khi đang gõ đáp án. Nút tự khoá **ở frontend, trước khi gửi**, gỡ khoá khi sang câu mới. Nút *"Mở chướng ngại vật"* của VCNV **được xếp là chuông** ⇒ cũng chỉ nhận click, cũng tự khoá, nên mỗi ghế chỉ phát **một** tín hiệu cho cả vòng.
 
+> ⚠️ **Vế cuối đã bị `QĐ-111` thay.** *"Mỗi ghế chỉ phát một tín hiệu cho cả vòng"* nay đọc là **một PHÁN QUYẾT Đúng/Sai cho cả vòng**: tín hiệu bị **từ chối** hoặc bị chấm **Huỷ kết quả** không tiêu hạn mức, và nút **mở lại**. Hai vế đầu — không gán hotkey, tự khoá ở frontend trước khi gửi — **giữ nguyên**.
+
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-024 — Tín hiệu đến sau khi đã có người giành quyền: ghi nhận nhưng TRƠ
@@ -447,6 +449,45 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 **Quyết định.** Tín hiệu vẫn vào lịch sử kèm timestamp, nhưng **không** đổi người giữ quyền và **không** sinh hệ quả nào.
 
 **Vì sao.** *Trơ* khác *drop*: drop là mất dấu, trơ là có dấu mà không có hiệu lực. Lịch sử trơ chính là căn cứ để admin can thiệp khi có tranh chấp.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-111 — Khoá nút chuông gắn với PHÁN QUYẾT, không gắn với câu hay vòng
+
+**Quyết định.** Nút chuông vẫn **tự khoá ngay tại cú bấm**, ở frontend, trước khi gửi — vế này của `QĐ-023` **không đổi**. Cái đổi là điều kiện **GỠ khoá**, và nó tách theo loại nút:
+
+| Loại nút | Gỡ khoá khi |
+|---|---|
+| **Chuông thường** — Khởi động lượt chung · cướp quyền Về đích · Câu hỏi phụ | **câu kết thúc** ⇒ gỡ cho mọi ghế |
+| **"Mở chướng ngại vật"** | khoá chỉ thành **vĩnh viễn trong lần chạy vòng** khi tín hiệu đã đi qua một phán quyết **Đúng** hoặc **Sai**. Bị admin **từ chối** hoặc bị chấm **Huỷ kết quả** ⇒ **mở lại**, ghế bấm lại được trong cùng vòng |
+
+Hạn mức *"một lần đoán, sai thì loại"* của luật gốc đếm theo **PHÁN QUYẾT**, **không** theo cú bấm.
+
+**Vì sao.** Hai mục đích khác nhau bị gộp vào một cơ chế: **chống một cú bấm run tay thành hai tín hiệu** *(mục đích thật của `QĐ-023`)*, và **đánh dấu ghế đã tiêu lượt**. Quyết định này tách chúng ra.
+
+Hai nhánh Đúng/Sai **tự** cưỡng chế hạn mức mà không cần khoá: chấm **Đúng** ⇒ vòng kết thúc, nút biến mất cho **mọi** ghế (`GR-009` C10); chấm **Sai** ⇒ ghế mang cờ *bị loại*, máy ghế đó **không hiển thị gì** (`GR-009` C9, `STATE-022`). Khoá vĩnh viễn vì thế chỉ **thừa ra** ở đúng nhánh **Huỷ kết quả** — nhánh mà `GR-009` C6b nói thẳng là *"thí sinh **KHÔNG bị loại**"*.
+
+**Huỷ kết quả tiêu TÍN HIỆU, không tiêu QUYỀN của ghế.** `GR-009` C6b khai *"tín hiệu sang **đã xử lý**"*, và `INV-006` đòi mọi tín hiệu đã tới server đều có outcome và ở lại lịch sử. Cùng lập luận cho cú **bấm No**: `GR-009` C8 đã hứa *"thí sinh không mất lượt"*, và lời hứa đó là suông nếu nút không mở lại — y hệt lập luận `GR-007` C2 đã dùng cho nút chọn hàng ngang.
+
+**Chứng cứ trong nguồn.** `GR-032` §Kích hoạt tay khai tập ứng viên gồm *"ghế **vừa bị Huỷ kết quả** ở chính câu/vòng đó *(được đưa lại, tức **nhận lượt thứ hai**)*"* — nguồn **đã** cho ghế đó một lượt thứ hai, chỉ khác là qua đường admin kích hoạt tay. Quyết định này cho ghế **tự bấm lại**; cùng nguyên tắc `QĐ-061`, khác đường vào.
+
+**Hệ quả cần biết, không phải luật mới.** `GR-009` C7 chốt băng điểm theo **số hàng ngang đã hỏi tại mốc admin xác nhận**. Ghế bấm lại sau một cú Huỷ kết quả được xác nhận ở mốc **muộn hơn**, nên băng của lần sau có thể **thấp hơn** lần đầu *(60 → 50 → 40…)*. Đây là hệ quả tự nhất quán của `GR-009`, nêu ra để không ai đọc băng tụt thành lỗi.
+
+**Thay cho.** Vế cuối của `QĐ-023` — *"nên mỗi ghế chỉ phát **một** tín hiệu cho cả vòng"*. Hai vế đầu của `QĐ-023` *(không gán hotkey; tự khoá ở frontend trước khi gửi)* giữ nguyên.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-114 — Outcome của một tín hiệu phải được báo về CHÍNH MÁY ĐÃ PHÁT
+
+**Quyết định.** `INV-006` *(mọi tín hiệu đã tới server đều có outcome)* kéo theo một **nghĩa vụ hiển thị**: outcome đó MUST được báo về **chính máy đã phát tín hiệu**, không chỉ về màn admin.
+
+Phương tiện là **nhãn trên chính nút vừa bấm**, theo nhóm *mờ kèm nhãn* của `QĐ-112` — **không** dùng lớp phủ hay toast riêng. Nhãn phân biệt ít nhất ba kết cục: **đã giành quyền** · **thua tốc độ, tín hiệu trơ** · **đang chờ admin duyệt**.
+
+Việc báo này **không đổi trạng thái nào của luật**: tín hiệu trơ vẫn không đổi người giữ quyền, không mở lại chuông, không gián đoạn đồng hồ.
+
+**Vì sao.** Một ghế bấm chuông rồi thấy nút khoá mà không có tín hiệu nào khác thì **không phân biệt được** ba tình huống hoàn toàn khác nhau — *"tôi giành được quyền"*, *"tôi thua tốc độ"*, *"máy tôi mất kết nối"*. Mục tiêu của EPIC-008 là *"thí sinh luôn biết mình đang ở đâu"*, và `INV-006` chỉ có nghĩa với **admin** nếu outcome không bao giờ đi ngược về người phát.
+
+**Vì sao không dùng lớp phủ.** Thêm một lớp phủ là thêm một thứ **che màn thi đấu đúng lúc căng nhất**, và nó phình `STATE-033`…`STATE-040` thêm một trạng thái chỉ để nói một câu mà cái nhãn đã nói được. Nút lúc đó **vốn đã** phải mang nhãn theo `QĐ-112`.
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
@@ -504,7 +545,7 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 | *"MC đọc xong câu hỏi"* | Admin bấm **start timer** |
 | *"hiệu lệnh của người dẫn chương trình"* (Câu hỏi phụ) | Admin **bấm** — admin là người **nghe** hiệu lệnh |
 | *"câu hỏi được đọc lên **hoặc** hiện lên màn hình"* (đóng cửa sổ NSHV) | Admin bấm **hiển thị câu hỏi** — mốc đến trước |
-| *"MC công bố đáp án"* (mốc cắt Khởi động) | Admin **bấm** |
+| *"MC công bố đáp án"* ~~(mốc cắt Khởi động)~~ | Admin **bấm** — ⚠️ **`QĐ-110` đã gỡ vai trò mốc cắt.** Ánh xạ vẫn còn, nhưng nó trỏ tới **cú bấm mở đáp án** của `QĐ-048`; `hạn chót` mới là hạn nhận bài duy nhất |
 
 **Vì sao.** Hệ quả trực tiếp của `QĐ-001`: máy không quan sát được sân khấu, admin là cảm biến.
 
@@ -530,6 +571,8 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 
 **Hai ngoại lệ tường minh của vế thứ nhất.** Nút **start timer** tự khoá sau lần bấm đầu; và ở vòng thí sinh **gõ đáp án**, nút **chấm** khoá tới khi hết giờ — tránh chấm khi thí sinh còn đang sửa.
 
+> ⚠️ **Mốc của ngoại lệ thứ hai đã được `QĐ-109` làm chính xác hơn.** *"Tới khi hết giờ"* nay đọc là **`hạn chót + padding`** — tới khi **cửa sổ giữ bản tới muộn** đã đóng; riêng vòng **Khởi động** mở ngay tại **`hạn chót`**, không chờ. Bản thân ngoại lệ và lý do của nó **không đổi**.
+
 **Phân biệt KHÉP với ĐÓNG BĂNG.** Bất biến này cấm **đóng băng** — giữ đồng hồ lại rồi thả ra, vì thời gian đã trôi thì không lấy lại được. Nó **không** cấm một cửa sổ **kết thúc sớm** khi lý do tồn tại của nó đã hết (`QĐ-031`, `QĐ-034`).
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
@@ -551,6 +594,72 @@ Luật được viết theo **mode sân khấu**; mode nhập liệu là **biế
 **Không có đồng hồ trả lời riêng ở Câu hỏi phụ.** Luật gốc **im lặng có chủ ý**: nó nói rõ *"tính từ lúc giành được quyền"* ở Khởi động lượt chung và *"suy nghĩ **và trả lời**"* ở Về đích, nhưng ở Câu hỏi phụ chỉ ghi *"Thời gian suy nghĩ cho mỗi câu hỏi là 15 giây"* — và **không** có chế tài cho việc bấm chuông rồi im lặng. Ba chỗ vắng cùng lúc không phải sót. Bấm rồi im ⇒ admin chấm Sai ⇒ sang câu kế.
 
 *Nguồn*: `[LUẬT GỐC]` + `[CHỦ DỰ ÁN]`
+
+### QĐ-109 — CỬA SỔ GIỮ BẢN TỚI MUỘN, để admin còn phán quyết Đúng/Sai trên nó
+
+**Quyết định.** Nút gửi trên máy thí sinh tắt **đúng tại hạn chót**, ở **mọi** vòng — không đâu có thêm một giây thao tác nào. Sau hạn chót, server vẫn **giữ** một bản gửi tới trong khoảng `(hạn chót, hạn chót + padding]` và **tô đỏ** nó là **quá hạn**, để nó còn đi qua **phán quyết Đúng/Sai** của admin. Quá mốc đó, server **từ chối** — bản ấy không còn là đối tượng chấm được.
+
+`padding` là **cấu hình luật**, mặc định **5 giây**. Ở vòng **Khởi động** **không có biên trên**: bản tới muộn bao nhiêu cũng được giữ và chấm được.
+
+**Nút chấm và nút *chốt câu* ở kênh gõ chỉ mở từ `hạn chót + padding`** — tức khi không còn bản nào có thể tới nữa. Riêng Khởi động mở ngay tại **hạn chót**, không chờ.
+
+**Vì sao gọi là GIỮ, không gọi là "dung sai".** Chữ *dung sai* nghe như hệ thống **khoan nhượng** cho bản tới muộn — như thể nó được tha thứ và thành hợp lệ. Không phải: bản đó **vẫn là bản quá hạn**, vẫn tô đỏ, và số phận của nó vẫn do **admin phán quyết Đúng/Sai** như mọi bản khác. Thứ cửa sổ này bảo vệ là **quyền phán quyết**, không phải quyền của thí sinh. Đặt tên theo *dung sai* sẽ mời người đọc suy ra một sự khoan nhượng mà quy tắc không hề cấp.
+
+**Vì sao cửa sổ này tồn tại.** Để **bảo vệ tính đúng đắn trước độ trễ mạng**. Một bản phát ra lúc `12,998` giây mà tới server lúc `13,040` là bản thí sinh gửi **kịp**; loại thẳng nó là phạt thí sinh vì đường truyền, và là **máy tự quyết** đúng chỗ `QĐ-001` giao cho người. `QĐ-029` đã chốt *"bản quá hạn không bị máy loại thẳng, admin quyết"* — mục này chỉ nêu **biên trên** của lời hứa đó, thứ `QĐ-029` để trống.
+
+**Đây KHÔNG phải ân hạn, và ranh giới đó phải giữ.** `QĐ-006` nói mốc admin là **tuyệt đối, không cửa sổ ân hạn**. Cửa sổ này không phá điều đó vì nó **không cấp thêm thời gian thao tác** cho ai: nút gửi đã tắt, thí sinh không bấm được nữa, và bản tới trong cửa sổ **vẫn bị tô đỏ là quá hạn** chứ không thành hợp lệ. Đọc nó thành *"thí sinh được gửi thêm 5 giây"* là đọc sai, và là cách đọc duy nhất khiến nó chỏi `QĐ-006`.
+
+**Vì sao nút chấm phải chờ cửa sổ đóng.** Ở **Tăng tốc** và **câu hàng ngang VCNV**, một câu sinh **một** sự kiện điểm cho **toàn bảng** tại cú bấm *chốt câu* (`QĐ-013`, `QĐ-053`). Nếu một bản chấm được còn tới sau cú bấm đó thì nó đòi **tính lại cả bảng**, mà `QĐ-014` cấm tính lại. Chờ cửa sổ đóng làm tình huống đó **bất khả thi về cấu trúc** thay vì phải viết một nhánh xử lý cho nó.
+
+**Vì sao Khởi động được nới cả hai vế.** Vòng này chấm **từng người**, không có bảng chung nào để một bản tới muộn phá. Một bản tới sau khi admin đã chấm chỉ nằm trong lịch sử: nó không lật được phán quyết đã chốt (`QĐ-014`), và sửa sai vẫn đi qua điều chỉnh điểm tay. Ép Khởi động phải chờ 5 giây trước mỗi lần chấm là trả một cái giá thật cho một rủi ro không tồn tại — cửa sổ suy nghĩ ở đây chỉ **3 giây**.
+
+**Hệ quả.**
+
+- Bảng *Kênh trả lời* phải đổi mốc mở nút chấm từ *"hết giờ"* thành *"khi cửa sổ giữ bản tới muộn đã đóng"*, kèm ngoại lệ Khởi động.
+- `padding` vào tập cấu hình luật của contest builder, mặc định 5 giây — **không hard-code**.
+- Biên vẫn là **biên đóng** (`QĐ-029`): bản tới đúng mốc `hạn chót + padding` được giữ.
+- **Quyền sở hữu đặc tả**: quy tắc *giữ hay từ chối một bản gửi* thuộc **engine** (EPIC-006); *mốc mở nút chấm* thuộc **màn điều khiển của admin** (EPIC-007).
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-110 — Khởi động KHÔNG có mốc cắt riêng; hạn chót là hạn nhận bài duy nhất
+
+**Quyết định.** Bỏ mốc *"công bố đáp án"* với vai trò **mốc cắt** của vòng Khởi động. **Hạn chót của câu là hạn nhận bài duy nhất**, và bản được ghi nhận là bản hợp lệ **cuối cùng trước hạn chót**. Việc đưa đáp án lên màn hình đi qua **cú bấm mở đáp án chung** của admin (`QĐ-048`), **không** phải một mốc riêng của vòng đời câu.
+
+Hệ quả về số mốc: một câu có tối đa **bốn** mốc bấm — **hiển thị câu · start timer · bắt đầu thực hành** *(chỉ câu thực hành)* **· phán quyết**.
+
+**Vì sao.** Mốc cắt tạo ra **hai thứ cùng đóng một cửa** mà không cái nào thắng: hạn chót của đồng hồ, và cú bấm của admin. Nguồn còn thêm một vế thứ ba — *"chấm xong thì nút gửi khoá lại"* — nên thành **ba** mốc tranh nhau đóng cùng một cửa nhận bài. Không tổ hợp nào trong ba cái đó được quy định thứ tự, nên mọi hiện thực đều là một lựa chọn ngầm.
+
+Bỏ mốc cắt giải xong bằng cách **xoá tranh chấp** thay vì xếp thứ tự cho nó: chỉ còn đồng hồ đóng cửa nhận bài, và việc **công bố** tách hẳn khỏi việc **chốt bản nào được tính**. Hai việc đó vốn khác nhau — `QĐ-048` đã cho admin toàn quyền mở đáp án bất cứ lúc nào, nên một mốc riêng chỉ để công bố là dư.
+
+**Cái mất và vì sao chấp nhận được.** Mốc cắt là ánh xạ của *"MC công bố đáp án"* trong luật gốc. Bỏ nó **không** làm mất mốc đó trên sân khấu — MC vẫn công bố, admin vẫn bấm mở đáp án. Thứ bị bỏ chỉ là việc dùng cú bấm ấy làm **hạn nhận bài**, một vai mà đồng hồ đã đảm nhiệm.
+
+**Thay cho.** Dòng cuối bảng của `QĐ-027` — *"MC công bố đáp án (mốc cắt Khởi động) ⇒ Admin bấm"*. Ánh xạ vẫn còn, nhưng nó trỏ tới **cú bấm mở đáp án** của `QĐ-048`, **không** còn là một mốc cắt. Ba dòng còn lại của `QĐ-027` không đổi.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-113 — NGUYÊN TẮC HAI TRỤC: giành lượt lấy người ĐẦU TIÊN, đáp án lấy bản CUỐI CÙNG
+
+**Quyết định.** Mọi cơ chế có **nhiều tín hiệu từ cùng một ghế** phân xử theo đúng một trong hai trục, và **không** được áp quy tắc của trục này sang trục kia:
+
+| Trục | Câu hỏi nó trả lời | Quy tắc |
+|---|---|---|
+| **GIÀNH QUYỀN** | *ai* được làm | tín hiệu **ĐẦU TIÊN** theo server timestamp |
+| **NỘI DUNG** | làm ra *cái gì* | bản **CUỐI CÙNG** hợp lệ trước mốc đóng |
+
+**Hệ quả trực tiếp.** Người **cướp quyền** ở Về đích tính **bản CUỐI**, y như mọi vai khác. Vòng này **không có `hạn chót` riêng** cho người cướp; mốc đóng là **cú bấm chấm của admin** theo quy tắc chung đã có ở `GR-006` §Đồng thời — **không** đẻ thêm giá trị cấu hình thời gian nào.
+
+**Vì sao.** Đối chiếu toàn bộ 37 rule thì `GR-020` là **ngoại lệ duy nhất**. Trục giành quyền lấy đầu tiên ở `GR-003`, `GR-007`; trục nội dung lấy bản cuối ở `GR-006`, `GR-015`, `GR-017`, `GR-018`.
+
+Chứng cứ mạnh nhất là `GR-015`: **Tăng tốc xếp hạng theo tốc độ** — nơi có lý do mạnh nhất để lấy bản đầu — mà nguồn **vẫn** lấy mốc của **bản cuối**. Nếu ngay cả ở đó *"cuối"* thắng, thì *"đầu"* ở `GR-020` không đứng được như một nguyên tắc.
+
+Thêm nữa, **nguyên tắc nền số 21** vốn đã khai *"**LUÔN** ghi nhận đáp án CUỐI CÙNG"*. `GR-020` vì thế không chỉ lệch một rule khác — nó chỏi chính một nguyên tắc nền. Và vế *"chỉ tính bản đầu tiên"* của `GR-020` **không** truy về `QĐ` nào: §Nguồn của rule đó dẫn `QĐ-012`, `QĐ-021`, `QĐ-025`, `QĐ-058`, `QĐ-061`, và **không mục nào** trong năm mục ấy nói tới bản đầu.
+
+**Một chỗ dễ đọc nhầm.** *"Giành lượt lấy người đầu tiên"* là quy tắc **phân xử giữa các ghế đang đua**; nó **không** nói *"mỗi ghế chỉ được đua một lần"*. Hạn mức số lần một ghế được chấm là một trục **thứ ba** — xem `QĐ-111`.
+
+**Thay cho.** Vế *"Người cướp chỉ tính **BẢN ĐẦU TIÊN** — ngược với người thi chính"* của `GR-020` §Điều kiện, và ca C4 minh hoạ nó.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
 
@@ -1037,6 +1146,24 @@ Vì quyền điều khiển gắn với **phiên** (`QĐ-008`), một tài kho�
 
 *Nguồn*: `[CHỦ DỰ ÁN]` + `[SUY RA]` (chiều thứ hai)
 
+### QĐ-115 — Banner tạm dừng CHE TOÀN BỘ màn thí sinh, không chỉ chặn thao tác
+
+**Quyết định.** Trên **máy thí sinh**, banner tạm dừng **che toàn bộ màn**: thí sinh **không thấy** bảng điểm, **không thấy** đồng hồ, **không thấy** câu hỏi. Nó **không** chỉ là một lớp báo hiệu chồng lên giao diện còn đọc được.
+
+Đây là **ngoại lệ tường minh và duy nhất** của `PRD-REQ-067` *(máy thí sinh hiện bảng điểm của tất cả các ghế, realtime)*.
+
+**Che ≠ đổi.** Dữ liệu bên dưới **vẫn chảy** — server vẫn đẩy, client vẫn nhận, banner chỉ phủ lên trên. Tắt banner ⇒ thí sinh thấy **trạng thái hiện tại**, kể cả điểm đã đổi trong lúc bị che *(admin vẫn điều chỉnh điểm, bỏ vòng, hoàn nguyên được — `STATE-040` §Cho phép)*. Vì thế `INV-021` **không** bị đụng, và **không** phát sinh bài toán đồng bộ lại khi tắt banner.
+
+**Vì sao.** Banner tạm dừng tồn tại để **trận dừng thật**. Nếu thí sinh vẫn thấy câu hỏi đang mở và vẫn theo dõi được bảng điểm để tính toán, thì thứ đang dừng chỉ là **đồng hồ**, không phải **trận** — và banner tụt xuống thành một thông báo trang trí.
+
+Nó cũng khớp chính `QĐ-050`: banner **KHÔNG CHỮ**, *"khán giả tự hiểu từ bối cảnh sân khấu"*. Một tấm che cố ý **không truyền đạt gì** mà vẫn để lộ bảng điểm bên dưới là mâu thuẫn nội tại.
+
+**Không đụng bất biến nào.** `INV-016` *(đồng hồ không đóng băng)* không có chủ ngữ ở đây — `QĐ-050` đã khai banner và đồng hồ **loại trừ lẫn nhau**, nên dưới banner **không có đồng hồ nào** để chạy hay để đóng băng. `INV-021` giữ nguyên vì che không phải đổi.
+
+**Phạm vi.** Chỉ **máy thí sinh**. Màn khán giả và lớp phủ dựng stream giữ nguyên hành vi của `QĐ-050` — báo hiệu thuần thị giác. Màn admin **không bị phủ**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
 ### QĐ-096 — Khán giả và lớp phủ vào bằng ĐÚNG URL; không tài khoản, không vai, không bước nhập mã
 
 **Quyết định.** Hai kênh public — **màn khán giả** và **lớp phủ dựng stream** — vào phòng bằng **một URL**. Ba vế:
@@ -1121,6 +1248,52 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 **`Esc` ở màn thí sinh mode sân khấu**: **không làm gì** — ba vòng đó không có ô nhập để xoá, và `Esc` không bao giờ là nút quay lại ở màn thi đấu.
 
 *Nguồn*: `[SUY RA]` từ `QĐ-004`, `QĐ-005`
+
+### QĐ-108 — Hạng dialog xác định bằng CÁCH THOÁT; "bắt lý do" là trục riêng
+
+**Quyết định.** Hạng của một dialog xác định bằng **cách thoát khỏi nó**. *"Bắt nhập lý do"* là một **trục độc lập**, **không** suy ra được từ hạng. Ba tầng, và tầng giữa là mới:
+
+| Tầng | `Esc` | Click ra ngoài | Bắt lý do | Phím tắt `Y`/`N` |
+|---|---|---|---|---|
+| **Phá huỷ** — bỏ vòng · chạy lại vòng · kết thúc sớm · huỷ trận | Không đóng | Không đóng | **Có** | **Không** |
+| **Điều chỉnh điểm** | **Đóng, và KHÔNG lưu thay đổi** | **Không đóng** | **Có** | Có |
+| **Yes/No thường** — mở đáp án · mở ô chữ · xác nhận tín hiệu · **cảnh báo lệch luật** | Đóng = **No** | Đóng = **No** | Không | Có |
+
+**Vì sao điều chỉnh điểm là một tầng RIÊNG.** Nó có **hai** thuộc tính mà không tầng nào khác có cùng lúc: nó **đổi bảng điểm** như một thao tác phá huỷ, nhưng lại được dùng **thường xuyên** — đây là van thoát duy nhất cho mọi sai lầm trong trận (`QĐ-014` §*"sai thì admin cộng tay"*). Xếp nó vào phá huỷ thì một thao tác dùng nhiều lần mỗi trận bị khoá cứng đường thoát nhanh; xếp vào Yes/No thường thì một click chệch ra ngoài làm mất cả lượng điểm lẫn lý do vừa gõ. Tầng giữa giải đúng cả hai: **`Esc` là đường thoát nhanh có chủ đích**, **click ra ngoài không phải** — vì click chệch là tai nạn, còn `Esc` thì không ai nhấn nhầm.
+
+**Vì sao `Esc` ở tầng giữa phải KHÔNG lưu.** Nếu nó lưu thì `Esc` thành một cú xác nhận ẩn, và admin mất đường huỷ bỏ sau khi đã gõ lý do.
+
+**Vì sao hạng phá huỷ không có phím tắt.** Ở tầng đó admin **đang gõ lý do**, tay đã ở trên bàn phím — gán `Y` vào đó là đặt một phím bỏ vòng ngay cạnh ô nhập. Cùng lập luận đã dùng cho chuông ở `QĐ-023`: chỗ nào tay đang gõ thì chỗ đó không gán phím cho thao tác không thu hồi được.
+
+**Hệ quả.**
+
+- Bốn loại phản hồi phải **phân biệt được bằng mắt**: toast, và ba tầng dialog trên. `QĐ-072` nói ba là đếm **hạng cảnh báo**; đây đếm **tầng dialog**.
+- `PRD.md` và máy trạng thái phải mô tả **hai trục** thay vì một danh sách thao tác — xem §Thay cho.
+
+**Thay cho.** Vế **hình thức** của hạng *Dialog Yes/No* trong `QĐ-072`: bảng ở đó khai đúng *"điều chỉnh điểm nằm ở hạng Yes/No và là thao tác duy nhất bắt lý do"* — mục này **giữ nguyên** phần đó và **thêm** trục cách thoát mà `QĐ-072` chỉ định nghĩa cho hạng phá huỷ. Phần *"cảnh báo lệch luật là dialog Yes/No, không bắt lý do"* của `QĐ-072` **không đổi**; nó xuất hiện trong bảng trên chỉ để đọc một chỗ.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · vế phím tắt: `[CHỦ DỰ ÁN]` + `[SUY RA]` từ `QĐ-023`
+
+### QĐ-112 — Control không bấm được: ẨN khi mất nghĩa, MỜ KÈM NHÃN khi bị luật cấm
+
+**Quyết định.** Một control mà người dùng không bấm được có **hai** kết cục hiển thị, và tiêu chí phân định là **control đó có nghĩa ở pha hiện tại hay không**:
+
+| Nhóm | Kết cục | Ca |
+|---|---|---|
+| **Mất nghĩa ở pha này** | **KHÔNG render**; thao tác không phản hồi | ngoài cửa sổ chuông · Câu hỏi phụ trước mốc start timer · ghế **bị loại** khỏi vòng · ghế **bị vô hiệu hoá** · mode sân khấu với nút chọn hàng ngang, chọn gói và Ngôi sao hy vọng · hàng ngang **đã mở** · nút Ngôi sao hy vọng sau mốc hiển thị câu |
+| **Có nghĩa, nhưng ghế này bị luật cấm** | **render vô hiệu hoá KÈM NHÃN** nêu lý do | **sáu** ca, **sáu nhãn khác nhau**: đã bấm & bị chấm Sai ở câu này · Ngôi sao hy vọng đã dùng · lượt chọn hàng ngang đã dùng · chưa tới lượt · đang chờ admin duyệt · tín hiệu đã **trơ** vì thua tốc độ *(`QĐ-114`)* |
+
+**Cả hai** kết cục cho ra *"không tín hiệu nào được tạo"*, nên vế mà mọi nguồn đều đồng ý **không bị đụng tới**.
+
+**Vì sao.** `PRD-REQ-072` đòi hệ thống *"**đánh dấu rõ** đó là khoá theo luật chơi"* — mà **một nút đã ẩn thì không đánh dấu được gì**. Chọn *"ẩn hết"* cho gọn sẽ làm requirement đó **mất đối tượng** ở đúng những ca nó được viết ra để phục vụ, và chỏi mục tiêu *"thí sinh luôn biết mình đang ở đâu"*: ghế bị chấm Sai thấy nút biến mất sẽ không phân biệt được **luật cấm** với **máy hỏng**.
+
+**Hai trục đừng lẫn.** Hạng **invalid state** của `PRD.md` §9.4 nói về **quyền ép được** *(không ép được, khác hẳn cảnh báo lệch luật vốn ép được)* — nó **không** tự nó quy định ẩn hay mờ. Mục này quy định trục hiển thị; §9.4 quy định trục quyền.
+
+***"Chưa tới lượt"* thuộc nhóm mờ.** `GR-034` C5 đã xếp nó cạnh *đã trả lời sai* và *đã dùng hết quyền* trong cùng một dòng *"khoá theo luật chơi"*; tách nó ra sẽ chẻ chính danh sách của nguồn.
+
+**Thay cho.** `GR-003` C5 — ca *"ghế đã bấm và bị chấm Sai ở câu này"* chuyển từ *"nút **không hiển thị**"* sang **mờ kèm nhãn**. Ca C6 *(ngoài cửa sổ)* **giữ nguyên** kết cục ẩn; hai ca đó thuộc hai nhóm khác nhau và trước nay bị cho cùng một kết cục.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-073 — Màn chấm của admin
 

@@ -12,11 +12,11 @@
 
 | Trường | Giá trị |
 |---|---|
-| **Version** | 2.4.0 — *tích hợp `QĐ-105` → `QĐ-107` thành `PRD-REQ-114`, `PRD-REQ-115` và một Note ngoại lệ ở `PRD-REQ-008`: dưới 4 thí sinh chạy bằng **ghế bỏ thi** và chỉ trên 4 mới bị chặn · VCNV có **hai** giá trị thời gian cấp vòng · kho đề có **xoá mềm** và **phiên bản theo cú Save** (bản tối giản), lật phần loại trừ đánh phiên bản của EPIC-002. Bản 2.3.0: tích hợp `QĐ-104` (admin kích hoạt tay) thành `PRD-REQ-113`, kèm ba chỗ sửa theo — §8.2 bước 5, `INV-009` ở §9.5, và bảng §13.2. Bản 2.2.1: chủ dự án phân xử toàn bộ tám câu hỏi mở; `QĐ-085`→`QĐ-092` ghi vào sổ quyết định; `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001`, `108`→`112`; `QĐ-097`→`103` chủ đích truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen` (không sinh `PRD-REQ` riêng)* |
+| **Version** | 2.6.0 — *tích hợp `QĐ-108` → `QĐ-110` từ phiên làm rõ EPIC-007, phần còn nợ: `PRD-REQ-056` viết lại theo **hai trục** *(tầng dialog xác định bằng cách thoát × trục bắt lý do độc lập)*, bốn loại phản hồi thay vì ba · `PRD-REQ-052` nhận **biên trên** của cửa sổ giữ bản tới muộn · `PRD-REQ-054` đổi mốc mở nút chấm thành `hạn chót + padding`, ngoại lệ Khởi động · `PRD-REQ-020` nhận `padding` vào tập cấu hình luật. Bản 2.5.0: tích hợp `QĐ-111` → `QĐ-115` từ phiên làm rõ EPIC-008: khoá nút chuông gắn với **phán quyết** *(sửa `PRD-REQ-064`)* · control không bấm được **ẩn khi mất nghĩa, mờ kèm nhãn khi bị luật cấm** và outcome tín hiệu **báo về máy phát** *(sửa `PRD-REQ-072`, thêm ghi chú hai trục ở §9.4)* · **nguyên tắc hai trục** — giành lượt lấy người đầu tiên, đáp án lấy bản cuối — gỡ ngoại lệ *"người cướp tính bản đầu"* khỏi `GR-020` *(sửa §13.3, bổ sung Related game rules của `PRD-REQ-065`)* · **banner tạm dừng CHE TOÀN BỘ màn thí sinh** — ngoại lệ tường minh và duy nhất của `PRD-REQ-067` *(`QĐ-115`)*. Bản 2.4.0: tích hợp `QĐ-105` → `QĐ-107` thành `PRD-REQ-114`, `PRD-REQ-115` và một Note ngoại lệ ở `PRD-REQ-008`: dưới 4 thí sinh chạy bằng **ghế bỏ thi** và chỉ trên 4 mới bị chặn · VCNV có **hai** giá trị thời gian cấp vòng · kho đề có **xoá mềm** và **phiên bản theo cú Save** (bản tối giản), lật phần loại trừ đánh phiên bản của EPIC-002. Bản 2.3.0: tích hợp `QĐ-104` (admin kích hoạt tay) thành `PRD-REQ-113`, kèm ba chỗ sửa theo — §8.2 bước 5, `INV-009` ở §9.5, và bảng §13.2. Bản 2.2.1: chủ dự án phân xử toàn bộ tám câu hỏi mở; `QĐ-085`→`QĐ-092` ghi vào sổ quyết định; `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001`, `108`→`112`; `QĐ-097`→`103` chủ đích truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen` (không sinh `PRD-REQ` riêng)* |
 | **Quy ước bảo trì** | Mục **đã chốt / đã đóng / đã sửa** bị **xoá khỏi tài liệu**, không giữ lại dưới dạng ghi chú lịch sử; dãy số liên quan được **đánh lại cho liền**. Lịch sử tra ở `git log` và `docs/reviews/` |
 | **Đặc tả cho** | **Phiên bản sản phẩm 1.0** |
 | **Status** | Bản đầu tiên — chờ chủ dự án phê duyệt |
-| **Last updated** | 2026-07-31 |
+| **Last updated** | 2026-08-03 |
 | **Open conflict count** | **0** |
 | **Open clarification count** | **0** |
 
@@ -25,7 +25,7 @@
 | Nguồn | Vai trò | Trạng thái khi đọc |
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn (snapshot 2026-07-23) | Không sửa; source of truth **duy nhất về LUẬT** |
-| `docs/decisions.md` | 107 quyết định `QĐ-001`→`QĐ-107` | Source of truth về **lựa chọn sản phẩm**; §N khai *"không còn mục treo nào"* |
+| `docs/decisions.md` | 115 quyết định `QĐ-001`→`QĐ-115` | Source of truth về **lựa chọn sản phẩm**; §N khai *"không còn mục treo nào"* |
 | `docs/game-rules.md` | 37 rule `GR-001`→`GR-037`, 23 nguyên tắc nền, 4 bảng dùng chung | Chuẩn tắc; **không còn marker treo** |
 | `docs/game-state-machine.md` | 43 `STATE-*`, 52 `EVENT-*`, 100 `T-*`, 22 `INV-*`, 8 sơ đồ | Chuẩn tắc; **không còn marker treo** |
 | `docs/glossary.md` | 60 thuật ngữ `TERM-001`→`TERM-060` | Chuẩn tắc về tên gọi |
@@ -286,6 +286,8 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 | Hạng | Ép được? | Dùng khi |
 |---|---|---|
 | **Invalid state** (toast) | **Không** — nhánh **không tồn tại**, nút không bật | Thao tác không có nghĩa ở trạng thái hiện tại |
+
+> **Bảng này phân loại theo QUYỀN ÉP ĐƯỢC, không phải theo cách hiển thị.** Việc một control không bấm được thì **ẩn** hay **mờ kèm nhãn** là một trục **độc lập**, quy định ở `QĐ-112`: control **mất nghĩa** ở pha hiện tại ⇒ không render; control **có nghĩa nhưng ghế này bị luật cấm** ⇒ render vô hiệu hoá kèm nhãn. Đừng suy từ hạng *invalid state* ra kết cục hiển thị.
 | **Cảnh báo lệch luật** (dialog Yes/No) | **Có** | Hệ thống khuyến nghị khác admin; admin luôn ép được |
 | **Chặn cứng** *(luật chơi)* | **Không** | **Đúng ba chỗ** (`INV-014`): cửa sổ cướp quyền cần ≥2 thí sinh · Câu hỏi phụ cần ≥2 thí sinh · cửa vào vòng thiếu câu |
 | **Chặn do GIỚI HẠN PHIÊN BẢN** | **Không** | Một hạng **riêng**, không phải chỗ thứ tư của `INV-014`: cú bấm bắt đầu trận có **số ghế > 4** (`QĐ-105`). Hạng này **biến mất** khi v1.5 mở khoá luật đa ghế, thay vì buộc sửa một bất biến |
@@ -769,11 +771,11 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 ### EPIC-004 — Contest builder và luật tuỳ biến
 
 **PRD-REQ-020 — Mọi thời gian, số câu và mức điểm là cấu hình**
-- **Description**: Không giá trị luật nào MUST được viết cứng trong code hay giao diện; tất cả MUST khai trong cấu hình luật của contest.
-- **Actor**: ACTOR-001 · **Related epic**: EPIC-004 · **Related journey**: JOURNEY-002 · **Related game rules**: toàn bộ `GR-001`…`GR-025`
+- **Description**: Không giá trị luật nào MUST được viết cứng trong code hay giao diện; tất cả MUST khai trong cấu hình luật của contest. Tập cấu hình luật MUST gồm cả **`padding`** — độ dài **cửa sổ giữ bản tới muộn** phía server, mặc định **5 giây** (`QĐ-109`); giá trị này MUST NOT được hard-code, và vòng **Khởi động** MUST NOT áp biên trên đó.
+- **Actor**: ACTOR-001 · **Related epic**: EPIC-004 · **Related journey**: JOURNEY-002 · **Related game rules**: toàn bộ `GR-001`…`GR-025`, `GR-035` C6b
 - **Priority**: P1 · **Rationale**: Đây là lời giải trực tiếp cho `PS-1` và là điều kiện để cùng một engine chạy nhiều mùa luật.
-- **Acceptance intent**: Đổi một giá trị qua giao diện rồi chạy trận ⇒ trận chạy theo giá trị mới, không cần build lại.
-- **Source**: `CLAUDE.md` §Quy ước khác · `TERM-051` · `GOAL-002` · **Status**: CONFIRMED
+- **Acceptance intent**: Đổi một giá trị qua giao diện rồi chạy trận ⇒ trận chạy theo giá trị mới, không cần build lại. Đặt `padding` ở `0`, `5` và `30` giây ⇒ mốc mở nút chấm dịch theo đúng giá trị đó.
+- **Source**: `CLAUDE.md` §Quy ước khác · `TERM-051` · `GOAL-002` · `QĐ-109` · **Status**: CONFIRMED
 
 **PRD-REQ-021 — Nút "Áp dụng luật 2026" áp preset O26**
 - **Description**: Contest builder MUST có một thao tác áp bộ giá trị mặc định theo luật O26 lên toàn bộ cấu hình luật của contest.
@@ -1069,11 +1071,11 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Source**: `QĐ-073`, `QĐ-010` · `GR-027` · **Status**: CONFIRMED
 
 **PRD-REQ-052 — Bản hợp lệ và bản quá hạn hiện cạnh nhau, chấm được cả hai**
-- **Description**: Khi một câu có cả bản hợp lệ và bản quá hạn, hệ thống MUST giữ **cả hai** và tô **đỏ** bản quá hạn. Khi chỉ có bản quá hạn, MUST giữ, tô đỏ, và cho thêm lựa chọn **Huỷ kết quả**. Bản quá hạn MUST NOT tự ghi đè bản hợp lệ và MUST NOT bị máy loại. Nút chấm MUST bật được cho cả hai.
-- **Actor**: ACTOR-001 · **Related epic**: EPIC-007 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-006`, `GR-015`, `GR-035` · bảng §2.3
-- **Priority**: P1 · **Rationale**: Khoá cứng bản quá hạn là lấy mất quyền phán quyết của admin — trái `PRD-REQ-036`.
-- **Acceptance intent**: Công nhận một bản quá hạn ở Tăng tốc ⇒ cả bảng xếp hạng của câu đó tính lại.
-- **Source**: `QĐ-029`, `QĐ-073` · `game-rules.md` §2.3 · **Status**: CONFIRMED
+- **Description**: Server MUST **giữ** một bản gửi tới sau `hạn chót` nếu nó rơi trong **cửa sổ giữ bản tới muộn** `(hạn chót, hạn chót + padding]`, và MUST **từ chối** bản tới sau mốc đó — riêng vòng **Khởi động** MUST NOT có biên trên (`QĐ-109`). Với bản đã giữ: khi một câu có cả bản hợp lệ và bản quá hạn, hệ thống MUST giữ **cả hai** và tô **đỏ** bản quá hạn; khi chỉ có bản quá hạn, MUST giữ, tô đỏ, và cho thêm lựa chọn **Huỷ kết quả**. Bản quá hạn MUST NOT tự ghi đè bản hợp lệ và MUST NOT bị máy loại. Nút chấm MUST bật được cho cả hai. Cửa sổ này MUST NOT được đọc thành **ân hạn thao tác**: nút gửi phía thí sinh tắt **đúng tại `hạn chót`** ở mọi vòng, và bản được giữ **vẫn là bản quá hạn**.
+- **Actor**: ACTOR-001, ACTOR-007 · **Related epic**: EPIC-007, EPIC-006 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-006`, `GR-015`, `GR-035` C6, C6b, C6c · bảng §2.3
+- **Priority**: P1 · **Rationale**: Khoá cứng bản quá hạn là lấy mất quyền phán quyết của admin — trái `PRD-REQ-036`. Nhưng một lời hứa *"không loại thẳng"* **không có biên trên** thì không hiện thực được; `padding` là biên đó.
+- **Acceptance intent**: Công nhận một bản quá hạn ở Tăng tốc ⇒ bảng xếp hạng của câu được tính **với dấu đã sửa tại cú bấm *chốt câu***, **không** phải một phép tính lại sau khi câu đã chốt — vì `PRD-REQ-054` bảo đảm mọi bản chấm được luôn tới **trước** mốc đó.
+- **Source**: `QĐ-029`, `QĐ-073`, `QĐ-109` · `game-rules.md` §2.3 · **Status**: CONFIRMED
 
 **PRD-REQ-053 — Tăng tốc chấm trên MỘT màn, bốn ghế cạnh nhau**
 - **Description**: Ở Tăng tốc, admin MUST chấm toàn bộ các ghế trên **một** màn hiển thị cạnh nhau, MUST NOT chấm từng người ở các màn tách rời.
@@ -1082,12 +1084,12 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Acceptance intent**: Chấm một câu Tăng tốc không phải chuyển màn.
 - **Source**: `QĐ-073` · `product-discovery.md` §6 · **Status**: CONFIRMED
 
-**PRD-REQ-054 — Nút chấm khoá tới hết giờ ở vòng gõ máy, sống suốt ở vòng nói**
-- **Description**: Ở kênh **nói** *(mode sân khấu)*, nút chấm MUST bấm được bất cứ lúc nào. Ở kênh **gõ** *(mode nhập liệu, và Vượt chướng ngại vật + Tăng tốc luôn gõ máy)*, nút chấm MUST khoá tới khi hết giờ. Ở kênh **thực hành**, nút chấm MUST sống suốt. Giao diện MUST chỉ báo **vì sao** nút đang mờ.
-- **Actor**: ACTOR-001 · **Related epic**: EPIC-007 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-019` · bảng §2.4
-- **Priority**: P1 · **Rationale**: Thí sinh còn sửa đáp án tới khi hết giờ; chấm sớm ở vòng gõ máy là chấm trên một bản không phải bản luật công nhận.
-- **Acceptance intent**: Ở Tăng tốc, nút chấm không bấm được trước mốc hết giờ, và giao diện nói rõ lý do.
-- **Source**: `QĐ-030` · `game-rules.md` §2.4 · **Status**: CONFIRMED
+**PRD-REQ-054 — Mốc mở nút chấm theo KÊNH trả lời**
+- **Description**: Ở kênh **nói** *(mode sân khấu)*, nút chấm MUST bấm được bất cứ lúc nào. Ở kênh **gõ** *(mode nhập liệu, và Vượt chướng ngại vật + Tăng tốc luôn gõ máy)*, nút chấm và nút ***chốt câu*** MUST khoá tới mốc **`hạn chót + padding`** — tức tới khi **cửa sổ giữ bản tới muộn** đã đóng và không còn bản nào có thể tới (`QĐ-109`); **riêng vòng Khởi động** MUST mở **ngay tại `hạn chót`**, không chờ. Ở kênh **thực hành**, nút chấm MUST sống suốt. Giao diện MUST chỉ báo **vì sao** nút đang mờ.
+- **Actor**: ACTOR-001 · **Related epic**: EPIC-007 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-019`, `GR-006` §Đồng thời, `GR-015` §Đồng thời, `GR-035` C6b · bảng §2.4
+- **Priority**: P1 · **Rationale**: Thí sinh còn sửa đáp án tới `hạn chót`; chấm sớm ở vòng gõ máy là chấm trên một bản không phải bản luật công nhận. Chờ hết cửa sổ giữ bản tới muộn làm tình huống *"bản chấm được tới sau cú bấm chốt câu"* **bất khả thi về cấu trúc**, nên `INV-009` không cần ngoại lệ. Khởi động được nới vì nó chấm **từng người**, không có bảng chung nào để một bản tới muộn phá.
+- **Acceptance intent**: Ở Tăng tốc, nút chấm không bấm được trước mốc `hạn chót + padding`, và giao diện nói rõ lý do; ở Khởi động nút chấm mở ngay tại `hạn chót`.
+- **Source**: `QĐ-030`, `QĐ-109` · `game-rules.md` §2.4 · **Status**: CONFIRMED
 
 **PRD-REQ-055 — Điều chỉnh điểm thủ công với lý do bắt buộc**
 - **Description**: Admin MUST cộng hoặc trừ một lượng bất kỳ cho một ghế kèm **lý do bắt buộc**, ở **mọi lúc trận chưa đóng sổ**, kể cả giữa một vòng. Lượng bằng **0 vẫn MUST sinh sự kiện** — đó là một ghi chú chính thức vào biên bản. Sự kiện này MUST NOT tự hoàn nguyên khi vòng bị bỏ, vì nó là phán quyết của người và không thuộc vòng nào. Hệ thống MUST NOT chống trùng cho thao tác này.
@@ -1096,12 +1098,20 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Acceptance intent**: Lượng 0 vẫn sinh một dòng trong biên bản; bỏ vòng không cuốn theo sự kiện này.
 - **Source**: `QĐ-014`, `QĐ-035`, `QĐ-039` · `GR-029` · `TERM-024` · **Status**: CONFIRMED
 
-**PRD-REQ-056 — Ba hạng cảnh báo giao diện, phân biệt bằng thứ chúng bảo vệ**
-- **Description**: **Toast** cho invalid state — không ép được, MUST nêu rõ vì sao, MUST NOT bắt nhập lý do, và **mỗi loại invalid state MUST có thông điệp riêng**. **Dialog Yes/No** cho thao tác không hoàn tác được nhưng hợp lệ. **Dialog hạng phá huỷ** cho bỏ vòng, chạy lại vòng, kết thúc sớm, huỷ trận — MUST NOT tắt được bằng `Esc` hay click ra ngoài, và MUST bắt nhập lý do. Thao tác **đóng** hiển thị MUST NOT có dialog.
-- **Actor**: ACTOR-001 · **Related epic**: EPIC-007 · **Related journey**: JOURNEY-005, JOURNEY-006 · **Related game rules**: `GR-030`
-- **Priority**: P1 · **Rationale**: Trộn toast với dialog làm admin học sai mô hình — người vận hành phải phân biệt được *"không làm được"* với *"làm được nhưng nguy hiểm"*.
-- **Acceptance intent**: Ba loại phản hồi phân biệt được bằng mắt; dialog phá huỷ không đóng được bằng `Esc`.
-- **Source**: `QĐ-072`, `QĐ-004`, `QĐ-005` · `game-state-machine.md` §F · **Status**: CONFIRMED
+**PRD-REQ-056 — Bốn loại phản hồi giao diện; tầng dialog xác định bằng CÁCH THOÁT**
+- **Description**: Có **bốn** loại phản hồi và cả bốn MUST phân biệt được bằng mắt: **toast invalid state**, cùng **ba tầng dialog**. Tầng của một dialog MUST xác định bằng **cách thoát khỏi nó**; *"bắt nhập lý do"* MUST là một **trục độc lập**, MUST NOT suy ra được từ tầng (`QĐ-108`):
+
+  | Tầng | `Esc` | Click ra ngoài | Bắt lý do | Phím tắt `Y`/`N` |
+  |---|---|---|---|---|
+  | **Phá huỷ** — bỏ vòng · chạy lại vòng · kết thúc sớm · huỷ trận | không đóng | không đóng | **có** | **không** |
+  | **Điều chỉnh điểm** | **đóng, và KHÔNG lưu thay đổi** | **không đóng** | **có** | có |
+  | **Yes/No thường** — mở đáp án · mở ô chữ · xác nhận tín hiệu · **cảnh báo lệch luật** | đóng = **No** | đóng = **No** | không | có |
+
+  **Toast invalid state** MUST NOT ép được, MUST nêu rõ vì sao, MUST NOT bắt nhập lý do, và **mỗi loại invalid state MUST có thông điệp riêng**. **Dialog cảnh báo lệch luật** MUST dùng lại **y hệt** tầng Yes/No thường — khác biệt duy nhất là **nội dung chữ**, và nó MUST **ép được** *(khác toast ở trục quyền, không khác ở trục hình thức — `QĐ-072`)*. Thao tác **đóng** hiển thị MUST NOT có dialog.
+- **Actor**: ACTOR-001 · **Related epic**: EPIC-007 · **Related journey**: JOURNEY-005, JOURNEY-006 · **Related game rules**: `GR-029`, `GR-030`, `GR-032` C9
+- **Priority**: P1 · **Rationale**: Trộn toast với dialog làm admin học sai mô hình — người vận hành phải phân biệt được *"không làm được"* với *"làm được nhưng nguy hiểm"*. Điều chỉnh điểm cần một tầng riêng vì nó **đổi bảng điểm** như thao tác phá huỷ nhưng lại được dùng **thường xuyên**; hai tầng cũ đều sai cho nó theo hai hướng ngược nhau.
+- **Acceptance intent**: Bốn loại phản hồi phân biệt được bằng mắt; dialog phá huỷ không đóng được bằng `Esc`, click ra ngoài hay phím tắt; dialog điều chỉnh điểm đóng được bằng `Esc` và khi đó **không lưu**.
+- **Source**: `QĐ-108`, `QĐ-072`, `QĐ-004`, `QĐ-005` · `game-state-machine.md` §F · **Status**: CONFIRMED
 
 **PRD-REQ-057 — Admin toàn quyền mở và đóng đáp án, ô chữ; thao tác tay thắng mọi cờ tự động**
 - **Description**: Admin MUST mở và đóng đáp án cùng ô chữ không điều kiện; thao tác **mở** MUST đi qua dialog Yes/No. Khi admin bấm mở đáp án, nội dung MUST tới **mọi vai đang xem**, kể cả khi cờ *hiện đáp án sau khi chấm* đang tắt; mỗi lần mở MUST vào nhật ký. Mở và đóng hiển thị MUST NOT đụng tới điểm. Quyền này MUST độc quyền của phiên đang giữ quyền điều khiển; MC MUST NOT có nút nào.
@@ -1155,15 +1165,15 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 ### EPIC-008 — Trải nghiệm thí sinh
 
 **PRD-REQ-064 — Chuông chỉ nhận click chuột và tự khoá ngay khi bấm**
-- **Description**: Nút chuông MUST chỉ nhận click chuột; hệ thống MUST NOT gán phím tắt nào cho chuông. Nút *"Mở chướng ngại vật"* MUST được xếp là chuông ⇒ cũng chỉ nhận click chuột. Nút MUST tự khoá **ngay trong lần bấm đầu, ở giao diện, trước khi gửi**, và khoá MUST gắn với **một câu** — sang câu mới thì mở lại. Các phím tắt khác MUST giữ nguyên: gửi đáp án, chọn hàng ngang, xoá ô nhập.
+- **Description**: Nút chuông MUST chỉ nhận click chuột; hệ thống MUST NOT gán phím tắt nào cho chuông. Nút *"Mở chướng ngại vật"* MUST được xếp là chuông ⇒ cũng chỉ nhận click chuột. Nút MUST tự khoá **ngay trong lần bấm đầu, ở giao diện, trước khi gửi**. Điều kiện **gỡ khoá** MUST gắn với **PHÁN QUYẾT**, không gắn với câu hay vòng (`QĐ-111`): với **chuông thường** *(Khởi động lượt chung · cướp quyền Về đích · Câu hỏi phụ)*, khoá gắn với **một câu** — câu kết thúc thì mở lại; với nút ***"Mở chướng ngại vật"***, khoá MUST chỉ thành **vĩnh viễn trong lần chạy vòng** sau một phán quyết **Đúng** hoặc **Sai**, còn phán quyết **Huỷ kết quả** hoặc cú **bấm No** của admin MUST **mở lại** nút và ghế MUST bấm lại được trong cùng vòng. Hạn mức *"một lần đoán, sai thì loại"* MUST đếm theo **phán quyết**, MUST NOT đếm theo cú bấm. Các phím tắt khác MUST giữ nguyên: gửi đáp án, chọn hàng ngang, xoá ô nhập.
 - **Actor**: ACTOR-003 · **Related epic**: EPIC-008 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-034`, `GR-003`, `GR-009`
 - **Priority**: P1 · **Rationale**: Tránh bấm nhầm khi đang gõ đáp án. *"Không tồn tại phím nào được gán"* — khác hẳn với *"gán rồi bỏ qua"*.
 - **Acceptance intent**: Không tổ hợp phím nào phát được tín hiệu chuông; bấm chuông hai lần trong một câu chỉ sinh một tín hiệu ở phía client.
-- **Source**: `QĐ-023` · `GR-034` · `TERM-025` · `CLAUDE.md` §UX · **Status**: CONFIRMED
+- **Source**: `QĐ-023`, `QĐ-111` · `GR-034`, `GR-009` · `TERM-025` · `CLAUDE.md` §UX · **Status**: CONFIRMED
 
 **PRD-REQ-065 — Nút chuông và nút gửi có vòng đời NGƯỢC nhau**
 - **Description**: Nút chuông MUST tự khoá khi bấm. Nút gửi đáp án MUST **không** khoá sau khi gửi và MUST sống tới khi hết giờ; hệ thống MUST ghi nhận **bản cuối cùng** trong các bản hợp lệ. Bản rỗng sau khi cắt khoảng trắng MUST bị bỏ qua. Lịch sử các bản đã gửi MUST NOT bị xoá.
-- **Actor**: ACTOR-003 · **Related epic**: EPIC-008 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-006`, `GR-015`, `GR-034`
+- **Actor**: ACTOR-003 · **Related epic**: EPIC-008 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-006`, `GR-015`, `GR-034`, `GR-018`, `GR-020` *(người cướp quyền cũng tính bản cuối — `QĐ-113`)*
 - **Priority**: P1 · **Rationale**: Hai nút này dễ bị cài chung một mẫu, và cài chung là sai ở cả hai đầu — hoặc chuông không khoá, hoặc thí sinh mất quyền sửa đáp án.
 - **Acceptance intent**: Gửi đáp án ba lần trong cửa sổ thời gian ⇒ bản thứ ba được ghi nhận, cả ba vẫn trong lịch sử.
 - **Source**: `QĐ-023`, `QĐ-029` · `product-discovery.md` §6 · `CLAUDE.md` §UX · **Status**: CONFIRMED
@@ -1176,11 +1186,11 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Source**: `QĐ-059`, `QĐ-029` · `GR-015` · `TERM-037` · **Status**: CONFIRMED
 
 **PRD-REQ-067 — Máy thí sinh hiện bảng điểm của TẤT CẢ các ghế, realtime**
-- **Description**: Màn thí sinh MUST hiện bảng điểm của **tất cả** các ghế, không chỉ điểm của mình, và MUST cập nhật theo thời gian thực như màn khán giả — gồm cả lúc hoàn nguyên làm điểm tụt đột ngột. Điểm âm MUST hiện bình thường.
+- **Description**: Màn thí sinh MUST hiện bảng điểm của **tất cả** các ghế, không chỉ điểm của mình, và MUST cập nhật theo thời gian thực như màn khán giả — gồm cả lúc hoàn nguyên làm điểm tụt đột ngột. Điểm âm MUST hiện bình thường. **Ngoại lệ tường minh và duy nhất**: trong lúc **banner tạm dừng** đang bật, banner MUST **che toàn bộ** màn thí sinh, nên bảng điểm MUST NOT hiện — dữ liệu bên dưới vẫn chảy và lộ lại **nguyên vẹn ở trạng thái hiện tại** khi banner tắt (`QĐ-115`).
 - **Actor**: ACTOR-003 · **Related epic**: EPIC-008 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-028` · `INV-017` *(điểm là công khai)*
 - **Priority**: P1 · **Rationale**: Điểm là thông tin công khai với mọi vai; chỉ **đáp án** bị giới hạn. `product-discovery.md` §6 xếp đây là *"chỗ dễ cài thiếu nhất"*.
 - **Acceptance intent**: Thí sinh thấy điểm mọi ghế đổi cùng lúc với khán giả.
-- **Source**: `QĐ-012`, `QĐ-015` · `product-discovery.md` §6 · **Status**: CONFIRMED
+- **Source**: `QĐ-012`, `QĐ-015`, `QĐ-115` *(ngoại lệ banner)* · `product-discovery.md` §6 · **Status**: CONFIRMED
 
 **PRD-REQ-068 — Thao tác của thí sinh: tức thời, không dialog, không rút lại**
 - **Description**: Mọi thao tác đua tốc độ của thí sinh — bấm chuông, *"Mở chướng ngại vật"*, gửi đáp án — MUST có hiệu lực tức thời, MUST NOT có dialog xác nhận, và MUST NOT rút lại được. **Ngoại lệ duy nhất**: chọn hàng ngang ở mode nhập liệu MUST có dialog xác nhận trên máy thí sinh.
@@ -1211,11 +1221,11 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Source**: `QĐ-004`, `QĐ-072` · `CLAUDE.md` §Điều hướng · **Status**: CONFIRMED
 
 **PRD-REQ-072 — Không chặn gửi lại; khoá theo LUẬT CHƠI thì vẫn khoá**
-- **Description**: Nút hành động MUST chỉ hiện trạng thái đang xử lý, MUST NOT bị vô hiệu hoá để chống gửi trùng; người dùng MUST gửi lại được và server nhận **bản cuối cùng** trước hạn. Chống trùng là việc của server. Khoá **theo luật chơi** — chuông đã bấm, Ngôi sao hy vọng đã dùng, chưa tới lượt — MUST vẫn vô hiệu hoá bình thường, và hệ thống MUST đánh dấu rõ đó là khoá theo luật chơi.
+- **Description**: Nút hành động MUST chỉ hiện trạng thái đang xử lý, MUST NOT bị vô hiệu hoá để chống gửi trùng; người dùng MUST gửi lại được và server nhận **bản cuối cùng** trước hạn. Chống trùng là việc của server. Khoá **theo luật chơi** MUST vẫn vô hiệu hoá bình thường, và hệ thống MUST **render nút kèm nhãn** nêu lý do, MUST NOT ẩn nút — tập ca MUST gồm đúng **sáu** mục, mỗi mục một **nhãn khác nhau**: ghế đã bấm chuông và **bị chấm Sai** ở câu này · **Ngôi sao hy vọng đã dùng** · **lượt chọn hàng ngang đã dùng** · **chưa tới lượt** · tín hiệu **đang chờ admin duyệt** · tín hiệu **đã trơ vì thua tốc độ** (`QĐ-112`, `QĐ-114`). Control **mất nghĩa ở pha hiện tại** thì ngược lại — MUST NOT render; hai nhóm này MUST phân biệt được bằng mắt.
 - **Actor**: ACTOR-001, ACTOR-003 · **Related epic**: EPIC-007, EPIC-008 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-034`, `GR-006`
 - **Priority**: P2 · **Rationale**: Ghi rõ ranh giới để lần rà quy tắc giao diện sau không ai gỡ nhầm khoá theo luật chơi.
 - **Acceptance intent**: Có một thành phần dùng chung cho nút một chiều — chấm, start timer, chuông, chuyển câu — kèm ghi chú phân loại.
-- **Source**: `QĐ-060` · `CLAUDE.md` §UX · `product-discovery.md` §6 · **Status**: CONFIRMED
+- **Source**: `QĐ-060`, `QĐ-112`, `QĐ-114` · `GR-034` C5, C6 · `CLAUDE.md` §UX · `product-discovery.md` §6 · **Status**: CONFIRMED
 
 ### EPIC-009 — Trình diễn
 
@@ -1408,7 +1418,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 | **Khởi động** | `GR-001` → `GR-006` | Lượt riêng: 6 câu × 3 giây, đúng **+10**, sai **0**. Lượt chung: 12 câu, giành quyền bằng chuông, đúng **+10**, sai hoặc bấm rồi im lặng **−5**. Cửa sổ chuông là **một khoảng liên tục** từ mốc hiển thị câu qua thời gian MC đọc + 3 giây. Cửa sổ rỗng ⇒ **câu bị bỏ qua và vẫn tính là đã dùng**. Ghi nhận **bản cuối cùng** |
 | **Vượt chướng ngại vật** | `GR-007` → `GR-012` | Mỗi thí sinh tối đa **1 lượt chọn** hàng ngang, bắt đầu từ vị trí 1, quay vòng khi đã có người bị loại. Hàng ngang **luôn gõ máy**, đúng **+10 cho mỗi người**; vòng có **hai** giá trị thời gian cấp vòng *(giờ suy nghĩ mỗi câu — dùng chung cho hàng ngang và ô trung tâm; và cửa sổ giải Chướng ngại vật sau gợi ý cuối)*, preset đặt **15 giây** cho cả hai (`QĐ-106`); **≥1 người đúng ⇒ miếng ghép mở**. Băng điểm Chướng ngại vật **60/50/40/30**, sau gợi ý cuối **20** *(sàn)*, đếm theo số hàng ngang **đã hỏi**. Giải sai ⇒ **bị loại khỏi vòng, KHÔNG trừ điểm**. Ô trung tâm **luôn tới được** vì cả 4 hàng luôn được hỏi hết |
 | **Tăng tốc** | `GR-013` → `GR-015` | 4 câu, 20/20/30/30 giây, **luôn gõ máy**. Thang **40/30/20/10** theo thứ hạng tốc độ, **chỉ tính trên tập người được chấm ĐÚNG**; người sai không giữ chỗ. Đồng thời gian tới **mili-giây** ⇒ cùng mức điểm, bậc kế nhảy qua. Ghi nhận **bản cuối**; bản trùng nội dung không cập nhật mốc |
-| **Về đích** | `GR-016` → `GR-021` | Thứ tự lượt theo điểm cao nhất, hoà thì **số vị trí nhỏ nhất**, tính lại sau mỗi lượt. Gói **3 câu** từ hai mức **{20, 30}**. Cướp quyền: cửa sổ **5 giây**, cướp đúng ⇒ **chuyển điểm**, cướp sai ⇒ **−½ giá trị câu**; người cướp tính **bản ĐẦU TIÊN**. Ngôi sao hy vọng **1 lần/thí sinh/lần chạy vòng**: đúng ⇒ **×2**, sai ⇒ **−giá trị câu, đúng một lần**. Câu thực hành có **hai pha thời gian** |
+| **Về đích** | `GR-016` → `GR-021` | Thứ tự lượt theo điểm cao nhất, hoà thì **số vị trí nhỏ nhất**, tính lại sau mỗi lượt. Gói **3 câu** từ hai mức **{20, 30}**. Cướp quyền: cửa sổ **5 giây**, cướp đúng ⇒ **chuyển điểm**, cướp sai ⇒ **−½ giá trị câu**; người cướp tính **bản CUỐI CÙNG** như mọi vai (`QĐ-113`). Ngôi sao hy vọng **1 lần/thí sinh/lần chạy vòng**: đúng ⇒ **×2**, sai ⇒ **−giá trị câu, đúng một lần**. Câu thực hành có **hai pha thời gian** |
 | **Câu hỏi phụ** | `GR-022` → `GR-025` | Kích hoạt tại cú bấm **chốt trận** khi có hoà ở vị trí cần phân định. **3 câu × 15 giây**, cả hai con số **cố định, không cấu hình**. **Không cộng, không trừ điểm** — chỉ đổi thứ hạng. Chuông **không sống trước mốc start timer**. Hết 3 câu chưa phân định ⇒ **bốc thăm**, admin xác nhận |
 
 ### 13.4 Nhóm rule xuyên vòng

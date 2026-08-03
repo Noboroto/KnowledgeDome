@@ -10,10 +10,10 @@
 
 | File | Vai trò |
 |---|---|
-| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-107` |
+| `decisions.md` | **Vì sao** — `QĐ-001` → `QĐ-110` |
 | `game-rules.md` · `game-state-machine.md` | Luật và vận hành |
 | `traceability.md` | Truy nguyên rule ↔ luật gốc ↔ `QĐ-*` |
-| `plans/**` | **Bản nháp.** Mọi trích dẫn dưới đây là **bối cảnh**, không phải requirement |
+| `plans/**` | **Không phải nguồn.** Mọi trích dẫn dưới đây là **bối cảnh**, không phải requirement |
 
 ---
 
@@ -277,6 +277,6 @@ Một trận thử với người thật, trọn bốn vòng kèm livestream, kh
 
 # 11. Nguồn đã đọc
 
-Toàn bộ `plans/260711-2340-olympia-contest-system/` — yêu cầu sản phẩm, user story, sổ hoãn `D1`→`D27`, lộ trình, và thư mục `research/` gồm luật O26, spec engine, khoảng trống sản phẩm, khoảng trống UX, ba vòng red-team, khảo sát Athena, kiến trúc kỹ thuật, hiệu ứng âm thanh, và các bản bàn về hàng đợi. Cộng với `CLAUDE.md`.
+Bộ nháp planning ban đầu — yêu cầu sản phẩm, user story, sổ hoãn `D1`→`D27`, lộ trình, và phần research gồm luật O26, spec engine, khoảng trống sản phẩm, khoảng trống UX, ba vòng red-team, khảo sát Athena, kiến trúc kỹ thuật, hiệu ứng âm thanh, và các bản bàn về hàng đợi. Cộng với `CLAUDE.md`.
 
 **Toàn bộ là bản nháp.** Không dòng nào ở trên được trích như requirement đã chốt.

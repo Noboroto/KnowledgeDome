@@ -8,7 +8,7 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến, mô
 
 ## 1. Nguồn sự thật
 
-**`docs/` là nguồn sự thật DUY NHẤT.** Bản đồ tài liệu: `docs/README.md`. Sổ quyết định: `docs/decisions.md` (`QĐ-001` → `QĐ-104`) — đây là nơi duy nhất ghi *vì sao*.
+**`docs/` là nguồn sự thật DUY NHẤT.** Bản đồ tài liệu: `docs/README.md`. Sổ quyết định: `docs/decisions.md` (`QĐ-001` → `QĐ-115`) — đây là nơi duy nhất ghi *vì sao*.
 
 ### Thứ bậc nguồn
 
@@ -16,29 +16,32 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến, mô
 |---|---|---|
 | 1 | `docs/source/` | Tài liệu gốc về nghiệp vụ và sản phẩm. **Không sửa** trừ khi được yêu cầu rõ ràng |
 | 2 | `docs/PRD.md` | Requirement cấp sản phẩm và định nghĩa epic. Phải truy nguyên về `docs/source/` |
-| 3 | `specs/<feature>/spec.md` | Requirement và user story chuẩn tắc của feature. **Thắng** mọi mô tả không chính thức trong chat hay trong plan |
-| 4 | `plans/<feature ID>/yyyyMMdd-HHmmss <feature/topic>/plan.md` | Kế hoạch kỹ thuật chuẩn tắc của feature đó |
-| 5 | `specs/<feature>/tasks.md` | Danh sách task thực thi chuẩn tắc |
-| 6 | `plans/yyyyMMdd-HHmmss <feature/topic>/plan.md` | Kế hoạch kỹ thuật cho việc nhỏ **nằm ngoài** spec |
+| 3 | `specs/<feature>/spec.md` | Requirement và user story chuẩn tắc của feature *(Spec Kit)*. **Thắng** mọi mô tả không chính thức trong chat hay trong plan |
+| 4 | `plans/<feature ID>/yyyyMMdd-HHmmss <feature/topic>/plan.md` | Kế hoạch kỹ thuật chuẩn tắc của feature đó *(ClaudeKit)* |
+| 5 | `specs/<feature>/tasks.md` | Danh sách task thực thi chuẩn tắc *(ClaudeKit)* |
+| 6 | `plans/yyyyMMdd-HHmmss <feature/topic>/plan.md` | Kế hoạch kỹ thuật cho việc nhỏ **nằm ngoài** spec *(ClaudeKit)* |
 
 Tầng dưới phải truy nguyên được về tầng trên.
+
+### Quy ước đặt tên tài liệu
+
+**Mọi tài liệu trong repo mang prefix timestamp `yyyyMMdd-HHmmss <topic>`** *(24 giờ, giờ UTC+7 lúc tạo)* — plan, research, review, journal, ghi chú, báo cáo. Prefix đặt ở **thư mục** khi tài liệu có nhiều file, đặt ở **tên file** khi chỉ một file.
+
+**Ngoại lệ duy nhất: `docs/` và `specs/`** — hai thư mục này giữ tên ổn định, không timestamp, vì chúng là nguồn sự thật và bị tham chiếu chéo bằng đường dẫn cố định.
 
 ### Quy tắc đặc tả
 
 - **Không bao giờ tự bịa requirement nghiệp vụ.**
 - Thiếu thông tin ⇒ đánh dấu `NEEDS CLARIFICATION`. Mâu thuẫn ⇒ đánh dấu `CONFLICT`. Không tự hoà giải.
 - Mọi requirement phải trỏ được về nguồn của nó.
-- **Spec Kit sở hữu** feature specification, implementation plan và task. ClaudeKit được scout, research, review, test và implement.
-- Không tạo plan ClaudeKit riêng cho feature đã do Spec Kit quản lý, trừ khi được yêu cầu rõ ràng.
+- **Phân vai công cụ**: **Spec Kit chỉ sở hữu ĐẶC TẢ** — `specs/<feature>/spec.md`. **ClaudeKit sở hữu mọi thứ từ đó trở xuống** — `plan.md`, `tasks.md`, scout, research, implement, review, test.
+- Plan của mọi feature đều do ClaudeKit tạo, đặt trong `plans/` theo quy ước đặt tên bên dưới, và phải truy nguyên về `specs/<feature>/spec.md`. `tasks.md` vẫn đặt trong `specs/<feature>/` để đứng cạnh spec, nhưng do ClaudeKit sinh ra từ plan.
+- **`plans/` không bao giờ là nguồn.** Plan là tầng dưới của `spec.md`; một requirement nghiệp vụ **không được phép ra đời ở đó**.
 - **Không mở rộng phạm vi feature trong lúc implement.**
 
-> Chi tiết cưỡng chế — 6 cổng chất lượng, định dạng marker, quy tắc sửa đổi — ở `.specify/memory/constitution.md` **bản 1.3.0**.
+> Chi tiết cưỡng chế — 6 cổng chất lượng, định dạng marker, quy tắc sửa đổi — ở `.specify/memory/constitution.md` **bản 1.4.0**.
 >
 > **Không còn đường nào đưa nội dung ngoài `docs/` vào spec.** `docs/reviews/**`, `public/`, lịch sử git và ghi chú trong chat đều **không** thoả cổng truy nguyên.
-
-### Thư mục `plans/` cũ đã bị xoá
-
-Phần chưa migrate — spec RuleConfig v2, kiến trúc kỹ thuật, 12 kế hoạch theo phase, red-team, khảo sát UX, hướng dẫn hồ sơ portable — **chỉ còn trong lịch sử git**; lấy lại bằng `git show <sha>:plans/...`. **Không** trích chúng như requirement.
 
 ---
 
