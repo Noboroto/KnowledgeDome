@@ -1160,7 +1160,48 @@ Nó cũng khớp chính `QĐ-050`: banner **KHÔNG CHỮ**, *"khán giả tự h
 
 **Không đụng bất biến nào.** `INV-016` *(đồng hồ không đóng băng)* không có chủ ngữ ở đây — `QĐ-050` đã khai banner và đồng hồ **loại trừ lẫn nhau**, nên dưới banner **không có đồng hồ nào** để chạy hay để đóng băng. `INV-021` giữ nguyên vì che không phải đổi.
 
-**Phạm vi.** Chỉ **máy thí sinh**. Màn khán giả và lớp phủ dựng stream giữ nguyên hành vi của `QĐ-050` — báo hiệu thuần thị giác. Màn admin **không bị phủ**.
+**Phạm vi.** Chỉ **máy thí sinh**. Màn khán giả và lớp phủ dựng stream giữ nguyên hành vi của `QĐ-050` — báo hiệu thuần thị giác. Màn admin **không bị phủ**. Màn MC cũng **không bị phủ** — xem `QĐ-116`.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-116 — Banner tạm dừng KHÔNG phủ màn MC
+
+**Quyết định.** Banner tạm dừng tác động lên đúng **hai** loại màn:
+
+| Loại màn | Tác động |
+|---|---|
+| **Máy thí sinh** | Che **toàn bộ** màn *(`QĐ-115`)* **và** chặn **toàn bộ** thao tác |
+| **Màn khán giả · lớp phủ dựng stream** | Báo hiệu **trận đang tạm dừng**, thuần thị giác, **không chữ** |
+
+**Hai loại màn KHÔNG bị phủ**: **màn admin** *(đã khai ở `QĐ-050`)* và **màn MC**. Trên màn MC, câu hỏi và đáp án **vẫn đọc được**, và prompt duyệt cú **giành quyền điều khiển** *(`QĐ-093`)* **vẫn bấm được** trong lúc banner đang bật.
+
+**Vì sao — hai lập luận độc lập.**
+
+1. **Vế *"chặn thao tác"* không có đối tượng trên màn MC.** Màn `/mc` là **read-only** trừ đúng một prompt (`QĐ-001`, `QĐ-093`). Nhóm lớp phủ chặn-toàn-cục được định nghĩa bằng việc nó **chặn thao tác**; áp nó lên một màn không có thao tác nào thì chỉ còn vế *"che nội dung"* — mà che nội dung của MC là **phá đúng lý do màn MC tồn tại**: MC là người **đọc câu hỏi** trên sân khấu.
+2. **Phương án ngược lại đẻ ra một ca kẹt mà nguồn không có.** Tổ hợp *(banner đang bật × phiên admin giữ quyền **mất kết nối** × một admin khác bấm giành)* **dựng được**. Nếu banner chặn cả prompt `STATE-039` thì cú giành **không ai duyệt được**, và trận kẹt ở **đúng tình huống** `QĐ-093` được viết ra để cứu.
+
+**MC vẫn biết trận đang tạm dừng — qua kênh người, không qua lớp phủ.** MC là vai **có mặt tại sân khấu** và là người tuyên bố việc tạm dừng bằng **lời** (`QĐ-001` tầng MC). Đây cùng khuôn với chính `QĐ-050`: banner **không chữ** vì *"khán giả tự hiểu từ bối cảnh sân khấu"*.
+
+**Thay cho.** Cột *"Ai thấy"* của bảng phân nhóm lớp phủ trong `game-state-machine.md` §F, dòng nhóm chặn-toàn-cục, trước đây liệt kê **MC**. Vế đó **bị gỡ**. Nguyên nhân của sai sót: cột đó trộn **hai** câu hỏi khác nhau — *ai nhìn thấy lớp phủ* và *lớp phủ chặn thao tác của ai* — mà nhóm chặn-toàn-cục chỉ có nghĩa với vế thứ hai.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-117 — Banner tạm dừng và lớp công bố kết quả LOẠI TRỪ LẪN NHAU
+
+**Quyết định.** Ràng buộc **hai chiều**: không mở được **lớp công bố kết quả** khi **banner tạm dừng** đang bật, và không mở được **banner** khi **lớp công bố** đang bật.
+
+Ở cả hai chiều, nút **không bật**; lệnh lọt tới server thì bị **từ chối** kèm phản hồi hạng **invalid state**; **không ép được**.
+
+**Đây là INVALID STATE, không phải chỗ chặn cứng thứ tư.** Ba chỗ chặn cứng của luật chơi (`QĐ-003`) đều là **ngưỡng tài nguyên**. Cặp này là một **thao tác không có đối tượng** ở trạng thái hiện tại — cùng hạng với cặp *banner × đồng hồ* của `QĐ-050`, và cùng cách phản hồi.
+
+**Vì sao — và phương án bị loại.** Câu hỏi gốc là *"lớp nào hiển thị trên cùng khi hai lớp cùng bật"*. Có hai đường trả lời:
+
+- **Dựng thứ tự chồng lớp** *(bị loại)*: mở một trục mới phải duy trì cho **mọi cặp** lớp phủ về sau, và mỗi lớp phủ thêm vào phải trả lời lại câu hỏi đó.
+- **Loại trừ** *(chọn)*: **dùng lại** một pattern đã có trong hệ thống — chính `QĐ-050` — và đóng hẳn câu hỏi cho cặp duy nhất dựng được trên hai kênh public. Nó cũng buộc admin **kết thúc dứt điểm** phần công bố trước khi tạm dừng trận, thay vì để hai thông điệp trình diễn chồng nhau trên sóng.
+
+**Hệ quả — thu hẹp một bất biến, không phủ định nó.** *"Nhiều lớp phủ bật cùng lúc là hợp lệ"* (`QĐ-049`, `QĐ-050`) chịu **một ngoại lệ đã liệt kê**. Vế đó vốn được viết làm **hệ quả** của lập luận *"đừng nhét lớp phủ vào enum cấp trận"*; quyết định này **không** nhét chúng vào enum — nó chỉ thêm **một** guard giữa **hai** lớp cụ thể. Mọi tổ hợp lớp phủ khác vẫn bật cùng lúc được, và mở/đóng lớp phủ vẫn **không** đổi trạng thái bên dưới.
+
+**Không mở rộng.** Quyết định này **không** được đọc thành một quy tắc thứ tự chồng lớp hay một quy tắc loại trừ chung cho các cặp lớp phủ khác.
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
@@ -1226,6 +1267,25 @@ Chọn *"câu khép"* thay vì *"đã chấm, trừ Về đích"* vì nó **khô
 - Ba loại thông tin nay có ba chế độ mới: **đáp án chuẩn** = mật tới mốc câu khép, sau đó công khai theo cờ · **bài làm của thí sinh khác** = ẩn tạm thời, lộ khi admin bấm · **điểm số** = công khai luôn luôn.
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: vế *"overlay không bao giờ nhận đáp án"* của `QĐ-051`, và mặc định `official ⇒ TẮT` của `QĐ-062`
+
+### QĐ-118 — Đáp án Chướng ngại vật tới CẢ overlay: đứng ngoài cơ chế công bố chỉ đổi THỜI ĐIỂM, không đổi NGƯỜI NHẬN
+
+**Quyết định.** Khi đáp án **Chướng ngại vật** lộ theo `GR-012` — có người giải đúng, hoặc admin bấm công bố — nó tới **cả màn khán giả lẫn lớp phủ dựng stream**, **cùng lúc và cùng điều kiện**. Không có lệnh cấm riêng nào cho lớp phủ ở đường này.
+
+**Hai trục, đừng trộn.**
+
+| Trục | Đáp án Chướng ngại vật |
+|---|---|
+| **THỜI ĐIỂM** — lộ lúc nào | **Ngoài** cơ chế của `QĐ-080`: không theo mốc câu khép, không theo cờ `revealAnswerAfterJudge`; theo `GR-012` |
+| **NGƯỜI NHẬN** — lộ cho ai | **Trong** phạm vi chung: hai kênh public nhận **như nhau**, theo `QĐ-080` vế 2 |
+
+`QĐ-080` vế 4 loại Chướng ngại vật khỏi **trục thứ nhất**, và chỉ trục thứ nhất. Trục thứ hai đã được chính `QĐ-080` vế 2 chốt dứt điểm bằng câu *"lệnh cấm tuyệt đối với overlay **bị gỡ**"*.
+
+**Vì sao vế này từng thiếu.** `GR-012` C2 viết *"hiện Chướng ngại vật **cho viewer**"* — chính xác **tại thời điểm viết**, khi overlay **vẫn** đang mang lệnh cấm tuyệt đối. Nó thành thiếu sót **sau** khi `QĐ-080` gỡ lệnh cấm. Đây là **thiếu chữ do trình tự ban hành**, không phải một lệnh cấm có chủ ý.
+
+**Vì sao phương án ngược lại bị loại.** Giữ lệnh cấm riêng ở đúng đường này biến **bản phát sóng** — kênh đông người xem nhất — thành kênh **duy nhất** không thấy khoảnh khắc mở toàn bộ miếng ghép, tức **cao trào của cả vòng** Vượt chướng ngại vật. `QĐ-102` đã khai lớp phủ là *"chính buổi phát sóng, không phải khán giả của nó"*. Nó cũng **không bảo vệ được gì**: tới mốc đó đề đã lộ cho toàn bộ khán giả tại chỗ.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: chữ *"cho viewer"* ở `GR-012` C2, nay đọc là **cho cả hai kênh public**
 
 ### QĐ-072 — Ba hạng cảnh báo giao diện, phân biệt bằng thứ chúng bảo vệ
 
@@ -1317,7 +1377,23 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **Không có khái niệm "engine tự mở".** Engine không bao giờ tự mở gì, nên `AuditLog` **không cần** phân biệt *do-admin* với *do-engine* — mọi lần mở đều do admin. Chỗ **cần** phân biệt là khác: ô VCNV chuyển sang *đã hỏi* do **luồng** hay do **admin đánh dấu tay** (`GR-009` C12), vì hai đường đó cùng đổi băng điểm.
 
+> ⚠️ **Vế *"engine không bao giờ tự mở gì"* đã bị `QĐ-080` làm cũ, và được `QĐ-119` viết lại.** `QĐ-080` dựng một đường **engine tự đẩy** đáp án tại mốc **câu khép** theo cờ. Nên nay có **hai** đường mở, và `AuditLog` **có** chỗ để phân biệt. Vế *"thao tác tay thắng cờ tự động"* ở đầu mục này **giữ nguyên** và được `QĐ-119` mở rộng sang chiều **đóng**.
+
 *Nguồn*: `[SUY RA]` từ `QĐ-048`, `QĐ-051`, `QĐ-062`
+
+### QĐ-119 — Thao tác tay thắng ở CẢ HAI CHIỀU: cú ĐÓNG của admin chặn cú đẩy tại mốc câu khép
+
+**Quyết định.** Khi một cú **đóng hiển thị bằng tay** của admin còn hiệu lực cho câu đang chạy, engine **không** đẩy đáp án tới thí sinh, màn khán giả và lớp phủ tại mốc **câu khép** — kể cả khi `revealAnswerAfterJudge` đang **BẬT**. Đáp án vẫn kín tới khi admin **tự mở lại**.
+
+**Phạm vi hiệu lực: một CÂU.** Cú đóng chấm dứt bằng đúng **một** cách — admin tự mở lại. Nó **không** dính sang câu sau: sang câu mới, hành vi hiển thị quay về **mặc định do cờ cấp trận quyết định**. Đây là `QĐ-033` *(mỗi vòng bắt đầu sạch)* áp xuống cấp câu, không phải một luật mới.
+
+**Vì sao.** `QĐ-074` đã chốt *"thao tác tay của admin **thắng mọi cờ tự động**"* nhưng chỉ minh hoạ chiều **mở**. Cú đẩy của engine tại mốc câu khép bị gác bởi **chính cờ `revealAnswerAfterJudge`**; nếu nó đè được lên một cú đóng tay thì thao tác tay **thắng cờ nhưng thua cái chạy bằng cờ** — nghĩa của `QĐ-074` rỗng đi ở đúng ca người ta cần nó. Đọc chiều đóng theo hướng ngược lại cũng chỏi `QĐ-001`: máy giữ **sự kiện**, người giữ **phán quyết**.
+
+**Không phá *"công bố là một chiều ở phía engine"*.** Câu đó nói về **engine**: engine không tự thu lại thứ nó đã đẩy. Nó **không** nói *"cú đẩy của engine đè được lên phán quyết của người"*. Hai mệnh đề độc lập, và cả hai cùng đúng: **engine đi một chiều, admin đi được cả hai** — đó chính là hình dạng của mô hình ADVISORY.
+
+**Hệ quả.** `AuditLog` nay phân biệt được **hai** đường công bố: *do-admin* (`QĐ-048`) và *do-engine tại mốc câu khép* (`QĐ-080`). Trạng thái hiển thị của một câu là hàm của **cả hai**, với thao tác tay ở **hạng cao hơn**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: vế *"engine không bao giờ tự mở gì"* của `QĐ-074`, đã cũ từ khi có `QĐ-080`
 
 ### QĐ-075 — Mode trả lời: chụp vào trận, không thuộc preset luật
 
@@ -1365,7 +1441,98 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **Vì sao.** Thiếu slot thì không thêm được về sau mà không sửa engine. Có slot mà để trống thì **không tốn gì**.
 
+> ⚠️ **Danh sách phẳng ở trên đã được `QĐ-120` tách làm HAI NHÓM.** *Mở màn công bố* hướng khán giả; năm mục còn lại **chỉ phát trên máy admin**. Vế *"slot trống = im lặng, không có bộ âm mặc định"* **giữ nguyên**.
+>
+> ⚠️ **Cụm *"ngoài các mốc thi đấu"* ở trên đã được `QĐ-122` liệt kê đích danh.** Mục này chỉ kể **phần bổ sung** và để trống phần *mốc thi đấu*; `QĐ-122` lấp bằng **52 khe** dẫn xuất từ `docs/source/fandom-olympia-26-am-thanh.md`.
+
 *Nguồn*: `[SUY RA]` từ `QĐ-049`
+
+### QĐ-120 — Khe âm thanh chia HAI NHÓM theo *khán giả có được nghe không*; nguồn phát cấu hình được
+
+**Quyết định — ba vế.**
+
+**1. Mỗi khe thuộc đúng một trong hai nhóm.** Tiêu chí phân định là **khán giả có được nghe khe này không**:
+
+| Nhóm | Thành viên | Ai nghe |
+|---|---|---|
+| **Hướng khán giả** | các **mốc thi đấu** · khe **mở màn công bố** | Khán giả, qua **nguồn phát** ở vế 2 |
+| **Chỉ-admin** | *hoàn nguyên · bỏ vòng · chạy lại vòng · kết thúc sớm · ép qua cảnh báo* | **Chỉ máy admin.** Không bao giờ tới màn khán giả hay lớp phủ, ở **mọi** cấu hình |
+
+**2. Nguồn phát** cho nhóm hướng khán giả là một giá trị cấu hình với đúng **hai** lựa chọn — **máy admin** hoặc **lớp phủ dựng stream** — mặc định **lớp phủ dựng stream**. Admin bật, tắt và đổi được. Cấu hình này **chỉ** áp cho nhóm hướng khán giả; nhóm chỉ-admin **không** đi qua nó. **Màn khán giả KHÔNG BAO GIỜ là nguồn phát.**
+
+**3. Không lui tự động.** Nguồn phát đang là lớp phủ mà **không lớp phủ nào kết nối** ⇒ khán giả **không nghe gì**; hệ thống **không** tự đổi nguồn và **không** báo lỗi. Admin **tự đổi cấu hình** khi cần.
+
+**Vì sao chia nhóm — và vì sao ranh giới nằm ở đúng chỗ đó.** `QĐ-076` cấm báo cho khán giả về can thiệp của admin, và một khe phát ra bản trộn phát sóng **là** một thông báo — nó chỉ đổi phương tiện từ **mắt** sang **tai**. Nhưng danh sách cấm của `QĐ-076` gồm đúng **bốn thao tác SỰ CỐ**; *mở màn công bố* **không** nằm trong đó, và nó là một **mốc trình diễn có chủ đích**, không phải sự cố hậu trường. `QĐ-079` gộp cả sáu vào một danh sách phẳng chỉ vì cả sáu đều là **cú bấm của admin** — nhưng *mở màn công bố* là cú bấm **trình diễn**, năm cái kia là cú bấm **sửa lỗi**. Nhờ tách đúng chỗ này, `QĐ-076` **giữ nguyên và không cần ngoại lệ nào**.
+
+**Vì sao mặc định là lớp phủ.** Lớp phủ **chính là buổi phát sóng** (`QĐ-102`), nên tiếng của nó vào thẳng bản trộn mà không cần định tuyến âm thanh thủ công.
+
+**Vì sao màn khán giả không bao giờ phát.** Một hội trường có 200 người xem trên 200 máy sẽ thành **200 nguồn tiếng lệch nhau**. Âm thanh cần **đúng một** nguồn.
+
+**Vì sao không lui tự động.** Cùng khuôn `QĐ-001` — máy không tự quyết thay người — và cùng khuôn chính `QĐ-079`: **im lặng là một trạng thái hợp lệ**, không phải một sự cố phải tự cứu.
+
+**Không đổi gì.** Khe trống vẫn là **im lặng** · vẫn **không** có bộ âm mặc định (`RISK-005` giữ nguyên) · engine vẫn chỉ phát **tín hiệu ngữ nghĩa**, ánh xạ sang âm thanh vẫn là cấu hình phía client · câu *"bỏ một vòng phát đúng khe đã gán"* vẫn đúng nguyên văn — chủ ngữ của nó là **máy admin**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: danh sách phẳng sáu khe của `QĐ-079`
+
+### QĐ-121 — Chủ đề hiển thị gồm BA TRỤC TĨNH, áp cho ĐÚNG hai kênh public
+
+**Quyết định — hai vế.**
+
+**1. Nội dung.** Chủ đề hiển thị của một contest gồm đúng **ba trục tĩnh**: **bảng màu** · **logo giải** · **ảnh nền**. Nó **không** chứa **tài sản động** *(hình hiệu, clip mở màn, chuỗi animation)* và **không** chứa **phông chữ**.
+
+**2. Phạm vi áp dụng.** Chủ đề áp cho đúng **hai kênh public** — màn khán giả và lớp phủ dựng stream. **Màn thí sinh, màn MC và màn admin nằm ngoài phạm vi chủ đề** và giữ nguyên bảng màu hệ thống.
+
+**Vì sao không có tài sản động.** Hiệu ứng động đã có **module animation** riêng, và âm thanh đã có **khe âm thanh** riêng (`QĐ-079`, `QĐ-120`) — hai trục được tách ra có chủ đích để *"sửa luật không đụng animation và ngược lại"*. Nhét hình hiệu vào chủ đề là dựng một loại media **thứ ba** phải preload, phải có ngưỡng dung lượng riêng, và giao thoa với cả hai trục kia — trả giá bằng ba thứ để đổi lấy một thứ mà hai trục sẵn có đã làm được.
+
+**Vì sao không có phông chữ.** `CLAUDE.md` §Quy ước code khoá cứng *"Be Vietnam Pro"* + fallback hỗ trợ tiếng Việt, và bản portable **self-host woff2 trong bundle** vì chạy LAN offline. Một trục phông tuỳ biến đòi hoặc CDN — trái ràng buộc offline — hoặc một luồng tải font riêng, cho một giá trị nhận diện mà logo và bảng màu đã phủ.
+
+**Vì sao ba màn vận hành đứng ngoài.** Màn khán giả và lớp phủ là bề mặt **trình diễn**; ba màn kia là bề mặt **vận hành**. Người ngồi trước màn admin đang chấm điểm, người ngồi trước màn MC đang **đọc câu hỏi trên sân khấu**, người ngồi trước màn thí sinh đang đua tốc độ. Cho chủ đề chạm vào chúng nghĩa là một cấu hình đặt sai màu **làm hỏng khả năng đọc ở đúng ba chỗ mà đọc sai hoặc đọc chậm gây hậu quả trực tiếp lên trận** — trong khi cùng cấu hình đó, nếu chỉ chạm hai kênh public, cùng lắm là xấu trên sóng. Cách này cũng khỏi phải dựng một luật *"tương phản tối thiểu"* để cưỡng chế, vì không có đối tượng để cưỡng chế nữa.
+
+**Không đổi gì.** Chủ đề vẫn là cấu hình **cấp contest**, đặt qua `PERM-023` · vẫn **đóng băng tại cú bấm bắt đầu trận** như mọi cấu hình khác (`PRD-REQ-028`) · vẫn không đụng tới trạng thái trận.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-122 — Danh sách khe *mốc thi đấu* DẪN XUẤT từ wiki Fandom, lọc hai tầng
+
+**Quyết định.** Tập khe của nhóm **mốc thi đấu** (`QĐ-120`) **không** do dự án tự chọn và **không** dẫn xuất máy móc từ catalog sự kiện. Nó lấy từ cột **`Tên`** ở trang [`Âm thanh`](https://duong-len-dinh-olympia.fandom.com/vi/wiki/%C3%82m_thanh) của wiki Fandom — **cùng nguồn** đã được chọn làm source of truth luật O26 — sau **hai tầng lọc** và **một phép gộp**:
+
+| Bước | Nội dung |
+|---|---|
+| **Lọc 1 — biến thể ngoài O26** | Loại toàn bộ nhóm `Ô mạo hiểm` *(6 khe)* và `Bộ 8/12/16 câu hỏi` *(cấu trúc Khởi động O23; O26 là lượt riêng 6 câu + lượt chung 12 câu)* |
+| **Lọc 2 — khe truyền hình** | Loại nhóm `Tổng kết` và `Âm thanh khác`, cùng hai khe mở đầu — chúng là mốc **dựng hình của nhà đài**, không ứng với sự kiện nào engine phát ra |
+| **Gộp** | Mọi khe mang **con số giây** gộp thành **một** khe *đếm giờ* mỗi vòng |
+
+Kết quả: **52 khe** — Khởi động `11` · Vượt chướng ngại vật `14` · Tăng tốc `8` · Về đích `15` · Câu hỏi phụ `4`. Cộng `6` khe điều khiển của `QĐ-079` ra **58 khe**. Toàn bộ `52` thuộc nhóm **hướng khán giả** theo `QĐ-120`.
+
+Danh sách này là **tập đóng ở v1**: không tự sinh thêm khe từ sự kiện engine nào khác, không bỏ khe nào kể cả khi chưa gán file.
+
+**Vì sao dẫn xuất từ nguồn thay vì tự chọn.** `QĐ-079` liệt kê đích danh sáu khe điều khiển rồi gọi phần còn lại là *"các mốc thi đấu"* mà không liệt kê — một khoảng trống tồn tại từ đó. Ba cách lấp đều tệ hơn: **tuyển chọn tay** đẻ một danh sách phải bảo vệ mãi mà không có tiêu chí nào ngoài khẩu vị; **dẫn xuất từ `EVENT-001` → `EVENT-052`** phủ được nhưng lẫn cả sự kiện thuần kỹ thuật, và phải dựng thêm một tiêu chí *"event nào là nội bộ"*; **để mở** thì mỗi lần thêm khe là một lần sửa engine, đúng cái mà `QĐ-079` viết ra để tránh. Chương trình gốc mà preset `O26_DEFAULT@1` mô phỏng **đã** có sẵn danh sách này, và nó đã qua 20 mùa hiệu chỉnh trên sân khấu thật.
+
+**Vì sao gộp khe theo độ dài.** Wiki tách `5 giây` · `30 giây` · `60 giây` · `90 giây` vì O26 có thời lượng cố định cho từng vòng. Dự án này đặt `timeSeconds` ở **từng câu hỏi** — cùng mức điểm có câu 15 giây và câu 40 giây — và khai *"mọi timer và mức điểm là RuleConfig, không hard-code luật"*. Một khe tên `60 giây` sẽ là hard-code một giá trị luật vào danh sách khe, và sẽ im lặng ở mọi câu không đúng 60 giây.
+
+**Khe mà nguồn không có thì GIỮ NGUYÊN tình trạng thiếu.** Ví dụ đã biết: vòng **Câu hỏi phụ** không có khe cho phán quyết **sai**, dù luật có nhánh đó *(trả lời sai ⇒ sang câu tiếp)*. Bổ sung là một quyết định **mới** của chủ dự án, không được suy diễn từ luật — đúng khuôn Nguyên tắc II của constitution. Hậu quả của việc thiếu là **im lặng**, vốn đã là hành vi hợp lệ (`QĐ-079`).
+
+**Nợ nguồn đã trả.** Trang `Âm thanh` **không** nằm trong bản snapshot luật, nên nó được lưu riêng ở **`docs/source/fandom-olympia-26-am-thanh.md`** *(2026-08-04)*. Bản đó là **trích lược có chủ đích** — giữ cột `Tên`, bỏ cột file và cột khoảng ngày phát sóng — và nói rõ điều đó ở §Phạm vi trích lược. Lý do bỏ: sản phẩm **không có bộ âm mặc định**, admin tự tải file cho từng khe, nên các bản phối theo mùa không là đầu vào của requirement nào.
+
+**Không đổi gì.** Hai nhóm khe và nguồn phát của `QĐ-120` giữ nguyên · khe trống vẫn **im lặng** và vẫn **không** có bộ âm mặc định (`RISK-005`) · engine vẫn chỉ phát **tín hiệu ngữ nghĩa**, ánh xạ sang âm thanh vẫn là cấu hình phía client.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · *Dẫn xuất từ*: `docs/source/fandom-olympia-26-am-thanh.md` · *Lấp chỗ trống của*: `QĐ-079`
+
+### QĐ-123 — Lớp phủ thiếu dữ liệu vẫn dựng BÌNH THƯỜNG; không có nhánh trạng thái rỗng
+
+**Quyết định.** Khi một lớp phủ đang bật mà trạng thái bên dưới **chưa cho nội dung có nghĩa**, hai kênh public **dựng lớp phủ đó bình thường với dữ liệu hiện có**. Hệ thống **không** hiện một trạng thái rỗng riêng, **không** để trống phần dữ liệu, và **không** từ chối cú mở.
+
+Ca dựng được rõ nhất: mở **lớp công bố kết quả** ở `LOBBY` trước vòng đầu tiên, khi mọi ghế mang điểm `0`.
+
+**Vì sao ca đó không phải một ca chưa khai.** Mọi ghế `0` cho ra **cả bảng đồng hạng 1** — đúng thứ mà quy tắc đồng hạng của `GR-025` và `QĐ-049` đã định nghĩa. Câu hỏi *"hiện gì khi chưa có thứ hạng"* đặt sai tiền đề: thứ hạng **có**, nó chỉ bằng nhau. Các quy tắc nội dung đã có — đồng hạng, điểm âm hiển thị nguyên giá trị, dựng đủ số ghế của trận — phủ trọn **mọi** giá trị dữ liệu, gồm cả toàn `0`.
+
+**Vì sao không dựng một trạng thái rỗng.** Nó đẻ thêm một loại nội dung, một chuỗi giao diện, và một ngưỡng *"thế nào là rỗng"* phải định nghĩa **cho từng lớp phủ** rồi duy trì mãi. Trên sóng, một lớp phủ trống chữ cũng không phân biệt được với một lỗi dựng hình.
+
+**Vì sao không từ chối cú mở.** Từ chối là máy tự phán rằng thứ admin muốn đưa lên sóng *"không đáng hiển thị"* — trái thẳng `QĐ-001`. Admin **toàn quyền** mở và đóng lớp hiển thị; đó là công cụ trình diễn của người vận hành, không phải một bước của luồng thi mà máy được phép gác.
+
+**Không đổi gì.** `EVENT-032` vẫn hợp lệ ở **mọi** trạng thái cấp trận · mở rồi đóng lớp công bố vẫn **không sinh event điểm nào** và vẫn trả về trạng thái bên dưới nguyên vẹn (`INV-021`) · cặp loại trừ *banner × lớp công bố* của `QĐ-117` giữ nguyên và không liên quan — đó là hai lớp **cùng bật**, còn mục này là **một** lớp thiếu dữ liệu.
+
+*Nguồn*: `[CHỦ DỰ ÁN]`
 
 ### QĐ-088 — Hai kênh public nhận đẩy MỘT CHIỀU trên HTTP; kênh hai chiều chỉ cho vai đã xác thực
 

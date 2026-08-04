@@ -234,7 +234,7 @@ stateDiagram-v2
     S040b: STATE-039 · PROMPT DUYỆT GIÀNH QUYỀN<br/>phía MC · không đóng được<br/>QUYỀN GHI DUY NHẤT của MC
   }
   state "F.3 — Chặn TOÀN CỤC · không gắn thao tác nào" as F3 {
-    S041: STATE-040 · BANNER TẠM DỪNG<br/>KHÔNG CHỮ, không lý do<br/>thí sinh chặn hết · viewer báo tạm dừng<br/>admin KHÔNG bị phủ
+    S041: STATE-040 · BANNER TẠM DỪNG<br/>KHÔNG CHỮ, không lý do<br/>thí sinh chặn hết · viewer báo tạm dừng<br/>admin và MC KHÔNG bị phủ
   }
   BASE --> F1: EVENT-032 mở công bố
   F1 --> BASE: EVENT-033 đóng công bố
@@ -508,8 +508,8 @@ stateDiagram-v2
 - **Cho phép**: admin bấm *"Câu kế tiếp"* (hoặc nút kết thúc lượt/vòng khi đã đủ số câu) · mở miếng ghép (VCNV) · điều chỉnh điểm.
 - **Cấm**: chấm lại · đổi phán quyết tại chỗ · mở lại chuông cho người khác trên cùng câu.
 - **Ra**: *"Câu kế tiếp"* ⇒ `STATE-017` của câu kế · hoặc nút kết thúc lượt/vòng.
-- **Công bố đáp án**: vào trạng thái này là **câu khép** ⇒ server đẩy đáp án tới thí sinh, viewer và overlay nếu `revealAnswerAfterJudge` bật (`INV-017`, `GR-037`, `QĐ-080`). **Hai ngoại lệ**: phán quyết *Huỷ kết quả* **không** công bố; và ở **Về đích**, chấm Sai người thi chính dẫn sang `STATE-013` *(cửa sổ cướp)* chứ **không** vào trạng thái này — câu chưa khép, **không công bố**.
-- **Nguồn**: `QĐ-014`, `QĐ-041`, `QĐ-080` · `GR-004`, `GR-026`, `GR-028`, `GR-029`, `GR-037`
+- **Công bố đáp án**: vào trạng thái này là **câu khép** ⇒ server đẩy đáp án tới thí sinh, viewer và overlay nếu `revealAnswerAfterJudge` bật (`INV-017`, `GR-037`, `QĐ-080`). **Ba ngoại lệ**: phán quyết *Huỷ kết quả* **không** công bố; ở **Về đích**, chấm Sai người thi chính dẫn sang `STATE-013` *(cửa sổ cướp)* chứ **không** vào trạng thái này — câu chưa khép, **không công bố**; và một cú **đóng hiển thị bằng tay** của admin còn hiệu lực cho câu này **chặn** cú đẩy — thao tác tay thắng cờ tự động ở **cả hai chiều** (`QĐ-119`).
+- **Nguồn**: `QĐ-014`, `QĐ-041`, `QĐ-080`, `QĐ-119` · `GR-004`, `GR-026`, `GR-028`, `GR-029`, `GR-037`
 
 ---
 
@@ -655,12 +655,12 @@ stateDiagram-v2
 |---|---|---|---|
 | **F.1 — trình diễn** | viewer · overlay · thí sinh · admin | **Không** | `STATE-033` · `STATE-034` |
 | **F.2 — tương tác** | chủ yếu admin (**hai** ngoại lệ: một ở thí sinh, một ở MC) | **Có**, nhưng chỉ **đúng thao tác đang hỏi** | `STATE-035` → `STATE-039` |
-| **F.3 — chặn toàn cục** | thí sinh · viewer · overlay · MC (**không** phủ admin) | **Có**, chặn **TẤT CẢ**, không gắn thao tác nào | `STATE-040` |
+| **F.3 — chặn toàn cục** | thí sinh · viewer · overlay (**không** phủ admin, **không** phủ MC — `QĐ-116`) | **Có**, chặn **TẤT CẢ**, không gắn thao tác nào | `STATE-040` |
 
 ### STATE-033 — đang công bố kết quả `[F.1]`
 
 - **Mô tả**: lớp hiển thị **bảng xếp hạng** — tên, điểm, thứ hạng của mọi ghế. Hệ thống **gợi ý** mở ở hai mốc (hết vòng · hết trận); admin mở/đóng **tuỳ ý, bất cứ lúc nào**.
-- **Vào**: admin bấm mở công bố. Không điều kiện nào khác — đây là **quyền hiển thị của admin**.
+- **Vào**: admin bấm mở công bố, **và `STATE-040` banner tạm dừng không bật** (`QĐ-117`). Ngoài guard đó không điều kiện nào khác — đây là **quyền hiển thị của admin**.
 - **Cho phép**: admin đóng công bố · mọi thao tác của trạng thái bên dưới **vẫn tiếp tục**.
 - **Cấm**: sinh event điểm · đổi trạng thái trận · lộ đáp án · **client tự tính thứ hạng** từ bản sao điểm của mình.
 - **Ra**: admin bấm đóng. **Không có bộ đếm tự đóng.**
@@ -730,7 +730,7 @@ stateDiagram-v2
 
 - **Mô tả**: hộp thoại trên màn `/mc` hỏi MC **duyệt hay từ chối** một cú giành quyền điều khiển. Là **bề mặt quyền ghi DUY NHẤT** của MC trong toàn hệ thống — ngoài đúng thao tác này, màn `/mc` không có nút nào.
 - **Vào**: một admin phát `EVENT-050` giành quyền **và** contest có MC được gán.
-- **Cho phép**: MC bấm **Duyệt** ⇒ quyền chuyển sang người giành · MC bấm **Từ chối** ⇒ quyền ở nguyên chỗ cũ. Mọi thao tác của trạng thái bên dưới **vẫn chạy** — đồng hồ không dừng, vòng không tạm dừng.
+- **Cho phép**: MC bấm **Duyệt** ⇒ quyền chuyển sang người giành · MC bấm **Từ chối** ⇒ quyền ở nguyên chỗ cũ. Mọi thao tác của trạng thái bên dưới **vẫn chạy** — đồng hồ không dừng, vòng không tạm dừng. Prompt này **bấm được kể cả khi `STATE-040` banner tạm dừng đang bật**, vì banner **không phủ màn MC** (`QĐ-116`).
 - **Cấm**: **nút đóng / bỏ qua** — MC phải quyết · MC **duyệt bất cứ thứ gì khác**, đặc biệt là tín hiệu của **thí sinh** (`STATE-029` vẫn thuộc admin) · chặn đồng hồ hay bất kỳ thao tác nào ngoài chính cú giành đang hỏi.
 - **Ra**: MC duyệt hoặc từ chối · hoặc phiên đang giữ **kết nối lại** ⇒ cú giành mất đối tượng, prompt đóng, quyền ở nguyên chỗ cũ.
 - **Nguồn**: `QĐ-093` · `QĐ-001`, `QĐ-008`, `QĐ-070`
@@ -739,8 +739,8 @@ stateDiagram-v2
 
 ### STATE-040 — banner tạm dừng `[F.3]`
 
-- **Mô tả**: lớp phủ **KHÔNG CHỮ** do admin chủ động bật. **Hai tác dụng trên hai loại màn**: máy thí sinh — **che TOÀN BỘ màn** *(không thấy bảng điểm, đồng hồ, câu hỏi — `QĐ-115`)* **và** chặn **toàn bộ** thao tác; viewer/overlay — báo hiệu **trận đang tạm dừng**, thuần thị giác. **Không text, không lý do** — khán giả tự hiểu từ bối cảnh sân khấu. Là lớp phủ **duy nhất** chặn thao tác mà **không gắn với một thao tác cụ thể** nào.
-- **Vào**: admin bấm mở banner, **và không có cửa sổ thời gian nào đang đếm**. Đây là **điều kiện cứng của trạng thái**: khi có đồng hồ chạy thì nút **không bật**.
+- **Mô tả**: lớp phủ **KHÔNG CHỮ** do admin chủ động bật. **Hai tác dụng trên hai loại màn**: máy thí sinh — **che TOÀN BỘ màn** *(không thấy bảng điểm, đồng hồ, câu hỏi — `QĐ-115`)* **và** chặn **toàn bộ** thao tác; viewer/overlay — báo hiệu **trận đang tạm dừng**, thuần thị giác. **Hai loại màn KHÔNG bị phủ**: màn **admin** và màn **MC** (`QĐ-116`) — trên màn MC, câu hỏi và đáp án vẫn đọc được và prompt `STATE-039` vẫn bấm được. **Không text, không lý do** — khán giả tự hiểu từ bối cảnh sân khấu. Là lớp phủ **duy nhất** chặn thao tác mà **không gắn với một thao tác cụ thể** nào.
+- **Vào**: admin bấm mở banner, **và không có cửa sổ thời gian nào đang đếm**, **và `STATE-033` lớp công bố không bật** (`QĐ-117`). Hai vế sau là **điều kiện cứng của trạng thái**: khi có đồng hồ chạy hoặc khi lớp công bố đang mở thì nút **không bật**.
 - **Cho phép**: **admin làm mọi thứ như thường** — banner **không phủ máy admin** · admin bấm đóng banner.
 - **Cấm**: **mọi thao tác từ máy thí sinh** · **hiển thị bất kỳ chữ nào** trên banner, gồm cả lý do, tên người bấm, hay đồng hồ · **start timer trong lúc banner đang bật** · **tự đóng theo bộ đếm**.
 - **Ra**: admin bấm đóng. Trạng thái bên dưới lộ lại **nguyên vẹn** — tức trạng thái **hiện tại**, không phải trạng thái đã lưu lúc banner bật.
@@ -767,6 +767,15 @@ stateDiagram-v2
 |---|---|---|
 | Không mở banner khi đồng hồ chạy | Nút mở banner không bật | `STATE-019` · `STATE-010` · `STATE-013` |
 | Không start timer khi banner đang bật `[SUY RA]` | Nút start timer không bật; phải đóng banner trước | `STATE-040` |
+
+**Banner và lớp công bố cũng loại trừ lẫn nhau — ràng buộc HAI CHIỀU thứ hai** (`QĐ-117`):
+
+| Chiều | Phát biểu | Trạng thái liên quan |
+|---|---|---|
+| Không mở banner khi lớp công bố đang bật | Nút mở banner không bật | `STATE-033` |
+| Không mở lớp công bố khi banner đang bật | Nút mở công bố không bật; phải đóng banner trước | `STATE-040` |
+
+> Đây là **invalid state**, **không** phải chỗ chặn cứng thứ tư của `INV-014` — cùng hạng và cùng cách phản hồi với cặp *banner × đồng hồ* ở trên. Nó **thu hẹp** `INV-021` bằng **một ngoại lệ đã liệt kê**, không phủ định nó: mọi tổ hợp lớp phủ **khác** vẫn bật cùng lúc được.
 
 > Chiều thứ hai là **suy ra**, nhưng thiếu nó thì chiều thứ nhất **vô nghĩa**. Hệ quả: không tồn tại thời điểm nào banner và một đồng hồ đang chạy cùng có mặt, nên câu hỏi *"banner có đóng băng đồng hồ không"* **không có chủ ngữ** — `INV-016` không cần ngoại lệ.
 
@@ -1145,9 +1154,9 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 
 - **Actor**: Admin
 - **Mô tả**: bật lớp hiển thị bảng xếp hạng. Server tính thứ hạng từ event log và đẩy xuống **một** sự kiện kèm bảng đã tính; cách trình bày (lộ dần từng người, bục, hiệu ứng) là **animation client-side**, không phải engine.
-- **Hợp lệ ở**: **mọi trạng thái cấp trận**. Hệ thống **gợi ý** ở hai mốc: vừa kết thúc một vòng, và trận kết thúc.
-- **Không hợp lệ ở**: đã đang công bố — nút một chiều, tự đổi thành nút đóng.
-- **Nguồn**: `QĐ-049` · `GR-028`, `GR-035`, `GR-037`
+- **Hợp lệ ở**: **mọi trạng thái cấp trận**, **với điều kiện banner tạm dừng không bật**. Hệ thống **gợi ý** ở hai mốc: vừa kết thúc một vòng, và trận kết thúc.
+- **Không hợp lệ ở**: đã đang công bố — nút một chiều, tự đổi thành nút đóng · **`STATE-040` banner tạm dừng đang bật** — nút không bật, toast (`QĐ-117`).
+- **Nguồn**: `QĐ-049`, `QĐ-117` · `GR-028`, `GR-035`, `GR-037`
 
 ### EVENT-033 — Đóng công bố kết quả
 
@@ -1161,9 +1170,9 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 
 - **Actor**: Admin
 - **Mô tả**: bật lớp phủ **không chữ** — chặn toàn bộ thao tác trên máy thí sinh, báo hiệu tạm dừng trên viewer/overlay. **Không nhập lý do, không dialog xác nhận** (thao tác đảo ngược được). Hành động vẫn vào `AuditLog`.
-- **Hợp lệ ở**: **mọi** trạng thái cấp trận, **với điều kiện không có cửa sổ thời gian nào đang đếm**.
-- **Không hợp lệ ở**: **đang có đồng hồ chạy** — `STATE-019` · `STATE-010` · `STATE-013`: nút không bật, toast · banner đã bật.
-- **Nguồn**: `QĐ-050` · `GR-035`
+- **Hợp lệ ở**: **mọi** trạng thái cấp trận, **với điều kiện không có cửa sổ thời gian nào đang đếm và lớp công bố không bật**.
+- **Không hợp lệ ở**: **đang có đồng hồ chạy** — `STATE-019` · `STATE-010` · `STATE-013`: nút không bật, toast · **`STATE-033` lớp công bố đang bật** — nút không bật, toast (`QĐ-117`) · banner đã bật.
+- **Nguồn**: `QĐ-050`, `QĐ-117` · `GR-035`
 
 ### EVENT-035 — Đóng banner tạm dừng
 
@@ -1464,9 +1473,9 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 
 | # | Từ | Sự kiện | Guard | Sang | Side effects | Rule |
 |---|---|---|---|---|---|---|
-| T-087 | Mọi trạng thái cấp trận | `EVENT-032` Mở công bố | Lớp công bố chưa mở | **+ `STATE-033`** — trạng thái bên dưới **không đổi** | Server tính thứ hạng từ event log, đẩy xuống **một** sự kiện. **Không** sinh event điểm, **không** đổi trạng thái trận | `GR-028` |
+| T-087 | Mọi trạng thái cấp trận | `EVENT-032` Mở công bố | Lớp công bố chưa mở **và `STATE-040` banner không bật** | **+ `STATE-033`** — trạng thái bên dưới **không đổi** | Server tính thứ hạng từ event log, đẩy xuống **một** sự kiện. **Không** sinh event điểm, **không** đổi trạng thái trận | `GR-028` |
 | T-088 | `STATE-033` | `EVENT-033` Đóng công bố | — | **− `STATE-033`** | Không có bộ đếm tự đóng | — |
-| T-089 | Mọi trạng thái cấp trận | `EVENT-034` Mở banner tạm dừng | Banner chưa bật **và không có cửa sổ thời gian nào đang đếm** | **+ `STATE-040`** | Máy thí sinh bị chặn **toàn bộ**; viewer/overlay hiện banner **không chữ**; **máy admin không bị phủ**. Không có đồng hồ nào để đụng — guard đã bảo đảm | `GR-035` |
+| T-089 | Mọi trạng thái cấp trận | `EVENT-034` Mở banner tạm dừng | Banner chưa bật **và không có cửa sổ thời gian nào đang đếm và `STATE-033` không bật** | **+ `STATE-040`** | Máy thí sinh bị chặn **toàn bộ**; viewer/overlay hiện banner **không chữ**; **máy admin và màn MC không bị phủ** (`QĐ-116`). Không có đồng hồ nào để đụng — guard đã bảo đảm | `GR-035`, `QĐ-116`, `QĐ-117` |
 | T-090 | `STATE-040` | `EVENT-035` Đóng banner | — | **− `STATE-040`** | Trạng thái bên dưới lộ lại **nguyên vẹn** | — |
 
 ## H. Quyền ĐIỀU KHIỂN — song song với mọi trạng thái
@@ -1525,6 +1534,8 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 | `STATE-019` trở đi | `EVENT-010` Start timer | Nút **tự khoá** sau lần bấm đầu | Nút disabled | `GR-033` |
 | `STATE-040` Banner đang bật | `EVENT-010` Start timer | Chiều còn lại của ràng buộc loại trừ — phải đóng banner trước | **TOAST** | `GR-035` |
 | Đang có đồng hồ chạy | `EVENT-034` Mở banner | Banner và đồng hồ **loại trừ lẫn nhau** | **TOAST** | `GR-035` |
+| `STATE-040` Banner đang bật | `EVENT-032` Mở công bố | Banner và lớp công bố **loại trừ lẫn nhau** — phải đóng banner trước | **TOAST** | `QĐ-117` |
+| `STATE-033` Lớp công bố đang bật | `EVENT-034` Mở banner | Chiều còn lại của ràng buộc trên — phải đóng lớp công bố trước | **TOAST** | `QĐ-117` |
 | `STATE-019` ở vòng **gõ máy** | `EVENT-012` / `EVENT-013` Chấm | Nút chấm **khoá tới `hạn chót + padding`** — tránh chấm khi thí sinh còn đang sửa, **và** khi một bản tới muộn còn có thể tới. Riêng **Khởi động** mở ngay tại `hạn chót` | Nút disabled | `GR-006`, `QĐ-109` |
 | `STATE-021` Đã chấm | `EVENT-012` / `EVENT-013` Chấm lại | Một câu chỉ đi qua **đúng một** phán quyết | Nút disabled; server từ chối phán quyết lặp | `GR-026` |
 | Câu Tăng tốc **đã chốt** | Đổi phán quyết của **một** người | Bảng điểm của câu là **chung cuộc** — event điểm toàn bảng **không sửa từng phần** | **Thao tác không tồn tại**; sửa sai qua `EVENT-028` | `GR-029` |
@@ -1651,6 +1662,8 @@ Ai giữ **`PERM-045` `match.readAnswer`** xem được mọi lúc — ở bốn
 
 **Cấm đẩy đáp án xuống client trước mốc rồi ẩn bằng cờ hiển thị** — server chỉ đẩy tại đúng mốc.
 
+**Thao tác tay của admin thắng ở CẢ HAI CHIỀU** (`QĐ-074`, `QĐ-119`): cú **mở** tay đẩy đáp án ra kể cả khi cờ TẮT; cú **đóng** tay còn hiệu lực **chặn** cú đẩy của engine tại mốc câu khép kể cả khi cờ BẬT. Hiệu lực của cú đóng ở **phạm vi câu**, chấm dứt khi admin tự mở lại, và **không** dính sang câu sau.
+
 **Chỉ ĐÁP ÁN là mật, và chỉ mật tới mốc.** Ba loại thông tin, ba chế độ — đừng trộn: **đáp án chuẩn** = mật tới mốc câu khép · **bài làm của thí sinh khác** = ẩn tạm thời trong lúc câu còn mở, lộ khi admin bấm · **điểm số** = **công khai với mọi vai, luôn luôn**. — `QĐ-015`, `QĐ-051`, `QĐ-080`
 
 ### INV-018 — Điểm được phép ÂM, không có sàn
@@ -1669,7 +1682,9 @@ Admin chọn vòng nào bắt đầu và lượt của ai. Conflict luật ⇒ d
 
 Mở hay đóng bất kỳ lớp phủ nào đều **không**: sinh event điểm · đổi trạng thái trận / vòng / câu / ghế / tín hiệu · đụng đồng hồ · đụng hàng đợi · đổi quyền thao tác. Đóng lớp phủ ⇒ trạng thái bên dưới lộ lại **nguyên vẹn**.
 
-**Hệ quả**: **nhiều lớp phủ bật cùng lúc là hợp lệ**. Nếu nhét chúng vào enum cấp trận thì mỗi lần công bố kết quả sẽ phải *"rời"* vòng đang chạy rồi *"quay lại"* — hai transition giả và một cửa cho lỗi mất trạng thái. — `QĐ-049`, `QĐ-050`
+**Hệ quả**: **nhiều lớp phủ bật cùng lúc là hợp lệ**. Nếu nhét chúng vào enum cấp trận thì mỗi lần công bố kết quả sẽ phải *"rời"* vòng đang chạy rồi *"quay lại"* — hai transition giả và một cửa cho lỗi mất trạng thái.
+
+**Một ngoại lệ đã liệt kê** (`QĐ-117`): **`STATE-033` lớp công bố** và **`STATE-040` banner tạm dừng** **loại trừ lẫn nhau**, hai chiều. Đây là **thu hẹp**, không phải phủ định — hai lớp đó vẫn **không** nằm trong enum cấp trận, và mọi tổ hợp lớp phủ khác vẫn hợp lệ. Ngoại lệ này là hạng **invalid state**, **không** phải chỗ chặn cứng thứ tư của `INV-014`. — `QĐ-049`, `QĐ-050`, `QĐ-117`
 
 ### INV-022 — Toàn bộ trạng thái trận nằm ở HAI thứ
 

@@ -9,6 +9,7 @@
 | Ký hiệu | Là gì | Vị thế |
 |---|---|---|
 | **Luật gốc** | `source/fandom-olympia-26-luat-choi.md` — bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia.fandom.com/vi/wiki/Lu%E1%BA%ADt_ch%C6%A1i/Olympia_26), lấy 2026-07-23 | **Source of truth duy nhất về LUẬT** |
+| **Âm thanh gốc** | `source/fandom-olympia-26-am-thanh.md` — bản lưu **trích lược cột `Tên`** của [Âm thanh](https://duong-len-dinh-olympia.fandom.com/vi/wiki/%C3%82m_thanh), lấy 2026-08-04 | Nguồn **danh sách khe âm thanh** cho `QĐ-122`. **Không** phải nguồn luật |
 | **Quyết định** | `decisions.md` — `QĐ-001` → `QĐ-110` | Source of truth về **lựa chọn sản phẩm** |
 | **Rule** | `game-rules.md` — `GR-001` → `GR-037` | Đặc tả nghiệp vụ **chuẩn tắc** |
 | **Máy trạng thái** | `game-state-machine.md` — `STATE-*` · `EVENT-*` · `T-*` · `INV-*` | Đặc tả **chuẩn tắc** phần vận hành |

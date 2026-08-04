@@ -79,7 +79,8 @@
 **Định nghĩa.** Người xem, truy cập **public bằng đúng một URL** *(mã phòng 6 số nằm trong URL)* — không account, không vai, không bước nhập mã, không duyệt. **Read-only tuyệt đối**: kênh này là **một chiều server → client, không có đường ghi** — read-only là tính chất **cấu trúc**, không phải một luật server phải cưỡng chế.
 
 - **Tên khác**: khán giả · người xem
-- **Đừng nhầm với**: **Overlay** — cùng mô hình truy cập nhưng là frame stream cho OBS, không phải màn người xem. Overlay **nhận đáp án cùng lúc và cùng điều kiện với viewer**, từ mốc **câu khép** theo cờ reveal (`QĐ-080`)
+- **Đừng nhầm với**: **Overlay** — cùng mô hình truy cập nhưng là frame stream cho OBS, không phải màn người xem. Overlay **nhận đáp án cùng lúc và cùng điều kiện với viewer**, từ mốc **câu khép** theo cờ reveal (`QĐ-080`), **và cả đáp án Chướng ngại vật** khi nó lộ theo `GR-012` (`QĐ-118`) — đứng ngoài `GR-037` chỉ đổi **thời điểm**, không đổi **người nhận**
+- **Âm thanh**: viewer **không bao giờ là nguồn phát**; nguồn phát của nhóm khe hướng khán giả là **admin hoặc overlay**, mặc định **overlay** (`QĐ-120`)
 - **Nguồn**: `QĐ-015`, `QĐ-051`, `QĐ-080`, `QĐ-088`
 
 ### TERM-008 — User

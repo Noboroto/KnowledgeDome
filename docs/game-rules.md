@@ -11,7 +11,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
-| `decisions.md` | **Vì sao** — 115 quyết định `QĐ-001` → `QĐ-115`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 120 quyết định `QĐ-001` → `QĐ-120`, kèm bảng tra mã cũ |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; file này dùng đúng tên ở đó |
 | `game-state-machine.md` | Máy trạng thái: `STATE-*` · `EVENT-*` · `T-*` · `INV-*`. Mọi rule ở đây phải khớp với một hoặc nhiều transition ở đó |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -633,13 +633,14 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - Vòng kết thúc; **không ai được điểm Chướng ngại vật**.
 - Hàng ngang **chưa được hỏi** thì bị bỏ.
 - **Mở toàn bộ miếng ghép và công bố Chướng ngại vật là thao tác THỦ CÔNG của admin**, không tự động, và **tuỳ chọn**.
+- **Đứng ngoài `GR-037` chỉ đổi THỜI ĐIỂM, không đổi NGƯỜI NHẬN** (`QĐ-118`). Khi đáp án Chướng ngại vật lộ theo rule này, nó tới **cả màn khán giả lẫn lớp phủ dựng stream**, **cùng lúc và cùng điều kiện**; **không** có lệnh cấm riêng nào cho lớp phủ.
 
 **Bảng quyết định**
 
 | Ca | Điều kiện | Kết quả | Thay đổi trạng thái |
 |---|---|---|---|
 | C1 | Mọi thí sinh đã bị loại | Vòng kết thúc; không ai được điểm Chướng ngại vật | Vòng về `LOBBY`; hàng ngang chưa hỏi bị bỏ |
-| C2 | Admin bấm **công bố** | Mở mọi miếng ghép và hiện Chướng ngại vật cho viewer | Mọi ô sang *mở* |
+| C2 | Admin bấm **công bố** | Mở mọi miếng ghép và hiện Chướng ngại vật cho **cả màn khán giả lẫn lớp phủ dựng stream** — hai kênh public nhận **như nhau** (`QĐ-118`) | Mọi ô sang *mở* |
 | C3 | Admin **không** bấm công bố | **Không** phải trạng thái tắc — admin luôn kết thúc vòng được | Vòng vẫn kết thúc |
 | C4 | Còn hàng ngang **chưa được hỏi** | Bị bỏ. Câu của nó **chưa hiển thị cho ai ⇒ CHƯA TIÊU, trả lại kho** | Cờ đã-dùng **không** đặt cho câu đó |
 | C5 | Bấm công bố **hai lần** | **Không tồn tại** — nút một chiều, tự tắt | Server bỏ qua lệnh trùng |
@@ -671,7 +672,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - *Không hợp lệ*: hệ thống **tự động** mở toàn bộ miếng ghép ngay khi người cuối bị loại.
 - *Biên*: còn đúng 1 thí sinh chưa bị loại ⇒ rule chưa áp dụng, vòng tiếp tục với người đó.
 
-**Nguồn**: luật gốc §VCNV · `QĐ-020`, `QĐ-044`, `QĐ-057`
+**Nguồn**: luật gốc §VCNV · `QĐ-020`, `QĐ-044`, `QĐ-057`, `QĐ-118`
 
 ---
 
@@ -1891,7 +1892,8 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C7 | Câu **bị bỏ qua** *(không ai bấm chuông)* · reveal **BẬT** | Trả đáp án — câu đã tiêu, đã khép |
 | C8 | Câu khép bằng phán quyết **Huỷ kết quả** | **Không tự trả.** Admin mở tay được (`QĐ-048`). Áp cho **mọi** vị trí trong chuỗi, kể cả khi *Huỷ kết quả* là phán quyết **khép câu** cho người cướp quyền Về đích — ở ca đó **C8 thắng C6**, quy tắc phát biểu theo **loại phán quyết**, không theo vai bị chấm |
 | C8b | Đang chờ admin **kích hoạt tay** một tín hiệu khác sau một cú *Huỷ kết quả* | **Không trả** — câu **chưa khép**, mốc đã lùi (`GR-032` §Kích hoạt tay). Công bố ở đây xoá cơ hội của người sắp được kích hoạt |
-| C9 | Đáp án **Chướng ngại vật** | Ngoài phạm vi rule này — theo `GR-012` |
+| C9 | Đáp án **Chướng ngại vật** | Ngoài phạm vi rule này về **THỜI ĐIỂM** — theo `GR-012`. **Người nhận thì không đổi**: khi nó lộ, nó tới **cả hai kênh public** như mọi thứ khác (`QĐ-118`) |
+| **C10** | Câu khép, cờ **BẬT**, nhưng admin đang giữ một cú **ĐÓNG hiển thị bằng tay** cho câu này | **Không trả** — thao tác tay thắng cờ tự động ở **cả hai chiều** (`QĐ-074`, `QĐ-119`). Đáp án kín tới khi admin **tự mở lại**; hiệu lực ở **phạm vi câu**, không dính sang câu sau |
 
 > **Vì sao cờ đặt ở cấp TRẬN, không phải cấp CONTEST.** Một contest thật được phép chứa **cả** trận chính thức lẫn trận tổng duyệt. Đặt ở cấp contest thì không thể đặt hai giá trị khác nhau cho hai trận cùng phòng — kịch bản đó **không dựng được**.
 >
@@ -1903,15 +1905,17 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - **Cấm công bố khi cửa sổ cướp quyền Về đích đang mở** — xem C6.
 - **Cấm cuốn đáp án Chướng ngại vật theo cơ chế này** — xem C9.
 
-**Không đổi gì.** Trạng thái trận — xem đáp án **không** sinh event điểm nào · túi permission của các vai · quyền đóng hiển thị thủ công của người giữ `PERM-044` (`QĐ-048`) · **cửa sổ cướp quyền và mọi con số của luật**.
+**Không đổi gì.** Trạng thái trận — xem đáp án **không** sinh event điểm nào · túi permission của các vai · quyền đóng hiển thị thủ công của người giữ `PERM-044` (`QĐ-048`) — quyền này ở **hạng cao hơn** cú đẩy của engine, xem C10 · **cửa sổ cướp quyền và mọi con số của luật**.
 
-**Thứ tự đánh giá.** **(1)** nhận yêu cầu → **(2)** xét **permission `PERM-045` trong phạm vi contest của trận**: có ⇒ trả ngay → **(3)** không có: xét cờ reveal → **(4)** xét **câu đã khép chưa** → **(5)** xét ca biên *(Huỷ kết quả · Chướng ngại vật)* → **(6)** ghi audit nếu có trả.
+**Thứ tự đánh giá.** **(1)** nhận yêu cầu → **(2)** xét **permission `PERM-045` trong phạm vi contest của trận**: có ⇒ trả ngay → **(3)** không có: xét cờ reveal → **(4)** xét **câu đã khép chưa** → **(5)** xét ca biên *(Huỷ kết quả · Chướng ngại vật)* → **(5b)** xét **cú đóng hiển thị bằng tay của `PERM-044`**: còn hiệu lực cho câu này ⇒ **không trả**, bất kể (3) và (4) đã pass (`QĐ-119`) → **(6)** ghi audit nếu có trả.
 
 > **Bước (2) CẤM hỏi tên vai.** Viết *"nếu là admin hoặc MC"* ở đây là vi phạm `QĐ-094` điều cấm 1, và nó vi phạm ở đúng chỗ đắt nhất — hàng rào chống rò đề. Ai giữ `PERM-045` là chuyện của catalog và của vai tuỳ biến, không phải của rule này.
 
 **Biên.** Mốc công bố là **CÂU KHÉP**, không sớm hơn. Ở Về đích, mốc này đến **sau** cú bấm Đúng/Sai của người thi chính, cách nhau ít nhất bằng độ dài cửa sổ cướp quyền.
 
 **Bấm trùng.** Xem nhiều lần: mỗi lần một dòng audit; trạng thái trận không đổi. Công bố là **một chiều ở phía engine** — đã công bố thì engine không tự thu lại.
+
+> **"Một chiều" nói về ENGINE, không nói về ADMIN.** Nó **không** có nghĩa *"cú đẩy của engine đè được lên phán quyết của người"*. Hai mệnh đề độc lập và cùng đúng: **engine đi một chiều, admin đi được cả hai** — mở tay thắng cờ TẮT, đóng tay thắng cờ BẬT (`QĐ-074`, `QĐ-119`). Đó chính là hình dạng của mô hình ADVISORY.
 
 **Ví dụ.**
 
@@ -1921,4 +1925,4 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - Khởi động lượt chung, hết 3 giây không ai bấm chuông: câu bị bỏ qua, **vẫn công bố** — câu đã hỏi, đã tiêu, giữ kín không bảo vệ được gì.
 - Trận chính thức tắt cờ: chấm xong, chỉ admin và MC thấy đáp án — hành vi cũ vẫn dựng lại được bằng một thao tác.
 
-**Nguồn**: `QĐ-015`, `QĐ-017`, `QĐ-039`, `QĐ-048`, `QĐ-051`, `QĐ-062`, `QĐ-080`
+**Nguồn**: `QĐ-015`, `QĐ-017`, `QĐ-039`, `QĐ-048`, `QĐ-051`, `QĐ-062`, `QĐ-074`, `QĐ-080`, `QĐ-118`, `QĐ-119`

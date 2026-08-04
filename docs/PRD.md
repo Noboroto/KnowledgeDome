@@ -12,7 +12,7 @@
 
 | Trường | Giá trị |
 |---|---|
-| **Version** | 2.6.0 — *tích hợp `QĐ-108` → `QĐ-110` từ phiên làm rõ EPIC-007, phần còn nợ: `PRD-REQ-056` viết lại theo **hai trục** *(tầng dialog xác định bằng cách thoát × trục bắt lý do độc lập)*, bốn loại phản hồi thay vì ba · `PRD-REQ-052` nhận **biên trên** của cửa sổ giữ bản tới muộn · `PRD-REQ-054` đổi mốc mở nút chấm thành `hạn chót + padding`, ngoại lệ Khởi động · `PRD-REQ-020` nhận `padding` vào tập cấu hình luật. Bản 2.5.0: tích hợp `QĐ-111` → `QĐ-115` từ phiên làm rõ EPIC-008: khoá nút chuông gắn với **phán quyết** *(sửa `PRD-REQ-064`)* · control không bấm được **ẩn khi mất nghĩa, mờ kèm nhãn khi bị luật cấm** và outcome tín hiệu **báo về máy phát** *(sửa `PRD-REQ-072`, thêm ghi chú hai trục ở §9.4)* · **nguyên tắc hai trục** — giành lượt lấy người đầu tiên, đáp án lấy bản cuối — gỡ ngoại lệ *"người cướp tính bản đầu"* khỏi `GR-020` *(sửa §13.3, bổ sung Related game rules của `PRD-REQ-065`)* · **banner tạm dừng CHE TOÀN BỘ màn thí sinh** — ngoại lệ tường minh và duy nhất của `PRD-REQ-067` *(`QĐ-115`)*. Bản 2.4.0: tích hợp `QĐ-105` → `QĐ-107` thành `PRD-REQ-114`, `PRD-REQ-115` và một Note ngoại lệ ở `PRD-REQ-008`: dưới 4 thí sinh chạy bằng **ghế bỏ thi** và chỉ trên 4 mới bị chặn · VCNV có **hai** giá trị thời gian cấp vòng · kho đề có **xoá mềm** và **phiên bản theo cú Save** (bản tối giản), lật phần loại trừ đánh phiên bản của EPIC-002. Bản 2.3.0: tích hợp `QĐ-104` (admin kích hoạt tay) thành `PRD-REQ-113`, kèm ba chỗ sửa theo — §8.2 bước 5, `INV-009` ở §9.5, và bảng §13.2. Bản 2.2.1: chủ dự án phân xử toàn bộ tám câu hỏi mở; `QĐ-085`→`QĐ-092` ghi vào sổ quyết định; `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001`, `108`→`112`; `QĐ-097`→`103` chủ đích truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen` (không sinh `PRD-REQ` riêng)* |
+| **Version** | 2.8.0 — *tích hợp `QĐ-121` → `QĐ-123` từ phiên làm rõ EPIC-009 lần hai: **chủ đề hiển thị** gồm đúng ba trục tĩnh *(bảng màu · logo · ảnh nền)*, không tài sản động và không phông chữ, áp cho **đúng hai kênh public** *(sửa `PRD-REQ-078`)* · danh sách khe nhóm **mốc thi đấu** chốt **52 khe** dẫn xuất từ trang `Âm thanh` của wiki Fandom sau hai tầng lọc, tổng **58 khe**, tập đóng ở v1, mỗi vòng đúng một khe *đếm giờ* *(sửa `PRD-REQ-078`; nguồn mới `docs/source/fandom-olympia-26-am-thanh.md`)* · **lớp phủ thiếu dữ liệu vẫn dựng bình thường**, không có nhánh trạng thái rỗng và không từ chối cú mở *(sửa `PRD-REQ-075`)*. Bản 2.7.0: tích hợp `QĐ-116` → `QĐ-120` từ phiên làm rõ EPIC-009: banner tạm dừng **không phủ màn MC** *(sửa `PRD-REQ-076`)* · banner × lớp công bố **loại trừ lẫn nhau**, hạng invalid state, thu hẹp `INV-021` bằng một ngoại lệ đã liệt kê *(sửa `PRD-REQ-075`, `PRD-REQ-076`)* · đáp án **Chướng ngại vật tới cả overlay** — đứng ngoài `GR-037` chỉ đổi **thời điểm**, không đổi **người nhận** *(sửa `PRD-REQ-073`)* · **cú đóng hiển thị bằng tay thắng** cú đẩy của engine tại mốc câu khép, thao tác tay thắng cờ tự động ở **cả hai chiều** *(sửa `PRD-REQ-049`, thêm `GR-037` C10)* · khe âm thanh chia **hai nhóm** theo *khán giả có được nghe không*, cộng **nguồn phát** `admin | overlay` mặc định `overlay` *(sửa `PRD-REQ-077`, `PRD-REQ-078`)*. Bản 2.6.0: tích hợp `QĐ-108` → `QĐ-110` từ phiên làm rõ EPIC-007, phần còn nợ: `PRD-REQ-056` viết lại theo **hai trục** *(tầng dialog xác định bằng cách thoát × trục bắt lý do độc lập)*, bốn loại phản hồi thay vì ba · `PRD-REQ-052` nhận **biên trên** của cửa sổ giữ bản tới muộn · `PRD-REQ-054` đổi mốc mở nút chấm thành `hạn chót + padding`, ngoại lệ Khởi động · `PRD-REQ-020` nhận `padding` vào tập cấu hình luật. Bản 2.5.0: tích hợp `QĐ-111` → `QĐ-115` từ phiên làm rõ EPIC-008: khoá nút chuông gắn với **phán quyết** *(sửa `PRD-REQ-064`)* · control không bấm được **ẩn khi mất nghĩa, mờ kèm nhãn khi bị luật cấm** và outcome tín hiệu **báo về máy phát** *(sửa `PRD-REQ-072`, thêm ghi chú hai trục ở §9.4)* · **nguyên tắc hai trục** — giành lượt lấy người đầu tiên, đáp án lấy bản cuối — gỡ ngoại lệ *"người cướp tính bản đầu"* khỏi `GR-020` *(sửa §13.3, bổ sung Related game rules của `PRD-REQ-065`)* · **banner tạm dừng CHE TOÀN BỘ màn thí sinh** — ngoại lệ tường minh và duy nhất của `PRD-REQ-067` *(`QĐ-115`)*. Bản 2.4.0: tích hợp `QĐ-105` → `QĐ-107` thành `PRD-REQ-114`, `PRD-REQ-115` và một Note ngoại lệ ở `PRD-REQ-008`: dưới 4 thí sinh chạy bằng **ghế bỏ thi** và chỉ trên 4 mới bị chặn · VCNV có **hai** giá trị thời gian cấp vòng · kho đề có **xoá mềm** và **phiên bản theo cú Save** (bản tối giản), lật phần loại trừ đánh phiên bản của EPIC-002. Bản 2.3.0: tích hợp `QĐ-104` (admin kích hoạt tay) thành `PRD-REQ-113`, kèm ba chỗ sửa theo — §8.2 bước 5, `INV-009` ở §9.5, và bảng §13.2. Bản 2.2.1: chủ dự án phân xử toàn bộ tám câu hỏi mở; `QĐ-085`→`QĐ-092` ghi vào sổ quyết định; `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001`, `108`→`112`; `QĐ-097`→`103` chủ đích truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen` (không sinh `PRD-REQ` riêng)* |
 | **Quy ước bảo trì** | Mục **đã chốt / đã đóng / đã sửa** bị **xoá khỏi tài liệu**, không giữ lại dưới dạng ghi chú lịch sử; dãy số liên quan được **đánh lại cho liền**. Lịch sử tra ở `git log` và `docs/reviews/` |
 | **Đặc tả cho** | **Phiên bản sản phẩm 1.0** |
 | **Status** | Bản đầu tiên — chờ chủ dự án phê duyệt |
@@ -25,7 +25,8 @@
 | Nguồn | Vai trò | Trạng thái khi đọc |
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn (snapshot 2026-07-23) | Không sửa; source of truth **duy nhất về LUẬT** |
-| `docs/decisions.md` | 115 quyết định `QĐ-001`→`QĐ-115` | Source of truth về **lựa chọn sản phẩm**; §N khai *"không còn mục treo nào"* |
+| `docs/source/fandom-olympia-26-am-thanh.md` | Danh sách khe âm thanh gốc, trích lược cột `Tên` (snapshot 2026-08-04) | Không sửa; nguồn của `QĐ-122`. **Không** phải nguồn luật |
+| `docs/decisions.md` | 123 quyết định `QĐ-001`→`QĐ-123` | Source of truth về **lựa chọn sản phẩm**; §N khai *"không còn mục treo nào"* |
 | `docs/game-rules.md` | 37 rule `GR-001`→`GR-037`, 23 nguyên tắc nền, 4 bảng dùng chung | Chuẩn tắc; **không còn marker treo** |
 | `docs/game-state-machine.md` | 43 `STATE-*`, 52 `EVENT-*`, 100 `T-*`, 22 `INV-*`, 8 sơ đồ | Chuẩn tắc; **không còn marker treo** |
 | `docs/glossary.md` | 60 thuật ngữ `TERM-001`→`TERM-060` | Chuẩn tắc về tên gọi |
@@ -1006,11 +1007,11 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Source**: `QĐ-042`, `QĐ-003` · `GR-031` · **Status**: CONFIRMED
 
 **PRD-REQ-049 — Trước mốc câu khép, đáp án chỉ rời server tới ai giữ permission đọc đáp án trong trận**
-- **Description**: Trước mốc **câu khép**, đáp án chuẩn và tiêu chí đạt của câu thực hành MUST chỉ tới phiên giữ permission **đọc đáp án của câu đang chạy** *(`PERM-045`; ở bốn vai dựng sẵn là Quản trị và MC)*; mỗi lần xem MUST vào nhật ký. Cửa kiểm MUST hỏi **permission**, MUST NOT hỏi tên vai. Từ mốc câu khép trở đi, server MUST đẩy đáp án tới **thí sinh, khán giả và lớp phủ dựng stream** nếu cờ *hiện đáp án sau khi chấm* **bật**. Cờ này MUST ở **cấp TRẬN**, mặc định **BẬT** cho cả trận official lẫn luyện tập, đổi được cho từng trận. Yêu cầu không có quyền MUST bị server im lặng từ chối.
+- **Description**: Trước mốc **câu khép**, đáp án chuẩn và tiêu chí đạt của câu thực hành MUST chỉ tới phiên giữ permission **đọc đáp án của câu đang chạy** *(`PERM-045`; ở bốn vai dựng sẵn là Quản trị và MC)*; mỗi lần xem MUST vào nhật ký. Cửa kiểm MUST hỏi **permission**, MUST NOT hỏi tên vai. Từ mốc câu khép trở đi, server MUST đẩy đáp án tới **thí sinh, khán giả và lớp phủ dựng stream** nếu cờ *hiện đáp án sau khi chấm* **bật**. Cờ này MUST ở **cấp TRẬN**, mặc định **BẬT** cho cả trận official lẫn luyện tập, đổi được cho từng trận. Một cú **đóng hiển thị bằng tay** của người giữ `PERM-044` còn hiệu lực cho câu đang chạy MUST **chặn** cú đẩy đó, kể cả khi cờ đang bật — thao tác tay thắng cờ tự động ở **cả hai chiều**; hiệu lực ở **phạm vi câu** và MUST NOT dính sang câu sau (`QĐ-074`, `QĐ-119`). Yêu cầu không có quyền MUST bị server im lặng từ chối.
 - **Actor**: ACTOR-001, ACTOR-003, ACTOR-004, ACTOR-005, ACTOR-006 · **Related epic**: EPIC-006, EPIC-008, EPIC-009 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-037` · `INV-017`
 - **Priority**: P1 · **Rationale**: Công bố đáp án sau khi câu khép là chuẩn của gameshow truyền hình và **không** đụng `GOAL-005` — tại mốc đó câu đã hỏi xong, đề đã lộ. Cờ vẫn phải ở cấp trận vì một contest thật chứa **cả** trận official lẫn trận luyện tập.
 - **Acceptance intent**: Bộ kiểm *"không rò đáp án"* pass cho mọi kênh **ở mọi thời điểm trước mốc câu khép**, gồm cả gói khôi phục kết nối và lớp công bố kết quả.
-- **Source**: `QĐ-051`, `QĐ-062`, `QĐ-080` · `GR-037` · `INV-017` · `TERM-057` · **Status**: CONFIRMED
+- **Source**: `QĐ-051`, `QĐ-062`, `QĐ-074`, `QĐ-080`, `QĐ-119` · `GR-037` · `INV-017` · `TERM-057` · **Status**: CONFIRMED
 
 **PRD-REQ-088 — Mốc công bố là CÂU KHÉP, không phải "đã chấm"**
 - **Description**: Hệ thống MUST công bố đáp án tại mốc **câu khép** — thời điểm không còn ai được trả lời câu đó nữa. Ở Khởi động, Vượt chướng ngại vật và Tăng tốc, mốc này MUST trùng với cú bấm chấm. Ở **Về đích**, khi người thi chính bị chấm Sai, hệ thống MUST NOT công bố đáp án trong lúc cửa sổ cướp quyền còn mở; câu chỉ khép khi cửa sổ đóng **và** người cướp đã được chấm, hoặc hết cửa sổ không ai bấm. Khi admin **kích hoạt tay** một tín hiệu khác theo `PRD-REQ-113`, mốc câu khép MUST **lùi** tới sau khi người được kích hoạt đã được chấm. Ba ca biên: câu **bị bỏ qua** MUST vẫn công bố; phán quyết **Huỷ kết quả** MUST NOT tự công bố; đáp án **Chướng ngại vật** MUST NOT theo cơ chế này. Công bố MUST là một chiều ở phía engine; quyền đóng hiển thị thủ công của admin MUST giữ nguyên.
@@ -1230,11 +1231,11 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 ### EPIC-009 — Trình diễn
 
 **PRD-REQ-073 — Màn khán giả và lớp phủ dựng stream**
-- **Description**: Hệ thống MUST có màn khán giả và một lớp phủ 1920×1080 nền trong suốt cho phần mềm dựng hình, cả hai vào bằng mã phòng 6 số. Lớp phủ MUST NOT nhận đáp án **trước mốc câu khép**; từ mốc đó nó nhận đáp án **cùng lúc và cùng điều kiện với khán giả**, theo `GR-037` và cờ `revealAnswerAfterJudge`.
+- **Description**: Hệ thống MUST có màn khán giả và một lớp phủ 1920×1080 nền trong suốt cho phần mềm dựng hình, cả hai vào bằng mã phòng 6 số. Lớp phủ MUST NOT nhận đáp án **trước mốc câu khép**; từ mốc đó nó nhận đáp án **cùng lúc và cùng điều kiện với khán giả**, theo `GR-037` và cờ `revealAnswerAfterJudge`. Sự ngang bằng này MUST áp cho **mọi** nội dung, gồm cả đáp án **Chướng ngại vật** khi nó lộ theo `GR-012` — việc đáp án Chướng ngại vật đứng ngoài `GR-037` MUST chỉ đổi **thời điểm**, MUST NOT đổi **người nhận** (`QĐ-118`).
 - **Actor**: ACTOR-005, ACTOR-006 · **Related epic**: EPIC-009 · **Related journey**: JOURNEY-004, JOURNEY-005 · **Related game rules**: `GR-037`
 - **Priority**: P1 · **Rationale**: Đây là lời giải cho `PS-4` — không cần dựng hình thủ công.
 - **Acceptance intent**: Lớp phủ chồng lên video mà không có nền; bộ kiểm không-rò-đáp-án pass trên kênh này **ở mọi thời điểm trước mốc câu khép**, kể cả khi cờ hiện đáp án đang bật.
-- **Source**: `product-discovery.md` §2 A-6, §3 G-8 · `QĐ-051`, `QĐ-080` · **Status**: CONFIRMED
+- **Source**: `product-discovery.md` §2 A-6, §3 G-8 · `QĐ-051`, `QĐ-080`, `QĐ-118` · **Status**: CONFIRMED
 
 **PRD-REQ-074 — Màn MC chữ lớn, chỉ đọc trừ đúng một ngoại lệ**
 - **Description**: MC MUST có màn riêng chữ rất to hiển thị câu hỏi **và đáp án**. Màn này MUST NOT có bất kỳ nút điều khiển trận nào. Bề mặt quyền ghi **duy nhất** được phép trên màn MC là prompt duyệt / từ chối cú **giành quyền điều khiển** (`PRD-REQ-108`); server MUST từ chối mọi sự kiện ghi khác đến từ vai này.
@@ -1244,32 +1245,32 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Source**: `QĐ-001`, `QĐ-093` · `product-discovery.md` §2 A-4, §8 · **Status**: CONFIRMED
 
 **PRD-REQ-075 — Lớp phủ công bố kết quả**
-- **Description**: Màn công bố kết quả MUST là **lớp phủ** chồng lên trạng thái đang chạy mà không huỷ nó, và MUST áp cho **cả máy thí sinh**. Hệ thống MUST gợi ý mở ở hai mốc — hết vòng và hết trận — nhưng admin MUST mở và đóng tuỳ ý; MUST NOT có bộ đếm tự đóng. Thứ hạng MUST do server tính và đẩy xuống; client chỉ hiển thị. Hoà điểm MUST ghi **đồng hạng**, hạng kế nhảy qua số người đồng hạng. Bảng xếp hạng MUST chịu được điểm âm và MUST NOT hard-code số ghế.
+- **Description**: Màn công bố kết quả MUST là **lớp phủ** chồng lên trạng thái đang chạy mà không huỷ nó, và MUST áp cho **cả máy thí sinh**. Hệ thống MUST gợi ý mở ở hai mốc — hết vòng và hết trận — nhưng admin MUST mở và đóng tuỳ ý; MUST NOT có bộ đếm tự đóng. Thứ hạng MUST do server tính và đẩy xuống; client chỉ hiển thị. Hoà điểm MUST ghi **đồng hạng**, hạng kế nhảy qua số người đồng hạng. Bảng xếp hạng MUST chịu được điểm âm và MUST NOT hard-code số ghế. Lớp này và **banner tạm dừng** MUST **loại trừ lẫn nhau**, hai chiều: không mở được cái này khi cái kia đang bật, hạng **invalid state**, MUST NOT ép được và MUST NOT là chỗ chặn cứng thứ tư của `INV-014` (`QĐ-117`). Lớp phủ mà trạng thái bên dưới **chưa cho nội dung có nghĩa** MUST dựng **bình thường với dữ liệu hiện có** — mọi ghế `0` ở `LOBBY` cho ra **cả bảng đồng hạng 1**; hệ thống MUST NOT hiện một trạng thái rỗng riêng, MUST NOT để trống phần dữ liệu, và MUST NOT từ chối cú mở (`QĐ-123`).
 - **Actor**: ACTOR-001, ACTOR-005 · **Related epic**: EPIC-009 · **Related journey**: JOURNEY-005, JOURNEY-007 · **Related game rules**: `GR-028`, `GR-025`
 - **Priority**: P2 · **Rationale**: Là lớp phủ nên nó không cần một trạng thái riêng và không làm mất trạng thái đang chạy bên dưới.
 - **Acceptance intent**: Mở lớp công bố giữa một vòng rồi đóng lại ⇒ vòng tiếp tục đúng chỗ cũ.
-- **Source**: `QĐ-049` · `STATE-033` · **Status**: CONFIRMED
+- **Source**: `QĐ-049`, `QĐ-117`, `QĐ-123` · `STATE-033` · **Status**: CONFIRMED
 
 **PRD-REQ-076 — Banner tạm dừng: chặn toàn cục, không chữ**
-- **Description**: Banner tạm dừng MUST chặn toàn bộ thao tác trên máy thí sinh và báo tạm dừng trên màn khán giả cùng lớp phủ, **không chữ, không lý do**; MUST NOT phủ màn admin. Banner MUST chỉ bật được khi **không đồng hồ nào đang chạy**, và ngược lại hệ thống MUST NOT cho start timer khi banner đang bật.
+- **Description**: Banner tạm dừng MUST chặn toàn bộ thao tác trên máy thí sinh và báo tạm dừng trên màn khán giả cùng lớp phủ, **không chữ, không lý do**; MUST NOT phủ màn admin **và MUST NOT phủ màn MC** — trên màn MC, câu hỏi và đáp án MUST vẫn đọc được và prompt duyệt cú giành quyền MUST vẫn bấm được (`QĐ-116`). Banner MUST chỉ bật được khi **không đồng hồ nào đang chạy**, và ngược lại hệ thống MUST NOT cho start timer khi banner đang bật. Banner và **lớp công bố kết quả** MUST loại trừ lẫn nhau, hai chiều (`QĐ-117`).
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-009 · **Related journey**: JOURNEY-006 · **Related game rules**: `GR-035` · `INV-016`
 - **Priority**: P2 · **Rationale**: Ràng buộc hai chiều làm câu hỏi *"banner có đóng băng đồng hồ không"* mất chủ ngữ — không tồn tại thời điểm nào banner và một đồng hồ đang chạy cùng có mặt, nên bất biến *đồng hồ không đóng băng* không cần ngoại lệ.
 - **Acceptance intent**: Nút start timer không bật khi banner đang bật, và ngược lại.
-- **Source**: `QĐ-050` · `STATE-039`, `T-089` · **Status**: CONFIRMED
+- **Source**: `QĐ-050`, `QĐ-116`, `QĐ-117` · `STATE-039`, `STATE-040`, `T-089` · **Status**: CONFIRMED
 
 **PRD-REQ-077 — Khán giả KHÔNG được báo về can thiệp của admin**
-- **Description**: Bỏ vòng, chạy lại vòng, sửa danh sách đề, gỡ lệnh cấm MUST NOT sinh thông báo nào tới khán giả; điểm và bàn cờ MUST đổi **đột ngột, không hiệu ứng, không giải thích**. Khuyến nghị lượt MUST chỉ tới admin và MC.
+- **Description**: Bỏ vòng, chạy lại vòng, sửa danh sách đề, gỡ lệnh cấm MUST NOT sinh thông báo nào tới khán giả; điểm và bàn cờ MUST đổi **đột ngột, không hiệu ứng, không giải thích**. Lệnh cấm này MUST áp cho **mọi phương tiện**, không riêng phương tiện nhìn: hệ thống MUST NOT phát **âm thanh** của một thao tác can thiệp tới màn khán giả hay lớp phủ — một khe âm thanh ra bản trộn phát sóng **là** một thông báo, chỉ đổi phương tiện từ mắt sang tai (`QĐ-120`). Khuyến nghị lượt MUST chỉ tới admin và MC.
 - **Actor**: ACTOR-005, ACTOR-006 · **Related epic**: EPIC-009 · **Related journey**: JOURNEY-005 · **Related game rules**: `GR-030`
 - **Priority**: P2 · **Rationale**: Người giải thích là **MC**, không phải giao diện. Đẩy khuyến nghị lượt xuống khán giả là lộ thứ tự sắp tới ⇒ trao một lợi thế mà luật không định trao.
 - **Acceptance intent**: Sau khi admin bỏ một vòng, kênh khán giả không có bản tin nào ngoài số điểm mới.
-- **Source**: `QĐ-076` · `product-discovery.md` §6 · **Status**: CONFIRMED
+- **Source**: `QĐ-076`, `QĐ-120` · `product-discovery.md` §6 · **Status**: CONFIRMED
 
 **PRD-REQ-078 — Chủ đề và âm thanh tuỳ chỉnh; khe trống là im lặng**
-- **Description**: Hệ thống MUST cho admin tải lên file âm thanh cho từng khe sự kiện, và danh sách khe MUST phủ **cả sự kiện điều khiển** — hoàn nguyên, bỏ vòng, chạy lại vòng, kết thúc sớm, ép qua cảnh báo, mở màn công bố. Khe trống MUST là im lặng; hệ thống MUST NOT có bộ âm thanh mặc định. Contest MUST cấu hình được chủ đề hiển thị.
+- **Description**: Hệ thống MUST cho admin tải lên file âm thanh cho từng khe sự kiện, và danh sách khe MUST phủ **cả sự kiện điều khiển** — hoàn nguyên, bỏ vòng, chạy lại vòng, kết thúc sớm, ép qua cảnh báo, mở màn công bố. Mỗi khe MUST thuộc đúng **một** trong **hai nhóm**, phân định bằng *khán giả có được nghe không* (`QĐ-120`): nhóm **hướng khán giả** — các mốc thi đấu và khe *mở màn công bố*; nhóm **chỉ-admin** — năm thao tác sự cố còn lại, MUST NOT tới màn khán giả hay lớp phủ ở **mọi** cấu hình. **Nguồn phát** cho nhóm hướng khán giả MUST là cấu hình với đúng hai lựa chọn — **máy admin** hoặc **lớp phủ dựng stream** — mặc định **lớp phủ**, bật/tắt và đổi được; nó MUST chỉ áp cho nhóm hướng khán giả, và **màn khán giả MUST NOT bao giờ là nguồn phát**. Nguồn phát là lớp phủ mà không lớp phủ nào kết nối ⇒ hệ thống MUST NOT tự lui và MUST NOT báo lỗi. Khe trống MUST là im lặng; hệ thống MUST NOT có bộ âm thanh mặc định. Nhóm **hướng khán giả** MUST gồm **52 khe mốc thi đấu** — Khởi động `11`, Vượt chướng ngại vật `14`, Tăng tốc `8`, Về đích `15`, Câu hỏi phụ `4` — dẫn xuất từ `docs/source/fandom-olympia-26-am-thanh.md` sau khi loại biến thể ngoài O26 và khe truyền hình, cộng khe *mở màn công bố*; tổng danh sách **58 khe** và MUST là **tập đóng ở v1** (`QĐ-122`). Hệ thống MUST NOT tách khe theo **độ dài đồng hồ**: mỗi vòng có đúng **một** khe *đếm giờ*. Contest MUST cấu hình được **chủ đề hiển thị** gồm đúng **ba trục tĩnh** — bảng màu, logo giải, ảnh nền; chủ đề MUST NOT chứa tài sản động hay phông chữ, và MUST áp cho đúng **hai kênh public** — màn thí sinh, màn MC và màn admin MUST giữ nguyên bảng màu hệ thống (`QĐ-121`).
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-009 · **Related journey**: JOURNEY-002 · **Related game rules**: —
 - **Priority**: P3 · **Rationale**: Engine chỉ phát tín hiệu ngữ nghĩa; ánh xạ tín hiệu sang âm thanh là cấu hình phía client, nên sửa luật không đụng âm thanh và ngược lại.
 - **Acceptance intent**: Bỏ một vòng phát đúng khe âm thanh đã gán; khe chưa gán không phát gì và không báo lỗi.
-- **Source**: `QĐ-079` · `CLAUDE.md` §Quy ước khác · **Status**: CONFIRMED
+- **Source**: `QĐ-079`, `QĐ-120`, `QĐ-121`, `QĐ-122` · `docs/source/fandom-olympia-26-am-thanh.md` · `CLAUDE.md` §Quy ước khác · **Status**: CONFIRMED
 - **Ghi chú rủi ro**: xem `RISK-005` — không có bộ âm thanh mặc định nghĩa là sản phẩm ra mắt sẽ **hoàn toàn im lặng** nếu admin không chuẩn bị.
 
 ### EPIC-010 — Sau trận
@@ -1879,7 +1880,7 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | PRD-REQ-115 | GOAL-005 | EPIC-002, EPIC-006, EPIC-010 | J1, J7 | ST, AD | `GR-031` · `INV-001`, `INV-022` | `QĐ-107` | CONFIRMED |
 | PRD-REQ-047 | GOAL-005 | EPIC-006, EPIC-002 | J2, J5 | AD, SV | `GR-031` · `INV-011` | `QĐ-041`, `QĐ-044` | CONFIRMED |
 | PRD-REQ-048 | GOAL-007 | EPIC-006 | J5, J6 | SV | `GR-031`, `GR-005` · `INV-012` | `QĐ-042`, `QĐ-003` | CONFIRMED |
-| PRD-REQ-049 | GOAL-005 | EPIC-006, EPIC-009 | J5 | AD, MC, OV | `GR-037` · `INV-017` | `QĐ-051`, `QĐ-062`, `QĐ-080` | CONFIRMED |
+| PRD-REQ-049 | GOAL-005 | EPIC-006, EPIC-009 | J5 | AD, MC, OV | `GR-037` · `INV-017` | `QĐ-051`, `QĐ-062`, `QĐ-074`, `QĐ-080`, `QĐ-119` | CONFIRMED |
 | PRD-REQ-050 | GOAL-007 | EPIC-006, EPIC-008 | J6 | TS, SV | `GR-036` | `QĐ-045`, `QĐ-046` | CONFIRMED |
 | PRD-REQ-051 | GOAL-007 | EPIC-007 | J5 | AD | `GR-027`, `GR-026` | `QĐ-073`, `QĐ-010` | CONFIRMED |
 | PRD-REQ-052 | GOAL-007 | EPIC-007 | J5 | AD | `GR-006`, `GR-015`, `GR-035` | `QĐ-029`, `QĐ-073` | CONFIRMED |
@@ -1903,12 +1904,12 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | PRD-REQ-070 | GOAL-006 | EPIC-006, EPIC-008 | J5 | AD, TS | `GR-017` | `QĐ-019` | CONFIRMED |
 | PRD-REQ-071 | GOAL-008 | EPIC-008 | J5 | TS | `GR-034` | `QĐ-004`, `QĐ-072` | CONFIRMED |
 | PRD-REQ-072 | GOAL-008 | EPIC-007, EPIC-008 | J5 | AD, TS | `GR-034`, `GR-006` | `QĐ-060` · `CLAUDE.md` §UX | CONFIRMED |
-| PRD-REQ-073 | GOAL-008 | EPIC-009 | J4, J5 | KG, OV | `GR-037` | `product-discovery.md` §3 G-8 · `QĐ-051` | CONFIRMED |
-| PRD-REQ-074 | GOAL-008 | EPIC-009, EPIC-001 | J5, J6 | MC | `GR-037` | `QĐ-001`, `QĐ-093` · `product-discovery.md` §8 | CONFIRMED |
-| PRD-REQ-075 | GOAL-008 | EPIC-009 | J5, J7 | AD, KG | `GR-028`, `GR-025` | `QĐ-049`, `STATE-033` | CONFIRMED |
-| PRD-REQ-076 | GOAL-008 | EPIC-009 | J6 | AD | `GR-035` · `INV-016` | `QĐ-050`, `STATE-039` | CONFIRMED |
-| PRD-REQ-077 | GOAL-008 | EPIC-009 | J5 | KG, OV | `GR-030` | `QĐ-076` | CONFIRMED |
-| PRD-REQ-078 | GOAL-008 | EPIC-009 | J2 | AD | — | `QĐ-079` | CONFIRMED |
+| PRD-REQ-073 | GOAL-008 | EPIC-009 | J4, J5 | KG, OV | `GR-037`, `GR-012` | `product-discovery.md` §3 G-8 · `QĐ-051`, `QĐ-118` | CONFIRMED |
+| PRD-REQ-074 | GOAL-008 | EPIC-009, EPIC-001 | J5, J6 | MC | `GR-037` | `QĐ-001`, `QĐ-093`, `QĐ-116` · `product-discovery.md` §8 | CONFIRMED |
+| PRD-REQ-075 | GOAL-008 | EPIC-009 | J5, J7 | AD, KG | `GR-028`, `GR-025` | `QĐ-049`, `QĐ-117`, `QĐ-123`, `STATE-033` | CONFIRMED |
+| PRD-REQ-076 | GOAL-008 | EPIC-009 | J6 | AD | `GR-035` · `INV-016`, `INV-021` | `QĐ-050`, `QĐ-116`, `QĐ-117`, `STATE-040` | CONFIRMED |
+| PRD-REQ-077 | GOAL-008 | EPIC-009 | J5 | KG, OV | `GR-030` | `QĐ-076`, `QĐ-120` | CONFIRMED |
+| PRD-REQ-078 | GOAL-008 | EPIC-009 | J2 | AD | — | `QĐ-079`, `QĐ-120`, `QĐ-121`, `QĐ-122` | CONFIRMED |
 | PRD-REQ-079 | GOAL-007 | EPIC-010 | J7 | AD | `GR-028`, `GR-030` | `QĐ-077` | CONFIRMED |
 | PRD-REQ-080 | GOAL-007 | EPIC-010, EPIC-011 | J7 | AD | — | `QĐ-077`, `QĐ-040` | CONFIRMED |
 | PRD-REQ-081 | GOAL-005 | EPIC-010 | J7 | AD, ST | `GR-031` | `product-discovery.md` §5 E-10 | CONFIRMED |
@@ -1989,6 +1990,14 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | `QĐ-105` dưới 4 thí sinh chạy bằng ghế bỏ thi | **114** *(mới)* · 026 · NON-GOAL-012 · §9.4 *(hạng chặn do giới hạn phiên bản)* · §9.5 `INV-014` · §20.1 EPIC-006 |
 | `QĐ-106` VCNV có hai giá trị thời gian cấp vòng | 008 *(Note ngoại lệ)* · 020 · §13.3 dòng VCNV |
 | `QĐ-107` vòng đời dữ liệu câu hỏi | **115** *(mới)* · 007, 011 · §11 EPIC-002 *(bỏ phần loại trừ đánh phiên bản)* · §20.1 EPIC-002 |
+| `QĐ-116` banner tạm dừng **không phủ màn MC** | **076** · 074 · `game-state-machine.md` §F bảng nhóm *(bỏ MC khỏi nhóm chặn toàn cục)*, `STATE-039`, `STATE-040`, `T-089` |
+| `QĐ-117` banner × lớp công bố **loại trừ lẫn nhau** | **075**, **076** · `STATE-033`, `STATE-040`, `EVENT-032`, `EVENT-034`, `T-087`, `T-089`, §Invalid transitions, `INV-021` *(thu hẹp một ngoại lệ)* |
+| `QĐ-118` đáp án Chướng ngại vật tới **cả overlay** | **073** · 049 · `GR-012` §Điều kiện, C2, `GR-037` C9 |
+| `QĐ-119` **cú đóng tay thắng** cú đẩy tại mốc câu khép | **049** · 057 · `GR-037` **C10** *(mới)*, §Thứ tự đánh giá bước (5b), §Bấm trùng, §Không đổi gì · `STATE-021` · `INV-017` · `QĐ-074` *(vế "engine không bao giờ tự mở" bị thay)* |
+| `QĐ-120` khe âm thanh **hai nhóm** + nguồn phát | **078**, **077** · `QĐ-079` *(danh sách phẳng bị tách)* |
+| `QĐ-121` chủ đề = **ba trục tĩnh**, áp cho **hai kênh public** | **078** |
+| `QĐ-122` **52 khe** mốc thi đấu dẫn xuất từ wiki Fandom, lọc hai tầng | **078** · `QĐ-079` *(cụm "ngoài các mốc thi đấu" được liệt kê)* · nguồn mới `source/fandom-olympia-26-am-thanh.md` |
+| `QĐ-123` lớp phủ thiếu dữ liệu vẫn dựng **bình thường** | **075** |
 
 ---
 

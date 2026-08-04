@@ -107,11 +107,11 @@
 
 | Mã | Permission | Cho phép | Cổng thêm | Nguồn |
 |---|---|---|---|---|
-| `PERM-044` | `answer.reveal` | Mở và đóng đáp án bằng tay **cho mọi vai đang xem**. **Thắng cờ `revealAnswerAfterJudge`** | phiên giữ quyền | `QĐ-048`, `QĐ-074` |
+| `PERM-044` | `answer.reveal` | Mở và đóng đáp án bằng tay **cho mọi vai đang xem**. **Thắng cờ `revealAnswerAfterJudge` ở CẢ HAI CHIỀU** — cú mở thắng cờ TẮT, cú đóng **chặn** cú đẩy của engine tại mốc câu khép kể cả khi cờ BẬT; hiệu lực của cú đóng ở **phạm vi câu** | phiên giữ quyền | `QĐ-048`, `QĐ-074`, `QĐ-119` |
 | `PERM-045` | `match.readAnswer` | **Nhận đáp án chuẩn của câu đang chạy trên màn của CHÍNH MÌNH** — mọi lúc, **không** phụ thuộc cờ `revealAnswerAfterJudge` và **không** phụ thuộc mốc câu khép. Mỗi lần nhận vào nhật ký | — | `GR-037` C1, C2 |
 | `PERM-046` | `crossword.setState` | Đặt trạng thái ô chữ theo cả hai chiều | phiên giữ quyền | `QĐ-052` |
-| `PERM-047` | `overlay.announce` | Mở và đóng lớp công bố kết quả | phiên giữ quyền | `QĐ-049` |
-| `PERM-048` | `overlay.pause` | Mở và đóng banner tạm dừng | phiên giữ quyền | `QĐ-050` |
+| `PERM-047` | `overlay.announce` | Mở và đóng lớp công bố kết quả. **Loại trừ với `PERM-048`**: không mở được khi banner tạm dừng đang bật | phiên giữ quyền | `QĐ-049`, `QĐ-117` |
+| `PERM-048` | `overlay.pause` | Mở và đóng banner tạm dừng. **Loại trừ với `PERM-047`**: không mở được khi lớp công bố đang bật. Banner **không phủ màn admin và màn MC** | phiên giữ quyền | `QĐ-050`, `QĐ-116`, `QĐ-117` |
 | `PERM-049` | `viewer.gate.lock` | **Khoá cổng** phòng khán giả | | `QĐ-067`, `PRD-REQ-086` |
 
 > **Đừng lẫn `PERM-044` với `PERM-045`** — đây là cặp dễ lẫn nhất trong catalog. `PERM-044` là **hành vi GHI**: một cú bấm đẩy đáp án ra **mọi màn đang xem**. `PERM-045` là **hành vi ĐỌC**: đáp án hiện trên màn của **chính người giữ permission**, không ai khác thấy gì. Vai *Quản trị* giữ cả hai; vai **MC chỉ giữ `PERM-045`** — MC đọc được đáp án nhưng **không** công bố được cho ai.
@@ -181,7 +181,7 @@ Bản cài trống có đúng bốn vai dựng sẵn, khớp bốn vai cần xá
 |---|---|---|
 | **Quản trị** *(admin)* | `HỆ THỐNG` và `CONTEST` | **Toàn bộ** `PERM-001`→`PERM-053`, gồm cả bảy thao tác ⚠️. **Trừ** `PERM-054`→`PERM-061` |
 | **Người ra đề** *(setter)* | `HỆ THỐNG` | `PERM-001`, `002`, `006`, `007`, `008`, `009`, `010`, `016`, `017` |
-| **MC** | `CONTEST` | `PERM-045`, `PERM-054`, `PERM-061` — **đúng một permission ghi** (`PERM-054`) |
+| **MC** | `CONTEST` | `PERM-045`, `PERM-054`, `PERM-061` — **đúng một permission ghi** (`PERM-054`), dùng được **kể cả khi banner tạm dừng đang bật** (`QĐ-116`) |
 | **Thí sinh** | `CONTEST` | `PERM-055` → `PERM-061` |
 
 > **Túi của mỗi vai chỉ chứa permission ĐÚNG PHẠM VI mà vai đó gán được.** Vai MC gán ở phạm vi `CONTEST`, nên nó **không** giữ được `PERM-006`/`PERM-007` — hai permission của **kho đề**, phạm vi `HỆ THỐNG`. MC đọc đáp án của **câu đang chạy** qua `PERM-045`, không qua kho đề: MC không có việc gì trong kho đề.
