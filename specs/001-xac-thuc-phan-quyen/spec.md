@@ -769,7 +769,7 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 
 ## 9. Open Questions
 
-Không còn câu hỏi mở và không còn `CONFLICT` nào trong phạm vi feature này. Hai chi tiết cố ý để ngoài spec — **mã lỗi** cho từng ca từ chối, và **cơ chế xác thực cụ thể** — nằm ở §11 Assumptions vì chúng là lựa chọn kỹ thuật, không phải requirement nghiệp vụ chưa chốt.
+Không có. Hai chi tiết cố ý để ngoài spec — **mã lỗi** cho từng ca từ chối, và **cơ chế xác thực cụ thể** — nằm ở §11 Assumptions vì chúng là lựa chọn kỹ thuật, không phải requirement nghiệp vụ.
 
 ---
 

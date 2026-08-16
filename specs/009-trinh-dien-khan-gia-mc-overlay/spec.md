@@ -10,8 +10,6 @@
 
 **Nguồn**: `docs/PRD.md` (EPIC-009 §11; PRD-REQ-073 → PRD-REQ-078 §12 mục EPIC-009; PRD-REQ-041, PRD-REQ-049, PRD-REQ-107 — ba requirement khai **Related epic** gồm EPIC-009; §9.1 → §9.5; JOURNEY-004, JOURNEY-005 §10; §14 FS-04, FS-19, FS-31, FS-32, FS-33; §15.1 NFR-06, §15.4 NFR-20, NFR-21, NFR-21b, §15.8 NFR-36 → NFR-39; §18 RISK-005; ma trận truy nguyên §22) · `docs/game-rules.md` (`GR-037` — rule mà epic khai trực tiếp; và các rule mà PRD-REQ của epic này tham chiếu: `GR-004`, `GR-016`, `GR-025`, `GR-028`, `GR-030`, `GR-035`; `GR-012` ở đúng vế **hiện Chướng ngại vật cho khán giả**) · `docs/game-state-machine.md` (§F Cấp LỚP PHỦ; `STATE-033`, `STATE-034`, `STATE-039`, `STATE-040`; `EVENT-032` → `EVENT-035`, `EVENT-051`; `T-087` → `T-090`, `T-092` → `T-095`; §Invalid transitions; `INV-016` → `INV-018`, `INV-021`) · `docs/decisions.md` (`QĐ-049`, `QĐ-050`, `QĐ-051`, `QĐ-062`, `QĐ-067`, `QĐ-076`, `QĐ-079`, `QĐ-080`, `QĐ-088`, `QĐ-093`, `QĐ-096`, `QĐ-102`, `QĐ-115`) · `docs/permissions.md` (`PERM-023`, `PERM-044`, `PERM-045`, `PERM-047`, `PERM-048`, `PERM-049`, `PERM-054`; §8 kênh public) · `docs/glossary.md` (`TERM-005`, `TERM-007`, `TERM-017`, `TERM-018`, `TERM-057`) · `docs/traceability.md` · `.specify/memory/constitution.md` bản 1.4.0 · `CLAUDE.md` §UX, §Quy ước code.
 
-**Lưu ý về đầu vào**: lệnh gọi yêu cầu đọc `docs/rule-traceability.md` và `docs/reviews/prd-review.md` — **cả hai đường dẫn không tồn tại** trong repo. Tương ứng gần nhất của cái thứ nhất là `docs/traceability.md` (đã dùng). Không có tài liệu nào thay thế cái thứ hai; `docs/reviews/` chỉ chứa hồ sơ rà **luật chơi**, và theo `.specify/memory/constitution.md` §*Nguồn đã migrate xong* thì `docs/reviews/**` **không thoả cổng truy nguyên** nên dù có cũng không dùng làm nguồn requirement. Đây là chênh **đường dẫn đầu vào**, không phải `CONFLICT` nghiệp vụ, nên không ghi vào §Open Questions. Cùng cách xử lý đã dùng ở `specs/005` → `specs/008`.
-
 **Quy ước truy nguyên của feature này** — bốn điểm cần biết trước khi đọc bảng truy nguyên:
 
 1. **Requirement khai nhiều epic vẫn thuộc epic này.** PRD-REQ-041, PRD-REQ-049 và PRD-REQ-107 đều khai `EPIC-009` trong trường **Related epic**. Spec này chỉ đặc tả **mặt trình diễn** của chúng — cái gì hiện trên màn khán giả, lớp phủ dựng stream và màn MC. **Số học điểm, mô hình sự kiện và hàng rào server** thuộc `specs/006`; **cú bấm của admin** thuộc `specs/007`; **mã phòng, URL vào phòng và catalog permission** thuộc `specs/001`. Không thứ nào trong ba nhóm đó được đặc tả lại ở đây (xem §Out of Scope).
@@ -417,9 +415,7 @@ Liệt kê theo tám nhóm mà lệnh gọi yêu cầu. Mỗi mục ghi **hành 
 
 ## Open Questions
 
-> Mục này chỉ chứa câu hỏi **CÒN MỞ**. Mọi quyết định đã chốt nằm ở §Requirements và §Acceptance Scenarios; spec này không giữ bản ghi phân xử song song.
-
-**Không còn câu hỏi mở nào trong phạm vi EPIC-009.**
+Không có.
 
 ## Traceability Matrix
 
@@ -609,7 +605,7 @@ Liệt kê theo tám nhóm mà lệnh gọi yêu cầu. Mỗi mục ghi **hành 
 **AC-023** — *US*: US-003 · *FR*: FR-026 · *GR*: `GR-037` **C9**, `GR-012` C2
 **Given** một vòng Vượt chướng ngại vật, cờ hiện đáp án **BẬT**, và một câu hàng ngang vừa được chấm nên **câu đó** đã khép,
 **When** server đẩy cập nhật,
-**Then** đáp án của **câu hàng ngang** đi theo `GR-037` và tới hai kênh public; nhưng đáp án **Chướng ngại vật** **không** đi theo cơ chế đó — nó chỉ lộ khi có người giải đúng, hoặc khi admin bấm công bố theo `GR-012`; cờ hiện đáp án **không** mở đường nào cho đáp án Chướng ngại vật; và khi nó **có** lộ theo `GR-012` thì nó tới **cả màn khán giả lẫn lớp phủ**, **cùng lúc và cùng điều kiện** — việc đứng ngoài `GR-037` chỉ đổi **thời điểm**, **không** đổi **người nhận**.
+**Then** đáp án của **câu hàng ngang** được đẩy tới **cả màn khán giả lẫn lớp phủ** ngay khi câu khép, vì cờ hiện đáp án đang **BẬT**; nhưng đáp án **Chướng ngại vật** **không** đi theo cơ chế đó — nó chỉ lộ khi có người giải **đúng**, hoặc khi admin bấm **công bố**, một thao tác thủ công và tuỳ chọn; cờ hiện đáp án **không** mở đường nào cho đáp án Chướng ngại vật; và khi nó **có** lộ theo `GR-012` thì nó tới **cả màn khán giả lẫn lớp phủ**, **cùng lúc và cùng điều kiện** — việc đứng ngoài `GR-037` chỉ đổi **thời điểm**, **không** đổi **người nhận**.
 
 **AC-024** — *US*: US-003 · *FR*: FR-027 · *GR*: `GR-037` §Bấm trùng
 **Given** một câu đã khép và đáp án đã được đẩy tới hai kênh public,

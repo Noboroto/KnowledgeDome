@@ -258,7 +258,7 @@ Trước khi admin bắt đầu trận và tại mỗi lần mở một vòng, h
 
 ## Open Questions
 
-**Không có.** Chủ đề hiển thị và các khe âm thanh nay truy nguyên về `PRD-REQ-078`, requirement này đã mở rộng **Related epic** để gồm EPIC-004.
+Không có.
 
 ## Traceability Matrix
 

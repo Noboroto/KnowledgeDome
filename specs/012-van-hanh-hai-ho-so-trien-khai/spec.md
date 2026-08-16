@@ -398,7 +398,7 @@ Actor chính: **ACTOR-001 admin** *(và người cài đặt — `docs/PRD.md` �
 
 **AC-032 — No-change guarantee: mục tiêu định cỡ không phải chặn cứng thứ tư**
 - *US*: US-005 · *FR*: FR-031a, FR-034 · *PRD*: `PRD-REQ-087` · *GR*: —
-- **Given** tập chặn cứng của sản phẩm như `INV-014` khai
+- **Given** tập chặn cứng của sản phẩm gồm **đúng ba** chỗ — cửa sổ cướp Về đích **≥2** người · Câu hỏi phụ **≥2** người · **cửa vào vòng thiếu câu**
 - **When** người kiểm rà toàn bộ đường mở trận tìm một cửa từ chối dựa trên số trận đang chạy
 - **Then** **0** cửa nào tồn tại · tập chặn cứng **giữ nguyên số lượng** · mục tiêu định cỡ chỉ xuất hiện ở tài liệu vận hành và bài kiểm thử tải
 
@@ -538,7 +538,7 @@ Bốn requirement dùng chung với epic khác vào feature này ở **phần h�
 
 ## Open Questions
 
-**Không có.** Bốn mục từng mở của feature này đã được phân xử: chủ sở hữu nút khoá cổng — đó là thao tác của **admin đang điều khiển trận**, hành vi ở `specs/001` FR-035 (`QĐ-102`); ngưỡng media **dùng chung** cho cả hai hồ sơ (`QĐ-159`); *hồ sơ triển khai*, *bản cài* và *bản triển khai* là **một** khái niệm (`QĐ-160`, `TERM-064`); và quy mô viewer vẫn là **mặc định cấu hình được**, con số cụ thể chốt khi định cỡ máy thật (`QĐ-067`).
+Không có.
 
 ## Assumptions
 

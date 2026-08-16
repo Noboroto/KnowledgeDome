@@ -11,7 +11,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
-| `decisions.md` | **Vì sao** — 148 quyết định `QĐ-001` → `QĐ-148` |
+| `decisions.md` | **Vì sao** — 163 quyết định `QĐ-001` → `QĐ-163` |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; file này dùng đúng tên ở đó |
 | `game-state-machine.md` | Máy trạng thái: `STATE-*` · `EVENT-*` · `T-*` · `INV-*`. Mọi rule ở đây phải khớp với một hoặc nhiều transition ở đó |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -1892,7 +1892,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C7 | Câu **bị bỏ qua** *(không ai bấm chuông)* · reveal **BẬT** | Trả đáp án — câu đã tiêu, đã khép. Như C5: xem §Kéo và đẩy |
 | C8 | Câu khép bằng phán quyết **Huỷ kết quả** | **Không tự trả.** Admin mở tay được (`QĐ-048`). Áp cho **mọi** vị trí trong chuỗi, kể cả khi *Huỷ kết quả* là phán quyết **khép câu** cho người cướp quyền Về đích — ở ca đó **C8 thắng C6**, quy tắc phát biểu theo **loại phán quyết**, không theo vai bị chấm |
 | C8b | Đang chờ admin **kích hoạt tay** một tín hiệu khác sau một cú *Huỷ kết quả* | **Không trả** — câu **chưa khép**, mốc đã lùi (`GR-032` §Kích hoạt tay). Công bố ở đây xoá cơ hội của người sắp được kích hoạt |
-| C9 | Đáp án **Chướng ngại vật** | Ngoài phạm vi rule này về **THỜI ĐIỂM** — theo `GR-012`. **Người nhận thì không đổi**: khi nó lộ, nó tới **cả hai kênh public** như mọi thứ khác (`QĐ-118`) |
+| C9 | Đáp án **Chướng ngại vật** | Ngoài phạm vi rule này về **THỜI ĐIỂM**: nó lộ khi có người giải **đúng**, hoặc khi admin bấm **công bố** — thao tác thủ công và tuỳ chọn. Cờ hiện đáp án **không** mở đường nào cho nó. **Người nhận thì không đổi**: khi nó lộ, nó tới **cả hai kênh public** cùng lúc và cùng điều kiện (`QĐ-118`) |
 | **C10** | Câu khép, cờ **BẬT**, nhưng admin đang giữ một cú **ĐÓNG hiển thị bằng tay** cho câu này | **Không trả** — thao tác tay thắng cờ tự động ở **cả hai chiều** (`QĐ-074`, `QĐ-119`). Đáp án kín tới khi admin **tự mở lại**; hiệu lực ở **phạm vi câu**, không dính sang câu sau |
 
 ### Kéo và đẩy — hai đường đáp án rời server, hai loại dấu vết

@@ -1,6 +1,6 @@
 # Hợp nhất requirements corpus — báo cáo
 
-**Ngày**: 2026-08-06 · **Nhánh**: `remaster`
+**Ngày**: 2026-08-06, rà lại 2026-08-16 · **Nhánh**: `remaster`
 
 Corpus được viết lại tại chỗ thành **current-state requirements**: mỗi tài liệu active chỉ còn behavior đang có hiệu lực, mỗi section đọc độc lập được, và reference chỉ còn vai trò truy nguồn.
 
@@ -228,6 +228,54 @@ Mười ba mục đã được chủ dự án phân xử ngày 2026-08-06, ghi t
 |---|---|---|
 | `006` | `OQ-004` | Băng điểm cho `rowCount` 5-8 — **đã có mặc định** (`QĐ-158`), vẫn ngoài phạm vi v1 vì `rowCount` khoá cứng ở 4 |
 | `006` | `OQ-005` | Luật cho số ghế **trên** 4 — nguồn chỉ viết cho đúng 4 người; v1 chặn cứng ở cú bấm bắt đầu trận |
+
+## Lượt rà 2026-08-16
+
+Quét lại toàn corpus bằng script *(dead reference trên 17 họ mã · ID trùng trong cùng file · độ lệch cột bảng · đối chiếu số đếm tự khai)*. Sáu nhóm còn sót, đã sửa.
+
+### Khối lịch sử đã cắt
+
+- **6 đoạn `**Lưu ý về đầu vào**`** ở `specs/006` → `specs/011` — ghi chép về một lệnh gọi trỏ vào hai đường dẫn không tồn tại. Không mang requirement nào; `**Nguồn**` ngay trên nó đã khai đủ nguồn đã dùng.
+- **8 mục `## Open Questions` kể lại phán quyết cũ** — `specs/001`, `003`, `004`, `005`, `007`, `008`, `009`, `012`. Mọi nội dung đã xác minh là có mặt trong FR/AC trước khi cắt: chủ sở hữu nút khoá cổng ở `specs/001` FR-035 · ngưỡng media dùng chung ở `specs/012` FR-023 và AC-011x · quy mô viewer cấu hình được ở `specs/012` FR-023 và AC-022 · vế EPIC-003 của `PRD-REQ-098` ở `specs/003` FR-032. Nay mỗi mục còn đúng *"Không có."*; `specs/006` giữ hai mục thật sự còn mở.
+- **Một câu lặp nguyên văn hai lần** trong `docs/game-state-machine.md` §Ngoại lệ lớp phủ.
+
+### Effective behaviors expanded
+
+| Vị trí | Trước | Sau |
+|---|---|---|
+| `EVENT-006` §Hợp lệ ở | *"như `EVENT-005`"* | Nêu đủ điều kiện vào, hạng dialog, và cả hai nhánh không hợp lệ |
+| `EVENT-013` §Mô tả và §Hợp lệ ở | *"như `EVENT-012`"* cho cả ba trường | Nêu đủ phán quyết, hai trạng thái hợp lệ, ba ca không hợp lệ kèm mốc khoá nút chấm |
+| `EVENT-023` §Không hợp lệ ở | *"như `EVENT-022`"* | Nêu đủ: tín hiệu đã duyệt hoặc đã từ chối, nút một chiều tự tắt, server bỏ qua lệnh trùng |
+| `GR-037` C9 | *"theo `GR-012`"* | Nêu mốc lộ thật: có người giải đúng, hoặc admin bấm công bố; cờ hiện đáp án không mở đường nào |
+| `docs/game-state-machine.md` §Ba hạng phản hồi | *"Xem `INV-014`"* | Kể tên **ba** chỗ chặn cứng ngay trong ô bảng |
+| `specs/011` bảng C9 | *"theo `GR-012`"* | Nêu mốc lộ thật |
+| `specs/012` `AC-032` §Given | *"như `INV-014` khai"* | Kể tên ba chỗ chặn cứng trong chính Given |
+| `specs/009` `AC-023` §Then | *"đi theo `GR-037`"* | Nêu outcome: đáp án hàng ngang đẩy tới cả hai kênh public ngay khi câu khép vì cờ đang BẬT |
+
+### Số đếm tự khai đã lệch với corpus
+
+| Chỗ khai | Khai | Thực tế |
+|---|---|---|
+| `docs/PRD.md` §2, `game-rules.md`, `game-state-machine.md` | 148 quyết định `QĐ-001`→`QĐ-148` | **163**, `QĐ-001`→`QĐ-163` |
+| `docs/README.md` | 145 quyết định | **163** |
+| `docs/PRD.md` §2, `docs/README.md` | 63 thuật ngữ `TERM-001`→`TERM-063` | **64**, tới `TERM-064` |
+| `docs/README.md` | 62 permission `PERM-001`→`PERM-062` | **63** — `PERM-063` `retention.purge` ra đời cùng `QĐ-150` |
+| `CLAUDE.md` §1 | `QĐ-001`→`QĐ-145` | **`QĐ-163`** |
+
+### Nghiệm thu lượt rà
+
+| Phép kiểm | Kết quả |
+|---|---|
+| Dead reference trên 17 họ mã, trong `docs/` và 12 spec | **0** *(bốn mã `EPIC-013`/`EPIC-014`/`JOURNEY-008`/`PRD-REQ-099` ở `README` là mục lục của `roadmap-post-v1.md`, có định nghĩa ở đó)* |
+| ID trùng trong cùng file | **0** |
+| Bảng markdown lệch cột | **0** |
+| `FR-*` chỉ trỏ đi mà không nêu behavior | **0** |
+| `Then` chỉ trỏ đi mà không nêu outcome | **0** |
+| Guard của `EVENT-*` mượn từ event khác | **0** |
+| Số đếm tự khai lệch corpus | **0** |
+| Giá trị biên trùng lặp xuyên tài liệu *(cửa sổ chuông 3/5/15 giây · `padding` 5 giây · 52 + 6 = 58 khe âm thanh · trần 4 ghế)* | Nhất quán |
+
+---
 
 ## Việc còn lại cần quyết định ranh giới, không phải consolidate
 

@@ -10,8 +10,6 @@
 
 **Nguồn**: `docs/PRD.md` (EPIC-007 §11; PRD-REQ-051→063 §12 mục EPIC-007; PRD-REQ-030, PRD-REQ-031, PRD-REQ-036, PRD-REQ-038, PRD-REQ-043, PRD-REQ-072, PRD-REQ-093, PRD-REQ-113 — các requirement khai **Related epic** gồm EPIC-007; §9.3, §9.4 ba hạng phản hồi; §9.5 bất biến; JOURNEY-005, JOURNEY-006 §10; ma trận truy nguyên §18) · `docs/game-rules.md` (`GR-026` → `GR-034` — dải EPIC-007 khai; và các rule được PRD-REQ của epic này tham chiếu: `GR-006`, `GR-009`, `GR-011`, `GR-012`, `GR-013`, `GR-015`, `GR-019`, `GR-035`, `GR-036`, `GR-037`; bốn bảng dùng chung) · `docs/game-state-machine.md` (`STATE-033` → `STATE-043`, `STATE-021`, `STATE-025`, `STATE-029` → `STATE-032`; `EVENT-004` → `EVENT-023`, `EVENT-028` → `EVENT-035`, `EVENT-052`; `T-084` → `T-090`, `T-097` → `T-100`; §Invalid transitions; `INV-001` → `INV-022`) · `docs/permissions.md` (`PERM-031` → `PERM-048` — chỉ dùng làm **cổng** của thao tác, catalog thuộc EPIC-001) · `docs/glossary.md` · `docs/traceability.md` · `.specify/memory/constitution.md` bản 1.4.0 · `CLAUDE.md` §UX, §Quy ước code.
 
-**Lưu ý về đầu vào**: lệnh gọi yêu cầu đọc `docs/rule-traceability.md` và `docs/reviews/prd-review.md` — **cả hai đường dẫn không tồn tại** trong repo. Tương ứng gần nhất là `docs/traceability.md` (đã dùng); không có tài liệu nào thay thế `docs/reviews/prd-review.md`, và theo `.specify/memory/constitution.md` §*Nguồn đã migrate xong* thì `docs/reviews/**` **không thoả cổng truy nguyên** nên dù có cũng không dùng làm nguồn requirement. Đây là chênh **đường dẫn đầu vào**, không phải `CONFLICT` nghiệp vụ, nên không ghi vào §Open Questions. Cùng cách xử lý đã dùng ở `specs/005` và `specs/006`.
-
 **Quy ước truy nguyên của feature này** — ba điểm cần biết trước khi đọc bảng truy nguyên:
 
 1. **Requirement khai nhiều epic vẫn thuộc epic này.** PRD-REQ-030, 031, 036, 038, 043, 072, 093, 113 đều khai `EPIC-007` trong trường **Related epic**. Spec này chỉ đặc tả **mặt điều khiển của admin** ở những requirement đó; **luật số học và hệ quả phía engine** của chúng thuộc `specs/005` và `specs/006` và **không** đặc tả lại ở đây (xem §Out of Scope).
@@ -616,7 +614,7 @@ Liệt kê theo tám nhóm mà lệnh gọi yêu cầu. Mỗi mục ghi **hành 
 
 ## Open Questions
 
-Không có. Mọi requirement của feature này đều có nguồn chuẩn tắc trong `docs/`; không còn mục nào chờ phân xử.
+Không có. Mọi requirement của feature này đều có nguồn chuẩn tắc trong `docs/`.
 
 ## Traceability Matrix
 

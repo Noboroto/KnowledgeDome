@@ -8,7 +8,7 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến, mô
 
 ## 1. Nguồn sự thật
 
-**`docs/` là nguồn sự thật DUY NHẤT.** Bản đồ tài liệu: `docs/README.md`. Sổ quyết định: `docs/decisions.md` (`QĐ-001` → `QĐ-145`) — đây là nơi duy nhất ghi *vì sao*.
+**`docs/` là nguồn sự thật DUY NHẤT.** Bản đồ tài liệu: `docs/README.md`. Sổ quyết định: `docs/decisions.md` (`QĐ-001` → `QĐ-163`) — đây là nơi duy nhất ghi *vì sao*.
 
 ### Thứ bậc nguồn
 

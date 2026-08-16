@@ -9,7 +9,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn — **source of truth duy nhất** |
-| `decisions.md` | **Vì sao** — 148 quyết định `QĐ-001` → `QĐ-148` |
+| `decisions.md` | **Vì sao** — 163 quyết định `QĐ-001` → `QĐ-163` |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; tài liệu này dùng đúng tên ở đó |
 | `game-rules.md` | Rule `GR-*`; **mọi transition ở đây phải trỏ về ≥1 `GR-*`** |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -35,7 +35,7 @@
 |---|---|---|
 | **Invalid state** | **Không** | Nút không bật (admin) hoặc không render (thí sinh); server từ chối. Admin thấy **toast** |
 | **Cảnh báo conflict luật** | **Có** | Dialog Yes/No; bấm Yes là thực hiện |
-| **Chặn cứng** | **Không** — và chỉ có **ba** chỗ | Ngưỡng bất khả thi vật lý. Xem `INV-014` |
+| **Chặn cứng** | **Không** — và chỉ có **ba** chỗ: cửa sổ cướp Về đích **≥2** người · Câu hỏi phụ **≥2** người · **cửa vào vòng thiếu câu** | Ngưỡng bất khả thi vật lý |
 
 **Đánh dấu suy luận**: `[SUY RA]` = hệ quả bắt buộc của một quyết định, không phải phát biểu trực tiếp của nguồn. Sửa được bằng lập luận.
 
@@ -901,8 +901,8 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 
 - **Actor**: Admin
 - **Mô tả**: revert vòng rồi chạy mới. Mỗi lần chạy lại là một **lần chạy mới có chủ đích**, không bị dedup.
-- **Hợp lệ ở**: như `EVENT-005`, **và** kho đề còn đủ câu cho vòng đó.
-- **Không hợp lệ ở**: kho đề không đủ ⇒ không chạy lại được.
+- **Hợp lệ ở**: mọi trạng thái cấp trận có vòng tương ứng đã hoặc đang chạy, **và** kho đề còn đủ câu cho vòng đó. Cần **lý do** và dialog **hạng phá huỷ**.
+- **Không hợp lệ ở**: kho đề không đủ ⇒ không chạy lại được · vòng **đã ở nhãn đã bỏ** — server từ chối; đây là invalid state, không phải dedup.
 - **Side effects**: đặt lại **toàn bộ** cờ *phạm vi VÒNG* của mọi ghế — `STATE-022`, `STATE-026`, `STATE-027`. Câu đã dùng **không** trả lại pool.
 - **Nguồn**: `QĐ-033`, `QĐ-035` · `GR-030`, `GR-031`
 
@@ -973,8 +973,9 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 ### EVENT-013 — Chấm SAI
 
 - **Actor**: Admin
-- **Mô tả**: như `EVENT-012` nhưng cho nhánh sai. ***"Không trả lời"* và *"trả lời sai"* là CÙNG một thao tác** — hệ thống không phân biệt.
-- **Hợp lệ ở** / **Không hợp lệ ở**: như `EVENT-012`.
+- **Mô tả**: phán quyết chốt kết quả một câu cho một thí sinh ở **nhánh sai**. **Máy không bao giờ tự chấm.** Gợi ý so khớp (highlight ký tự khác) **chỉ là gợi ý**. ***"Không trả lời"* và *"trả lời sai"* là CÙNG một thao tác** — hệ thống không phân biệt.
+- **Hợp lệ ở**: `STATE-019` (chỉ vòng **nói**) · `STATE-020` (mọi vòng).
+- **Không hợp lệ ở**: `STATE-019` ở vòng **gõ máy** — nút chấm khoá tới **`hạn chót + padding`**, riêng Khởi động tới `hạn chót` · `STATE-021` — đã chấm · câu thuộc vòng **đã bị bỏ** ⇒ toast.
 - **Nguồn**: `QĐ-056`, `QĐ-061` · `GR-002`, `GR-026`
 
 ### EVENT-014 — Huỷ kết quả
@@ -1057,7 +1058,7 @@ sau khi đã đưa ra gợi ý cuối ⇒ băng = 20 (sàn)
 - **Actor**: Admin
 - **Mô tả**: **từ chối KHÔNG làm thí sinh mất lượt**; tín hiệu kế tiếp lên. Ở mode nhập liệu, nút chọn của thí sinh **mở lại**.
 - **Hợp lệ ở**: `STATE-029`.
-- **Không hợp lệ ở**: như `EVENT-022`.
+- **Không hợp lệ ở**: tín hiệu đã duyệt hoặc đã từ chối — nút một chiều tự tắt; server bỏ qua lệnh trùng.
 - **Nguồn**: `QĐ-022` · `GR-007`, `GR-009`, `GR-032`
 
 ### EVENT-052 — Kích hoạt tay một tín hiệu
@@ -1682,7 +1683,7 @@ Mở hay đóng bất kỳ lớp phủ nào đều **không**: sinh event điể
 
 **Hệ quả**: **nhiều lớp phủ bật cùng lúc là hợp lệ**. Nếu nhét chúng vào enum cấp trận thì mỗi lần công bố kết quả sẽ phải *"rời"* vòng đang chạy rồi *"quay lại"* — hai transition giả và một cửa cho lỗi mất trạng thái.
 
-**Một ngoại lệ đã liệt kê** (`QĐ-117`): **`STATE-033` lớp công bố** và **`STATE-040` banner tạm dừng** **loại trừ lẫn nhau**, hai chiều. Hai lớp đó vẫn **không** nằm trong enum cấp trận, và mọi tổ hợp lớp phủ khác vẫn hợp lệ. Ngoại lệ này là hạng **invalid state**, **không** phải chỗ chặn cứng thứ tư của `INV-014`. Ngoại lệ này là hạng **invalid state**, **không** phải chỗ chặn cứng thứ tư của `INV-014`. — `QĐ-049`, `QĐ-050`, `QĐ-117`
+**Một ngoại lệ đã liệt kê** (`QĐ-117`): **`STATE-033` lớp công bố** và **`STATE-040` banner tạm dừng** **loại trừ lẫn nhau**, hai chiều. Hai lớp đó vẫn **không** nằm trong enum cấp trận, và mọi tổ hợp lớp phủ khác vẫn hợp lệ. Ngoại lệ này là hạng **invalid state**, **không** phải chỗ chặn cứng thứ tư của `INV-014`. — `QĐ-049`, `QĐ-050`, `QĐ-117`
 
 ### INV-022 — Toàn bộ trạng thái trận nằm ở HAI thứ
 

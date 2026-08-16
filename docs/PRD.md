@@ -26,10 +26,10 @@
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn (snapshot 2026-07-23) | Không sửa; source of truth **duy nhất về LUẬT** |
 | `docs/source/fandom-olympia-26-am-thanh.md` | Danh sách khe âm thanh gốc, trích lược cột `Tên` (snapshot 2026-08-04) | Không sửa; nguồn của `QĐ-122`. **Không** phải nguồn luật |
-| `docs/decisions.md` | 148 quyết định `QĐ-001`→`QĐ-148` | Source of truth về **lựa chọn sản phẩm** |
+| `docs/decisions.md` | 163 quyết định `QĐ-001`→`QĐ-163` | Source of truth về **lựa chọn sản phẩm** |
 | `docs/game-rules.md` | 37 rule `GR-001`→`GR-037`, 23 nguyên tắc nền, 4 bảng dùng chung | Chuẩn tắc; **không còn marker treo** |
 | `docs/game-state-machine.md` | 43 `STATE-*`, 52 `EVENT-*`, 102 `T-*`, 22 `INV-*`, 8 sơ đồ | Chuẩn tắc |
-| `docs/glossary.md` | 63 thuật ngữ `TERM-001`→`TERM-063` | Chuẩn tắc về tên gọi |
+| `docs/glossary.md` | 64 thuật ngữ `TERM-001`→`TERM-064` | Chuẩn tắc về tên gọi |
 | `docs/permissions.md` | Catalog `PERM-001`→`PERM-062`, bốn cổng ngoài RBAC, bốn điều cấm, bốn vai seed, vòng đời phép cấp | Catalog tra cứu; **không đặt ra luật** — mô hình ở `QĐ-094` |
 | `docs/traceability.md` | Ma trận rule ↔ luật gốc ↔ `QĐ-*`; biến thể bị loại; biến thể ngoài O26 | Không đặt ra luật |
 | `docs/product-discovery.md` | Vấn đề, người dùng, mục tiêu, hành trình, epic, giả định, cách đo | Đầu vào cho PRD; **tự khai không phải PRD** |

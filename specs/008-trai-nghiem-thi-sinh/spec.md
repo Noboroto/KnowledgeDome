@@ -10,8 +10,6 @@
 
 **Nguồn**: `docs/PRD.md` (EPIC-008 §11; PRD-REQ-064 → PRD-REQ-072 §12 mục EPIC-008; PRD-REQ-015, PRD-REQ-046, PRD-REQ-049, PRD-REQ-050 — các requirement khai **Related epic** gồm EPIC-008; §9.1 → §9.5; JOURNEY-004, JOURNEY-005, JOURNEY-006 §10; §14 FS-20, FS-28, FS-29, FS-30; §15.8 NFR-36 → NFR-39; ma trận truy nguyên §22) · `docs/game-rules.md` (`GR-034`, `GR-036`, `GR-006`, `GR-015` — dải EPIC-008 khai; và các rule mà PRD-REQ của epic này tham chiếu: `GR-003`, `GR-007`, `GR-008`, `GR-009`, `GR-013`, `GR-017`, `GR-020`, `GR-021`, `GR-027`, `GR-028`, `GR-032`, `GR-037`; bốn bảng dùng chung; 23 nguyên tắc nền) · `docs/game-state-machine.md` (`STATE-017` → `STATE-028`, `STATE-029` → `STATE-032`, `STATE-034`, `STATE-038`, `STATE-040`; `EVENT-037` → `EVENT-042`, `EVENT-045`, `EVENT-046`; §Invalid transitions; `INV-001` → `INV-022`) · `docs/decisions.md` (`QĐ-004`, `QĐ-005`, `QĐ-012`, `QĐ-015`, `QĐ-019`, `QĐ-023`, `QĐ-029`, `QĐ-045`, `QĐ-046`, `QĐ-059`, `QĐ-060`, `QĐ-072`, `QĐ-080`, `QĐ-105`, `QĐ-109`, `QĐ-110`) · `docs/glossary.md` (`TERM-001`, `TERM-025`, `TERM-027`, `TERM-037`, `TERM-043`, `TERM-053`) · `docs/traceability.md` · `.specify/memory/constitution.md` bản 1.4.0 · `CLAUDE.md` §UX, §Quy ước code.
 
-**Lưu ý về đầu vào**: lệnh gọi yêu cầu đọc `docs/rule-traceability.md` và `docs/reviews/prd-review.md` — **cả hai đường dẫn không tồn tại** trong repo. Tương ứng gần nhất là `docs/traceability.md` (đã dùng); không có tài liệu nào thay thế `docs/reviews/prd-review.md`, và theo `.specify/memory/constitution.md` §*Nguồn đã migrate xong* thì `docs/reviews/**` **không thoả cổng truy nguyên** nên dù có cũng không dùng làm nguồn requirement. Đây là chênh **đường dẫn đầu vào**, không phải `CONFLICT` nghiệp vụ, nên không ghi vào §Open Questions. Cùng cách xử lý đã dùng ở `specs/005`, `specs/006` và `specs/007`.
-
 **Quy ước truy nguyên của feature này** — bốn điểm cần biết trước khi đọc bảng truy nguyên:
 
 1. **Requirement khai nhiều epic vẫn thuộc epic này.** PRD-REQ-015, 046, 049, 050, 066, 069, 070, 072 đều khai `EPIC-008` trong trường **Related epic**. Spec này chỉ đặc tả **mặt máy thí sinh** của những requirement đó; **luật số học, mô hình điểm và hệ quả phía engine** thuộc `specs/006`, còn **bề mặt bấm của admin** thuộc `specs/007` — cả hai **không** đặc tả lại ở đây (xem §Out of Scope).
@@ -490,7 +488,7 @@ Liệt kê theo tám nhóm mà lệnh gọi yêu cầu. Mỗi mục ghi **hành 
 
 ## Open Questions
 
-**Không có.** Vế EPIC-003 của `PRD-REQ-098` — ràng buộc *xuất gói contest không phụ thuộc dịch vụ ngoài hay kết nối Internet* — nay do `specs/003` nhận (FR-032).
+Không có.
 
 ## Traceability Matrix
 

@@ -508,7 +508,7 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-071`, `QĐ-084`, `QĐ-086`, `QĐ
 
 ## 9. Open Questions
 
-**Không có.** Hai mục từng mở đã được phân xử: cụm mật khẩu **không bao giờ được lưu** nên mỗi lần xuất là một lần khai lại (`QĐ-156`), và gói contest bị chặn **chỉ khi kho đề rỗng** (`QĐ-157`).
+Không có.
 
 ## 10. Traceability Matrix
 

@@ -34,7 +34,7 @@ Bản lưu nguyên văn [Luật chơi/Olympia 26](https://duong-len-dinh-olympia
 
 ### [`decisions.md`](decisions.md) — vì sao
 
-**145 quyết định `QĐ-001` → `QĐ-145`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
+**163 quyết định `QĐ-001` → `QĐ-163`.** Mỗi mục trả lời ba câu: quyết định là gì · vì sao chọn nó và bác cái gì · hệ quả kéo theo.
 
 Chia theo chủ đề: nguyên tắc nền · phạm vi phiên bản · điểm và event log · hai mode trả lời · tín hiệu và hàng đợi · đồng hồ · điều khiển trận · kho đề · ghế và kết nối · hiển thị và bảo mật · theo vòng · mô hình dữ liệu và quyền.
 
@@ -54,13 +54,13 @@ Trạng thái `STATE-*` · sự kiện `EVENT-*` · chuyển tiếp `T-*` · b�
 
 ### [`glossary.md`](glossary.md) — thuật ngữ
 
-**63 thuật ngữ `TERM-001` → `TERM-063`**, kèm mục **Đừng nhầm với** cho những từ nhiều nghĩa. Có bảng tra tên tiếng Anh.
+**64 thuật ngữ `TERM-001` → `TERM-064`**, kèm mục **Đừng nhầm với** cho những từ nhiều nghĩa. Có bảng tra tên tiếng Anh.
 
 Dùng khi bạn thấy một từ trong tài liệu khác mà không chắc nó chỉ đúng cái gì.
 
 ### [`permissions.md`](permissions.md) — catalog phân quyền
 
-**62 permission `PERM-001` → `PERM-062`**, chia theo phạm vi `HỆ THỐNG` và `CONTEST`, kèm **bốn vai seed**.
+**63 permission `PERM-001` → `PERM-063`**, chia theo phạm vi `HỆ THỐNG` và `CONTEST`, kèm **bốn vai seed**.
 
 Là **catalog tra cứu**, cùng loại với `glossary.md` — nó **không đặt ra luật**. Mô hình RBAC và lý do nằm ở `decisions.md` `QĐ-094`.
 

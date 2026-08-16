@@ -245,7 +245,7 @@ EPIC-005 phủ **vòng đời của một trận** — từ lúc trận được
 
 ## Open Questions
 
-Không còn mục nào đang mở.
+Không có.
 
 ## Traceability Matrix
 
