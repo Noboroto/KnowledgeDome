@@ -29,8 +29,7 @@
 - [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation details leak into specification
 
+
 ## Notes
 
-- Phiên `/speckit-clarify` ngày 2026-07-30 đã phân xử toàn bộ 5 điểm còn treo (xem `spec.md` §Clarifications), gồm cả `[NEEDS CLARIFICATION]` duy nhất về hành vi Chốt trận khi hoà đủ điều kiện `TIE_BREAK` nhưng thiếu câu khả dụng. Không còn marker nào treo.
-- Mọi mục còn lại đã qua rà soát — không phát hiện vi phạm chất lượng nào cần sửa spec.
-- **Phiên đối chiếu spec ↔ PRD (2026-07-30)**: FR-017 giữ nguyên câu chữ `PRD-REQ-105` (*"mô hình dữ liệu vẫn nhận danh sách nhiều vị trí"*) trong khi `specs/004-contest-builder-luat` FR-008 đọc nó là **sức chứa schema, không phải đường ghi** — hai spec lệch nhau về cùng một requirement. Chủ dự án chốt cách đọc của spec 004; FR-017 đã đồng bộ (server từ chối mọi request ghi `tieBreakPositions ≠ [1]`, zero-trust theo FR-034), thêm một mục vào §Clarifications, và `PRD-REQ-105` đã có `Note` làm rõ. Checklist giữ 16/16 — thay đổi làm FR **chặt hơn**, không sinh marker mới.
+Không còn mục nào chờ phân xử. Mọi requirement của feature này truy nguyên được về `docs/`.

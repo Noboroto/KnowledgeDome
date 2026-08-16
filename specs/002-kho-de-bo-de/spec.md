@@ -10,18 +10,6 @@
 
 ---
 
-## Clarifications
-
-### Session 2026-07-30
-
-- Q: `OQ-001` — "Bộ đề" là entity riêng có quan hệ N-N với câu hỏi, hay chỉ là tên khác của "kho đề"? → A: **Bộ đề là entity riêng**, N-N với câu hỏi; mỗi bộ đề tự mang `public`/`private`; `visibility` của câu = OR của các bộ đề nó thuộc. `TERM-046` (liệt "bộ đề" như tên khác của "kho đề") được coi là diễn đạt lỏng của glossary, cần sửa lại ở lần cập nhật `docs/glossary.md` kế tiếp — spec này không tự sửa tài liệu nguồn.
-- Q: `OQ-004` — Sửa một câu `ACTIVE` đã từng hiển thị trong ít nhất một trận thì xử lý thế nào? → A: **Cho sửa tự do, không khoá** — nhưng **mỗi lần câu được hiển thị trong một trận, hệ thống MUST ghi log nội dung/phiên bản của câu tại đúng thời điểm hiển thị đó**, gắn với trận tương ứng, để phát lại trận cũ đúng với những gì thí sinh đã thấy thật, độc lập với bản mới nhất của câu. Đây là **một dòng nhật ký gắn với sự kiện hiển thị**, không phải một hệ thống quản lý phiên bản đầy đủ cho setter — "đánh phiên bản khi sửa câu đã duyệt" (product-discovery.md §8) vẫn đứng ngoài phạm vi v1 theo đúng nghĩa hẹp của cụm đó (không có UI xem lịch sử phiên bản, không có diff, không có rollback).
-- Q: `OQ-006` — Hai phiên admin cùng thao tác Duyệt/Trả về gần như đồng thời trên cùng một câu `DRAFT` — ai thắng? → A: **Server-timestamp-first-wins**, cùng khuôn mẫu đã dùng ở chỗ khác trong repo (tranh chấp phiên MC, tranh chấp nhận quyền điều khiển TRỐNG): quyết định tới trước có hiệu lực, quyết định tới sau bị từ chối và ghi nhật ký, không lật kết quả đã phân giải. Đồng thời, **mọi lần sửa một câu hỏi** (không riêng gì thao tác duyệt) MUST ghi log nội dung đã đổi dạng khác biệt (diff) từng trường, kèm người thực hiện — đây là yêu cầu audit chung, không phải cơ chế giải quyết tranh chấp riêng cho việc duyệt.
-- Q: `OQ-002` — `displayId` có bắt buộc duy nhất không? → A: **Bắt buộc duy nhất toàn hệ thống**, MUST mang một **tiền tố ngắn (2 ký tự) chỉ loại câu** để người đọc phân biệt được nhanh. Ngoài `displayId`, hệ thống còn giữ một **định danh nội bộ ổn định, riêng biệt với `displayId`**, dùng để tham chiếu câu xuyên hệ thống (nhập/xuất, event log) mà không phụ thuộc việc `displayId` có bị đổi hay không. *(Thuật toán sinh định danh cụ thể — kể cả việc dùng UUIDv7 — là quyết định kỹ thuật thuộc `plan.md`, không phải nội dung của spec; xem §11 Assumptions.)*
-- Q: `OQ-005` — Có tồn tại thao tác xoá câu hỏi khỏi kho không, áp dụng khi nào? → A: **Xoá mềm (soft-delete), ở mọi trạng thái** — cả `DRAFT` lẫn `ACTIVE`. Câu đã xoá mềm biến mất khỏi tìm kiếm và khỏi danh sách chọn cho contest, nhưng dữ liệu — kể cả `everPublic` và log các lần hiển thị đã ghi theo `OQ-004`/FR-004b — MUST NOT bị xoá hay thay đổi.
-
----
-
 ## 0. Nguồn đã đọc và ghi chú về nguồn
 
 | Nguồn yêu cầu đọc | Trạng thái |
@@ -30,8 +18,7 @@
 | `docs/glossary.md` | ✅ đã đọc — `TERM-044`…`TERM-048`, `TERM-049`, `TERM-050`, `TERM-052`, `TERM-053`, `TERM-058` |
 | `docs/game-rules.md` | ✅ đã đọc — `GR-006`, `GR-019`, `GR-027`, `GR-031` đầy đủ; `GR-007`…`GR-011` đọc để tách phần **thuộc kho đề** (cấu trúc Bộ VCNV) khỏi phần **thuộc game engine** (lượt chọn, chấm điểm khi chạy) |
 | `docs/game-state-machine.md` | ✅ đã đọc §9 (bảy thang trạng thái) để xác nhận: **không** có `STATE-*`/`EVENT-*`/`T-*` nào thuộc trực tiếp EPIC-002 — xem §1 |
-| `docs/rule-traceability.md` | ⚠️ **KHÔNG TỒN TẠI**. File thật là `docs/traceability.md` — đã đọc file này thay thế |
-| `docs/reviews/prd-review.md` | ⚠️ **KHÔNG TỒN TẠI**. `docs/reviews/` chỉ có `game-rules-*.md` và `README.md`; theo `docs/reviews/README.md` đây là **kho lưu, không phải requirement**, nên việc thiếu file này không tạo lỗ hổng truy nguyên |
+| `docs/traceability.md` | ✅ đã đọc — bảng đối chiếu giá trị luật và biến thể bị loại |
 
 Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `QĐ-064`, `QĐ-066`, `QĐ-071`, `QĐ-082`, `QĐ-084`) và `docs/product-discovery.md` §5 E-2 vì `docs/PRD.md` khai chúng là nguồn của các `PRD-REQ-*` thuộc EPIC-002.
 
@@ -47,7 +34,7 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 |---|---|---|
 | `PRD-REQ-007` | Soạn câu hỏi với metadata và media | P1 |
 | `PRD-REQ-008` | Thời lượng suy nghĩ là metadata của TỪNG CÂU | P1 |
-| `PRD-REQ-009` | Ba kiểu nhập đáp án, đáp án luôn là chuỗi | P1 |
+| `PRD-REQ-009` | Một kiểu nhập đáp án, đáp án luôn là chuỗi | P1 |
 | `PRD-REQ-010` | Câu thực hành là kênh trả lời thứ tư | P2 |
 | `PRD-REQ-011` | Vòng duyệt `DRAFT` → `ACTIVE` do admin thực hiện | P2 |
 | `PRD-REQ-012` | Cờ hiển thị của câu là giá trị DẪN XUẤT, chỉ đọc | P2 |
@@ -84,13 +71,13 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 
 ---
 
-### US-002 — Ba kiểu nhập đáp án, đáp án luôn lưu dưới dạng chuỗi (Priority: P1)
+### US-002 — Một kiểu nhập đáp án; format yêu cầu nằm trong đề (Priority: P1)
 
 - **Actor**: `ACTOR-002` setter
-- **Intent**: Chọn đúng widget trả lời cho câu hỏi của mình — gõ chữ, chọn một phương án, hoặc sắp thứ tự — mà không phải quan tâm việc chấm sẽ khác nhau giữa ba kiểu.
-- **User value**: Máy không chấm nên không cần đánh giá "một lựa chọn" hay "một thứ tự" — giữ mọi đáp án dưới dạng chuỗi khiến cơ chế tô khác biệt ký tự của `GR-027` chạy nguyên cho cả ba kiểu, không cần nhánh riêng nào.
-- **Why this priority**: `PRD-REQ-009` là P1 — không có kiểu nhập thì thí sinh mode nhập liệu không có gì để bấm ở Khởi động, Về đích, Câu hỏi phụ.
-- **Independent Test**: Soạn ba câu cùng nội dung câu hỏi, khác `answerInputKind`; xem preview bài làm mẫu của cả ba đều hiện dưới dạng chuỗi cạnh đáp án, tô khác biệt theo cùng một cơ chế.
+- **Intent**: Soạn được câu hỏi lựa chọn và câu hỏi sắp xếp mà không phải khai một danh sách phương án nào — nêu yêu cầu format ngay trong phần đề, và để thí sinh gõ theo.
+- **User value**: Máy không chấm, nên một thứ tự kéo thả và một chuỗi gõ tay đều đi vào cùng một chỗ — mắt admin. Một ô nhập duy nhất bỏ được cả một trục dữ liệu mà không mất gì luật đòi.
+- **Why this priority**: `PRD-REQ-009` là P1 — không có ô nhập thì thí sinh ở mode nhập liệu không trả lời được, và toàn bộ vòng Tăng tốc cùng VCNV không chạy được vì hai vòng đó luôn gõ máy.
+- **Independent Test**: Soạn ba câu — một câu thường, một câu lựa chọn, một câu sắp xếp — qua cùng một biểu mẫu; xem preview bài làm mẫu của cả ba đều hiện dưới dạng chuỗi cạnh đáp án, tô khác biệt theo cùng một cơ chế.
 - **Related PRD requirements**: `PRD-REQ-009`
 - **Related game rules**: `GR-027`
 - **Related journey**: `JOURNEY-001`
@@ -231,25 +218,25 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 - **When** contest áp preset `O26_DEFAULT@1`
 - **Then** câu dùng thời lượng mặc định của preset ứng với mức điểm của nó · không báo lỗi thiếu dữ liệu · một câu khác có `timeSeconds` riêng trong cùng kho **không** bị đổi theo mặc định này
 
-**AC-004b — Side effect: sửa câu đã hiển thị không khoá, nhưng mỗi lần hiển thị ghi log phiên bản đã dùng**
+**AC-004b — Side effect: sửa câu đã hiển thị không khoá, mỗi cú Save sinh một phiên bản bất biến**
 - **US**: US-001 · **FR**: FR-004b · **GR**: `GR-031`
-- **Given** một câu `ACTIVE` đã từng hiển thị trong Trận A với nội dung đáp án `"Huế"`; sau đó setter sửa đáp án thành `"Đà Nẵng"`
-- **When** setter lưu bản sửa
-- **Then** câu lưu thành công, không bị khoá · nhật ký gắn với lần hiển thị ở Trận A vẫn ghi đúng `"Huế"` — nội dung đã dùng lúc đó — **không đổi theo** bản sửa mới · lần hiển thị kế tiếp ở một trận khác (nếu có) sẽ dùng và ghi log theo nội dung `"Đà Nẵng"` hiện tại
+- **Given** một câu `ACTIVE` đang ở phiên bản V1 với đáp án `"Huế"`; Trận A đã hiển thị câu này và tham chiếu tới V1
+- **When** setter sửa đáp án thành `"Đà Nẵng"` rồi bấm Save
+- **Then** câu lưu thành công, **không** bị khoá vì lịch sử hiển thị · một phiên bản **V2** mới được tạo, mang nội dung `"Đà Nẵng"`, người sửa và mốc thời gian · **V1 không đổi** và vẫn xem lại được nguyên nội dung `"Huế"` · tham chiếu của Trận A vẫn trỏ tới **V1**, nên phát lại Trận A vẫn ra `"Huế"` · một trận **bắt đầu sau** thao tác này hiển thị câu theo phiên bản hiện hành **V2**
 
-### US-002 — Ba kiểu nhập đáp án, đáp án luôn là chuỗi
+### US-002 — Một kiểu nhập đáp án, đáp án luôn là chuỗi
 
-**AC-005 — Happy path: ba kiểu nhập chọn độc lập, chỉ đổi widget**
+**AC-005 — Happy path: câu lựa chọn và câu sắp xếp soạn như câu thường**
 - **US**: US-002 · **FR**: FR-005 · **GR**: `GR-027`
-- **Given** setter soạn ba câu mới, cùng cấu trúc câu hỏi, khác đáp án
-- **When** setter lần lượt chọn `answerInputKind` = `text`, `choice`, `ordering`, khai `options[]` cho hai câu sau, rồi lưu
-- **Then** cả ba câu lưu thành công · câu `choice`/`ordering` có `options[]` khác rỗng · câu `text` không yêu cầu `options[]`
+- **Given** setter soạn ba câu mới — một câu hỏi thường, một **câu lựa chọn** *(đề nêu bốn phương án A/B/C/D và yêu cầu chọn một)*, một **câu sắp xếp** *(đề nêu bốn mục và yêu cầu viết thứ tự, cách nhau bởi dấu phẩy)*
+- **When** setter lưu cả ba
+- **Then** cả ba lưu thành công qua **cùng một** biểu mẫu · **0** trường danh sách phương án nào phải khai · **0** lựa chọn *kiểu nhập* nào hiện ra trong biểu mẫu · yêu cầu format của hai câu sau nằm trong **phần đề**, không nằm ở một trường riêng
 
-**AC-006 — No-change/invariant: đáp án luôn lưu dạng chuỗi bất kể kiểu nhập**
+**AC-006 — No-change/invariant: đáp án luôn là chuỗi, một đường so khớp duy nhất**
 - **US**: US-002 · **FR**: FR-006 · **GR**: `GR-027`
-- **Given** một câu `ordering` với `options[] = ["A","B","C","D"]`, đáp án đúng là thứ tự B, D, A, C
-- **When** setter lưu đáp án chuẩn cho câu này
-- **Then** đáp án lưu dưới dạng chuỗi `"B, D, A, C"` · cùng kiểu dữ liệu với đáp án của một câu `text` · không tồn tại trường lưu "thứ tự" hay "lựa chọn" nào khác ngoài chuỗi này
+- **Given** một **câu sắp xếp** mà đề yêu cầu *"viết thứ tự, cách nhau bởi dấu phẩy"*, đáp án đúng là thứ tự B, D, A, C
+- **When** setter lưu đáp án chuẩn, rồi trong trận một thí sinh gõ `"B, D, A, C"` và một thí sinh khác gõ `"B,D,A,C"`
+- **Then** đáp án lưu dưới dạng chuỗi `"B, D, A, C"`, **cùng kiểu dữ liệu** với đáp án của một câu thường · **0** trường lưu *thứ tự* hay *lựa chọn* nào tồn tại · cả hai bài làm đi qua **cùng một** phép chuẩn hoá và tô khác biệt của `GR-027` · hệ thống **không** tự sửa format và **không** phát thông điệp riêng nào cho *sai format* · **admin phán quyết** cả hai
 
 ### US-003 — Câu hỏi thực hành, kênh trả lời thứ tư
 
@@ -317,9 +304,9 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 
 **AC-014d — No-change guarantee: xoá mềm không đụng dữ liệu lịch sử**
 - **US**: US-004 · **FR**: FR-013d
-- **Given** một câu `ACTIVE`, `everPublic = true`, đã có log hiển thị gắn với một trận trước đó (theo FR-004b)
+- **Given** một câu `ACTIVE`, `everPublic = true`, có hai phiên bản đã lưu, và một trận trước đó tham chiếu tới phiên bản V1
 - **When** admin xoá mềm câu này
-- **Then** `everPublic` của câu **không đổi** · log hiển thị gắn với trận trước đó **không đổi**, trận đó vẫn phát lại đúng nội dung đã ghi
+- **Then** `everPublic` của câu **không đổi** · cả hai phiên bản **không đổi** và vẫn xem lại được · tham chiếu của trận cũ vẫn trỏ V1, trận đó vẫn phát lại đúng nội dung đã hiển thị · câu chỉ **ẩn** khỏi tìm kiếm và danh sách chọn contest
 
 ### US-005 — Bộ đề, cờ hiển thị dẫn xuất, hàng rào `everPublic`
 
@@ -414,6 +401,30 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 - **Then** kết quả kiểm là **0 bộ nguyên vẹn khả dụng**, dù tổng số câu rời cộng lại đủ 4 hàng ngang + 1 Chướng ngại vật — phép kiểm không quy đổi số câu rời thành một bộ
 
 ---
+**AC-029 — Câu Chướng ngại vật: đúng một gợi ý, không phương án**
+- **US**: US-008 · **FR**: FR-027 · **GR**: `GR-009`, `GR-011`
+- **Given** người ra đề đang soạn một câu Chướng ngại vật,
+- **When** lần lượt thử lưu với **0** gợi ý, với **2** gợi ý, rồi với **đúng 1** gợi ý,
+- **Then** hai lần đầu bị **từ chối** kèm lý do nêu rõ ràng buộc *(0 gợi ý · từ 2 gợi ý trở lên)* · bản có **đúng 1** gợi ý lưu được · **0** dữ liệu nào đổi ở hai lần bị từ chối
+
+**AC-030 — Xoá mềm là một chiều và gỡ tư cách thành viên**
+- **US**: US-004, US-008 · **FR**: FR-028, FR-029 · **GR**: `GR-031` C3b, C3c · `INV-022`
+- **Given** một câu `ACTIVE` đang là thành phần của một bộ Chướng ngại vật nguyên vẹn, và câu đó đã được hiển thị trong một trận đã chạy xong,
+- **When** admin xoá mềm câu đó,
+- **Then** hệ thống **cảnh báo trước** và nêu rõ bộ nào sẽ vỡ · sau khi xác nhận, câu biến khỏi tìm kiếm và khỏi mọi danh sách chọn · bộ Chướng ngại vật đó **vỡ** · nhật ký sự kiện của trận đã chạy **không đổi** và vẫn tra ra nội dung câu đã lên sóng · **0** đường phục hồi câu tồn tại, kể cả khi gửi thẳng lệnh tới server
+
+**AC-031 — Bộ vỡ vì xoá mềm thì phép kiểm kho đề chặn vòng VCNV**
+- **US**: US-008 · **FR**: FR-029 · **GR**: `GR-031` C3, C3b
+- **Given** một contest mà bộ Chướng ngại vật duy nhất đã vỡ vì một thành phần bị xoá mềm,
+- **When** admin chạy phép kiểm kho đề rồi thử mở vòng VCNV,
+- **Then** phép kiểm báo **thiếu bộ nguyên vẹn**, không báo thiếu số câu · vòng VCNV **không mở được** · các vòng khác **vẫn mở bình thường** · **0** điểm nào và **0** trạng thái trận nào đổi
+
+**AC-032 — Lưu câu thiếu media: cảnh báo, không chặn, không thử lại**
+- **US**: US-001 · **FR**: FR-030 · **GR**: `PRD-REQ-019`
+- **Given** người ra đề đang lưu một câu có phần chữ hợp lệ và một tệp media đính kèm,
+- **When** việc tải tệp media lên thất bại giữa chừng,
+- **Then** câu **được lưu** với phần chữ nguyên vẹn, ở dạng **thiếu media** · một **cảnh báo** hiện ra nêu rõ tệp nào chưa lên được · câu ở `DRAFT` · **0** lần thử lại tự động nào xảy ra · **0** phần chữ nào bị mất
+
 
 ## 4. Functional Requirements *(mandatory)*
 
@@ -422,17 +433,17 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 ### Nhóm A — Soạn câu hỏi và metadata
 
 - **FR-001**: Hệ thống MUST cho phép người ra đề tạo và lưu câu hỏi với các trường: mã hiển thị, lĩnh vực, số chữ đáp án, giải thích, ghi chú, thời lượng suy nghĩ *(tuỳ chọn)*, mức điểm *(tuỳ chọn)*, danh sách gợi ý *(tuỳ chọn)*, và media. · US-001 · `PRD-REQ-007` · `GR-031` · AC-001, AC-002
-- **FR-001b**: Mã hiển thị (`displayId`) của một câu hỏi MUST **duy nhất trên toàn hệ thống**; hệ thống MUST từ chối lưu một câu mới hoặc một bản sửa mang mã hiển thị đã tồn tại ở một câu khác. Mã hiển thị MUST mang một tiền tố ngắn chỉ loại câu. Câu MUST mang thêm một **định danh nội bộ ổn định**, tách khỏi `displayId` và không đổi khi `displayId` bị sửa; định danh nội bộ MUST là thứ đi trong gói xuất/nhập. *(`OQ-002`, xác nhận 2026-07-30; truy nguyên bổ sung 2026-07-31)* · US-001 · **`PRD-REQ-115`**, `PRD-REQ-007` · `QĐ-107` · AC-001c
+- **FR-001b**: Mã hiển thị (`displayId`) của một câu hỏi MUST **duy nhất trên toàn hệ thống**; hệ thống MUST từ chối lưu một câu mới hoặc một bản sửa mang mã hiển thị đã tồn tại ở một câu khác. Mã hiển thị MUST mang một tiền tố ngắn chỉ loại câu. Câu MUST mang thêm một **định danh nội bộ ổn định**, tách khỏi `displayId` và không đổi khi `displayId` bị sửa; định danh nội bộ MUST là thứ đi trong gói xuất/nhập. · US-001 · **`PRD-REQ-115`**, `PRD-REQ-007` · `QĐ-107` · AC-001c
 - **FR-002**: Câu hỏi đã lưu và mở lại MUST giữ nguyên toàn bộ giá trị của mọi trường đã nhập, kể cả khi các trường tuỳ chọn để trống. · US-001 · `PRD-REQ-007` · — · AC-002
-- **FR-002b**: Mỗi lần một câu hỏi bị sửa, hệ thống MUST ghi một dòng nhật ký nêu **nội dung đã đổi** (dạng khác biệt giữa bản cũ và bản mới, cho từng trường) và **ai đã sửa**. *(`OQ-006`, xác nhận 2026-07-30)* · US-001 · `PRD-REQ-007` · — · AC-002b
+- **FR-002b**: Mỗi lần một câu hỏi bị sửa, hệ thống MUST ghi một dòng nhật ký nêu **nội dung đã đổi** (dạng khác biệt giữa bản cũ và bản mới, cho từng trường) và **ai đã sửa**. · US-001 · `PRD-REQ-007` · — · AC-002b
 - **FR-003**: Thời lượng suy nghĩ của một câu hỏi MUST là thuộc tính lưu riêng cho câu đó; hệ thống MUST NOT suy thời lượng từ mức điểm của câu. Hệ thống chọn câu theo mức điểm, MUST lấy thời lượng theo từng câu. · US-001 · `PRD-REQ-008` · `GR-018`, `GR-013` · AC-003
 - **FR-004**: Khi một câu không khai thời lượng riêng, hệ thống MUST dùng giá trị mặc định của preset đang áp cho contest; giá trị khai riêng của một câu MUST luôn thắng giá trị mặc định của preset. · US-001 · `PRD-REQ-008` · `GR-018` · AC-004
-- **FR-004b**: Một câu `ACTIVE` MUST sửa được tự do kể cả sau khi đã từng hiển thị trong một trận; hệ thống MUST NOT khoá sửa dựa trên lịch sử hiển thị. **Mỗi cú bấm Save MUST tạo một phiên bản mới** của câu, và hệ thống MUST cho xem lại **nội dung của từng phiên bản**. Ở v1 đây là **bản tối giản**: màn **so sánh diff** và thao tác **quay về bản cũ** MUST NOT thuộc phạm vi *(xem §8)*. Việc một trận ghi lại **phiên bản nào đã dùng** tại mỗi lần hiển thị thuộc **nhật ký sự kiện của trận** (`INV-022`) và do EPIC-006 sở hữu; feature này MUST chỉ đảm bảo phiên bản **tồn tại và tham chiếu được**. *(`OQ-004`, xác nhận qua `/speckit-clarify` 2026-07-30; ghi thành `QĐ-107` và `PRD-REQ-115` ngày 2026-07-31)* · US-001 · **`PRD-REQ-115`** · `GR-031`, `INV-022` · AC-004b
+- **FR-004b**: Một câu `ACTIVE` MUST sửa được tự do kể cả sau khi đã từng hiển thị trong một trận; hệ thống MUST NOT khoá sửa dựa trên lịch sử hiển thị. **Mỗi cú bấm Save MUST tạo một phiên bản mới** của câu, mang nội dung câu tại thời điểm đó, người sửa và mốc thời gian; phiên bản đã tạo MUST là bất biến và MUST xem lại được nguyên nội dung. Một trận đã chạy MUST tham chiếu tới **đúng phiên bản đã hiển thị** cho thí sinh, nên một bản sửa sau đó MUST NOT làm đổi thứ mà trận cũ phát lại. *(Việc trận **ghi** tham chiếu đó vào nhật ký sự kiện thuộc EPIC-006 — xem §8; feature này chỉ bảo đảm phiên bản **tồn tại, bất biến và tham chiếu được**.)* Màn **so sánh diff** giữa hai phiên bản và thao tác **quay về bản cũ** MUST NOT thuộc phạm vi v1. · US-001 · **`PRD-REQ-115`** · `GR-031`, `INV-022` · AC-004b
 
-### Nhóm B — Ba kiểu nhập đáp án, đáp án luôn là chuỗi
+### Nhóm B — Một kiểu nhập đáp án, đáp án luôn là chuỗi
 
-- **FR-005**: Hệ thống MUST hỗ trợ đúng ba kiểu nhập đáp án — `text`, `choice`, `ordering` — và kiểu nhập MUST chỉ quyết định widget hiển thị trên máy thí sinh, MUST NOT ảnh hưởng cách lưu trữ. · US-002 · `PRD-REQ-009` · `GR-027` · AC-005
-- **FR-006**: Đáp án và bài làm MUST được lưu dưới dạng chuỗi ở cả ba kiểu nhập; hệ thống MUST NOT có nhánh xử lý hay lưu trữ riêng theo từng kiểu nhập. · US-002 · `PRD-REQ-009` · `GR-027` · AC-006
+- **FR-005**: Mọi câu hỏi có ô nhập MUST dùng **một** ô nhập chữ duy nhất. Hệ thống MUST NOT có trường chọn kiểu nhập và MUST NOT có trường danh sách phương án. **Câu hỏi lựa chọn** và **câu hỏi sắp xếp** của luật gốc MUST soạn được như câu hỏi thường, với **yêu cầu format nằm trong phần đề**. · US-002 · `PRD-REQ-009` · `QĐ-162` · `GR-027` · AC-005
+- **FR-006**: Đáp án và bài làm MUST được lưu dưới dạng **chuỗi**, và MUST đi qua **đúng một** đường chuẩn hoá và so khớp của `GR-027`. Hệ thống MUST NOT có nhánh xử lý hay lưu trữ riêng theo loại câu, MUST NOT tự sửa format bài làm, và MUST NOT phát thông điệp riêng cho ca *sai format* — bài làm lệch format là ca **admin phán quyết**, cùng hạng với sai chính tả. · US-002 · `PRD-REQ-009` · `QĐ-162` · `GR-027` · AC-006
 
 ### Nhóm C — Câu hỏi thực hành
 
@@ -442,21 +453,25 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 
 ### Nhóm D — Duyệt đề
 
-- **FR-010**: Câu hỏi mới soạn MUST ở trạng thái nháp (`DRAFT`) và MUST NOT chọn được cho danh sách câu của bất kỳ contest nào cho tới khi admin duyệt. · US-004 · `PRD-REQ-011` · `GR-031` · AC-011
-- **FR-011**: Hệ thống MUST hiển thị hàng chờ duyệt câu nháp trên bảng điều khiển của admin; admin MUST duyệt được (chuyển `ACTIVE`) hoặc trả về nháp kèm ghi chú lý do. · US-004 · `PRD-REQ-011` · — · AC-012, AC-013
-- **FR-012**: Hệ thống MUST NOT có vai riêng cho việc duyệt câu hỏi — chỉ vai admin thực hiện được thao tác này. · US-004 · `PRD-REQ-011` · — · AC-012
-- **FR-013**: Duyệt lặp lại một câu đã `ACTIVE` MUST NOT đổi trạng thái câu và MUST NOT sinh tác dụng phụ nghiệp vụ nào khác ngoài lần duyệt đầu tiên. · US-004 · `PRD-REQ-011` · — · AC-014
-- **FR-013b**: Khi hai phiên admin cùng thao tác Duyệt và Trả về gần như đồng thời trên cùng một câu đang `DRAFT`, quyết định **tới server trước** theo server timestamp MUST có hiệu lực; quyết định **tới sau** MUST bị từ chối và MUST NOT lật kết quả đã phân giải. Quyết định tới sau MUST vẫn được ghi vào nhật ký kèm trạng thái bị từ chối. *(`OQ-006`, xác nhận 2026-07-30)* · US-004 · `PRD-REQ-011` · — · AC-014b
-- **FR-013c**: Hệ thống MUST hỗ trợ **xoá mềm** một câu hỏi ở bất kỳ trạng thái nào — `DRAFT` hoặc `ACTIVE`. Câu đã xoá mềm MUST NOT xuất hiện trong kết quả tìm kiếm (FR-020) hay trong danh sách chọn được cho một contest. *(`OQ-005`, xác nhận 2026-07-30; ghi thành `QĐ-107` ngày 2026-07-31)* · US-004 · **`PRD-REQ-115`**, `PRD-REQ-011` · `QĐ-107` · AC-014c
-- **FR-013d**: Xoá mềm một câu hỏi MUST NOT xoá hay thay đổi bất kỳ dữ liệu nào đã ghi cho câu đó — `everPublic`, cờ đã-dùng, mọi phiên bản đã lưu (FR-004b), và mọi tham chiếu từ nhật ký của các trận cũ. *(`OQ-005`, xác nhận 2026-07-30; `QĐ-107`)* · US-004 · **`PRD-REQ-115`**, `PRD-REQ-011` · `QĐ-107` · AC-014d
+- **FR-010**: Một câu hỏi MUST mang đúng một trong hai trạng thái vòng đời — **`DRAFT`** hoặc **`ACTIVE`** — và MUST khởi tạo ở `DRAFT` ngay khi setter lưu lần đầu. Câu ở `DRAFT` MUST NOT xuất hiện trong danh sách chọn câu của bất kỳ contest nào, và MUST NOT có đường ép một câu `DRAFT` vào danh sách đó từ màn chọn câu. · US-004 · `PRD-REQ-011` · `GR-031` · AC-011
+- **FR-011**: Hệ thống MUST hiển thị hàng chờ duyệt gồm mọi câu đang `DRAFT` chưa xoá mềm trên bảng điều khiển của admin, và admin MUST có đúng hai thao tác trên một mục của hàng chờ:
+  - **Duyệt** ⇒ câu chuyển `DRAFT` → `ACTIVE`, biến khỏi hàng chờ, và từ thời điểm đó chọn được cho danh sách câu của contest. Nội dung câu **không đổi** vì thao tác này.
+  - **Trả về kèm ghi chú lý do** ⇒ câu **giữ nguyên** `DRAFT`, ghi chú được lưu và hiển thị lại cho setter, mọi trường khác của câu **không đổi**, và câu **vẫn** ở hàng chờ.
+
+  Hàng chờ chỉ chứa câu `DRAFT`, nên cả hai thao tác đều chỉ tác động lên câu ở trạng thái đó; nguồn không quy định đường đưa một câu `ACTIVE` ngược về `DRAFT`, và spec này không tự tạo ra đường đó. · US-004 · `PRD-REQ-011` · — · AC-012, AC-013
+- **FR-012**: Thao tác duyệt MUST chỉ thực hiện được bởi vai admin; hệ thống MUST NOT có vai riêng cho việc duyệt câu hỏi. · US-004 · `PRD-REQ-011` · — · AC-012
+- **FR-013**: Bấm Duyệt trên một câu đã `ACTIVE` MUST là **không tác dụng** — trạng thái câu giữ `ACTIVE`, nội dung không đổi, và MUST NOT sinh thêm bản ghi duyệt mang ý nghĩa nghiệp vụ khác. · US-004 · `PRD-REQ-011` · — · AC-014
+- **FR-013b**: Khi hai phiên admin cùng gửi Duyệt và Trả về trên cùng một câu đang `DRAFT` trong một cửa sổ rất ngắn, server MUST phân xử theo **server timestamp**: quyết định tới **trước** có hiệu lực và quyết định tới **sau** MUST bị từ chối, MUST NOT lật kết quả đã phân giải. Quyết định bị từ chối MUST vẫn được ghi vào nhật ký kèm trạng thái bị từ chối, và MUST NOT đổi trạng thái hay nội dung của câu. · US-004 · `PRD-REQ-011` · — · AC-014b
+- **FR-013c**: Hệ thống MUST hỗ trợ **xoá mềm** một câu hỏi ở cả hai trạng thái `DRAFT` và `ACTIVE`. Câu đã xoá mềm MUST biến khỏi kết quả tìm kiếm kho đề, khỏi danh sách chọn câu của **mọi** contest, và khỏi hàng chờ duyệt nếu trước đó nó đang `DRAFT`. · US-004 · **`PRD-REQ-115`**, `PRD-REQ-011` · — · AC-014c
+- **FR-013d**: Xoá mềm MUST chỉ đặt cờ ẩn của câu; nó MUST NOT xoá hay thay đổi bất kỳ dữ liệu nào đã ghi cho câu đó — dấu vết "đã từng public", cờ đã-dùng, mọi phiên bản đã lưu, và mọi tham chiếu từ nhật ký của các trận cũ đều giữ nguyên, và một trận cũ vẫn phát lại được đúng nội dung đã hiển thị. · US-004 · **`PRD-REQ-115`**, `PRD-REQ-011` · — · AC-014d
 
 ### Nhóm E — Bộ đề, cờ hiển thị dẫn xuất, hàng rào `everPublic`
 
-- **FR-014**: **Bộ đề** MUST là một entity riêng, độc lập với kho đề toàn hệ thống, mang quan hệ thành viên **nhiều-nhiều** với câu hỏi — một câu thuộc được nhiều bộ đề, một bộ đề chứa nhiều câu; mỗi bộ đề MUST tự mang thuộc tính `public`/`private` của chính nó (`OQ-001`, xác nhận **2026-07-30**). · US-005 · `PRD-REQ-012` · `GR-031` · AC-015, AC-016
+- **FR-014**: **Bộ đề** MUST là một entity riêng, độc lập với kho đề toàn hệ thống, mang quan hệ thành viên **nhiều-nhiều** với câu hỏi — một câu thuộc được nhiều bộ đề, một bộ đề chứa nhiều câu; mỗi bộ đề MUST tự mang thuộc tính `public`/`private` của chính nó. · US-005 · `PRD-REQ-012` · `GR-031` · AC-015, AC-016
 - **FR-015**: Cờ hiển thị (`visibility`) của một câu hỏi MUST là giá trị dẫn xuất, đúng bằng `PUBLIC` khi và chỉ khi câu đang thuộc ít nhất một bộ đề `public` (theo FR-014), ngược lại `PRIVATE`; giá trị này MUST cập nhật ngay khi quan hệ thành viên với bộ đề đổi. · US-005 · `PRD-REQ-012` · `GR-031` · AC-015, AC-016
 - **FR-015b**: Hệ thống MUST NOT cung cấp bất kỳ đường nào — giao diện hay server — để đặt trực tiếp cờ hiển thị của một câu hỏi; vai người ra đề chỉ đổi cờ này bằng cách thêm hoặc gỡ câu khỏi một bộ đề. · US-005 · `PRD-REQ-012` · `GR-031` · AC-017
-- **FR-016**: Ngay khi một câu hỏi lần đầu thuộc về một bộ đề public, hệ thống MUST đặt dấu vết "đã từng public" cho câu đó; dấu vết này MUST một chiều và vĩnh viễn, MUST NOT có thao tác nào đưa nó về trạng thái ban đầu. · US-005 · `PRD-REQ-013` · — · AC-018
-- **FR-017**: Bất cứ khi nào một câu mang dấu vết "đã từng public" được thêm vào danh sách câu đã gán của một trận `official` — dù ở bước kiểm trước trận, sửa danh sách tại `LOBBY`, hay nhập gói contest — hệ thống MUST áp cùng một hàng rào: chặn mặc định, cho ép qua bằng xác nhận hai bước, và ghi nhật ký. · US-005 · `PRD-REQ-013` · — · AC-019, AC-020
+- **FR-016**: Ngay tại lần đầu tiên một câu hỏi trở thành thành viên của một bộ đề đang `public`, hệ thống MUST đặt dấu vết **"đã từng public"** cho câu đó. Dấu vết này MUST một chiều và vĩnh viễn: gỡ câu khỏi bộ đề public, đặt bộ đề đó về `private`, xoá bộ đề, xoá mềm câu, hay xuất/nhập câu sang bản cài khác đều MUST NOT đưa dấu vết về trạng thái ban đầu, và hệ thống MUST NOT có thao tác nào — giao diện hay server — làm việc đó. Lặp lại chu trình thêm–gỡ nhiều lần MUST NOT đổi kết quả: dấu vết chỉ bật một lần rồi giữ nguyên. · US-005 · `PRD-REQ-013` · — · AC-018
+- **FR-017**: Khi một câu được thêm vào danh sách câu đã gán của một trận, hệ thống MUST đánh giá theo thứ tự: **(1)** trận này là `official` hay `practice` — `practice` ⇒ thêm bình thường theo FR-018; **(2)** câu có mang dấu vết "đã từng public" không — không ⇒ thêm bình thường; **(3)** cả hai đúng ⇒ **chặn mặc định** và cảnh báo, **(4)** admin đi qua **hai bước xác nhận riêng biệt** thì câu vẫn thêm được, **(5)** mọi diễn biến — lần chặn, các bước xác nhận, và kết quả cuối *(thêm thành công hay bỏ)* — MUST được ghi vào nhật ký. Không hoàn tất đủ hai bước xác nhận ⇒ câu **không** vào danh sách và dữ liệu **không đổi**. Hàng rào này MUST áp **y hệt nhau** ở cả ba cửa vào — bước kiểm trước trận, sửa danh sách tại `LOBBY`, và nhập gói contest — MUST NOT có cửa nào lách qua được. · US-005 · `PRD-REQ-013` · — · AC-019, AC-020
 - **FR-018**: Hàng rào ở FR-017 MUST NOT áp dụng cho trận `practice`. · US-005 · `PRD-REQ-013` · — · AC-021
 - **FR-019**: Dấu vết "đã từng public" MUST đi theo câu hỏi qua các thao tác nhập/xuất kho đề. · US-005 · `PRD-REQ-013` · — · *(kiểm ở EPIC-003, xem §8)*
 
@@ -477,12 +492,16 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 - **FR-026**: Nhập và xuất kho đề MUST giữ nguyên cấu trúc bộ VCNV — một bộ MUST luôn nhập/xuất trọn vẹn cùng nhau với đủ sáu thành phần, MUST NOT tách rời một phần của bộ sang một thao tác nhập/xuất khác. · US-008 · `PRD-REQ-092` · `GR-031` · *(kiểm ở EPIC-003, xem §8)*
 
 ---
+- **FR-027**: Câu Chướng ngại vật MUST mang **đúng một** gợi ý — `clues[]` có **đúng 1** phần tử. Hệ thống MUST từ chối một câu Chướng ngại vật có **0** hoặc từ **2** gợi ý trở lên, và MUST NOT đổi dữ liệu nào khi từ chối. *(US-008 · `QĐ-153` · `GR-009`, `GR-011` · AC-029)*
+- **FR-028**: Xoá mềm một câu hỏi MUST là thao tác **một chiều**: hệ thống MUST NOT có đường phục hồi một câu đã xoá mềm, trên bất kỳ bề mặt nào và kể cả khi gửi thẳng lệnh tới server. Dữ liệu lịch sử của các trận đã chạy MUST giữ nguyên và vẫn tra ra được nội dung câu đã lên sóng. *(US-004 · `QĐ-154` · `INV-022` · AC-030)*
+- **FR-029**: Xoá mềm một câu hỏi MUST **gỡ tư cách thành viên** của câu đó khỏi mọi bộ đề và mọi bộ Chướng ngại vật đang chứa nó. Một bộ Chướng ngại vật mất thành phần vì xoá mềm MUST được coi là **vỡ** và MUST NOT dùng được cho vòng VCNV. Trước khi xoá mềm một câu đang là thành phần của một bộ, hệ thống MUST cảnh báo và MUST nêu rõ **bộ nào** sẽ vỡ. *(US-004, US-008 · `QĐ-154` · `GR-031` C3b, C3c · AC-030, AC-031)*
+- **FR-030**: Khi việc tải media lên **thất bại giữa chừng** lúc lưu một câu, hệ thống MUST **vẫn lưu câu** ở dạng thiếu media và MUST hiện **cảnh báo** nêu rõ tệp nào chưa lên được. Hệ thống MUST NOT tự thử lại và MUST NOT chặn cú lưu. Câu đó MUST ở `DRAFT` và MUST đi qua cửa duyệt như mọi câu khác. *(US-001 · `QĐ-155` · `PRD-REQ-019` · AC-032)*
 
 ## 5. Key Entities
 
-- **Câu hỏi** (`Question`, `TERM-044`): đơn vị đề thi. Trường cốt lõi — mã hiển thị *(`displayId`, duy nhất toàn hệ thống, mang tiền tố chỉ loại câu)*, lĩnh vực, số chữ đáp án, giải thích, ghi chú, thời lượng suy nghĩ *(tuỳ chọn)*, mức điểm *(tuỳ chọn)*, gợi ý *(tuỳ chọn)*, media, `answerInputKind`, `options[]`, đáp án chuẩn *(luôn là chuỗi)*, trạng thái `DRAFT`/`ACTIVE`, `visibility` *(dẫn xuất)*, `everPublic` *(một chiều)*. Năm trường thực hành *(`isPractical`, `practiceSeconds`, `stealPracticeSeconds`, `equipmentNote`, `acceptanceCriteria`)* chỉ hợp lệ khi câu thuộc kho Về đích. Ngoài `displayId`, câu còn mang một **định danh nội bộ ổn định**, riêng biệt với `displayId`, dùng để tham chiếu xuyên hệ thống — không đổi kể cả khi `displayId` bị sửa *(`OQ-002`)*. Câu còn mang một cờ **xoá mềm**, đặt được ở bất kỳ trạng thái `DRAFT`/`ACTIVE` nào; câu đã xoá mềm ẩn khỏi tìm kiếm và khỏi danh sách chọn cho contest nhưng không mất dữ liệu *(`OQ-005`, `QĐ-107`)*.
-- **Phiên bản câu hỏi** *(`QĐ-107`, `PRD-REQ-115`)*: mỗi cú bấm **Save** sinh một bản ghi nội dung câu tại thời điểm đó, gắn với người sửa và mốc thời gian. Bản tối giản của v1 chỉ cần **lưu và xem lại nội dung từng bản**; trận tham chiếu tới **bản đã dùng** ở mỗi lần hiển thị *(tham chiếu do EPIC-006 ghi vào nhật ký sự kiện)*. So sánh diff và quay về bản cũ **ngoài phạm vi v1**.
-- **Bộ đề** (xác nhận `OQ-001` **2026-07-30**): entity riêng, độc lập với kho đề toàn hệ thống. Mang quan hệ **nhiều-nhiều** với câu hỏi — một câu thuộc được nhiều bộ đề, một bộ đề chứa nhiều câu. Mỗi bộ đề tự mang thuộc tính `public`/`private` của chính nó; `visibility` của một câu là **OR** trên tập bộ đề nó thuộc (FR-014, FR-015).
+- **Câu hỏi** (`Question`, `TERM-044`): đơn vị đề thi. Trường cốt lõi — mã hiển thị *(`displayId`, duy nhất toàn hệ thống, mang tiền tố chỉ loại câu)*, lĩnh vực, số chữ đáp án, giải thích, ghi chú, thời lượng suy nghĩ *(tuỳ chọn)*, mức điểm *(tuỳ chọn)*, gợi ý *(tuỳ chọn)*, media, đáp án chuẩn *(luôn là chuỗi)*, trạng thái `DRAFT`/`ACTIVE`, `visibility` *(dẫn xuất)*, `everPublic` *(một chiều)*. Năm trường thực hành *(`isPractical`, `practiceSeconds`, `stealPracticeSeconds`, `equipmentNote`, `acceptanceCriteria`)* chỉ hợp lệ khi câu thuộc kho Về đích. Ngoài `displayId`, câu còn mang một **định danh nội bộ ổn định**, riêng biệt với `displayId`, dùng để tham chiếu xuyên hệ thống — không đổi kể cả khi `displayId` bị sửa. Câu còn mang một cờ **xoá mềm**, đặt được ở cả `DRAFT` lẫn `ACTIVE`; câu đã xoá mềm ẩn khỏi tìm kiếm và khỏi danh sách chọn cho contest nhưng không mất dữ liệu *(FR-013c, FR-013d)*.
+- **Phiên bản câu hỏi** *(`PRD-REQ-115`)*: mỗi cú bấm **Save** sinh một bản ghi **bất biến** mang nội dung câu tại thời điểm đó, người sửa và mốc thời gian. Phạm vi v1 gồm **lưu và xem lại nội dung từng bản**; trận tham chiếu tới **bản đã hiển thị** *(tham chiếu do EPIC-006 ghi vào nhật ký sự kiện)*. So sánh diff và quay về bản cũ **ngoài phạm vi v1**.
+- **Bộ đề**: entity riêng, độc lập với kho đề toàn hệ thống. Mang quan hệ **nhiều-nhiều** với câu hỏi — một câu thuộc được nhiều bộ đề, một bộ đề chứa nhiều câu. Mỗi bộ đề tự mang thuộc tính `public`/`private` của chính nó; `visibility` của một câu là **OR** trên tập bộ đề nó thuộc (FR-014, FR-015).
 - **Bộ VCNV** (`obstacleSet`, `TERM-058`): đơn vị soạn/chọn/rút của vòng Vượt chướng ngại vật — 1 Chướng ngại vật *(từ khoá ẩn + hình ảnh 5 miếng ghép)* + 4 hàng ngang *(số thứ tự cố định 1-4)* + 1 câu ô trung tâm. Khả dụng cho vòng VCNV **khi và chỉ khi** cả sáu thành phần đều chưa đánh dấu đã dùng.
 - **Cờ `usedInContest`** (`TERM-048`): đánh dấu một câu đã hiển thị cho thí sinh trong một contest cụ thể; phạm vi **(câu, contest)**, không đặt lại kể cả khi vòng bị bỏ. Feature này chỉ sở hữu việc câu **mang** được cờ này; việc **đặt/đọc** cờ lúc rút đề và hiển thị thuộc EPIC-006 *(xem §8)*.
 - **Kho đề · Pool** (`TERM-046`): tập câu hỏi khả dụng ở phạm vi toàn hệ thống, phân biệt với **pool đã gán cho một contest** *(snapshot chọn trước khi start — thuộc EPIC-004)* và **pool còn lại sau no-repeat** *(thuộc EPIC-006)*.
@@ -518,16 +537,13 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 
 **Trạng thái cũ / sự kiện trùng**
 - Hai phiên admin cùng thao tác trên một câu đang chờ duyệt: quyết định tới trước theo server timestamp thắng, quyết định tới sau bị từ chối và ghi nhật ký, không lật kết quả *(AC-014b)*.
-- Câu `ACTIVE` bị sửa sau khi đã hiển thị ở một trận trước: bản sửa **không** viết lại log của lần hiển thị cũ — log đó đứng yên theo nội dung tại thời điểm hiển thị, độc lập với bản mới nhất của câu *(AC-004b)*.
-- Câu bị xoá mềm trong khi đang là thành phần của một bộ đề hoặc một bộ VCNV: quan hệ thành viên **không tự động gỡ** *(chưa xác nhận tường minh)*, nhưng câu vẫn biến mất khỏi tìm kiếm và khỏi danh sách chọn cho contest *(AC-014c)* — nghĩa là một bộ VCNV có thành phần bị xoá mềm nhiều khả năng không còn chọn/kiểm được như một bộ nguyên vẹn cho contest mới, dù bản thân thao tác xoá mềm không định nghĩa tường minh phép cộng dồn này. Thao tác **phục hồi** câu đã xoá mềm chưa được xác nhận là có tồn tại hay không.
+- Câu `ACTIVE` bị sửa sau khi đã hiển thị ở một trận trước: cú Save sinh một phiên bản mới, còn phiên bản mà trận cũ tham chiếu **đứng yên** — phát lại trận cũ vẫn ra đúng nội dung thí sinh đã thấy *(AC-004b)*.
+- Câu bị xoá mềm trong khi đang là thành phần của một bộ đề hoặc một bộ VCNV: câu biến khỏi tìm kiếm và khỏi danh sách chọn cho contest *(AC-014c)*, nên một bộ VCNV có thành phần bị xoá mềm không còn chọn được cho contest mới. Việc quan hệ thành viên có bị gỡ theo hay không, và việc có tồn tại thao tác **phục hồi** câu đã xoá mềm hay không, chưa được nguồn nào quy định *(xem `OQ-005`)*.
 
 **Hỏng một phần**
 - Tải media thất bại giữa chừng khi lưu câu — hành vi cụ thể (giữ câu ở trạng thái gì, có cho lưu câu không kèm media hay không) chưa được nguồn nào quy định *(xem `OQ-007`)*.
 
-**Luật xung đột — đã phân xử**
-- `TERM-046` liệt "bộ đề" như một tên khác của "kho đề" (pool); spec này **đọc theo** `PRD-REQ-012`/`PRD-REQ-013` và `QĐ-063` — "bộ đề" là một entity riêng có thành viên (xác nhận `OQ-001`, **2026-07-30**, xem §Clarifications). `TERM-046` cần sửa ở lần cập nhật `docs/glossary.md` kế tiếp; đây không phải việc của spec này.
-
-**Hành vi nguồn không quy định** — hai mục còn mở: `OQ-003` (giới hạn số lượng trường mảng), `OQ-007` (hỏng media giữa chừng) ở §9; spec này không tự điền các hành vi đó.
+**Hành vi nguồn không quy định** — ba mục còn mở ở §9: `OQ-003` (giới hạn số lượng trường mảng), `OQ-005` (phục hồi câu đã xoá mềm), `OQ-007` (hỏng media giữa chừng); spec này không tự điền các hành vi đó.
 
 ---
 
@@ -547,39 +563,21 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-041`…`QĐ-044`, `QĐ-063`, `Q�
 | Đóng gói, giới hạn kích thước media theo env config | EPIC-012 |
 
 **Non-goal của chính EPIC-002** *(`docs/PRD.md` §11, §20.1)*
-- ~~Đánh phiên bản khi sửa câu đã duyệt~~ — **ĐÃ SỬA 2026-07-31 (`QĐ-107`, `PRD-REQ-115`)**: chủ dự án đưa **bản tối giản** vào v1, và `docs/PRD.md` §11 EPIC-002 cùng §20.1 đã bỏ phần loại trừ này. **Vẫn ngoài phạm vi v1**: màn **so sánh diff** giữa hai phiên bản, và thao tác **quay về bản cũ**. Thuộc phạm vi v1: mỗi cú Save sinh một phiên bản, xem lại được nội dung từng bản, và trận ghi được bản nào đã dùng *(vế cuối do EPIC-006 sở hữu — `INV-022`)*.
+- Màn **so sánh diff** giữa hai phiên bản của một câu, và thao tác **quay về bản cũ** — ngoài phạm vi v1. Thuộc phạm vi v1: mỗi cú Save sinh một phiên bản bất biến và xem lại được nội dung từng bản *(FR-004b)*.
 - Chặn sao chép đề — NON-GOAL-007.
 
 ---
 
 ## 9. Open Questions
 
-> Giữ nguyên theo đúng yêu cầu — spec này không tự trả lời bất kỳ mục nào dưới đây, trừ mục đã đóng bằng phiên `/speckit-clarify` **2026-07-30** (xem §Clarifications).
-
-**~~OQ-001~~ — ĐÃ ĐÓNG 2026-07-30.** "Bộ đề" là entity riêng, N-N với câu hỏi — xem §Clarifications và FR-014, FR-015.
-
-**~~OQ-002~~ — ĐÃ ĐÓNG 2026-07-30.** `displayId` bắt buộc duy nhất toàn hệ thống, mang tiền tố chỉ loại câu; có định danh nội bộ ổn định riêng biệt — xem §Clarifications, FR-001b.
-
-**OQ-003 — NEEDS CLARIFICATION: giới hạn số lượng cho các trường mảng**
-Không nguồn nào quy định số lượng tối thiểu/tối đa cho `clues[]` (gợi ý) hay cho `options[]` của kiểu `choice`/`ordering`.
-
-**~~OQ-004~~ — ĐÃ ĐÓNG 2026-07-30.** Sửa tự do, không khoá; mỗi lần hiển thị trong một trận ghi log nội dung/phiên bản đã dùng — xem §Clarifications và FR-004b.
-
-**~~OQ-005~~ — ĐÃ ĐÓNG 2026-07-30.** Xoá mềm, ở mọi trạng thái; dữ liệu lịch sử (`everPublic`, log hiển thị) không đổi — xem §Clarifications, FR-013c, FR-013d. **Còn hở**: chưa xác nhận có thao tác **phục hồi** câu đã xoá mềm hay không, và tương tác chính xác với tư cách thành viên bộ đề/bộ VCNV — xem ghi chú ở §7 Edge Cases.
-
-**~~OQ-006~~ — ĐÃ ĐÓNG 2026-07-30.** Server-timestamp-first-wins cho tranh chấp Duyệt/Trả về đồng thời; cộng thêm yêu cầu chung — mọi lần sửa một câu ghi log diff + người thực hiện — xem §Clarifications, FR-002b, FR-013b.
-
-**OQ-007 — MISSING (partial failure): tải media thất bại giữa chừng lúc lưu câu**
-Không nguồn nào quy định hành vi khi việc tải media lên thất bại giữa chừng trong lúc setter lưu một câu hỏi — có cho lưu câu ở dạng thiếu media không, và có cơ chế thử lại nào không.
-
----
+**Không có.** Câu hỏi về biên của danh sách phương án **tự tan**: trường đó không còn tồn tại (`QĐ-162`).
 
 ## 10. Traceability Matrix
 
 | User story | PRD requirement | Game rules | Functional requirements | Acceptance scenarios |
 |---|---|---|---|---|
 | **US-001** — Soạn câu hỏi, thời lượng độc lập theo câu | `PRD-REQ-007`, `PRD-REQ-008`, `PRD-REQ-115` | `GR-031`, `GR-018`, `GR-013`, `INV-022` | FR-001, FR-001b → FR-004, FR-002b, FR-004b | AC-001, AC-001c → AC-004, AC-002b, AC-004b |
-| **US-002** — Ba kiểu nhập đáp án, đáp án luôn là chuỗi | `PRD-REQ-009` | `GR-027` | FR-005, FR-006 | AC-005, AC-006 |
+| **US-002** — Một kiểu nhập đáp án, đáp án luôn là chuỗi | `PRD-REQ-009` | `GR-027` | FR-005, FR-006 | AC-005, AC-006 |
 | **US-003** — Câu hỏi thực hành | `PRD-REQ-010` | `GR-019` | FR-007 → FR-009 | AC-007 → AC-010 |
 | **US-004** — Duyệt đề `DRAFT` → `ACTIVE` | `PRD-REQ-011`, `PRD-REQ-115` | `GR-031` | FR-010 → FR-013, FR-013b → FR-013d | AC-011 → AC-014, AC-014b → AC-014d |
 | **US-005** — Bộ đề, visibility dẫn xuất, `everPublic` | `PRD-REQ-012`, `PRD-REQ-013` | `GR-031` | FR-014, FR-015, FR-015b → FR-019 | AC-015 → AC-021 |
@@ -593,7 +591,7 @@ Không nguồn nào quy định hành vi khi việc tải media lên thất bạ
 |---|---|---|
 | `GR-031` C3b | Đủ 4 hàng ngang + 1 CNV nhưng không cùng bộ ⇒ vòng không mở được | AC-028 |
 | `GR-031` C3c | Một hàng ngang của bộ X bị dùng làm Câu hỏi phụ ⇒ bộ X vỡ dù 5 thành phần kia còn nguyên | AC-027 |
-| `GR-027` §Điều kiện | Đáp án và bài làm luôn là chuỗi ở cả ba kiểu nhập | AC-006 |
+| `GR-027` §Điều kiện | Đáp án và bài làm luôn là chuỗi; một đường chuẩn hoá duy nhất | AC-006 |
 | `GR-019` §Ngoại lệ và cảnh báo | `isPractical` ngoài kho Về đích ⇒ chặn ở kho đề, không phải lỗi lúc chạy | AC-008 |
 | `GR-019` §Bảo mật | `acceptanceCriteria` cùng mức với đáp án — chỉ phiên giữ `PERM-045` | AC-010 |
 
@@ -606,7 +604,7 @@ Không nguồn nào quy định hành vi khi việc tải media lên thất bạ
 Các giá trị mặc định dưới đây được chọn cho **chi tiết không quan trọng**; mọi thứ quan trọng mà nguồn không nói đều nằm ở §9.
 
 - **Định dạng và giới hạn dung lượng của media** không được chốt trong spec này — `CLAUDE.md` §Quy ước khác khai đây là **env config theo từng loại media**, không hard-code; spec chỉ yêu cầu *media lưu và phát lại được* (FR-001).
-- **Thuật toán sinh định danh nội bộ ổn định** (FR-001b, Key Entities) — kể cả việc dùng UUIDv7 mà chủ dự án nêu lúc xác nhận `OQ-002` — là lựa chọn kỹ thuật thuộc `plan.md`, không phải nội dung của spec; spec chỉ chốt **tính chất quan sát được**: `displayId` duy nhất + mang tiền tố loại câu, và tồn tại một định danh nội bộ tách biệt, ổn định qua sửa `displayId`.
+- **Thuật toán sinh định danh nội bộ ổn định** (FR-001b, Key Entities) là lựa chọn kỹ thuật thuộc `plan.md`, không phải nội dung của spec; spec chỉ chốt **tính chất quan sát được**: `displayId` duy nhất + mang tiền tố loại câu, và tồn tại một định danh nội bộ tách biệt, ổn định qua sửa `displayId`.
 - **Cấu trúc chính xác của "ghi chú duyệt"** ở FR-011 (độ dài, có bắt buộc hay không khi trả về) không được nguồn nào quy định; spec chỉ yêu cầu *có ghi chú tới được setter*.
 - **Nhật ký ở FR-017** được hiểu là ghi vào cùng nhật ký thao tác chung mà EPIC-011 sở hữu; spec này không đặc tả cấu trúc của nhật ký đó.
 - **Ràng buộc kỹ thuật toàn repo** — DRY, zero-trust, chỉ tiếng Việt, trim ở cả hai đầu, string UI tách file constants — áp cho feature này theo `CLAUDE.md`; spec **tham chiếu, không sao chép**.

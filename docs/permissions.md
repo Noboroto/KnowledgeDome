@@ -2,7 +2,7 @@
 
 > **Vai trò tài liệu.** Đây là **catalog tra cứu** — danh sách permission, phạm vi của chúng, và các vai seed. Cùng loại với `glossary.md`: nó **không đặt ra luật**. Mô hình và các điều cấm nằm ở `QĐ-094`; yêu cầu cấp sản phẩm ở `PRD.md` `PRD-REQ-109`→`111`.
 >
-> **Mã**: `PERM-001` → `PERM-061`.
+> **Mã**: `PERM-001` → `PERM-062`.
 
 ---
 
@@ -47,7 +47,7 @@
 | `PERM-012` | `user.manage` | Tạo, sửa, vô hiệu hoá tài khoản | `QĐ-087` |
 | `PERM-013` | `role.manage` | **Định nghĩa vai tuỳ biến** và sửa túi permission của nó | `QĐ-086` vế 7 |
 | `PERM-014` | `role.assign.system` | Gán vai ở phạm vi `HỆ THỐNG` | `QĐ-065` |
-| `PERM-015` | `audit.read` | Đọc nhật ký thao tác | `PRD-REQ-081` |
+| `PERM-015` | `audit.read` | Đọc nhật ký thao tác **ở phạm vi BẢN CÀI** — gác **màn đọc đầy đủ** của `PRD-REQ-116`, thuộc EPIC-011 (`QĐ-130`). **Tách bạch** với `PERM-062`: hai cửa **không lồng nhau và không suy ra nhau**; giữ permission này **không** đòi phải có thêm `PERM-062` (`QĐ-135`) | `PRD-REQ-116`, `PRD-REQ-082`, `QĐ-135` |
 
 ### 2.3 Nhập, xuất, vận hành bản cài
 
@@ -57,8 +57,9 @@
 | `PERM-017` | `package.import` | Nhập gói contest | `QĐ-071` |
 | `PERM-018` | `participants.export` | Xuất **danh sách người tham gia**. Tách riêng khỏi `PERM-016`: đây là một lần **dữ liệu cá nhân rời hệ thống** | `QĐ-086` |
 | `PERM-019` | `participants.import` | Nhập danh sách người tham gia, dựng lại tài khoản | `QĐ-086`, `QĐ-087` |
-| `PERM-020` | `results.export` | Xuất biên bản, nhật ký sự kiện, bản kê câu đã dùng, kết quả rút gọn | `QĐ-084`, `QĐ-077` |
-| `PERM-021` | `retention.manage` | Đặt hạn lưu trữ theo mục đích trận | `QĐ-091` |
+| `PERM-020` | `results.export` | Xuất biên bản, nhật ký sự kiện, bản kê câu đã dùng, kết quả rút gọn. **Là cửa từ chối DUY NHẤT** khi xuất gói kết quả và nhật ký sự kiện, và kiểm **trước** trạng thái trận lẫn quyền đọc kho đề — thiếu nó thì phản hồi là **một** thông điệp không đổi theo hai điều kiện kia (`QĐ-126`) | `QĐ-084`, `QĐ-077`, `QĐ-126` |
+| `PERM-021` | `retention.manage` | Đặt hạn lưu trữ — **cả hai trục** ở phạm vi **bản cài**: theo mục đích trận *(dữ liệu trận + media)* và hạn **riêng của nhật ký thao tác**. Contest **không** ghi đè được (`QĐ-140`) | `QĐ-091`, `QĐ-131`, `QĐ-136`, `QĐ-140` |
+| `PERM-063` | `retention.purge` | **Chạy bước dọn dữ liệu** theo hạn lưu trữ. Tách riêng khỏi `PERM-021`: `PERM-021` cho **đặt** hạn, permission này cho **thi hành** nó. Đây là đường **duy nhất** một dòng dữ liệu quá hạn rời hệ thống | `QĐ-150` |
 
 ---
 
@@ -148,6 +149,7 @@
 | `PERM-059` | `seat.pickPackage` | Chọn gói câu — **chỉ ở mode nhập liệu** | `QĐ-019`, `EVENT-041` |
 | `PERM-060` | `seat.setHopeStar` | Đặt Ngôi sao hy vọng — **chỉ ở mode nhập liệu** | `QĐ-019`, `EVENT-042` |
 | `PERM-061` | `scoreboard.read` | Xem bảng điểm của **mọi** ghế, gồm điểm âm | `QĐ-015` |
+| `PERM-062` | `audit.readContest` | Đọc nhật ký thao tác **trong phạm vi MỘT CONTEST** — cửa hẹp cho chủ contest, **tách bạch** với `PERM-015` (`QĐ-135`). **Chỉ đọc**, như `PERM-015`. **Phạm vi tính theo ĐỐI TƯỢNG của dòng** (`QĐ-138`): thuộc contest khi đối tượng thuộc contest đó — trận, cấu hình, ghế, lần xuất/nhập gói, lần xem đáp án trong trận của contest. Dòng **đăng nhập**, **kho đề**, **quản lý tài khoản** **không thuộc contest nào** ⇒ không đọc được. **Không** phân loại theo *người thực hiện*: không đọc được dòng đăng nhập của người đã gán vào contest, kể cả dòng rơi vào lúc trận đang chạy. Phản hồi **không** tiết lộ sự tồn tại của dòng ngoài phạm vi. Vai seed **Quản trị** giữ permission này (`QĐ-142`); `TERM-059` *chủ contest* **không** tự động kéo theo nó — phải gán ở phạm vi `CONTEST` như mọi permission `CONTEST` khác | `QĐ-135`, `QĐ-138`, `QĐ-142`, `PRD-REQ-116` |
 
 ---
 
@@ -179,7 +181,7 @@ Bản cài trống có đúng bốn vai dựng sẵn, khớp bốn vai cần xá
 
 | Vai | Phạm vi gán được | Túi permission |
 |---|---|---|
-| **Quản trị** *(admin)* | `HỆ THỐNG` và `CONTEST` | **Toàn bộ** `PERM-001`→`PERM-053`, gồm cả bảy thao tác ⚠️. **Trừ** `PERM-054`→`PERM-061` |
+| **Quản trị** *(admin)* | `HỆ THỐNG` và `CONTEST` | **Toàn bộ** `PERM-001`→`PERM-053`, gồm cả bảy thao tác ⚠️ và cả `PERM-015` `audit.read`. **Cộng `PERM-062`** `audit.readContest` và **`PERM-063`** `retention.purge`. **Trừ** `PERM-054`→`PERM-061` *(túi của thí sinh và MC)*. Giữ **cả hai** cửa đọc nhật ký là có chủ đích (`QĐ-142`): hai cửa **không suy ra nhau** (`QĐ-135`), nên thiếu `PERM-062` thì vai này mở được màn rộng mà **không** mở được màn hẹp |
 | **Người ra đề** *(setter)* | `HỆ THỐNG` | `PERM-001`, `002`, `006`, `007`, `008`, `009`, `010`, `016`, `017` |
 | **MC** | `CONTEST` | `PERM-045`, `PERM-054`, `PERM-061` — **đúng một permission ghi** (`PERM-054`), dùng được **kể cả khi banner tạm dừng đang bật** (`QĐ-116`) |
 | **Thí sinh** | `CONTEST` | `PERM-055` → `PERM-061` |

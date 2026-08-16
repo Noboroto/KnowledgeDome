@@ -40,9 +40,7 @@
 | **5. Độc lập** | ✅ 7/7 story có "Independent Test" và độ ưu tiên. US-001 *(P1)* tự nó là MVP dùng được — xuất/nhập một gói trọn vẹn. |
 | **6. Đo được** | ✅ 5 Success Criteria đều có số/tỉ lệ + điều kiện đo, không phụ thuộc công nghệ. |
 
+
 ## Notes
 
-- **Đã chạy `/speckit-clarify` 2026-07-30** (5 câu, xem `## Clarifications` của spec) — đóng `OQ-001` (thiếu media → nhập một phần, đánh dấu), `OQ-002` (biên đóng cho ngưỡng media), `OQ-003` (ngắt giữa chừng → tất cả-hoặc-không, thao tác server-side đơn), `OQ-004` (không giới hạn số lần thử cụm mật khẩu ở tầng nghiệp vụ), `OQ-005` (đồng thời hai admin nhập bản kê → không cần phân xử, phép hợp một chiều an toàn).
-- **Còn 2 mục mở**: `OQ-006` (cụm mật khẩu mới hay dùng lại khi xuất lại danh sách người tham gia), `OQ-007` (gói với kho đề rỗng) — cả hai thấp tác động, không chặn `/speckit-plan` theo đánh giá tại thời điểm chạy `/speckit-clarify`, nhưng khuyến nghị chủ dự án xác nhận trước khi thiết kế chi tiết.
-- **Các FR mới/mở rộng từ phiên clarify chưa được ghi vào `docs/decisions.md`** — chủ dự án cần chuyển các quyết định ở `## Clarifications` của spec thành `QĐ-*` chính thức, tương tự cách EPIC-001 và EPIC-002 đã làm, để cổng 1 (Truy nguyên) hết phụ thuộc chính spec này.
-- **Hai file nguồn được yêu cầu đọc không tồn tại**: `docs/rule-traceability.md` *(file thật là `docs/traceability.md`)* và `docs/reviews/prd-review.md` *(không có trong `docs/reviews/`, vốn chỉ chứa `game-rules-*.md` và `README.md`)*. Chi tiết ở §0 của spec. Việc thiếu file thứ hai không tạo lỗ hổng truy nguyên vì `docs/reviews/**` là kho lưu, không phải nguồn — cùng ghi chú với `specs/001-xac-thuc-phan-quyen` và `specs/002-kho-de-bo-de`.
+Hai mục còn mở, không mục nào chặn implementation — `OQ-006` *(xuất lại danh sách người tham gia: cụm mật khẩu mới hay dùng lại)* và `OQ-007` *(gói contest với kho đề rỗng)*.

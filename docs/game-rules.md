@@ -11,7 +11,7 @@
 | File | Vai trò |
 |---|---|
 | `source/fandom-olympia-26-luat-choi.md` | **Luật gốc O26 nguyên văn** — source of truth duy nhất |
-| `decisions.md` | **Vì sao** — 120 quyết định `QĐ-001` → `QĐ-120`, kèm bảng tra mã cũ |
+| `decisions.md` | **Vì sao** — 148 quyết định `QĐ-001` → `QĐ-148` |
 | `glossary.md` | Thuật ngữ chuẩn `TERM-*`; file này dùng đúng tên ở đó |
 | `game-state-machine.md` | Máy trạng thái: `STATE-*` · `EVENT-*` · `T-*` · `INV-*`. Mọi rule ở đây phải khớp với một hoặc nhiều transition ở đó |
 | `traceability.md` | Ma trận truy nguyên requirement ↔ luật gốc ↔ `QĐ-*` |
@@ -159,7 +159,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 |---|---|---|---|
 | C1 | Admin bấm **Đúng** | **+10** | Sinh event điểm; câu sang *đã chấm* |
 | C2 | Admin bấm **Sai** | **0**, không trừ | Sinh event điểm giá trị 0; câu sang *đã chấm* |
-| C3 | Hết 3 giây, admin **chưa** bấm | Chuyển `GR-002` | Câu vẫn chưa chấm cho tới khi admin bấm |
+| C3 | Hết 3 giây, admin **chưa** bấm | **Đồng hồ hết giờ KHÔNG tự sinh kết quả.** Câu treo tới khi admin bấm; bấm Sai ⇒ **0**, không trừ *(`GR-002`)* | Câu vẫn chưa chấm cho tới khi admin bấm |
 | C4 | Câu thuộc **vòng đã bị bỏ**, admin bấm Đúng | **Toast**, không thực hiện được — không sinh event cho vòng đã bỏ | Không đổi |
 
 **Không đổi gì.** Điểm mọi thí sinh khác · lịch sử event (mọi hiệu chỉnh là event **thêm vào**) · câu đã dùng **không** trả lại kho.
@@ -192,7 +192,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | Ca | Điều kiện | Kết quả | Thay đổi trạng thái |
 |---|---|---|---|
 | C1 | Thí sinh im lặng; admin bấm Sai | **0**, không trừ | Sinh event điểm; câu chờ admin bấm *"Câu kế tiếp"* |
-| C2 | Thí sinh đọc đáp án trong hạn | Chuyển `GR-001` | — |
+| C2 | Thí sinh đọc đáp án trong hạn | Theo phán quyết của admin: Đúng ⇒ **+10** · Sai ⇒ **0**, không trừ *(`GR-001`)* | Sinh event điểm; câu sang *đã chấm* |
 | C3 | Đáp án đến sát hoặc quá mốc 3 giây | **MC và admin đánh giá** — nút chấm không bị đồng hồ khoá | Theo phán quyết của admin |
 | C4 | Trả lời đúng ở giây thứ 1, admin bấm Đúng | Điểm chốt **ngay**; đồng hồ còn lại mất ý nghĩa | Câu **không tự chuyển** — sang câu tiếp là thao tác riêng của admin |
 
@@ -300,7 +300,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | Ca | Điều kiện | Kết quả | Thay đổi trạng thái |
 |---|---|---|---|
 | C1 | Hết 3 giây, **0** tín hiệu | Câu **bị bỏ qua** | Câu khép lại, đánh dấu **đã dùng** |
-| C2 | ≥1 tín hiệu trong cửa sổ | Chuyển `GR-003` | — |
+| C2 | ≥1 tín hiệu trong cửa sổ | Người bấm **đầu tiên theo server timestamp** giành quyền; **3 giây** suy nghĩ đếm **từ thời điểm giành quyền** *(`GR-003`)*. Câu **không** bị bỏ qua | Đánh dấu người giành quyền; ghi tín hiệu vào hàng đợi |
 | C3 | Tín hiệu đến **đúng mốc** hết cửa sổ | **Hợp lệ** — biên **đóng** ⇒ chuyển `GR-003`, câu **không** bị bỏ qua | Đánh dấu người giành quyền |
 | C4 | Admin chuyển câu thủ công trước khi hết 3 giây | Câu bị bỏ qua ngay | Câu khép lại, **đã dùng** |
 
@@ -328,7 +328,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Điều kiện.**
 
-- **`hạn chót` của câu là hạn nhận bài DUY NHẤT.** Vòng này **không có mốc cắt riêng** — mốc *"công bố đáp án"* đã bị `QĐ-110` bỏ khỏi vai trò hạn nhận bài; việc đưa đáp án lên màn hình đi qua **cú bấm mở đáp án chung** của admin (`QĐ-048`), không phải một mốc riêng của vòng đời câu.
+- **`hạn chót` của câu là hạn nhận bài DUY NHẤT.** Vòng này **không có mốc cắt riêng**: việc đưa đáp án lên màn hình đi qua **cú bấm mở đáp án chung** của admin (`QĐ-048`) và **không** chi phối hạn nhận bài.
 - **Khởi động KHÔNG có biên trên và cũng KHÔNG chờ** (`QĐ-109`): một bản tới **sau** `hạn chót` **luôn** được giữ và tô đỏ, bất kể muộn bao nhiêu — C4 và C5 giữ nguyên hiệu lực; đồng thời nút chấm mở **ngay tại `hạn chót`**, admin không phải chờ hết cửa sổ giữ bản tới muộn.
 - Nút gửi **KHÔNG khoá sau khi gửi**; thí sinh sửa và gửi lại bao nhiêu lần cũng được, tới **đúng `hạn chót`**.
 - **Luôn ghi nhận bản CUỐI CÙNG.** Phát biểu *"nếu không thay đổi thì ghi nhận đáp án đầu tiên"* của luật gốc **không phải ngoại lệ** — gửi một lần thì bản đầu **chính là** bản cuối.
@@ -397,7 +397,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Thứ tự đánh giá.** **Không còn ý nghĩa.** Bốn phép kiểm — đúng lượt · đã bị loại · hàng ngang còn chưa mở · đã dùng lượt — đều là **điều kiện render**, đánh giá **một lần tại thời điểm dựng màn thí sinh**. Trạng thái không hợp lệ thì nút **không render** ⇒ **không tín hiệu nào được sinh ra** ⇒ không có gì để sắp thứ tự. Việc admin **ép lượt trái luật** diễn ra ở **khâu gán lượt**, tức **trước** khi cửa sổ chọn mở, nên nó đổi giá trị của phép kiểm chứ không tạo ra tín hiệu cần phân xử.
 
-**Biên.** Còn **4** hàng chưa chọn: lượt bắt đầu từ vị trí 1. Còn **0**: chuyển `GR-011`. Số hàng ngang khác 4 nằm ngoài luật O26 — xem `GR-009` C11.
+**Biên.** Còn **4** hàng chưa chọn: lượt bắt đầu từ vị trí 1. Còn **0**: **gợi ý cuối được đưa ra ở ô trung tâm và băng điểm Chướng ngại vật hạ xuống 20** *(`GR-011`)*. `rowCount` **khoá cứng ở 4** ở v1 — cửa tạo contest không cho chọn giá trị khác, mô hình dữ liệu vẫn nhận 5-8 mà không lỗi cấu trúc *(`GR-009` C11)*.
 
 **Đồng thời.** Hàng đợi chặn xử lý **thuần theo server timestamp**, không ưu tiên theo loại tín hiệu. Hai tín hiệu cùng mốc ⇒ hàng đợi tự quyết, ngẫu nhiên.
 
@@ -475,7 +475,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 **Điều kiện.**
 
 - **Biến quyết định băng điểm là *số hàng ngang KHÔNG còn ở trạng thái chờ***, không phải số miếng ghép đã mở.
-- Băng: **1 hàng → 60** · **2 → 50** · **3 → 40** · **4 → 30**. Sau khi **gợi ý cuối đã đưa ra**: **20**, không phụ thuộc câu ô trung tâm đúng hay sai. **20 là sàn.**
+- Băng: **1 hàng → 60** · **2 → 50** · **3 → 40** · **4 → 30**. Sau khi **gợi ý cuối đã đưa ra**: **20**, không phụ thuộc câu ô trung tâm đúng hay sai. **20 là sàn** — băng không bao giờ xuống dưới giá trị này ở bất kỳ cấu hình `rowCount` nào (`QĐ-163`).
 - Nút này được xếp là **chuông** ⇒ chỉ nhận click chuột, **tự khoá khi bấm**, phía thí sinh không có dialog. Mỗi ghế đi qua tối đa **một PHÁN QUYẾT Đúng/Sai** cho cả vòng — cơ chế *"một lần đoán, sai thì loại"* của luật gốc được giữ nguyên, nhưng nó đếm theo **phán quyết**, không theo cú bấm (`QĐ-111`). Tín hiệu bị **từ chối** hoặc bị chấm **Huỷ kết quả** **không** tiêu hạn mức đó: nút **mở lại** và ghế bấm lại được trong cùng vòng.
 - Hàng đợi **CHẶN**: admin xác nhận rồi tín hiệu mới có hiệu lực.
 - Phán quyết ở đây có **BA** lựa chọn — **Đúng / Sai / Huỷ kết quả** — xem bảng §*Phán quyết có hai hay ba lựa chọn*. *Huỷ kết quả* khép một tín hiệu **đã xác nhận** mà **không** loại thí sinh và **không** sinh điểm cho ai (`QĐ-104`).
@@ -492,7 +492,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | C7 | Bấm khi đã hỏi 1 hàng, admin xác nhận muộn hơn | **Băng chốt theo trạng thái tại mốc ADMIN XÁC NHẬN.** Tình huống *"số hàng đổi giữa hai mốc"* **không dựng được**: hàng đợi **chặn**, nên chừng nào tín hiệu còn chờ duyệt thì **không hàng ngang nào mở thêm được** | Băng chốt tại mốc xác nhận |
 | C8 | Admin bấm **No** | Tín hiệu kế tiếp lên; **thí sinh không mất lượt**, và **nút của ghế đó MỞ LẠI** — hạn mức chưa tiêu (`QĐ-111`) | **Chưa tác dụng phụ nào** — cùng lập luận `GR-007` C2 |
 | C9 · C10 | Ghế **đã bị loại** bấm tiếp · **đã có người giải đúng** | Nút **không hiển thị**, bấm **không phản hồi** — control đã **mất nghĩa** ở pha này (`QĐ-112`) | Không đổi |
-| C11 | Cấu hình 5-8 hàng ngang | **Không dựng được ở v1** — `rowCount` **khoá cứng ở 4** (`QĐ-068`), cửa tạo contest không cho chọn giá trị khác. Mô hình dữ liệu vẫn nhận 5-8 để phiên bản sau chỉ việc mở khoá; khi mở, băng điểm là **mảng cấu hình BẮT BUỘC** dài bằng `rowCount` — không suy ra từ luật, vì nguồn không có thang cho ≠ 4 | Không đổi ở v1 |
+| C11 | Cấu hình 5-8 hàng ngang | **Không dựng được ở v1** — `rowCount` **khoá cứng ở 4** (`QĐ-068`), cửa tạo contest không cho chọn giá trị khác. Mô hình dữ liệu vẫn nhận 5-8 để phiên bản sau chỉ việc mở khoá; khi mở, băng điểm là **mảng cấu hình BẮT BUỘC** dài bằng `rowCount`. **Mặc định của preset** khi mở khoá: `băng(k) = max(30, 70 − 10k)` — tái tạo đúng 60·50·40·30 ở `rowCount = 4`, và giữ **20 là sàn** sau gợi ý cuối (`QĐ-158`) | Không đổi ở v1 |
 | C12 | Admin **đánh dấu đã hỏi** một ô bằng tay | **Băng tụt một bậc y như một lượt hỏi thật.** **Không ai được cộng điểm** từ thao tác này | Ô sang *đã hỏi*; `AuditLog` ghi **do-admin** để phân biệt với do-luồng |
 | C13 | Admin **lộ đáp án** một ô | **Băng KHÔNG đổi** — biến đếm là *đã hỏi*, không phải *đã lộ*. Nhờ vậy mở tay trọn một ô chỉ tính **một lần** | Ô sang *mở* |
 | C14 | Người vừa bấm *"Mở chướng ngại vật"* trả lời một hàng ngang trong lúc chờ duyệt | **ĐƯỢC, bình thường.** Nguồn chỉ loại thí sinh khi trả lời **SAI Chướng ngại vật**; khoá ngay lúc bấm là **nghiêm hơn luật**. Và nếu admin bấm **No**, người đó phải **không mất gì** (`QĐ-022`) — khoá sớm sẽ vi phạm chính điều đó | Không đổi |
@@ -509,7 +509,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - (1) trước (2) vì mốc tính điểm là **thời điểm tín hiệu có hiệu lực**, nên cũng là lúc đọc trạng thái bàn cờ.
 - (2) trước (3) để băng cố định **trước** khi phán quyết — kết quả không phụ thuộc admin chấm nhanh hay chậm.
 
-**Biên.** Chưa hàng nào bắt đầu: vẫn thuộc băng **60**. Sau gợi ý cuối: **20**, là **sàn**.
+**Biên.** Chưa hàng nào bắt đầu: vẫn thuộc băng **60**. Sau gợi ý cuối: **20**, là **sàn** (`QĐ-163`).
 
 **Đồng thời.** Hàng đợi xử lý thuần theo thứ tự tới, không ưu tiên theo loại tín hiệu.
 
@@ -521,7 +521,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 - *Không hợp lệ*: gán phím tắt cho nút này ⇒ không có đường phát tín hiệu; nó là chuông.
 - *Biên*: bấm khi vừa hỏi xong hàng thứ 4 nhưng gợi ý cuối **chưa** đưa ra ⇒ **30**, không phải 20.
 
-**Nguồn**: luật gốc §VCNV đoạn *"Thí sinh có thể bấm chuông…"* · `QĐ-021`, `QĐ-023`, `QĐ-052`, `QĐ-057`
+**Nguồn**: luật gốc §VCNV đoạn *"Thí sinh có thể bấm chuông…"* *(thang 60/50/40/30 và giá trị 20 sau gợi ý cuối)* · `QĐ-021`, `QĐ-023`, `QĐ-052`, `QĐ-057` · **`QĐ-163`** *(mệnh đề **sàn** — quyết định của dự án, luật gốc không phát biểu)*
 
 ---
 
@@ -545,8 +545,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | C2 | Người bị loại **chưa dùng** lượt chọn | Lượt dồn sang vị trí tiếp theo | Cập nhật người tới lượt |
 | C3 | Người bị loại **đã có +10** từ hàng ngang trước đó | **GIỮ NGUYÊN, không bị trừ lại.** *"Bị loại khỏi phần thi này"* tước **quyền tham gia**, không tước **điểm đã ghi** | Điểm không đổi; chỉ đặt cờ trong phạm vi vòng |
 | C4 | Ghế đã bị loại tiếp tục thao tác | Máy thí sinh **không hiển thị gì**, bấm **không phản hồi** | Không đổi |
-| C5 | **Người cuối cùng** bị loại | Chuyển `GR-012` | Vòng kết thúc |
-| C6 `[v2]` | Một thành viên đội trả lời sai | Loại **cả đội** | Đặt cờ cho cả đội |
+| C5 | **Người cuối cùng** bị loại | Vòng kết thúc; **không ai được điểm Chướng ngại vật**. Hàng ngang chưa hỏi bị bỏ — câu của nó **chưa hiển thị cho ai ⇒ chưa tiêu, trả lại kho**. Công bố Chướng ngại vật là thao tác **thủ công và tuỳ chọn** của admin *(`GR-012`)* | Vòng về `LOBBY`; cờ đã-dùng **không** đặt cho câu chưa hiển thị |
 
 **Không đổi gì.** Thí sinh **không** bị loại khỏi trận — các vòng sau vẫn tham gia bình thường · điểm của người bị loại và của mọi người khác · **nguồn không quy định hình phạt điểm ⇒ không được tự thêm**.
 
@@ -605,7 +604,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 > *"Ai kịp bấm chuông trong 15 giây"* vì vậy **không phụ thuộc tốc độ thao tác của admin**: cửa sổ mở tại mốc (3) và đóng đúng 15 giây sau mốc đó, chung cho mọi thí sinh còn quyền.
 
-**Biên.** Đúng **4** hàng ngang đã hỏi: kích hoạt. Mốc **15.000 giây**: tín hiệu đúng mốc **vẫn hợp lệ** (biên đóng). Còn **0** người chưa bị loại: chuyển `GR-012`.
+**Biên.** Đúng **4** hàng ngang đã hỏi: kích hoạt. Mốc **15.000 giây**: tín hiệu đúng mốc **vẫn hợp lệ** (biên đóng). Còn **0** người chưa bị loại: **vòng kết thúc ngay, không ai được điểm Chướng ngại vật**, hàng ngang chưa hỏi bị bỏ và câu của nó trả lại kho *(`GR-012`)*.
 
 **Đồng thời.** Tín hiệu giải Chướng ngại vật đến **đúng lúc admin đang đưa ra gợi ý cuối**: băng chốt theo trạng thái tại **mốc admin xác nhận tín hiệu**, không theo mốc thí sinh bấm.
 
@@ -697,7 +696,6 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 | C2 | 2 người **cùng mốc** đứng đầu, 1 người sau | **+40 · +40** cho hai người đầu; người sau **+20** — bậc kế **nhảy qua** số người hoà | Một event điểm cho cả bảng |
 | C3 | Đúng **1** người | **+40** cho người đó | Một event điểm |
 | C4 | **0** người đúng | Không ai cộng điểm | Không sinh event điểm |
-| C5 `[v1.5]` | Số ghế ≠ 4 | **Ngoài phạm vi luật v1** — thang cho dải 1-12 ghế thuộc v1.5 | — |
 | C6 | Admin bấm **Sai** | **0** điểm; **không tính** trong xếp hạng, và **không giữ chỗ** trong thang | Nằm trong event điểm chung của câu |
 | C7 | Câu thuộc **vòng đã bị bỏ** | **Toast**, không thực hiện được | Không đổi |
 
@@ -705,7 +703,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Thứ tự đánh giá.** **(1)** ghi nhận tập người được chấm Đúng → **(2)** sắp theo timestamp bản cuối, độ phân giải **millisecond** → **(3)** gộp người cùng mốc thành **một bậc** → **(4)** gán điểm theo bậc, bậc kế **nhảy qua** số người hoà → **(5)** phát **một** event điểm cho cả bảng tại cú bấm **chốt câu**.
 
-**Biên.** **1** ghế: người đó nhận **40** nếu được chấm Đúng. **4** ghế: thang O26 gốc. **5-12** ghế: `[v1.5]`.
+**Biên.** **1** ghế: người đó nhận **40** nếu được chấm Đúng. **2-4** ghế: thang O26 gốc. Trận **trên 4 ghế không tồn tại** — cú bấm bắt đầu trận bị chặn cứng (`GR-020` C6b).
 
 **Bấm trùng.** Bấm Đúng hai lần cho cùng người và cùng câu ⇒ **một** event. **Không có** đường đổi phán quyết của một người sau khi đã chốt câu — sửa sai đi qua điều chỉnh điểm thủ công.
 
@@ -746,11 +744,11 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Thứ tự đánh giá.** **(1)** chấm từng người; chỉ người **Đúng** vào tập xếp hạng → **(2)** lấy **bản cuối hợp lệ** của mỗi người và mốc của bản đó → **(3)** so **trực tiếp trên số nguyên ms** → **(4)** gộp người bằng nhau thành một bậc → **(5)** gán cùng mức điểm cho cả nhóm → **(6)** bậc kế = bậc hiện tại **+ số người trong nhóm** → **(7)** chốt câu ⇒ **một** event điểm cho cả bảng.
 
-**Biên.** Nhóm hoà **0** hoặc **1** người: không phải hoà, luật không áp. **2-4**: bình thường. **≥5**: chỉ xảy ra khi >4 ghế, `[v1.5]`.
+**Biên.** Nhóm hoà **0** hoặc **1** người: không phải hoà, luật không áp. **2-4**: bình thường. Nhóm **≥5** không tồn tại — một trận có **tối đa 4 ghế**.
 
 > **Chênh với tiền lệ chương trình — đã biết và đã chấp nhận.** Chương trình thật xếp thứ tự ở **hàng phần trăm giây**, tức cửa sổ hoà ở đây **hẹp hơn 10 lần**: hai bản cách nhau 3 ms sẽ **được phân định** trong khi chương trình thật coi là **hoà**. Hệ quả: điều khoản *"cùng nhận một mức điểm"* vẫn đúng về hành vi nhưng **rất ít khi được kích hoạt**.
 >
-> Đây là **lựa chọn có chủ đích** vì lý do kỹ thuật — so hai số nguyên là phép so đơn giản nhất. **Đường thoát nếu đổi ý**: đặt `tieRule` ở mức **10 ms**; phép so vẫn là số nguyên (chia nguyên cho 10 rồi so), nên **không** đánh đổi gì về độ phức tạp. **Luật, bảng quyết định và thang nhảy bậc không phải sửa.**
+> Đây là **lựa chọn có chủ đích** vì lý do kỹ thuật — so hai số nguyên là phép so đơn giản nhất. Lý do đầy đủ và phương án bị loại: `QĐ-013`.
 >
 > **Bề rộng tiền lệ**: điều khoản chia điểm khi đồng thời gian tồn tại **từ Olympia 7** — khoảng 19 mùa liên tục, không phải điều khoản mới của O26.
 
@@ -835,7 +833,7 @@ Bốn bảng dưới đây nhiều rule cùng đọc, nên đặt ở đây thay
 
 **Thứ tự đánh giá.** **(1)** tính điểm tích luỹ hiện tại → **(2)** sắp giảm dần theo điểm → **(3)** hoà thì sắp tăng dần theo **số vị trí** → **(4)** khuyến nghị người đầu danh sách → **(5)** admin chốt hoặc ép → **(6)** lượt hoàn thành, quay lại bước 1.
 
-**Biên.** Chưa ai thi: khuyến nghị người điểm cao nhất. Còn **1** người chưa thi: đó là lượt cuối. Số ghế ≠ 4: `[v1.5]`.
+**Biên.** Chưa ai thi: khuyến nghị người điểm cao nhất. Còn **1** người chưa thi: đó là lượt cuối.
 
 **Đồng thời.** Bảng xếp phải lấy **sau khi lượt trước kết thúc hoàn toàn** — nghĩa là cửa sổ cướp đã đóng **và** đã chấm xong. Không tính giữa lúc một câu đang chạy.
 
@@ -925,7 +923,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C3 | Không trả lời | Xử **như sai** ⇒ 0 điểm, mở cửa sổ cướp | Như C2 |
 | C4 | Đáp án lệch chính tả nhỏ | Máy **chỉ** highlight ký tự khác; **admin quyết** | Theo phán quyết |
 | C5 | Trả lời sớm, admin chấm muộn hơn trong cùng câu | Kết quả theo **phán quyết**, không theo thời điểm trả lời — Về đích **không xếp hạng theo tốc độ** | Sinh event điểm |
-| C6 | Câu **có Ngôi sao hy vọng**, chấm Sai | **−giá trị câu, ĐÚNG MỘT LẦN** — xem `GR-021` | Sinh event điểm âm; mở cửa sổ cướp |
+| C6 | Câu **có Ngôi sao hy vọng**, chấm Sai | **−giá trị câu, ĐÚNG MỘT LẦN** — hình phạt Ngôi sao hy vọng **thay thế** phần nợ của phép chuyển điểm, nên người thi chính bị trừ đúng một lần bất kể có ai cướp quyền hay không (`GR-021`) | Sinh event điểm âm; mở cửa sổ cướp |
 
 **Không đổi gì.** Bản gửi của ba thí sinh còn lại · các câu trước · Ngôi sao hy vọng của người khác — cờ này **độc lập theo từng thí sinh**.
 
@@ -1014,7 +1012,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 **Điều kiện.**
 
 - Cửa sổ **5 giây**, hàng đợi **KHÔNG chặn** — server phân xử ngay theo timestamp. Cùng mốc ⇒ hàng đợi tự quyết, ngẫu nhiên.
-- **Người cướp tính BẢN CUỐI CÙNG**, y như người thi chính — trục **nội dung** luôn lấy bản cuối (`QĐ-113`). Vòng này **không có `hạn chót` riêng** cho người cướp; mốc đóng là **cú bấm chấm của admin**, theo quy tắc chung `GR-006` §Đồng thời.
+- **Người cướp tính BẢN CUỐI CÙNG**, y như người thi chính — trục **nội dung** luôn lấy bản cuối (`QĐ-113`). Vòng này **không có `hạn chót` riêng** cho người cướp; mốc đóng là **cú bấm chấm của admin** — chấm xong thì **nút gửi khoá lại**, và một bản tới sau đó chỉ nằm trong lịch sử, **không lật được** phán quyết đã chốt; sửa sai vẫn đi qua điều chỉnh điểm thủ công *(cùng quy tắc `GR-006` §Đồng thời)*.
 - Cướp **đúng** ⇒ **transfer**: người sai **−giá trị câu**, người cướp **+giá trị câu**.
 - Cướp **sai** ⇒ người cướp **−½ giá trị câu**; người thi chính **không** được hoàn lại.
 - Người thi chính **không** cướp câu của chính mình. Người cướp **không** dùng Ngôi sao hy vọng trên câu đang cướp.
@@ -1029,7 +1027,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C4 | B gửi ba bản: `"Paris"` @100 → `"London"` @150 → `"Berlin"` @200 | Chấm trên **bản CUỐI `"Berlin"`** — nút gửi của B **không khoá** sau lần gửi đầu và chỉ khoá tại cú bấm chấm của admin (`QĐ-113`) |
 | C5 | Câu 20đ, A **có NSHV** và bị chấm Sai; B cướp đúng | **A −20 · B +20.** A mất giá trị câu **ĐÚNG MỘT LẦN** — hình phạt NSHV **thay thế** phần nợ của transfer |
 | C6 | Số ghế **dưới** 4 | **Thuộc v1** (`QĐ-105`): ghế thiếu người là **ghế bỏ thi** — vô hiệu hoá từ đầu trận, 0đ — nên *"3 thí sinh còn lại"* vẫn đúng nghĩa về cấu trúc, chỉ là số người **cướp được** ít đi. Ca **runtime tụt dưới 4 giữa trận** xử y hệt: **admin quyết**, hệ thống chỉ cảnh báo |
-| C6b `[v1.5]` | Số ghế **trên** 4 | **Không tồn tại ở v1** — cú bấm bắt đầu trận bị **chặn cứng** vì thang điểm Tăng tốc chỉ định nghĩa cho 4 đơn vị điểm (`QĐ-105`, `GR-013` C5) |
+| C6b | Số ghế **trên** 4 | **Không tồn tại ở v1** — cú bấm bắt đầu trận bị **chặn cứng** vì thang điểm Tăng tốc chỉ định nghĩa cho 4 đơn vị điểm (`QĐ-105`, `GR-013` C5) |
 
 **Không đổi gì.** Điểm của những người **không bấm** · các câu trước · bản gửi của người thi chính.
 
@@ -1200,7 +1198,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C2 | A bấm, admin chấm **Sai** | **Cả nhóm sang câu kế** | Hàng đợi reset; câu kế mở |
 | C3 | Hết 15 giây, không ai bấm | Sang câu kế | Câu đóng, không ai đúng |
 | C4 | Hết cả **3 câu**, chưa ai đúng | **Bốc thăm** — `GR-025` | Chuyển pha bốc thăm |
-| C5 | Admin bỏ vòng giữa chừng (`GR-030`) | Vòng đóng theo kết quả hiện có | Xem `GR-030` |
+| C5 | Admin bỏ vòng giữa chừng | Vòng đóng; **không điểm nào bị đảo vì vòng này không sinh điểm**. Đây là **cửa hoàn nguyên duy nhất** của một `TIE_BREAK_RESOLVED` | Vòng về `LOBBY` với *cách rời* **"đã bỏ"**; câu đã hiển thị **không** trả lại kho; qua dialog hạng phá huỷ, bắt nhập lý do *(`GR-030`)* |
 
 **Không đổi gì.** Điểm của **mọi** thí sinh · thứ hạng của người ngoài nhóm hoà · câu đã dùng **không** trả lại kho.
 
@@ -1489,7 +1487,9 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 **Điều kiện.**
 
 - Cả ba thuộc **hạng phá huỷ**: dialog **không tắt được** + **bắt nhập lý do**.
-- **Bỏ** ⇒ điểm của vòng **hoàn nguyên** bằng event đảo ngược; biên bản giữ vòng đó với nhãn **"đã bỏ"**.
+- **Bỏ** ⇒ điểm của vòng **hoàn nguyên** bằng event đảo ngược; biên bản giữ vòng đó với *cách rời* **"đã bỏ"**.
+
+> **Biên bản ghi mỗi lần chạy bằng HAI TRƯỜNG tách bạch** (`QĐ-125`): *cách rời* — `đã bỏ` · `đã chạy lại` · `kết thúc sớm` · `hoàn thành`, mô tả **cửa ra đã kết thúc lần chạy đó** — và *lần chạy thứ mấy*, số nguyên từ `1`. Giá trị `hoàn thành` áp cho **mọi** lần chạy kết thúc bình thường, kể cả lần chạy sinh ra bởi một cú chạy lại. Chữ *"nhãn"* dưới đây luôn có nghĩa **cách rời**.
 - **Chạy lại** ⇒ hoàn nguyên rồi mở lại vòng từ đầu; phải qua **cửa kiểm kho đề** như một vòng mới.
 - **Kết thúc sớm** ⇒ **điểm GIỮ NGUYÊN, không hoàn nguyên** — đây là khác biệt duy nhất và cũng là toàn bộ lý do cửa này tồn tại.
 - Cả ba **không** trả câu **đã hiển thị** về kho.
@@ -1522,7 +1522,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - Điểm đang 40, bỏ Khởi động (đã cộng 30) ⇒ còn **10**.
 - VCNV đã tiêu 4 câu, chạy lại ⇒ cần **4 câu khác**; kho chỉ còn 3 thì cửa vào vòng chặn.
 - Bỏ Khởi động (`−30`) sau khi đã chỉnh tay `+5` ⇒ điểm `−25`; điều chỉnh giữ nguyên.
-- Bỏ Tăng tốc rồi chạy lại ⇒ biên bản ghi vòng đó **hai lần**, một *"đã bỏ"* một *"đã chạy lại"*.
+- Bỏ Tăng tốc rồi chạy lại ⇒ biên bản ghi vòng đó **hai khối**: khối 1 mang *cách rời* `đã bỏ` và *lần chạy* `1`; khối 2, nếu chạy trọn, mang *cách rời* `hoàn thành` và *lần chạy* `2`. Giá trị `đã chạy lại` chỉ xuất hiện khi một lần chạy **bị chính cú chạy lại kết thúc** — tức nó bị thay bằng một lần chạy mới. Chuỗi *bỏ → chạy lại → kết thúc sớm → hoàn thành* cho **bốn** khối với *lần chạy* `1 · 2 · 3 · 4` (`QĐ-125`).
 
 **Nguồn**: `QĐ-034`, `QĐ-035`, `QĐ-042`, `QĐ-044`, `QĐ-060`
 
@@ -1561,7 +1561,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C6 | Bớt một câu **đã hiển thị** | **KHÔNG TỒN TẠI** — câu đã tiêu không còn là mục tiêu của thao tác gỡ; admin thấy toast, **không ép được**. Cho gỡ thì gỡ-rồi-thêm-lại thành đường lách quy tắc không lặp |
 | C7 | Bớt một câu **đã rút, chưa hiển thị** | **ĐƯỢC** — câu chưa tiêu, quay về kho |
 | C8 | Sửa danh sách **giữa lúc một vòng đang chạy** | **KHÔNG.** Cửa sửa chỉ mở ở `LOBBY`. Trong vòng không có nhu cầu: số câu của vòng là con số cố định đã kiểm đủ tại cửa vào. Nhờ vậy tập câu khả dụng **bất biến suốt một vòng** ⇒ phát lại ra đúng kết quả cũ |
-| C9 | Trận **practice trong một contest THẬT** | **Phép lọc ĐẢO CHIỀU**: kho của nó = **CHỈ những câu `usedInContest = true`**, tức chỉ câu **đã lộ** ở các trận thật trước. Hệ quả: trận practice **không tiêu thêm câu nào** và **không thể thấy đề chưa thi** ⇒ **không dùng contest thật để tổng duyệt trước trận được**. Contest chưa chạy trận nào thì kho này **rỗng** và cửa vào vòng tự chặn — đó là dạng chính xác của *"contest thật phải chạy ít nhất một lần mới practice được"*. Trong một **practice contest** thì không có phép đảo nào |
+| C9 | Trận **practice trong một contest THẬT** | **Phép lọc ĐẢO CHIỀU**: kho của nó = **CHỈ những câu `usedInContest = true`**, tức chỉ câu **đã lộ** ở các trận thật trước. Hệ quả: trận practice **không tiêu thêm câu nào** và **không thể thấy đề chưa thi** ⇒ **không dùng contest thật để tổng duyệt trước trận được**. Contest chưa chạy trận nào thì kho này **rỗng** và cửa vào vòng tự chặn — đó là dạng chính xác của *"contest thật phải chạy ít nhất một lần mới practice được"*. Trong một **practice contest** thì không có phép đảo nào. **Lượt hỏi ở đây VẪN sinh số liệu ghi ngược kho đề**, nhưng vào **bộ số `practice` riêng**, không bao giờ cộng với bộ `official` (`PRD-REQ-081`, `QĐ-127`) |
 
 **Không đổi gì.** Cờ `usedInContest` khi bỏ hoặc chạy lại vòng · event `QUESTIONS_DRAWN` · danh sách gán trong suốt một vòng đang chạy.
 
@@ -1619,7 +1619,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - **Ứng viên**: tín hiệu **trơ chưa từng được xử lý**, **và** ghế **vừa bị Huỷ kết quả** ở chính câu/vòng đó *(được đưa lại, tức nhận lượt thứ hai)*. **Không** phải ứng viên: ghế **bị loại** khỏi vòng VCNV · ghế đang bị **vô hiệu hoá**. Tín hiệu phải còn hiệu lực với **đích** của nó.
 - **Chọn**: hệ thống **khuyến nghị** tín hiệu sớm nhất chưa xử lý; admin chọn ứng viên khác được, lệch thì cảnh báo (C9). **Không chặn cứng** — `GR-003`/`QĐ-003` chỉ có ba chỗ chặn cứng.
 - **Đồng hồ**: cấp lại **trọn** cửa sổ suy nghĩ của vòng từ mốc bấm kích hoạt — Khởi động lượt chung **3 giây** · Câu hỏi phụ **15 giây** · Về đích và tín hiệu Chướng ngại vật **không có** đồng hồ trả lời riêng nên không mở cửa sổ nào.
-- **Số lần**: **một lần mỗi CÂU** ở ba vòng chuông; ở VCNV — nơi tín hiệu gắn với **vòng** — là **một lần mỗi phán quyết Huỷ kết quả**, và **không có trần tổng** (`PRD-REQ-113`). Chuỗi **không** có điều kiện dừng máy móc: mỗi vòng lặp đòi **một cú bấm *Huỷ kết quả* của admin**, nên nó bị chặn bởi **ý chí của người**, đúng `QĐ-001`. *(Trước đây mục này viết "chuỗi dừng khi hàng đợi cạn"; sau `QĐ-111` thì ghế bấm lại được nên hàng đợi nạp lại được, và câu đó đọc thành một bảo đảm không có.)*
+- **Số lần**: **một lần mỗi CÂU** ở ba vòng chuông; ở VCNV — nơi tín hiệu gắn với **vòng** — là **một lần mỗi phán quyết Huỷ kết quả**, và **không có trần tổng** (`PRD-REQ-113`). Chuỗi **không** có điều kiện dừng máy móc: mỗi vòng lặp đòi **một cú bấm *Huỷ kết quả* của admin**, nên nó bị chặn bởi **ý chí của người**, đúng `QĐ-001`.
 - **Hình phạt**: người được kích hoạt chịu **y hệt** luật của vòng, không có bảng điểm riêng.
 - **Mốc câu khép lùi** tới sau khi người được kích hoạt đã được chấm (`GR-037`).
 
@@ -1852,7 +1852,7 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 >
 > | Loại | Chế độ | Quy định ở |
 > |---|---|---|
-> | **Đáp án chuẩn** | **MẬT tới mốc CÂU KHÉP**; từ mốc đó công bố cho mọi vai theo cờ | **Rule này** |
+> | **Đáp án chuẩn** | **MẬT tới mốc CÂU KHÉP**; từ mốc đó công bố cho mọi vai theo cờ, **trừ khi admin đang giữ một cú ĐÓNG hiển thị bằng tay cho câu đó** *(C10)* | **Rule này** |
 > | **Bài làm của thí sinh khác** | **ẨN TẠM THỜI** khi câu còn mở; lộ khi admin bấm hiển thị | `GR-008` |
 > | **ĐIỂM SỐ** | **CÔNG KHAI, LUÔN LUÔN** — mọi vai, mọi lúc, gồm cả máy thí sinh | `QĐ-015` |
 >
@@ -1887,13 +1887,30 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 | C2 | **Giữ `PERM-045`** — phiên không điều khiển *(vai MC dựng sẵn)* | Trả đáp án; ghi audit. **Không** kèm quyền công bố — đó là `PERM-044` |
 | C3 | **Không giữ `PERM-045`** — reveal **TẮT** | **Không trả** |
 | C4 | **Không giữ `PERM-045`** — reveal **BẬT** · **câu chưa khép** | **Không trả** |
-| C5 | **Không giữ `PERM-045`** — reveal **BẬT** · **câu đã khép** | Trả đáp án |
+| C5 | **Không giữ `PERM-045`** — reveal **BẬT** · **câu đã khép** | Trả đáp án. **Hai đường, hai loại dấu vết** — xem §Kéo và đẩy bên dưới |
 | C6 | **Về đích** — người thi chính vừa bị chấm Sai, **cửa sổ cướp đang mở** | **Không trả** — câu **chưa khép**. Trả ở đây là xoá sổ cướp quyền |
-| C7 | Câu **bị bỏ qua** *(không ai bấm chuông)* · reveal **BẬT** | Trả đáp án — câu đã tiêu, đã khép |
+| C7 | Câu **bị bỏ qua** *(không ai bấm chuông)* · reveal **BẬT** | Trả đáp án — câu đã tiêu, đã khép. Như C5: xem §Kéo và đẩy |
 | C8 | Câu khép bằng phán quyết **Huỷ kết quả** | **Không tự trả.** Admin mở tay được (`QĐ-048`). Áp cho **mọi** vị trí trong chuỗi, kể cả khi *Huỷ kết quả* là phán quyết **khép câu** cho người cướp quyền Về đích — ở ca đó **C8 thắng C6**, quy tắc phát biểu theo **loại phán quyết**, không theo vai bị chấm |
 | C8b | Đang chờ admin **kích hoạt tay** một tín hiệu khác sau một cú *Huỷ kết quả* | **Không trả** — câu **chưa khép**, mốc đã lùi (`GR-032` §Kích hoạt tay). Công bố ở đây xoá cơ hội của người sắp được kích hoạt |
 | C9 | Đáp án **Chướng ngại vật** | Ngoài phạm vi rule này về **THỜI ĐIỂM** — theo `GR-012`. **Người nhận thì không đổi**: khi nó lộ, nó tới **cả hai kênh public** như mọi thứ khác (`QĐ-118`) |
 | **C10** | Câu khép, cờ **BẬT**, nhưng admin đang giữ một cú **ĐÓNG hiển thị bằng tay** cho câu này | **Không trả** — thao tác tay thắng cờ tự động ở **cả hai chiều** (`QĐ-074`, `QĐ-119`). Đáp án kín tới khi admin **tự mở lại**; hiệu lực ở **phạm vi câu**, không dính sang câu sau |
+
+### Kéo và đẩy — hai đường đáp án rời server, hai loại dấu vết
+
+Ở **C5** và **C7**, đáp án tới người **không giữ `PERM-045`**. Nhưng nó tới bằng **hai** đường khác hẳn nhau, và mỗi đường để lại dấu vết ở **một bảng khác nhau**:
+
+| | Đường **KÉO** | Đường **ĐẨY** |
+|---|---|---|
+| Ai khởi phát | một **phiên** yêu cầu xem đáp án | **engine**, tại mốc câu khép |
+| Ai nhận | riêng phiên đó | thí sinh + khán giả + lớp phủ, **cùng lúc** |
+| Điều kiện | cờ `revealAnswerAfterJudge` bật và câu đã khép | như trên |
+| Dấu vết | **một dòng nhật ký thao tác** mang kết quả *đã trả* — bước (6) | **một sự kiện trong nhật ký sự kiện trận**, mang mốc thời gian và câu bị lộ |
+
+**Cú đẩy sinh ĐÚNG MỘT sự kiện**, dù có 4 hay 400 điểm nhận — nó là **một** hành vi của engine, không phải N hành vi. Nó **không** sinh dòng nhật ký thao tác nào: nhật ký thao tác ghi *"thao tác của mọi vai"*, mà cú đẩy không thuộc vai nào, nên đặt nó vào đó buộc phải **bịa một chủ ngữ** — đúng thứ đã bị bác ở ca *khán giả vào phòng* (`QĐ-134`). Nhật ký thao tác tra ra nó qua đường **tham chiếu** (`QĐ-132`).
+
+**Ranh giới đã chấp nhận**: dấu vết này đi theo hạn lưu trữ của **trận**, không theo hạn của nhật ký thao tác — sau khi trận bị dọn, chỉ còn dòng mang nhãn *"nguồn đã hết hạn"* (`QĐ-137`).
+
+*Nguồn*: `QĐ-145`.
 
 > **Vì sao cờ đặt ở cấp TRẬN, không phải cấp CONTEST.** Một contest thật được phép chứa **cả** trận chính thức lẫn trận tổng duyệt. Đặt ở cấp contest thì không thể đặt hai giá trị khác nhau cho hai trận cùng phòng — kịch bản đó **không dựng được**.
 >
@@ -1907,13 +1924,19 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 
 **Không đổi gì.** Trạng thái trận — xem đáp án **không** sinh event điểm nào · túi permission của các vai · quyền đóng hiển thị thủ công của người giữ `PERM-044` (`QĐ-048`) — quyền này ở **hạng cao hơn** cú đẩy của engine, xem C10 · **cửa sổ cướp quyền và mọi con số của luật**.
 
-**Thứ tự đánh giá.** **(1)** nhận yêu cầu → **(2)** xét **permission `PERM-045` trong phạm vi contest của trận**: có ⇒ trả ngay → **(3)** không có: xét cờ reveal → **(4)** xét **câu đã khép chưa** → **(5)** xét ca biên *(Huỷ kết quả · Chướng ngại vật)* → **(5b)** xét **cú đóng hiển thị bằng tay của `PERM-044`**: còn hiệu lực cho câu này ⇒ **không trả**, bất kể (3) và (4) đã pass (`QĐ-119`) → **(6)** ghi audit nếu có trả.
+**Thứ tự đánh giá.** **(1)** nhận yêu cầu → **(2)** xét **permission `PERM-045` trong phạm vi contest của trận**: có ⇒ trả ngay → **(3)** không có: xét cờ reveal → **(4)** xét **câu đã khép chưa** → **(5)** xét ca biên *(Huỷ kết quả · Chướng ngại vật)* → **(5b)** xét **cú đóng hiển thị bằng tay của `PERM-044`**: còn hiệu lực cho câu này ⇒ **không trả**, bất kể (3) và (4) đã pass (`QĐ-119`) → **(6)** **ghi audit MỌI LẦN, kèm kết quả** *(đã trả · bị từ chối)* — `QĐ-133`.
+
+> **Bước (6) ghi CẢ lần bị từ chối.** Một chuỗi yêu cầu bị từ chối liên tiếp từ một phiên là dấu hiệu **dò đề**; không ghi thì hành vi đó **vô hình**, tức vế *"chứng minh đáp án không rò"* của `PRD-REQ-082` chỉ chứng minh được nửa có phép. Khuôn này **đã có tiền lệ chuẩn tắc** ở `NFR-14` và `QĐ-128` — mỗi lần gọi xuất để lại đúng một dòng mang kết quả, gồm cả lần bị từ chối lẫn lần thất bại.
+>
+> Bước (6) là bước **sau cùng**, chạy **sau** khi kết cục đã được quyết. Nó **không** đổi cột *kết quả* của một ca nào trong bảng quyết định, **không** đổi mốc câu khép, và **không** đổi thứ tự năm bước trước. Yêu cầu bị từ chối vẫn **im lặng** và vẫn **0** byte đáp án rời server.
+>
+> **Bước (6) chỉ phủ đường KÉO** — một *yêu cầu của một phiên*. Cú **đẩy hàng loạt** của engine tại mốc câu khép *(C5, C7)* đi đường khác: nó sinh **một** sự kiện trong **nhật ký sự kiện của trận**, mang mốc thời gian và câu bị lộ, và **0** dòng nhật ký thao tác — **một** sự kiện cho cả cú đẩy, **không** phải mỗi người nhận một dòng. Xem §Kéo và đẩy bên trên.
 
 > **Bước (2) CẤM hỏi tên vai.** Viết *"nếu là admin hoặc MC"* ở đây là vi phạm `QĐ-094` điều cấm 1, và nó vi phạm ở đúng chỗ đắt nhất — hàng rào chống rò đề. Ai giữ `PERM-045` là chuyện của catalog và của vai tuỳ biến, không phải của rule này.
 
 **Biên.** Mốc công bố là **CÂU KHÉP**, không sớm hơn. Ở Về đích, mốc này đến **sau** cú bấm Đúng/Sai của người thi chính, cách nhau ít nhất bằng độ dài cửa sổ cướp quyền.
 
-**Bấm trùng.** Xem nhiều lần: mỗi lần một dòng audit; trạng thái trận không đổi. Công bố là **một chiều ở phía engine** — đã công bố thì engine không tự thu lại.
+**Bấm trùng.** Xem nhiều lần: **mỗi lần một dòng audit**; trạng thái trận không đổi. Áp cho **cả** lần được trả **lẫn** lần bị từ chối — mười yêu cầu bị từ chối liên tiếp cho ra **mười** dòng, không gộp (`QĐ-133`). Công bố là **một chiều ở phía engine** — đã công bố thì engine không tự thu lại.
 
 > **"Một chiều" nói về ENGINE, không nói về ADMIN.** Nó **không** có nghĩa *"cú đẩy của engine đè được lên phán quyết của người"*. Hai mệnh đề độc lập và cùng đúng: **engine đi một chiều, admin đi được cả hai** — mở tay thắng cờ TẮT, đóng tay thắng cờ BẬT (`QĐ-074`, `QĐ-119`). Đó chính là hình dạng của mô hình ADVISORY.
 
@@ -1925,4 +1948,4 @@ Thiếu ⇒ **không mở được vòng Về đích**.
 - Khởi động lượt chung, hết 3 giây không ai bấm chuông: câu bị bỏ qua, **vẫn công bố** — câu đã hỏi, đã tiêu, giữ kín không bảo vệ được gì.
 - Trận chính thức tắt cờ: chấm xong, chỉ admin và MC thấy đáp án — hành vi cũ vẫn dựng lại được bằng một thao tác.
 
-**Nguồn**: `QĐ-015`, `QĐ-017`, `QĐ-039`, `QĐ-048`, `QĐ-051`, `QĐ-062`, `QĐ-074`, `QĐ-080`, `QĐ-118`, `QĐ-119`
+**Nguồn**: `QĐ-015`, `QĐ-017`, `QĐ-039`, `QĐ-048`, `QĐ-051`, `QĐ-062`, `QĐ-074`, `QĐ-080`, `QĐ-118`, `QĐ-119`, `QĐ-133` *(bước 6)*

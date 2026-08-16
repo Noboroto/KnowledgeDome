@@ -102,7 +102,7 @@ Bảy rule dưới đây **không** đến từ luật gốc. Chúng tồn tại
 | `GR-034` chuông chỉ nhận click chuột | Chống bấm nhầm khi đang gõ | `QĐ-023` |
 | `GR-035` server time | Công bằng và dựng lại được | `QĐ-006` `QĐ-029` |
 | `GR-036` mất kết nối và giữ ghế | Rủi ro của mạng, không có ở trường quay | `QĐ-045` `QĐ-046` `QĐ-047` |
-| `GR-037` phạm vi hiển thị đáp án | Bảo mật đề — luật gốc không cần vì đáp án nằm trên giấy của MC. **Mốc công bố** thì có gốc ở luật: cửa sổ cướp quyền Về đích buộc mốc phải là *câu khép*, không phải *đã chấm*. Mốc còn **lùi thêm** khi có kích hoạt tay | `QĐ-048` `QĐ-051` `QĐ-062` `QĐ-080` `QĐ-104` |
+| `GR-037` phạm vi hiển thị đáp án | Bảo mật đề — luật gốc không cần vì đáp án nằm trên giấy của MC. **Mốc công bố** thì có gốc ở luật: cửa sổ cướp quyền Về đích buộc mốc phải là *câu khép*, không phải *đã chấm*. Mốc còn **lùi thêm** khi có kích hoạt tay. **Bước (6) ghi audit** không có gốc ở luật chút nào — nó là yêu cầu **kiểm toán** của sản phẩm (`QĐ-133`), và vì thế nó không đổi kết cục của một ca nào. **§Kéo và đẩy** cũng thuần kiểm toán, không có gốc ở luật: nó chỉ nói dấu vết của C5 và C7 nằm bảng nào (`QĐ-145`) | `QĐ-048` `QĐ-051` `QĐ-062` `QĐ-080` `QĐ-104` `QĐ-133` `QĐ-145` |
 
 ---
 

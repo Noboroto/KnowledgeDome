@@ -1,7 +1,7 @@
-# Specification Quality Checklist: Game engine và luật thi đấu
+# Specification Quality Checklist: Sau trận — kết quả, thống kê, phát lại
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
-**Created**: 2026-07-30
+**Created**: 2026-08-04
 **Feature**: [spec.md](../spec.md)
 
 ## Content Quality
@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
-- [x] No [NEEDS CLARIFICATION] markers remain *(hai mục còn lại ở §Open Questions là **missing source behavior ngoài phạm vi v1**, không phải marker chờ phân xử)*
+- [x] No [NEEDS CLARIFICATION] markers remain
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
@@ -32,4 +32,4 @@
 
 ## Notes
 
-Hai mục còn mở — `OQ-004` *(băng điểm Chướng ngại vật cho `rowCount` 5-8)* và `OQ-005` *(luật cho số ghế trên 4)* — đều là **missing source behavior nằm ngoài phạm vi v1**: nguồn không viết luật cho các ca đó, và v1 chặn cứng chúng ở cú bấm bắt đầu trận. Không mục nào chặn implementation.
+Không còn mục nào chờ phân xử. Mọi requirement của feature này truy nguyên được về `docs/`.

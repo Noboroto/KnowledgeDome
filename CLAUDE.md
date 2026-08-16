@@ -8,7 +8,7 @@ Nền tảng web tổ chức thi đấu gameshow kiến thức tuỳ biến, mô
 
 ## 1. Nguồn sự thật
 
-**`docs/` là nguồn sự thật DUY NHẤT.** Bản đồ tài liệu: `docs/README.md`. Sổ quyết định: `docs/decisions.md` (`QĐ-001` → `QĐ-123`) — đây là nơi duy nhất ghi *vì sao*.
+**`docs/` là nguồn sự thật DUY NHẤT.** Bản đồ tài liệu: `docs/README.md`. Sổ quyết định: `docs/decisions.md` (`QĐ-001` → `QĐ-145`) — đây là nơi duy nhất ghi *vì sao*.
 
 ### Thứ bậc nguồn
 
@@ -164,7 +164,16 @@ Timer, điểm và chuông **chỉ tính ở server**; client chỉ render. **Se
 
 ### Nhật ký thao tác
 
-**Audit log mọi thao tác, mọi vai**: đăng nhập / đăng xuất / đăng nhập hỏng, CRUD kho đề và bộ đề, quản lý contest, mọi event trong trận *(đã có `MatchEvent` log riêng)*, khán giả vào và bị kick, xuất/nhập, và **xem đáp án**. Bảng `AuditLog` chung, append-only, gồm actor · action · target · timestamp · IP.
+**Nhật ký thao tác mọi thao tác, mọi vai** (`TERM-063`): đăng nhập / đăng xuất / đăng nhập hỏng, CRUD kho đề và bộ đề, quản lý contest, mọi event trong trận, khán giả **bị kick**, xuất/nhập, và **xem đáp án**. Bảng chung, append-only, gồm actor · action · target · timestamp · IP.
+
+Bốn ranh giới, đừng đọc sai:
+
+- **Event trong trận vào bằng THAM CHIẾU, không nhân bản** (`QĐ-132`). `MatchEvent` là bảng riêng và là **nguồn để tính điểm**; nhật ký thao tác trỏ tới nó, **không** chép nội dung sang. Nội dung một event có **đúng một** nguồn sự thật.
+- **Khán giả VÀO phòng không ghi** (`QĐ-134`). Kênh public cố ý không có định danh, nên mọi lối giữ dòng đó đều phải bịa một chủ ngữ. Cú **kick** thì ghi — đó là phán quyết của admin, có người bấm.
+- **Mỗi YÊU CẦU xem đáp án để lại một dòng mang KẾT QUẢ** *(đã trả · bị từ chối)*, gồm cả lần bị từ chối (`QĐ-133`). Chuỗi yêu cầu bị từ chối liên tiếp là dấu hiệu **dò đề**; không ghi thì nó vô hình.
+- **Bảng này có hạn lưu trữ RIÊNG** (`QĐ-131`), không theo `matchPurpose`. *"Append-only"* là ràng buộc lên **bề mặt sản phẩm** — không đường sửa, không đường xoá cho bất kỳ vai nào; bước dọn theo hạn riêng là đường **duy nhất** một dòng rời hệ thống.
+
+Đọc bằng **hai cửa tách bạch** (`QĐ-135`): `PERM-015` `audit.read` cấp **bản cài**, và `PERM-062` cấp **`CONTEST`**.
 
 ---
 

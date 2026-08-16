@@ -233,7 +233,35 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 
 **Hệ quả.** `ASSUMPTION-002` chuyển từ *"con số chốt mà không dẫn nguồn nhu cầu"* sang **có con số từ chủ dự án**, nhưng vế *"nhiều trận song song là nhu cầu thật"* **vẫn là giả định chưa kiểm chứng** — 6 là kỳ vọng, không phải quan sát.
 
+> ⚠️ **`QĐ-148` đã khai con số này áp cho hồ sơ nào**: **6** là mục tiêu của **hồ sơ máy chủ**; **hồ sơ portable** có mục tiêu riêng là **1 trận**. Nguyên tắc *"mục tiêu, không phải chặn cứng"* của mục này **giữ nguyên và áp cho cả hai** con số.
+
 *Nguồn*: `[CHỦ DỰ ÁN]`
+
+### QĐ-148 — Mục tiêu định cỡ số trận song song đặt THEO HỒ SƠ: 6 máy chủ, 1 portable
+
+**Quyết định.** Con số của `QĐ-089` được khai rõ là thuộc **hồ sơ máy chủ dựng bằng container**. **Hồ sơ portable** có mục tiêu định cỡ riêng: **1 trận chạy đồng thời**.
+
+| Hồ sơ triển khai | Mục tiêu định cỡ |
+|---|---|
+| Máy chủ dựng bằng container | **6** trận đồng thời *(thường trực 1-2)* |
+| Portable chạy LAN offline | **1** trận đồng thời |
+
+**Cả hai con số vẫn là mục tiêu vận hành, không phải chặn cứng.** Nguyên tắc của `QĐ-089` áp nguyên vẹn cho **mọi** hồ sơ và **mọi** giá trị: hệ thống **không đếm** số trận đang chạy và **không từ chối** một trận vì vượt mục tiêu. Mở trận **thứ hai** trên bản portable phải chạy được, đúng như mở trận **thứ bảy** trên hồ sơ máy chủ. `INV-014` vẫn đúng **ba** chỗ chặn cứng.
+
+**Vì sao không để một con số chung.** `NFR-11` viết *"một bản cài"* mà không nói hồ sơ nào, và hai hồ sơ khác nhau về **hạng phần cứng**: một laptop mang ra hội trường và một máy chủ trong phòng máy. Một con số dùng chung thì hoặc bóp nghẹt hồ sơ máy chủ, hoặc đặt một kỳ vọng laptop không đỡ nổi — và bài kiểm thử tải của hồ sơ còn lại mất ngưỡng để hướng tới. Đây là **cùng loại** với việc `PRD-REQ-019` để ngưỡng media đặt theo từng bản triển khai.
+
+**Vì sao portable là 1 chứ không phải một con số nhỏ hơn 6.** Bản portable là máy của **một** hội trường, và một hội trường chạy **một** trận. Con số 1 nói ra hình dạng thật của ca dùng thay vì chọn một giá trị trung gian không dẫn được từ đâu.
+
+**Chỗ dễ đọc sai nhất.** Con số **1** trông giống một hạn ngạch. Nó không phải. `QĐ-089` khai nguyên tắc chứ không khai con số, và nguyên tắc đó không đổi theo giá trị: con số 1 dùng để **định cỡ máy và dựng bài kiểm thử tải**, không dùng để từ chối gì.
+
+**Hệ quả.**
+
+- **`NFR-11` phải viết lại** thành hai mục tiêu theo hồ sơ, giữ nguyên vế *"không đếm, không từ chối"*.
+- **Bài kiểm thử tải tách làm hai**, mỗi hồ sơ một ngưỡng.
+- **`ASSUMPTION-002` không đổi hạng**: *"nhiều trận song song là nhu cầu thật"* vẫn là giả định chưa kiểm chứng, và nay chỉ còn nói về **hồ sơ máy chủ**.
+- **`QĐ-067` không bị đụng tới**: hai vế còn mở ở đó nói về **số viewer đồng thời** và **ngưỡng độ trễ** — một trục khác với số trận.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-089` · `PRD-REQ-085`, `PRD-REQ-087`, `NFR-11` · `specs/012-van-hanh-hai-ho-so-trien-khai` `OQ-007`
 
 ### QĐ-008 — Một contest có nhiều TÀI KHOẢN admin, nhưng đúng MỘT PHIÊN điều khiển
 
@@ -254,6 +282,52 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
+
+### QĐ-149 — `ASSUMPTION-002` đọc theo trục HỒ SƠ; portable không mang giả định này
+
+**Quyết định.** Giả định *"nhiều trận song song là nhu cầu thật"* áp cho **hồ sơ máy chủ**, không áp cho hồ sơ portable. Con số **tối đa 6, thường trực 1-2** là mục tiêu định cỡ **của hồ sơ máy chủ** (`QĐ-089`, `QĐ-148`). Hồ sơ portable có mục tiêu **1 trận**, và con số đó **không phải một giả định chờ kiểm chứng** — nó là hình dạng của ca dùng: một máy mang tới **một** hội trường cho **một** buổi phát sóng.
+
+**Vì sao.** `QĐ-148` tách mục tiêu định cỡ theo hồ sơ nhưng chỉ sửa `NFR-11`; `ASSUMPTION-002` vẫn nói *"tối đa 6, thường 1-2"* không phân biệt hồ sơ, nên cụm *"thường trực 1-2"* mất chủ ngữ. Một giả định **chưa kiểm chứng** mà mô tả sai trục thì phép kiểm chứng nó cũng vô nghĩa.
+
+**Vì sao portable không mang giả định.** Giả định tồn tại để đánh dấu chỗ *"chưa ai đo"*. Với portable thì không có gì để đo: một hội trường chạy một trận là quan sát trực tiếp về ca dùng, không phải kỳ vọng về nhu cầu.
+
+**Hệ quả.**
+
+- **`ASSUMPTION-002` viết lại** trong `PRD.md` §18 theo trục hồ sơ.
+- **Phép kiểm chứng** giả định này chỉ chạy trên hồ sơ máy chủ; bài kiểm thử tải của portable hướng tới **1 trận** và không cần đợi giả định nào.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-089`, `QĐ-148` · `NFR-11`, `ASSUMPTION-002`
+
+
+### QĐ-159 — Ngưỡng kích thước media DÙNG CHUNG cho cả hai hồ sơ
+
+**Quyết định.** Ngưỡng kích thước media là **một bộ giá trị duy nhất** cho một bản cài, **không** tách theo hồ sơ triển khai. Hai hồ sơ dùng **cùng** bộ ngưỡng mặc định; ngưỡng vẫn **cấu hình được** ở mức bản cài và vẫn **không hard-code**.
+
+**Vì sao không tách theo hồ sơ.** Ngưỡng tồn tại để **gói contest mang đi được** (`PRD-REQ-019` §Rationale) — mà gói đi từ hồ sơ máy chủ **sang** hồ sơ portable. Nếu hồ sơ máy chủ có ngưỡng rộng hơn thì nó tạo ra đúng những gói mà portable không nuốt nổi, tức ngưỡng rộng hơn ở đầu này **phá** mục đích của ngưỡng ở đầu kia. Một bộ chung, lấy theo ràng buộc chặt hơn, là cách duy nhất ngưỡng làm được việc của nó.
+
+**Vì sao đơn giản hơn đáng kể.** Một trục cấu hình thay vì hai · không có ca *"gói hợp lệ ở đây, bị từ chối ở kia"* · thông điệp từ chối nêu **một** con số và con số đó đúng ở mọi bản cài.
+
+**Hệ quả.** `specs/012` `FR-021` viết lại: ngưỡng là **một** bộ giá trị cấp bản cài, bỏ mệnh đề *"hai hồ sơ đặt được hai giá trị khác nhau"* · `specs/003` `FR-011` không đổi — nó vốn chỉ đòi ngưỡng **tồn tại và cấu hình được** · con số cụ thể vẫn **không** thuộc `docs/` (`PRD-REQ-019` §Note).
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `PRD-REQ-019` · `QĐ-067`
+
+### QĐ-160 — *"Hồ sơ triển khai"*, *"bản cài"*, *"bản triển khai"* là MỘT khái niệm
+
+**Quyết định.** Ba cụm chỉ **cùng một** khái niệm: **một bản cài đang chạy của sản phẩm**. Khái niệm đó có **đúng hai** giá trị:
+
+| Giá trị | Nghĩa |
+|---|---|
+| **Máy chủ** | Bản cài dựng bằng container, chạy trên máy chủ |
+| **Portable** | Bản cài chạy LAN offline trên Windows |
+
+Không có tầng trung gian: **một bản cài mang đúng một hồ sơ**, và không hồ sơ nào phục vụ nhiều bản cài.
+
+**Vì sao phải chốt.** `PRD-REQ-019` nói *"từng bản triển khai"*, `NFR-11` nói *"một bản cài"*, `PRD-REQ-085` nói *"hai hồ sơ"*. Ba cụm cho cùng một thứ khiến **phạm vi đặt** của mọi ngưỡng vận hành không xác định được: đặt ở *hồ sơ* và đặt ở *bản cài* là hai điều khác nhau nếu hai khái niệm đó khác hạng.
+
+**Hệ quả.** `docs/glossary.md` nhận một `TERM-*` mới khai ba cụm là tên thay thế của cùng một khái niệm · mọi ngưỡng vận hành đặt ở phạm vi **bản cài**, và *"theo hồ sơ"* đọc là *"theo bản cài, vì mỗi bản cài mang đúng một hồ sơ"* · `NFR-11` giữ nguyên câu chữ và nay đọc được chính xác.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `PRD-REQ-085`, `PRD-REQ-019`, `NFR-11` · `QĐ-148`
+
 
 # C. Điểm và event log
 
@@ -352,6 +426,21 @@ Cái con số dùng để làm là **định cỡ máy** và **dựng bài kiể
 *Nguồn*: `[CHỦ DỰ ÁN]` · *Thay cho*: mâu thuẫn `LOBBY` / `FINISHED` giữa `game-rules.md` và `game-state-machine.md`
 
 ---
+
+### QĐ-152 — Dấu Đúng/Sai trước cú bấm CHỐT CÂU là lựa chọn tạm, sửa tự do
+
+**Quyết định.** Ở **hai vòng chấm theo lô** — Tăng tốc và câu hàng ngang VCNV — dấu Đúng/Sai admin đặt cho từng ghế là **lựa chọn tạm**: sửa lại được **không giới hạn số lần** cho tới cú bấm **chốt câu**. Sự kiện điểm chỉ sinh **tại** cú bấm đó. Sau chốt câu thì **không có** đường đổi phán quyết của một người; sửa sai đi qua **điều chỉnh điểm thủ công**.
+
+**Vì sao đây không phải luật mới.** Nó là hệ quả bắt buộc của hai mệnh đề đã có: `STATE-005` §Cấm khai *"một câu = **MỘT** event cho toàn bộ bảng"*, và ghi chú của chính state đó khai *"cú bấm **chốt câu** **chính là** phán quyết"*. Nếu event chỉ sinh tại chốt câu thì dấu đặt trước đó **chưa phải phán quyết** — nên nó sửa được là tính chất cấu trúc, không phải một quyền được cấp thêm.
+
+**Vì sao vẫn phải ghi.** `INV-009` đang phát biểu mệnh đề này như một **suy luận** từ `GR-013` §Bấm trùng và `GR-008` §Thứ tự đánh giá, mà hai chỗ đó chỉ nói về mốc **sau** chốt câu và về thứ tự ba bước — không chỗ nào phát biểu quyền sửa tự do. Một bất biến đứng trên suy luận là chỗ dễ bị lật khi có người đọc lại nguồn.
+
+**Vì sao KHÔNG đặt giới hạn số lần sửa.** Giới hạn sẽ là một **luật mới**, không phải một phép làm rõ: nó cần một con số không nguồn nào hàm ý, và nó chống một hành vi chưa ai chỉ ra là có hại. Admin sửa dấu nhiều lần trước khi chốt là **đang cân nhắc**, đúng mô hình `QĐ-001` — máy giữ sự kiện, người phán quyết.
+
+**Không đổi gì.** Mốc chốt câu vẫn là mốc khép ở hai vòng này · `INV-009` vẫn đúng ở vế *"một câu chỉ khép một lần"* · lịch sử các bản đã gửi vẫn không xoá.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-013`, `QĐ-014`, `QĐ-053`, `QĐ-059` · `INV-009`, `STATE-005`, `GR-008`, `GR-013`
+
 
 # D. Hai mode trả lời
 
@@ -935,6 +1024,10 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 
 **Thời điểm xuất.** X4 **chỉ từ trận đã `FINISHED`** — chưa chốt thì chưa có thứ hạng (`GR-022`), gọi là *"kết quả"* là sai. X2 xuất được **mọi lúc**, kể cả giữa trận, nhưng gói phải đóng dấu **"trận chưa đóng sổ"**.
 
+> ⚠️ **`QĐ-124` đã trả lời ca `FINISHED` nhãn `bỏ dở`**: X4 **xuất được**, hai trường *thứ hạng* và *người thắng* **để trống**, kèm nhãn và lý do. Câu *"chưa có thứ hạng thì gọi là kết quả là sai"* nhắm vào việc **khẳng định** một thứ hạng không tồn tại, không nhắm vào việc có gói hay không.
+>
+> ⚠️ **Ba biện pháp gác của §Ranh giới đáp án bên trên đã được `QĐ-126` ấn định THỨ TỰ**: `PERM-020` là **cửa từ chối duy nhất** và chạy trước hết, với **một** thông điệp không đổi theo trạng thái trận hay theo quyền đọc kho đề.
+
 **Ranh giới với biên bản PDF (`QĐ-077`).** Biên bản là **một trận, cho người đọc**, in theo lần chạy kèm nhãn *đã bỏ / đã chạy lại / kết thúc sớm*. X2 và X4 là **cấp contest, cho máy đọc**, gộp mọi trận. Không cái nào thay cái nào — nhưng **sinh từ cùng nguồn**, nếu không biên bản và gói sẽ trôi khỏi nhau.
 
 **Điều kiện cần: định danh câu ổn định.** X3 ghép được và X2 đọc lại được **chỉ khi** `questionId` sống sót qua xuất → nhập của X1. Gói contest **mang định danh ổn định của câu** và nhập **giữ nguyên**. Điều này vốn đã ngầm cần cho `QĐ-071` *(`everPublic` đi theo câu qua import/export)*, nhưng chưa từng được viết ra.
@@ -942,7 +1035,7 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 **Hệ quả.**
 
 - **Rủi ro *"không có đường mang kết quả về"* đổi hạng**: từ *"chưa quyết"* thành **ranh giới chấp nhận có chủ đích**, cùng loại với `RISK-009` — nên nó **không còn là một mục rủi ro mở** và đã rời bảng `PRD.md` §18. *(Mã `RISK-010` trong bảng hiện hành là một rủi ro khác — dữ liệu cá nhân lộ qua vật mang, `QĐ-086`.)*
-- **Thống kê ghi ngược kho đề (`PRD-REQ-081`) chỉ áp cho trận chạy trên CÙNG bản cài.** Trận chạy trên portable đóng góp đúng **một bit** *"đã dùng"*, không đóng góp số liệu. Đây là cái giá đã biết của việc bỏ đồng bộ kết quả.
+- **Thống kê ghi ngược kho đề (`PRD-REQ-081`) chỉ áp cho trận chạy trên CÙNG bản cài.** Trận chạy trên portable đóng góp đúng **một bit** *"đã dùng"*, không đóng góp số liệu. Đây là cái giá đã biết của việc bỏ đồng bộ kết quả. — ⚠️ **`QĐ-127` khai nội dung của *"số liệu"* đó**: ba nhóm trường, mọi trận đã đóng sổ đóng góp, tách hai bộ theo `matchPurpose`. Giới hạn *cùng bản cài* ở đây **giữ nguyên** và độc lập với phép tách đó.
 - **X2 là van thoát của hạn lưu trữ.** `QĐ-077` yêu cầu job dọn không đụng biên bản đã xuất; với X2 câu đó có nghĩa vật lý — gói đã xuất nằm **ngoài** hệ thống. Xuất trước khi hết hạn thì bằng chứng phân xử còn nguyên mà dữ liệu trong máy vẫn dọn đúng hạn.
 - **Nhập X3 phải có bản xem trước ba nhóm** trước khi cho bấm: *sẽ chuyển sang đã dùng* · *đã ở trạng thái đó, bỏ qua* · **không thuộc danh sách gán của contest đích** — nhóm thứ ba **báo rõ và không tự áp**, vì cờ này gắn với contest chứ không gắn với câu.
 - **Cả hai đường ghi đều qua dialog Yes/No** (`QĐ-072`, không hoàn tác được) và ghi `AuditLog` kèm nguồn là *tay* hay *bản kê nào*. **Không** sinh `MatchEvent` — đây là thao tác cấp contest, không thuộc trận nào.
@@ -981,6 +1074,70 @@ Nghĩa là hàng ngang **không phải câu hỏi độc lập** — nó là **g
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
+
+### QĐ-153 — Câu Chướng ngại vật mang ĐÚNG MỘT gợi ý và KHÔNG có phương án
+
+**Quyết định.** Câu Chướng ngại vật mang **đúng một** gợi ý — trường `clues[]` có **đúng 1** phần tử, không phải một mảng độ dài tuỳ ý. *(Vế **không có phương án** nay thừa: `QĐ-162` đã bỏ trường danh sách phương án khỏi mọi câu hỏi.)* Về hình dạng dữ liệu nó đọc như **một hàng ngang không có đáp án riêng**: cùng cấu trúc câu hỏi, khác ở chỗ nó không tự mở một miếng ghép nào.
+
+**Vì sao.** Luật gốc chỉ có **một** gợi ý cuối, đặt ở ô trung tâm, đưa ra sau khi cả 4 hàng ngang đã mở. Không chỗ nào trong nguồn hàm ý nhiều hơn một, nên một mảng độ dài tuỳ ý là **sức chứa không có nhu cầu** — và mỗi phần tử thừa là một chỗ giao diện phải quyết định hiển thị thế nào.
+
+**Không đổi gì.** Bốn hàng ngang vẫn là bốn câu hỏi riêng, mỗi câu có đáp án của mình · câu ô trung tâm vẫn cho **+10** khi đúng (`GR-011`) · bộ Chướng ngại vật vẫn phải nguyên vẹn mới dùng được cho vòng VCNV (`GR-031` C3b).
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `source/fandom-olympia-26-luat-choi.md` §Vượt chướng ngại vật · `GR-009`, `GR-011`
+
+### QĐ-154 — Xoá mềm câu hỏi là MỘT CHIỀU, và nó GỠ tư cách thành viên
+
+**Quyết định.** Hai vế:
+
+1. **Không có thao tác phục hồi.** Một câu đã xoá mềm **không** quay lại được trạng thái dùng được; hệ thống không có đường ngược trên bất kỳ bề mặt nào.
+2. **Xoá mềm GỠ tư cách thành viên** của câu trong mọi bộ đề và mọi bộ Chướng ngại vật mà nó đang thuộc về — không phải chỉ ẩn câu đi.
+
+**Vì sao một chiều.** Xoá mềm tồn tại để giữ **dữ liệu lịch sử** — trận đã chạy vẫn tra ra được nội dung câu đã lên sóng (`INV-022`). Nó **không** tồn tại như một thùng rác có thể lục lại. Thêm đường phục hồi là thêm một trạng thái thứ ba *(đã xoá nhưng lấy lại được)* mà không ca dùng nào đòi.
+
+**Vì sao gỡ tư cách thành viên.** Nếu chỉ ẩn câu mà giữ tư cách, một bộ Chướng ngại vật sẽ **trông nguyên vẹn** trong khi một thành phần của nó đã biến mất — và phép kiểm kho đề đếm **bộ nguyên vẹn**, không đếm câu (`GR-031` C3b). Giữ tư cách nghĩa là để phép kiểm nói dối. Gỡ tư cách làm bộ đó **vỡ ngay**, đúng cách `GR-031` C3c đã xử ca hàng ngang bị dùng làm Câu hỏi phụ.
+
+**Hệ quả.** Bộ Chướng ngại vật mất một thành phần vì xoá mềm ⇒ **vỡ**, không dùng cho vòng VCNV nữa · giao diện MUST cảnh báo trước khi xoá mềm một câu đang là thành phần của một bộ, nêu rõ bộ nào sẽ vỡ — cùng khuôn `GR-031` C3c.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-107` · `GR-031` C3b, C3c · `INV-022`
+
+### QĐ-155 — Lưu câu thiếu media ĐƯỢC; chỉ cảnh báo, không thử lại
+
+**Quyết định.** Khi việc tải media lên **thất bại giữa chừng** lúc người ra đề lưu một câu hỏi, hệ thống **vẫn lưu câu** ở dạng **thiếu media**, và hiện một **cảnh báo** nêu rõ tệp nào chưa lên được. Hệ thống **MUST NOT** tự thử lại, và **MUST NOT** chặn cú lưu.
+
+**Vì sao không chặn.** Phần chữ của câu là công sức đã bỏ ra; ném nó đi vì một tệp hỏng là mất dữ liệu của người dùng để đổi lấy một trạng thái sạch mà không ai cần.
+
+**Vì sao không thử lại tự động.** Người ra đề đang ngồi trước màn hình và biết tệp nào của mình; một vòng thử lại ngầm chỉ làm chậm phản hồi và giấu mất nguyên nhân thật *(tệp quá ngưỡng, tệp hỏng, mạng đứt)*. Cảnh báo nói thẳng thì người đó tải lại — một thao tác, có chủ đích.
+
+**Hệ quả.** Câu thiếu media **vẫn ở `DRAFT`** và vẫn đi qua cửa duyệt như thường; việc một câu có đủ media hay chưa là chuyện người duyệt nhìn thấy · phép kiểm kho đề trước trận vẫn là hàng rào cuối, không phải cú lưu.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `PRD-REQ-019` · `GR-031`
+
+### QĐ-156 — Cụm mật khẩu KHÔNG được lưu; mỗi lần xuất khai lại
+
+**Quyết định.** Cụm mật khẩu bảo vệ danh sách người tham gia **không bao giờ được lưu** ở bất kỳ đâu trong hệ thống — nó là chìa để mã hoá dữ liệu, không phải một thiết lập của contest. Hệ quả trực tiếp: **mỗi lần xuất là một lần khai lại cụm mật khẩu**, và hệ thống **không** có khái niệm *"dùng lại cụm đã đặt lần trước"*.
+
+**Vì sao câu hỏi tự tan.** Câu hỏi *"xuất lại nhiều lần có bắt buộc cụm mới không"* giả định hệ thống **nhớ** cụm cũ để mà chọn giữa dùng lại hay bắt mới. Nó không nhớ. Không có gì để dùng lại, nên không có lựa chọn nào phải khai.
+
+**Hệ quả.**
+
+- Hai gói xuất từ cùng một contest ở hai thời điểm khác nhau **có thể** dùng cùng một cụm hoặc hai cụm khác nhau — đó là lựa chọn của người gõ, hệ thống không biết và không cần biết.
+- Hệ thống **MUST NOT** có ô *"ghi nhớ cụm mật khẩu"*, **MUST NOT** gợi ý lại cụm cũ, và **MUST NOT** kiểm rằng cụm mới khác cụm cũ.
+- Điểm yếu còn lại vẫn đúng như `RISK-010` khai — **độ mạnh của cụm do người đặt** — và không bù được bằng kỹ thuật.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-086` · `NFR-24b`, `RISK-010`
+
+### QĐ-157 — Chặn xuất và nhập gói contest CHỈ khi kho đề RỖNG
+
+**Quyết định.** Gói contest có **0 câu hỏi** MUST bị chặn ở **cả** bước xuất lẫn bước nhập. Gói có **từ 1 câu trở lên** MUST được chấp nhận, kể cả khi số câu chưa đủ để chạy bất kỳ vòng nào.
+
+**Vì sao chặn ở 0.** Một gói rỗng không mang gì để trao đổi; cho nó đi qua là dựng một hiện vật hợp lệ về hình thức mà vô nghĩa về nội dung, và người nhập chỉ phát hiện ra khi mở gói ở máy đích.
+
+**Vì sao KHÔNG chặn ở "chưa đủ chạy vòng".** Đó là việc của **phép kiểm kho đề trước trận** (`GR-031` C3), chạy ở **cửa vào vòng** với con số nhu cầu thật của từng vòng. Đẩy phép kiểm đó lên bước xuất là kiểm sai chỗ: gói contest là **vật mang**, và soạn đề dở dang rồi mang sang máy khác soạn tiếp là một ca dùng hợp lệ của `JOURNEY-003`.
+
+**Hệ quả.** Ngưỡng chặn là **một** con số duy nhất và nó là **0** · thông điệp từ chối nói rõ *"gói không có câu hỏi nào"*, không nói về đủ hay thiếu cho một vòng.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-084` · `GR-031` C3 · `JOURNEY-003`
+
 
 # I. Ghế, kết nối, và quyền thao tác
 
@@ -1421,6 +1578,8 @@ Mỗi loại invalid state phải có **thông điệp riêng**. Một câu chun
 
 **Quyết định.** Một vòng chạy nhiều lần thì biên bản in **nhiều khối**, theo thứ tự thời gian, mỗi khối một **số lần chạy** và một **nhãn**: *đã bỏ* · *đã chạy lại* · *kết thúc sớm* · *hoàn thành*. Không gộp, không giấu lần hỏng.
 
+> ⚠️ **Hai thứ ở trên đã được `QĐ-125` tách thành HAI TRƯỜNG độc lập**: *cách rời* mang tập bốn giá trị, và *lần chạy thứ mấy* là số nguyên từ `1`. Giá trị `hoàn thành` áp cho **mọi** lần chạy kết thúc bình thường, kể cả lần chạy sinh ra bởi một cú chạy lại. Vế *"không gộp, không giấu lần hỏng"* **giữ nguyên**.
+
 **Event hoàn nguyên hiện trong biên bản** như mọi event khác — nó là một dòng có tên người bấm và lý do, không phải một phép trừ thầm lặng.
 
 **Xuất biên bản trước khi dọn dữ liệu.** Job dọn theo retention **cảnh báo trước**, và **không** đụng biên bản đã xuất — hiện vật đã xuất nằm ngoài vòng đời của dữ liệu thô.
@@ -1534,6 +1693,458 @@ Ca dựng được rõ nhất: mở **lớp công bố kết quả** ở `LOBBY`
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
+### QĐ-124 — Gói kết quả rút gọn xuất được từ trận BỎ DỞ; hai trường ĐỂ TRỐNG thay vì từ chối
+
+**Quyết định.** Gói **kết quả rút gọn** (`QĐ-084` X4) xuất được từ trận nhãn **`bỏ dở`**. Gói mang bảng điểm **tại mốc đóng**, để **trống** hai trường *thứ hạng* và *người thắng*, và mang kèm **nhãn `bỏ dở`** cùng **lý do đóng sổ**.
+
+Điều kiện *"chỉ xuất được từ trận đã đóng sổ"* của `PRD-REQ-097` **giữ nguyên nghĩa rộng**: `bỏ dở` là một cách đóng sổ, và nó thoả.
+
+**Vì sao đây là một câu phải trả lời.** `PRD-REQ-097` đòi gói chứa *"bảng điểm cuối, **thứ hạng** và **người thắng**"*, còn `STATE-008` §Khi `bỏ dở` khai *"**không** công bố người thắng, **không** phân định thứ hạng"*. Trận `bỏ dở` **thoả** điều kiện xuất nhưng **thiếu** hai phần ba nội dung bắt buộc. Hai nguồn cùng tầng, nên không suy ra được.
+
+**Vì sao chọn ĐỂ TRỐNG chứ không TỪ CHỐI.** Lý lẽ của `QĐ-084` — *"chưa có thứ hạng thì gọi là kết quả là sai"* — nhắm vào việc **khẳng định một thứ hạng không tồn tại**, không nhắm vào việc **có gói hay không**. Để trống kèm nhãn giải đúng mối lo đó: gói không khẳng định gì sai. Từ chối thì giải quá tay — nó cắt mất hiện vật ở **đúng ca cần hiện vật nhất**, vì buổi thi hỏng là lúc dễ có khiếu nại nhất, và người nhận báo cáo vẫn cần một bản kê điểm gọn mà không phải mở gói nhật ký sự kiện đầy đủ.
+
+**Trường trống KHÔNG BAO GIỜ đứng một mình.** Nó luôn đi cùng **nhãn `bỏ dở`** và **lý do**, nên bên nhận không đọc nhầm thành *"chưa tính xong"*. Đây là cùng khuôn với dấu *"trận chưa đóng sổ"* của X2 (`QĐ-084` §Thời điểm xuất): một gói được phép thiếu dữ liệu **miễn là nó nói ra mình thiếu**.
+
+**Không đổi gì.** Ranh giới *"X4 không chứa đáp án, nội dung câu, và cả `questionId`"* · gói vẫn **chỉ có chiều ra** · trận `bỏ dở` vẫn **không** có thứ hạng và **không** có người thắng ở mọi bề mặt khác — quyết định này không hồi sinh chúng, nó chỉ ấn định gói ghi lại **sự vắng mặt** của chúng.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-084` *(bốn gói)*, `QĐ-038` *(nhãn bỏ dở)*
+
+### QĐ-125 — Khối biên bản mang HAI TRƯỜNG tách bạch: *cách rời* và *lần chạy thứ mấy*
+
+**Quyết định.** Mỗi khối của biên bản trận (`QĐ-077`) mang **hai trường độc lập**:
+
+| Trường | Giá trị | Nghĩa |
+|---|---|---|
+| **cách rời** | `đã bỏ` · `đã chạy lại` · `kết thúc sớm` · `hoàn thành` | **Cửa ra** đã kết thúc lần chạy đó |
+| **lần chạy thứ mấy** | số nguyên từ `1`, không lặp trong phạm vi vòng | **Thứ tự** của lần chạy |
+
+`hoàn thành` áp cho **bất kỳ** lần chạy nào kết thúc bình thường, **kể cả** lần chạy sinh ra bởi một cú chạy lại. Hai trục **không trộn** vào một trường.
+
+**Vì sao — tập nhãn cũ trộn hai trục.** `T-012`, `T-013`, `T-014` gán nhãn tại mốc **rời** lần chạy, nhưng `GR-030` §Ví dụ lại dùng `đã chạy lại` cho lần chạy **thứ hai** — là lần chạy chưa kết thúc lúc được gán nhãn. Một trường không mang nổi cả hai nghĩa, và chỗ hỏng lộ ra ở ca nhiều khối: chuỗi *bỏ → chạy lại → kết thúc sớm → hoàn thành* cần **bốn** khối phân biệt được, mà tập nhãn cũ **không** phân biệt được khối hỏng thứ nhất với khối hỏng thứ ba.
+
+**Vì sao không phải một khái niệm mới.** `QĐ-077` **vốn đã** đòi *"mỗi khối một **số lần chạy** và một **nhãn**"* — tức nó đã khai hai thứ. Mục này chỉ ấn định **nghĩa** của trường nhãn là *cách rời*, và bỏ đi cách đọc thứ hai. Không trường nào được thêm mới.
+
+**Không đổi gì.** Vế *"không gộp, không giấu lần hỏng"* của `QĐ-077` · thứ tự thời gian của các khối · sự kiện hoàn nguyên vẫn hiện thành dòng riêng kèm người bấm và lý do · điểm và thứ hạng của trận.
+
+**Hệ quả.** `GR-030` §Ví dụ *"một **đã bỏ** một **đã chạy lại**"* đọc lại thành: khối 1 mang *cách rời* `đã bỏ` và *lần chạy* `1`; khối 2 mang *cách rời* `hoàn thành` và *lần chạy* `2`. Giá trị `đã chạy lại` chỉ xuất hiện khi một lần chạy bị **cú chạy lại** kết thúc — tức chính nó bị thay bằng một lần chạy mới.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-077` *(biên bản theo lần chạy)*, `QĐ-034`, `QĐ-035`
+
+### QĐ-126 — Xuất gói kết quả: permission là CỬA TỪ CHỐI DUY NHẤT, và chỉ có MỘT thông điệp
+
+**Quyết định.** Khi xuất gói **toàn bộ kết quả + nhật ký sự kiện** (`QĐ-084` X2), ba điều kiện được đánh giá theo thứ tự:
+
+1. **`PERM-020` `results.export`** — **cửa từ chối duy nhất**. Thiếu ⇒ từ chối bằng **một** thông điệp, **0** byte nội dung gói rời server.
+2. **Trạng thái trận** — quyết dấu *"trận chưa đóng sổ"*. **Không** từ chối.
+3. **Quyền đọc kho đề** — quyết gói nhúng nội dung câu hay chỉ mang định danh. **Không** từ chối.
+
+Thông điệp từ chối ở bước 1 **MUST NOT** khác nhau theo trạng thái trận hay theo việc phiên gọi có quyền đọc kho đề hay không.
+
+**Vì sao thứ tự này quan trọng.** Thứ tự ngược lại biến thông báo lỗi thành **kênh dò quyền**: nếu hình dạng gói được quyết trước cửa từ chối thì một phiên **không** có `PERM-020` vẫn suy ra được *"tôi có quyền đọc kho đề hay không"* qua chênh lệch phản hồi. `QĐ-084` gọi mỗi lần xuất X2 là *"một lần **xem đáp án ở quy mô lớn**"*; một kênh dò quyền đặt ngay trước cửa đó là chỗ không được để hở.
+
+**Vì sao chỉ bước 1 mang ý nghĩa chuẩn tắc.** Bước 2 và 3 **không bao giờ từ chối** — chúng chỉ đổi hình dạng gói. Nên chỉ vị trí của bước 1 là thứ quan sát được từ bên ngoài; thứ tự nội bộ giữa 2 và 3 là chi tiết hiện thực, không phải luật.
+
+**Cùng hình dạng với `GR-037`.** Rule đó đặt permission ở **bước sớm nhất** của chuỗi đánh giá, cấu hình và mốc ở sau. Mục này áp đúng khuôn ấy cho một thao tác **xuất** thay vì một yêu cầu **hiển thị**.
+
+**Không đổi gì.** X2 vẫn xuất được ở **mọi lúc**, kể cả giữa trận · ba biện pháp gác đáp án của `QĐ-084` §Ranh giới đáp án · mỗi lần xuất vẫn vào `AuditLog`, **gồm cả lần bị từ chối**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-084` *(ranh giới đáp án)*, `QĐ-078` *(permission riêng cho thao tác nặng)*, `GR-037` §Thứ tự đánh giá
+
+### QĐ-127 — Số liệu ghi ngược kho đề: BA nhóm trường · MỌI trận đóng góp · TÁCH hai bộ theo `matchPurpose`
+
+**Quyết định — năm vế.**
+
+**1. Ba nhóm trường.** *"Số liệu sử dụng"* của `PRD-REQ-081` gồm đúng ba nhóm, tất cả **dẫn xuất từ nhật ký sự kiện đã có**:
+
+| # | Nhóm | Nội dung |
+|---|---|---|
+| 1 | **Số lần đã hiển thị** | Đếm số lượt câu được đưa lên cho thí sinh |
+| 2 | **Lần dùng gần nhất** | Thời điểm và trận |
+| 3 | **Kết quả trả lời** | Số lượt chấm **Đúng** / **Sai** / **Huỷ kết quả**, trên **tổng số lượt** |
+
+**2. Không có số liệu thời gian.** Số liệu **MUST NOT** chứa thời gian trả lời của thí sinh.
+
+**3. Mọi trận đã đóng sổ đóng góp** — gồm cả nhãn **`bỏ dở`**.
+
+**4. Tách hai bộ theo `matchPurpose`.** Trận `official` và trận `practice` mỗi loại **một bộ số riêng**; hai bộ **không bao giờ** cộng vào nhau, và bề mặt hiển thị ở kho đề phải cho phân biệt được bộ nào là bộ nào.
+
+**5. Số liệu là ĐẠI LƯỢNG DẪN XUẤT, không phải giá trị được cộng dồn.** Số liệu được **tính lại từ nhật ký sự kiện** của mọi trận đã đóng sổ **tại mốc đọc**. Hệ thống **MUST NOT** giữ nó như một con số được ghi và cộng thêm, **MUST NOT** cần dấu chống trùng, và **MUST NOT** có thao tác nào làm nó lệch khỏi nguồn. Tính lại bao nhiêu lần cũng ra **cùng một** kết quả.
+
+**Vì sao vế 5 không dùng khuôn *"phép HỢP có dấu chống trùng"* của `QĐ-084` X3.** Hai thứ khác bản chất. Cờ `usedInContest` là một **trạng thái được ghi**: nó phải một chiều và phải chống trùng vì **không có nguồn nào tính lại nó** — câu đã lên sóng rồi thì sự kiện đó có thể nằm ở một bản cài khác. Số liệu sử dụng thì vế 1 vừa khai *"mọi trường **dẫn xuất từ nhật ký sự kiện đã có**"*, tức **có** nguồn để tính lại. Dựng thêm dấu chống trùng cho một đại lượng dẫn xuất là dựng một luật phải nhớ kiểm ở chỗ không cần luật nào — cùng khuôn lập luận `QĐ-088` đã dùng cho kênh public *(read-only là tính chất **cấu trúc**, không phải một luật server phải cưỡng chế)*.
+
+**Hệ quả — hai câu hỏi mất chủ ngữ.** *"Chạy lại bước ghi ngược thì cộng dồn hay ghi đè"* — **không cái nào**; idempotency là **hệ quả cấu trúc**. *"Bước ghi ngược là thao tác admin bấm hay chạy tự động"* — **không có bước nào để kích hoạt**; số liệu **có mặt** ngay khi trận đóng sổ, vì nguồn của nó đã có mặt. Chữ *"bước ghi ngược"* trong `PRD-REQ-081` từ nay đọc là **thời điểm số liệu trở nên đúng**, không phải một thao tác.
+
+**Vì sao nhóm 3 là bắt buộc, không phải tuỳ chọn.** `PRD-REQ-081` tự khai lý do tồn tại của nó là *"người ra đề **không biết câu nào quá dễ hay quá khó**"*. Đếm số lần dùng không trả lời được câu đó. Bộ trường tối thiểu **thoả** rationale là bộ có kết quả trả lời — nhóm 1 và 2 một mình thì chỉ lặp lại thứ gói X3 đã mang (`QĐ-084`).
+
+**Vì sao loại số liệu thời gian.** Mốc đo là **cú bấm tay của admin** (`GR-033`), nên khoảng *start timer → thí sinh trả lời* mang cả độ trễ tay người. Đưa một con số như vậy vào kho đề là mời người ra đề đọc nó như dữ liệu chính xác và chỉnh `timeSeconds` theo một thứ không đo cái nó tưởng. Loại nó **không** đóng cửa vĩnh viễn: `timeSeconds` vẫn là metadata từng câu và vẫn sửa tay được.
+
+**Vì sao trận `bỏ dở` vẫn đóng góp.** Câu đã lên sóng ở đó **bị đốt vĩnh viễn** — `TERM-048` khai `usedInContest` một chiều, `GR-030` khai câu đã hiển thị **không** trả lại kho, kể cả khi trận hỏng. Loại trận `bỏ dở` khỏi thống kê tạo ra một lớp câu **đã mất mà không có phản hồi nào**, tức đúng thứ `PRD-REQ-081` sinh ra để chống. Các vòng chạy xong trước lúc huỷ đã sinh **phán quyết thật**, và phán quyết thật là dữ liệu thật.
+
+Câu *"thống kê **không đếm** vào trận hoàn thành"* ở `STATE-008` §Khi `bỏ dở` nói về **thống kê TRẬN** — trận đó không được tính là một trận đã hoàn thành — **không** nói về số liệu của **câu**. Hai trục khác nhau.
+
+**Vì sao tách hai bộ thay vì gộp, và thay vì loại practice.** Trận practice chạy trên **câu đã lộ** (`GR-031` C9), thường có trainer và không có áp lực sân khấu; tỉ lệ Đúng ở đó **không so sánh được** với trận thật. **Gộp** thì con số mất nghĩa ở đúng câu hỏi nó sinh ra để trả lời. **Loại hẳn** thì vứt đi dữ liệu thật của một lượt hỏi thật. Tách giữ được cả hai nguồn mà không trộn ngữ nghĩa; cái giá là bề mặt hiển thị ở kho đề gấp đôi, và đó là cái giá ở tầng **thiết kế**, không ở tầng luật.
+
+**Không đổi gì.** Giới hạn *"chỉ áp cho trận chạy trên **cùng bản cài**"* của `PRD-REQ-081` — trận portable, official hay practice, vẫn chỉ đóng góp đúng cờ *đã dùng* qua X3 · cờ `usedInContest` **không** bị bước ghi ngược đụng tới · bước ghi ngược **không** sinh `MatchEvent` nào trong trận đã niêm phong (`INV-001`) · trận practice vẫn **không tiêu thêm câu nào**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-084` *(hệ quả portable)*, `QĐ-040`, `QĐ-044`, `QĐ-088` *(khuôn lập luận vế 5)* · `TERM-015`, `TERM-048`
+
+### QĐ-128 — Xuất KHÔNG PHẢI một trạng thái; không có *hiện vật dở dang*
+
+**Quyết định — ba vế.**
+
+**1. Xuất không phải một state.** Một lần gọi xuất — biên bản, gói kết quả và nhật ký sự kiện, hay gói kết quả rút gọn — hoặc cho ra **hiện vật hoàn chỉnh**, hoặc **không cho ra gì**. Hệ thống **MUST NOT** theo dõi trạng thái của một lần xuất và **MUST NOT** có bản ghi vòng đời cho nó.
+
+**2. Không có khái niệm *hiện vật dở dang*.** Thất bại giữa chừng thì cách xử lý là **gọi lại**, bao nhiêu lần cũng được, và **không** cần bước dọn dẹp nào trước.
+
+**3. Mỗi lần gọi để lại ĐÚNG MỘT dòng nhật ký thao tác, mang kết quả.** Kết quả là *thành công* hoặc *thất bại*. Áp cho **cả ba** loại hiện vật, và áp cho cả lần **bị từ chối** lẫn lần **thất bại**.
+
+**Vì sao không dựng một thực thể *"lần xuất"* để theo dõi.** Xuất là thao tác **nhanh và không có tác dụng phụ** — nó chỉ **đọc** nhật ký sự kiện rồi dựng một tệp; nó không đổi trạng thái trận, không sinh `MatchEvent`, không tiêu tài nguyên nào phải thu hồi. Một thực thể vòng đời cho nó sẽ đẻ ra một tập trạng thái, một ngưỡng *"thế nào là dở dang"*, và một đường dọn dẹp — cả ba đều là luật phải nhớ kiểm cho một thao tác mà **gọi lại đã giải xong**.
+
+**Vì sao câu hỏi *"tệp cụt có được miễn khỏi hạn lưu trữ không"* mất chủ ngữ.** `NFR-35b` nói về **tệp mà người vận hành đang giữ**, ở **ngoài** hệ thống; nó **không** khai một thực thể mà hệ thống quản lý vòng đời. Không có bản ghi *"lần xuất"* nào để mang trạng thái, nên **không có gì** để phân loại là dở dang. Một lần xuất không cho ra tệp thì đơn giản là **chưa có hiện vật**.
+
+**Vì sao lần thất bại vẫn phải có dòng nhật ký.** `NFR-14` đòi ghi *"mọi thao tác của mọi vai"*, và tiền lệ đã có ngay trong `QĐ-126`: lần xuất **bị từ chối** cũng vào `AuditLog`. Một lần gọi thất bại là một lần **đã chạm vào dữ liệu** — với gói kết quả thì nó đã đọc nhật ký sự kiện và có thể đã đọc cả kho đề — nên bỏ nó khỏi nhật ký là để một lỗ trong đúng thứ `PRD-REQ-082` sinh ra để bịt.
+
+**Không đổi gì.** Nội dung của một lần xuất thành công vẫn **tất định** — xuất hai lần trên cùng một trạng thái cho ra nội dung giống hệt (`GR-028` §Bấm trùng), nhưng **hai** dòng nhật ký · `NFR-35b` giữ nguyên nghĩa *(hiện vật đã xuất nằm ngoài tầm với của hạn lưu trữ)* · `QĐ-126` giữ nguyên: permission vẫn là cửa từ chối, và nhánh từ chối vẫn để lại một dòng.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-084` *(một nguồn, chỉ chiều ra)*, `QĐ-126`, `QĐ-088` *(đừng dựng luật ở chỗ cấu trúc đã đảm bảo)* · `NFR-14`, `NFR-35b`
+
+### QĐ-129 — Biên bản trận có đủ ở CẢ HAI hồ sơ triển khai
+
+**Quyết định.** Việc **xuất biên bản trận** (`PRD-REQ-079`) **MUST** khả dụng ở **cả** hồ sơ máy chủ dựng bằng container **lẫn** hồ sơ portable Windows, và **MUST NOT** phụ thuộc dịch vụ ngoài hay kết nối Internet — **cùng ràng buộc** với bốn loại gói xuất. `PRD-REQ-098` đổi từ *"bốn loại gói"* thành *"bốn gói **cộng biên bản**"*.
+
+**Vì sao.** Rationale của chính `PRD-REQ-098` áp nguyên văn cho biên bản: *"bản portable là **nơi trận thật chạy**; nếu nó xuất được ít hơn thì dữ liệu của chính những trận quan trọng nhất **bị mắc kẹt** trong máy"*. Cộng `PRD-REQ-085` — portable hoạt động **đầy đủ** không cần Internet.
+
+**Hệ quả một chiều nếu chọn ngược lại.** Gói kết quả và nhật ký sự kiện **chỉ có chiều ra** (`QĐ-084`), nên **không có đường** dựng lại biên bản ở máy chủ trung tâm; thứ duy nhất mang về được là bản kê câu đã dùng. Trận chạy trên portable sẽ **không bao giờ** có biên bản ở bất kỳ đâu — mà biên bản là công cụ **phân xử khiếu nại** (`PRD-REQ-079`), và hội trường là nơi khiếu nại xảy ra.
+
+**Vì sao sửa hẳn `PRD-REQ-098` thay vì để `PRD-REQ-085` phủ.** Chỗ liệt kê ràng buộc phải nằm đúng nơi người hiện thực đọc. `PRD-REQ-098` là requirement **duy nhất đếm ra** các hiện vật phải có ở cả hai hồ sơ; để nó đọc như một danh sách đầy đủ trong khi thiếu một mục là mời người đọc kết luận sai. `PRD-REQ-085` vẫn đúng nhưng quá tổng quát để ai đó tra ra được biên bản.
+
+**Không đổi gì.** Định dạng biên bản vẫn là quyết định thiết kế · **đồng bộ kết quả** từ portable về máy chủ trung tâm vẫn **ngoài phạm vi** (`QĐ-084`) — quyết định này nói về **xuất tại chỗ**, không mở một đường đồng bộ nào.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-084`, `QĐ-077` · `PRD-REQ-085`, `PRD-REQ-098`
+
+### QĐ-130 — Màn ĐỌC nhật ký thao tác vào v1, và thuộc EPIC-011
+
+**Quyết định — hai vế.**
+
+**1. Bề mặt đọc nhật ký thao tác thuộc v1.** Không có nó thì `AuditLog` là bảng **chỉ-ghi**, `PERM-015` `audit.read` **không gác gì**, và vế *"chứng minh đáp án không rò"* của `PRD-REQ-082` **không thực hiện được**.
+
+**2. Nó thuộc EPIC-011, không thuộc EPIC-010.** Màn đọc là **cùng chủ** với bảng `AuditLog` và `PRD-REQ-082`. Dòng *"nhật ký thao tác đủ để phân xử"* ở §11 EPIC-010 §Scope **được bỏ**; §11 EPIC-011 §Scope **nhận** vế này.
+
+**Vì sao không để EPIC-010 sở hữu cho khớp dòng Scope cũ.** Chia **một bảng** cho hai epic là chỗ hỏng đắt hơn một dòng Scope sai: đặt đường **ghi** ở EPIC-011 và đường **đọc** ở EPIC-010 thì mọi thay đổi lược đồ phải đi qua **hai** spec, và ranh giới đó kéo dài suốt vòng đời sản phẩm. Dòng Scope sửa được bằng một câu.
+
+**Không đổi gì.** EPIC-010 vẫn **ghi vào** nhật ký ở mọi lần in biên bản và mọi lần xuất gói, gồm cả lần bị từ chối và lần thất bại (`QĐ-128`) · `NFR-17` là yêu cầu về **nội dung** nhật ký và vẫn đúng nguyên — nó **không** đòi EPIC-010 phải có màn đọc · hai ràng buộc mà EPIC-010 đặt lên job dọn dữ liệu (`PRD-REQ-080`) giữ nguyên chủ · **job dọn tự động** vẫn ngoài phạm vi.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-074`, `QĐ-091` · `PRD-REQ-082`, `PERM-015`, `NFR-17`
+
+### QĐ-131 — Nhật ký thao tác có HẠN LƯU TRỮ RIÊNG; *"chỉ thêm"* nói về BỀ MẶT SẢN PHẨM
+
+**Quyết định — hai vế.**
+
+**1. Hạn lưu trữ có HAI TRỤC độc lập, không trộn vào nhau.**
+
+| Trục | Áp cho | Hình dạng |
+|---|---|---|
+| **Theo mục đích trận** (`QĐ-091`) | **Dữ liệu trận** và **media do người dùng tải lên** | Một giá trị cho mỗi `matchPurpose` — mặc định 12 tháng `official`, 3 tháng `practice` |
+| **Riêng của nhật ký thao tác** *(mới)* | **Nhật ký thao tác** | **Một** giá trị, **không** theo `matchPurpose` |
+
+Lớp dữ liệu nào không nằm ở một trong hai trục thì bước dọn **không đụng tới**.
+
+**2. *"Chỉ thêm, không có đường sửa hay xoá"* nói về BỀ MẶT SẢN PHẨM.** `PRD-REQ-082` và `PRD-REQ-116` giữ nguyên **hiệu lực tuyệt đối** ở đó. Bước dọn theo hạn riêng là đường **duy nhất** mà một dòng rời hệ thống, và nó **không đi qua một bề mặt nào**.
+
+**Vì sao phải tách trục.** Nhật ký thao tác chứa cả những dòng **không thuộc trận nào** — đăng nhập, thao tác kho đề, quản lý contest. Những dòng đó **không tra ra được** một giá trị `matchPurpose`. Ép chung trục thì phải bịa một mặc định cho **đa số** dòng, tức dựng một luật ở chỗ không có luật nào.
+
+**Vì sao không miễn hẳn nhật ký khỏi hạn lưu trữ.** Vì nó là **bảng dữ liệu cá nhân dày nhất** của bản cài: tên đăng nhập, mốc thời gian và **địa chỉ nguồn** của mọi người từng chạm vào hệ thống, gồm cả học sinh. Miễn nó là dựng đúng thứ mà `QĐ-091` sinh ra để chống, ở ngay chỗ đậm đặc nhất — và nó chống lại chính mục tiêu của `EPIC-011`: *"đơn vị tổ chức chịu được trách nhiệm pháp lý về dữ liệu"*.
+
+**Vì sao phép phân tầng KHÔNG phá `PRD-REQ-116`.** Hai mệnh đề nói về hai thứ khác nhau và cùng đúng. *"Không có đường sửa hay xoá một dòng nào"* là một ràng buộc lên **những gì người dùng bấm được** — nó chống việc một người xoá dấu vết của chính mình. Một bước dọn theo hạn thì không chọn dòng nào để xoá, không do ai bấm vào một dòng cụ thể, và không phục vụ ai. Đây cùng khuôn lập luận mà `QĐ-088` đã dùng cho kênh public: read-only là **tính chất cấu trúc**, không phải một luật phải cưỡng chế.
+
+**Hệ quả.**
+
+- **`PRD-REQ-083` khai hai trục**; `NFR-33` và `NFR-34` giữ nguyên nhưng thu về đúng trục thứ nhất.
+- **Dòng nhật ký thuộc một trận KHÔNG bị dọn theo hạn của trận đó.** Trận bị dọn xong, dòng nhật ký của nó vẫn còn tới khi hạn riêng tới.
+- **`NFR-17` nay có một mốc hết hiệu lực**, và mốc đó là hạn riêng — không phải hạn của trận.
+- ⚠️ **Còn mở: giá trị mặc định của hạn riêng.** Cùng lập luận của `QĐ-091` áp nguyên — không có con số thì bước dọn không dựng được. Cũng chưa chốt: có biên dưới không, và nó có phải **≥** hạn dài nhất của trục thứ nhất không *(để chuỗi phân xử không bị cắt trước dữ liệu mà nó mô tả)*.
+
+**Không đổi gì.** Hai con số 12 và 3 tháng · admin đặt được rất dài, không có biên trên (`QĐ-091` §Rủi ro) · **0** rule và **0** transition đọc bất kỳ giá trị nào của cả hai trục · job dọn tự động vẫn thuộc v1.5, ràng buộc đặt lên nó vẫn thuộc v1 · gói đã xuất vẫn nằm **ngoài** tầm với của cả hai trục (`NFR-35b`).
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-040`, `QĐ-088`, `QĐ-091`, `QĐ-130` · `PRD-REQ-082`, `PRD-REQ-083`, `PRD-REQ-116`, `NFR-17`, `NFR-33`, `NFR-34`
+
+### QĐ-132 — Vế *"mọi sự kiện trong trận"* thoả bằng THAM CHIẾU, không nhân bản
+
+**Quyết định.** Nhật ký thao tác giữ dòng **trỏ tới** nhật ký sự kiện của trận và **MUST NOT** chép nội dung sự kiện sang bảng của mình. Vế *"mọi sự kiện trong trận"* của `PRD-REQ-082` được thoả bằng **một đường tra ra được**, không bằng một bản sao. Nội dung của một sự kiện có **đúng một** nguồn sự thật.
+
+**Vì sao.** Nhân bản đẻ ra **hai bản của cùng một sự thật**, mà `NFR-12` và `INV-001` chỉ bảo vệ **một** bản. Bản sao nằm trong bảng khác **không** thừa hưởng phép bảo vệ đó, nhưng lại **trông giống bằng chứng**. Ở một sản phẩm mà toàn bộ giá trị của nhật ký là *"đủ để phân xử"*, hai bản có thể lệch nhau là chỗ hỏng nặng hơn hẳn một cú tra thêm một bước.
+
+**Vì sao không đọc thành *"nhật ký thao tác không chứa gì về trận"*.** Vì `PRD-REQ-116` đòi màn đọc *"dựng lại chuỗi thao tác quanh **một sự kiện bị khiếu nại**"* — mà sự kiện bị khiếu nại thường **chính là** một sự kiện trong trận. Không có đường nào từ nhật ký thao tác sang nhật ký sự kiện thì màn đọc dừng lại đúng ở chỗ người phân xử cần đi tiếp.
+
+**Hệ quả.**
+
+- **`CLAUDE.md` §Nhật ký thao tác**: câu trong ngoặc *"(đã có `MatchEvent` log riêng)"* — vốn chỉ **mô tả một sự thật** — trở thành một câu **khai quan hệ**.
+- **Màn đọc phải cho đi tiếp** từ một dòng tham chiếu sang nhật ký sự kiện của trận.
+- ⚠️ **Còn mở: tham chiếu trỏ tới dữ liệu đã bị dọn.** Cộng `QĐ-131`, hai bảng nay có **hai vòng đời khác nhau**, nên sẽ có mốc mà một dòng còn sống trong khi thứ nó trỏ tới đã bị dọn — và ca ngược lại. Chưa chốt: dòng đó hiện thế nào, có bị đánh dấu không, và `NFR-17` có còn được coi là thoả ở trạng thái đó không.
+
+**Không đổi gì.** `TERM-021` `MatchEvent` vẫn là nhật ký **của một trận** và là nguồn để tính điểm · `NFR-12`, `INV-001` nguyên vẹn · nhật ký thao tác vẫn **không** tham gia phép tính điểm nào.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-011`, `QĐ-130`, `QĐ-131` · `PRD-REQ-082`, `PRD-REQ-116`, `TERM-021`, `NFR-12`, `NFR-17`, `INV-001`
+
+### QĐ-133 — Ghi audit MỌI yêu cầu xem đáp án, kèm KẾT QUẢ — sửa `GR-037` bước (6)
+
+**Quyết định.** **Mọi** yêu cầu xem đáp án để lại **đúng một** dòng nhật ký mang **kết quả** — *đã trả* hoặc *bị từ chối* — **cùng một loại dòng**, phân biệt nhau bằng trường *kết quả*. Bước **(6)** của `GR-037` §Thứ tự đánh giá đổi từ *"ghi audit **nếu có trả**"* thành *"ghi audit **mọi lần**, kèm kết quả"*.
+
+**Vì sao.** Một chuỗi yêu cầu **bị từ chối liên tiếp** từ một phiên là dấu hiệu **dò đề**. Ở lối cũ, hành vi đó **vô hình** — không dòng nào tồn tại để tra. Nghĩa là vế *"chứng minh đáp án không rò"* của `PRD-REQ-082` chỉ chứng minh được **nửa có phép** của bức tranh, đúng nửa vốn không đáng nghi.
+
+**Vì sao khuôn này đã có tiền lệ chuẩn tắc.** `NFR-14` và `QĐ-128` đã chốt đúng hình dạng đó cho gói xuất: *"mỗi lần gọi để lại **đúng một** dòng mang **kết quả**, gồm cả lần **bị từ chối** lẫn lần **thất bại**"*. Quyết định này chỉ **áp cùng khuôn** cho một bề mặt thứ hai — không phát minh gì.
+
+**Vì sao không tách thành một loại dòng riêng hạng an ninh.** Vì nó đẻ một **trục phân loại dòng** mà `PRD-REQ-082` chưa khai, để đạt đúng thứ mà trường *kết quả* sẵn có đã cho — màn đọc vốn đã lọc được theo **hành động**.
+
+**Vì sao đây KHÔNG phải một thay đổi luật chơi.** Bước (6) là bước **sau cùng** của §Thứ tự đánh giá, chạy **sau** khi kết cục đã được quyết. Quyết định này **không** đổi cột *kết quả trả đáp án* của một ca nào trong bảng quyết định, **không** đổi mốc câu khép, **không** đổi thứ tự của năm bước trước, và **không** đổi cửa sổ cướp quyền. Yêu cầu bị từ chối vẫn **im lặng** và vẫn **0** byte đáp án rời server.
+
+**Hệ quả.**
+
+- **`GR-037` §Thứ tự đánh giá bước (6)** sửa nghĩa; §Bấm trùng nhận thêm vế *yêu cầu bị từ chối*.
+- **Sáu ca có kết cục *không trả*** — C3, C4, C6, C8, C8b, C10 — nay đều sinh **một** dòng mang kết quả *bị từ chối*.
+- ⚠️ **Còn mở: cú ĐẨY HÀNG LOẠT của engine tại mốc câu khép** *(C5, C7)*. Đó không phải một *yêu cầu của một phiên*, nên quyết định này không phủ nó. Cộng `QĐ-132`, nó là một **sự kiện trong trận** và tra được qua đường tham chiếu — nhưng chưa nơi nào khai điều đó tường minh.
+
+**Không đổi gì.** Bảng quyết định `GR-037` C1 → C10 ở cột kết quả · §Cấm · §Biên · mốc câu khép theo vòng · `PERM-045` và `PERM-044` · `NFR-21`, `NFR-21b`.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-074`, `QĐ-080`, `QĐ-094`, `QĐ-128` · `GR-037` §Thứ tự đánh giá, §Bấm trùng · `PRD-REQ-082`, `NFR-14`, `NFR-21`
+
+### QĐ-134 — BỎ vế *"khán giả vào"* khỏi danh sách phải-ghi của nhật ký thao tác
+
+**Quyết định.** Hệ thống **MUST NOT** ghi dòng nhật ký cho việc một **khán giả vào phòng**. Vế *"khán giả vào"* bị **bỏ** khỏi danh sách phải-ghi của `PRD-REQ-082`. Cú **đuổi** vẫn được ghi, với **admin đã bấm** ở trường *người thực hiện* và **khán giả bị đuổi** ở trường *đối tượng*.
+
+**Vì sao.** `PRD-REQ-082` đòi **mỗi** dòng có *người thực hiện*, trong khi `PRD-REQ-001` khai hai kênh public *"MUST NOT có tài khoản và MUST NOT có vai trong hệ phân quyền"*. Kênh public **cố ý không có định danh** — đó là một lựa chọn đã chốt, không phải một chỗ thiếu. Nên **mọi** lối giữ dòng *vào phòng* đều phải **bịa một chủ ngữ**: một giá trị ẩn danh vô nghĩa, một định danh phiên mới phải khai vòng đời, hoặc một chủ ngữ *"hệ thống"* chưa từng tồn tại trong một bảng vốn ghi *"thao tác của **mọi vai**"*.
+
+**Cái mất, đã đo và chấp nhận.** Thứ duy nhất một dòng *vào phòng* mang thêm được là **địa chỉ nguồn** — mà một hội trường ngồi sau một địa chỉ chung thì **mọi** khán giả có **cùng một** giá trị. Nó không phân biệt được người, nên nó không phân xử được gì; nó chỉ là một số đếm. Cú **đuổi** thì khác hẳn: đó là **phán quyết của admin**, có người bấm, có đối tượng, và đúng là thứ phải trả lời được khi bị khiếu nại.
+
+**Hệ quả.**
+
+- **`PRD-REQ-082` §Description** bỏ vế *"khán giả vào"*, giữ vế *"khán giả bị đuổi"*.
+- **Không khái niệm định danh mới nào** được sinh ra cho kênh public. `TERM-007` giữ nguyên.
+- **Số đếm khán giả** — nếu sau này cần — phải là một hạng mục riêng, **không** đi qua nhật ký thao tác.
+
+**Không đổi gì.** `PRD-REQ-001` · `QĐ-088`, `QĐ-096` · nút khoá cổng và giới hạn tần suất (`PRD-REQ-086`) · năm trường bắt buộc của một dòng nhật ký · mọi loại thao tác khác trong danh sách phải-ghi.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-088`, `QĐ-096` · `PRD-REQ-082`, `PRD-REQ-001`, `TERM-007`, `NFR-14`
+
+### QĐ-135 — HAI permission TÁCH BẠCH cho hai phạm vi đọc nhật ký thao tác
+
+**Quyết định.** `PERM-015` `audit.read` giữ nguyên ở **phạm vi bản cài** và vẫn là cửa của bề mặt đọc đầy đủ. **Cộng một permission MỚI ở phạm vi `CONTEST`**, cho tra cứu nhật ký **trong phạm vi một contest**. Hai cửa **tách bạch**: chúng **không lồng nhau** và **không suy ra nhau** — giữ permission phạm vi contest **không** cho đọc dòng ngoài contest đó, và giữ `PERM-015` **không** đòi phải có thêm permission kia.
+
+**Vì sao phải có cửa hẹp.** Một cửa cấp bản cài duy nhất buộc phải trao quyền đọc **toàn bảng** để giao một việc trong phạm vi **một** contest. Ba quyết định cùng phiên làm bảng đó nặng hơn hẳn: nó có **hạn lưu trữ riêng** (`QĐ-131`), nó **tham chiếu chéo** sang nhật ký trận (`QĐ-132`), và nó nay chứa cả **dấu vết dò đề** của mọi contest (`QĐ-133`). Trao trọn nó cho một việc hẹp là đúng thứ mà nguyên tắc *phạm vi hẹp nhất đủ dùng* cấm.
+
+**Vì sao hai mã tách bạch, không phải một permission gán được ở hai phạm vi.** Một permission hai phạm vi buộc cửa kiểm hỏi thêm *"gán ở đâu"* **trước khi** trả lời *"có hay không"*. Hai mã tách bạch giữ đúng hình dạng mà `QĐ-094` đòi — cửa hỏi **permission**, câu trả lời là **có hoặc không**, không kèm một trục thứ hai phải tra. Nó cũng giữ đúng nguyên tắc *phạm vi hẹp nhất*: cửa hẹp là **một mã riêng**, không phải một biến thể của cửa rộng.
+
+**Hệ quả.**
+
+- **`permissions.md` §2.2** khai rõ `PERM-015` ở phạm vi **bản cài**; §2.4 nhận **`PERM-062`** ở phạm vi `CONTEST`.
+- **`PRD-REQ-116`** khai hai cửa thay vì một.
+- ⚠️ **Còn mở, ba vế.** **(1)** Tên chuẩn tắc của `PERM-062`. **(2)** Vai dựng sẵn nào giữ nó — hiện **không** vai seed nào giữ `PERM-015`, và `TERM-059` *chủ contest* chưa gắn với một permission đọc nhật ký nào. **(3)** Vế chặn thật: **quy tắc *"dòng nào thuộc contest nào"***. Nhật ký chứa dòng **không thuộc contest nào** *(đăng nhập, kho đề, quản lý tài khoản)*, và chưa chốt một phiên giữ `PERM-062` nhìn thấy gì trong số đó.
+
+**Không đổi gì.** `PERM-015` vẫn gác bề mặt đọc đầy đủ và vẫn ở phạm vi bản cài · `QĐ-094` điều cấm *hỏi permission, không hỏi tên vai* · bề mặt đọc vẫn **chỉ đọc** ở cả hai cửa · `PRD-REQ-116` vế *"0 đường sửa hay xoá"* và vế **UTC+7**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-094`, `QĐ-130`, `QĐ-131`, `QĐ-132`, `QĐ-133` · `PRD-REQ-116`, `PERM-015`, `TERM-059`
+
+### QĐ-136 — Hạn nhật ký thao tác mặc định 24 THÁNG; quan hệ giữa hai trục KHÔNG bị cưỡng chế
+
+**Quyết định — hai vế.**
+
+**1. Mặc định của trục 2 (`QĐ-131`) là 24 tháng.**
+
+**2. Hệ thống MUST NOT cưỡng chế hạn nhật ký ≥ hạn dài nhất của trục 1.** Đặt thấp hơn thì hệ thống **cảnh báo** và **nêu cái giá** — chuỗi phân xử sẽ hết hạn trước dữ liệu mà nó mô tả — nhưng **vẫn cho đặt**. Không có biên trên, cũng không có biên dưới.
+
+**Vì sao 24 chứ không phải 12 cho khớp hạn `official`.** Bằng nhau thì **không có biên an toàn nào**: nhật ký và dữ liệu trận `official` hết hạn **cùng lúc**, nên một khiếu nại đến muộn một ngày là mất cả hai. Một nhật ký kiểm toán chỉ có nghĩa khi nó sống **lâu hơn** thứ nó mô tả. Con số vẫn là **mặc định** — admin hạ xuống được.
+
+**Vì sao không cưỡng chế.** `QĐ-091` đã chốt *"đơn vị tự host là bên chịu trách nhiệm pháp lý, nên bên đó phải là bên quyết"*. Một cú chặn cứng ở đây sẽ là **lần đầu** hệ thống phủ quyết một lựa chọn **quyền riêng tư** của admin — ngược hẳn nguyên tắc đó, và ngược cả mô hình ADVISORY của sản phẩm. Hệ thống làm đúng việc nó vẫn làm: **nói ra cái giá**, rồi để người quyết.
+
+**Hệ quả.**
+
+- **Ở cấu hình mặc định, tham chiếu treo là TRẠNG THÁI THƯỜNG TRỰC**: nhật ký 24 tháng cộng hạn `official` 12 tháng ⇒ **mọi** trận quá 12 tháng đều để lại dòng còn sống trỏ tới một nhật ký sự kiện đã bị dọn. Kết cục của trạng thái đó ở `QĐ-137`.
+- **Ca ngược lại dựng được** vì không cưỡng chế: admin đặt hạn nhật ký ngắn hơn thì sự kiện trận còn mà không còn dòng nào trỏ tới. Đây là ranh giới **đã chấp nhận**, cùng hạng với việc admin đặt được rất dài.
+
+**Không đổi gì.** Hai con số 12 và 3 tháng của trục 1 · không có biên trên · **0** rule và **0** transition đọc bất kỳ giá trị nào · phép phân tầng của `QĐ-131` *("chỉ thêm" nói về bề mặt sản phẩm)*.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-091`, `QĐ-131` · `PRD-REQ-083`, `NFR-17`, `NFR-33b`, `NFR-34`
+
+### QĐ-137 — Tham chiếu trỏ tới nhật ký sự kiện đã bị dọn: nhãn *"nguồn đã hết hạn"*
+
+**Quyết định.** Khi một dòng nhật ký thao tác trỏ tới một nhật ký sự kiện **đã bị bước dọn xoá**, dòng đó **MUST vẫn hiện đủ năm trường**; **đường đi tiếp MUST bị vô hiệu hoá**; và dòng **MUST mang nhãn *"nguồn đã hết hạn"***, phân biệt được với ca *trận không có sự kiện nào*. Ở trạng thái này `NFR-17` **MUST được coi là KHÔNG còn thoả** cho mốc đó, và bề mặt đọc **MUST nói ra điều đó**.
+
+**Vì sao phải có nhãn riêng.** Không có nhãn thì người tra không phân biệt được *đã hết hạn* với *chưa bao giờ có* — hai kết luận trái ngược nhau về cùng một màn hình. `specs/010` đã bác đúng loại nhập nhằng này một lần ở bề mặt thống kê kho đề (`OQ-009`): một bề mặt phải **nói ra được một điều đúng**, không để người đọc đoán.
+
+**Vì sao khai thẳng *"`NFR-17` không còn thoả"* thay vì lờ đi.** Vì đó là sự thật, và một hệ thống kiểm toán mà nói dối về giới hạn của chính nó thì tệ hơn một hệ thống có giới hạn. Người phân xử cần biết **ngay** rằng chuỗi họ đang đọc đã cụt, chứ không phải kết luận sai từ một chuỗi thiếu.
+
+**Vì sao không chép một bản tóm tắt lúc dọn để giữ chuỗi sống.** Vì nó **giữ lại đúng thứ bước dọn được gọi để xoá**: một *"tóm tắt tối thiểu"* của sự kiện trận vẫn là dữ liệu của trận đó, và chép nó sang một bảng có hạn dài hơn là dùng nhật ký làm **đường vòng thoát khỏi hạn lưu trữ**. Nó cũng buộc phải khai *tóm tắt gồm gì*, tức đẻ một lược đồ thứ hai cho cùng một sự kiện — đúng thứ `QĐ-132` vừa bác.
+
+**Vì sao không tách nhật ký sự kiện ra khỏi trục 1 để tham chiếu không bao giờ treo.** Lối đó lật `QĐ-131` vừa chốt và kéo một lớp dữ liệu trận nữa sống lâu hơn hạn của nó — tức đổi một vấn đề **trình bày** lấy một vấn đề **quyền riêng tư**.
+
+**Hệ quả.**
+
+- **Ca ngược lại** — nhật ký tới hạn trước, sự kiện trận còn mà không dòng nào trỏ tới — **không** cần nhãn: không có dòng nào để gắn nhãn vào. Nó chỉ xảy ra khi admin bỏ qua cảnh báo của `QĐ-136`.
+- **Bề mặt đọc phải phân biệt được ba trạng thái**: có nguồn · nguồn đã hết hạn · trận không có sự kiện nào.
+
+**Không đổi gì.** `QĐ-132` *(tham chiếu, không nhân bản)* · `NFR-12` và `INV-001` với nhật ký sự kiện · năm trường bắt buộc của một dòng · `QĐ-131` phép phân tầng.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-131`, `QĐ-132`, `QĐ-136` · `PRD-REQ-082`, `PRD-REQ-116`, `NFR-17`
+
+### QĐ-138 — `PERM-062` phân loại theo ĐỐI TƯỢNG của dòng, không theo người thực hiện
+
+**Quyết định.** Một dòng nhật ký thuộc contest `C` **khi và chỉ khi ĐỐI TƯỢNG của nó thuộc `C`** — trận của `C`, cấu hình `C`, ghế của `C`, lần xuất hoặc nhập gói của `C`, lần xem đáp án trong một trận của `C`. Dòng **đăng nhập**, dòng **kho đề**, và dòng **quản lý tài khoản** **không thuộc contest nào**. Hệ thống **MUST NOT** phân loại theo **người thực hiện**: một phiên chỉ giữ `PERM-062` **MUST NOT** đọc được dòng đăng nhập của một người đã gán vào contest đó, **kể cả** dòng rơi vào lúc một trận của contest đang chạy.
+
+**Vì sao trục đối tượng chứ không phải trục người.** Một dòng đăng nhập **không ràng buộc vào trận nào**: nó nói người đó đăng nhập lúc nào, từ đâu — kể cả ngày không có trận. `QĐ-131` vừa xác lập nhật ký thao tác là **bảng dữ liệu cá nhân dày nhất** của bản cài; mở nó theo trục *người* là mở đúng **chiều nhạy cảm nhất**, để đổi lấy một khả năng chưa ai đòi. Trục đối tượng cũng là trục **kiểm được từng dòng**, không phụ thuộc mốc thời gian hay phép gán hiện thời.
+
+**Vì sao không thêm ngoại lệ *"đăng nhập trong lúc trận đang chạy"*.** Nó đẻ một quy tắc **hai tầng phụ thuộc mốc thời gian** — dòng đổi phạm vi tuỳ theo lúc nó xảy ra — và một dòng có thể thuộc contest này hôm nay, contest khác hôm sau. Ca mà ngoại lệ đó phục vụ *(thí sinh kêu không đăng nhập được giữa trận)* vẫn giải được qua đường khác: đó là một sự cố vận hành, và người có `PERM-015` tra được.
+
+**Hệ quả.**
+
+- **Chủ contest không thấy dòng đăng nhập, dòng kho đề, dòng quản lý tài khoản** — kể cả của người mình quản.
+- **Phản hồi MUST NOT tiết lộ sự tồn tại** của dòng ngoài phạm vi: không đếm, không mã lỗi riêng, không chênh thời gian phản hồi.
+
+**Không đổi gì.** `QĐ-135` *(hai permission tách bạch, không lồng nhau)* · `PERM-015` vẫn đọc được mọi dòng · `QĐ-094` *(cửa hỏi permission, không hỏi tên vai)* · bề mặt đọc vẫn **chỉ đọc** ở cả hai cửa. ⚠️ **Tên chuẩn tắc của `PERM-062` và vai seed nào giữ nó vẫn CHƯA chốt.**
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-094`, `QĐ-131`, `QĐ-135` · `PRD-REQ-116`, `PERM-062`, `TERM-059`
+
+### QĐ-139 — Truy vấn nhật ký: từ chối kèm lý do, và một BIÊN CỨNG cấu hình được cho độ dài khoảng
+
+**Quyết định — ba vế.**
+
+**1.** Khoảng thời gian **không hợp lệ** *(mốc kết thúc sớm hơn mốc bắt đầu)* ⇒ **từ chối kèm lý do nêu rõ**. Hệ thống **MUST NOT** tự hoán đổi hai mốc và **MUST NOT** chạy truy vấn.
+
+**2.** Có một **biên cứng cho độ dài khoảng thời gian** của một lần tra, **cấu hình được**, **MUST NOT** hard-code. Vượt biên ⇒ **từ chối kèm lý do nêu rõ biên**; **MUST NOT** trả về một tập bị cắt bớt trong im lặng.
+
+**3.** Trong phạm vi biên đó, **MUST NOT** có giới hạn nghiệp vụ nào cho **số dòng**; tập lớn xử lý bằng **phân trang**.
+
+**Vì sao không tự hoán đổi hai mốc.** Hệ thống sẽ đang **đoán ý định** ở đúng bề mặt dùng để **phân xử khiếu nại**. Mô hình nền của sản phẩm là **ADVISORY** — máy độc quyền sự kiện, người độc quyền phán quyết; một màn tra cứu tự sửa đầu vào của người tra là máy phán quyết thay. Và nếu nó đoán sai thì người tra đọc một tập kết quả **không phải thứ mình hỏi** mà không biết.
+
+**Vì sao trả kết quả rỗng cũng bị loại.** Cùng lý lẽ của `QĐ-137`: người tra không phân biệt được *mình gõ sai* với *thật sự không có gì*.
+
+**Vì sao cần biên khi `NFR-37` đã đòi phân trang.** Phân trang là ràng buộc **trình bày**; nó không trả lời *"một lần tra được phép chạm tới bao nhiêu dòng"*. Hai quyết định trước làm bảng dày hơn hẳn lúc `PRD-REQ-116` được viết — hạn **24 tháng** (`QĐ-136`), cộng **mọi yêu cầu xem đáp án bị từ chối** cũng thành dòng (`QĐ-133`). Một cú tra trọn 24 tháng trên bản cài bận là câu hỏi về **tải**, và `NFR-11` đã có tiền lệ đặt mục tiêu định cỡ ở tầng này.
+
+**Vì sao biên đặt trên ĐỘ DÀI KHOẢNG, không trên SỐ DÒNG.** Biên theo số dòng thì người tra không biết trước mình sẽ bị chặn hay không — cùng một khoảng cho kết quả khác nhau tuỳ bản cài bận hay rảnh. Biên theo độ dài khoảng thì **dự đoán được** và giải thích được trong một câu.
+
+**Hệ quả.**
+
+- ⚠️ **Còn mở: giá trị mặc định của biên**, phạm vi đặt của nó, và việc phiên giữ `PERM-062` có chịu **cùng** biên với phiên giữ `PERM-015` không. Khác `QĐ-136`, đây **không** phải lựa chọn quyền riêng tư mà là lựa chọn về **tải và tiện dụng**, nên nó gần khuôn `QĐ-067` *(quy mô viewer)* — có thể cần một ước lượng số dòng mỗi tháng.
+
+**Không đổi gì.** Bốn trục lọc của `PRD-REQ-116` · bề mặt đọc vẫn **chỉ đọc** · `NFR-37` và quy tắc một khung nhìn · trạng thái rỗng đọc được khi không dòng nào khớp.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-067`, `QĐ-133`, `QĐ-136` · `PRD-REQ-116`, `NFR-11`, `NFR-37` · `CLAUDE.md` §Mô hình ADVISORY
+
+### QĐ-140 — Hạn lưu trữ đặt ở cấp BẢN CÀI; v1 bày ĐỦ HAI ô mục đích trận
+
+**Quyết định — hai vế.**
+
+**1. Cả hai trục hạn lưu trữ đặt ở phạm vi BẢN CÀI.** Một bộ giá trị cho cả bản cài; contest **MUST NOT** ghi đè.
+
+**2. v1 bày ĐỦ HAI ô của trục mục đích trận** — `official` và `practice` — và ô `practice` **MUST đặt được ngay**, dù `matchPurpose: practice` thuộc v1.5 nên chưa trận nào mang giá trị đó. Hệ thống **MUST NOT** ẩn ô đó ở v1 rồi hiện lại ở v1.5.
+
+**Vì sao cấp bản cài.** `QĐ-091` khai *"đơn vị tự host là bên chịu trách nhiệm pháp lý, nên bên đó phải là bên quyết"*. Trách nhiệm nằm ở cấp **đơn vị**, không ở cấp contest. Cho từng contest ghi đè là **phân mảnh trách nhiệm** xuống một tầng mà không ai ký, và làm câu *"bản cài này giữ dữ liệu bao lâu"* — câu đầu tiên một cơ quan quản lý sẽ hỏi — không trả lời được bằng một câu.
+
+**Vì sao v1 bày cả ô `practice`.** Giấu rồi hiện lại là **một bề mặt phải dựng hai lần và một mốc phải nhớ bật**. Ô đặt được ở v1 **nói ra được một điều đúng** — đơn vị đã chọn giữ dữ liệu luyện tập bao lâu — thay vì để người vận hành đoán giữa *chưa cấu hình* và *tính năng chưa có*. Khớp `CLAUDE.md` §Phạm vi phiên bản: v1 dựng đủ hạ tầng và giao diện cho phạm vi rộng hơn, chỉ chưa bật engine-path. Cùng khuôn với phán quyết `OQ-009` của `specs/010` cho bề mặt thống kê kho đề.
+
+**Không đổi gì.** Ba con số 12 · 3 · 24 tháng · không có biên trên, không có biên dưới · admin đặt được rất dài · **0** rule và **0** transition đọc chúng · phép phân tầng của `QĐ-131`.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-040`, `QĐ-091`, `QĐ-131`, `QĐ-136` · `PRD-REQ-083`, `NFR-33`, `NFR-34`, `TERM-015` · `CLAUDE.md` §Phạm vi phiên bản
+
+### QĐ-141 — Biên tra cứu nhật ký: mặc định 24 THÁNG, cấp bản cài, MỘT giá trị chung cho cả hai cửa
+
+**Quyết định — ba vế.**
+
+**1. Giá trị mặc định của biên là 24 THÁNG** — bằng đúng hạn lưu trữ mặc định của nhật ký thao tác (`QĐ-136`).
+
+**2. Biên đặt ở phạm vi BẢN CÀI**, một giá trị, cấu hình được, **MUST NOT** hard-code.
+
+**3. MỘT giá trị dùng chung cho cả hai cửa đọc.** Phiên giữ `PERM-062` chịu **cùng** biên với phiên giữ `PERM-015`; hệ thống **MUST NOT** đặt biên riêng theo cửa vào.
+
+**Vì sao bằng hạn nhật ký chứ không chặt hơn.** `QĐ-139` sinh biên này ra làm **lưới an toàn về tải** — nó trả lời *"một lần tra chạm tới bao nhiêu dòng"*. Nó **không** được sinh ra để nói *"người tra được nhìn xa bao nhiêu"*; đặt nó chặt hơn hạn lưu trữ là dựng một **luật nghiệp vụ về phạm vi tra cứu** mà `PRD-REQ-116` chưa khai, ở đúng bề mặt dùng để phân xử khiếu nại, và buộc chia một cú tra hợp lệ thành nhiều lần mà không có cơ sở nào.
+
+Ở cấu hình mặc định, tập tối đa mà một cú tra chạm tới **đã bị chặn sẵn** bởi chính hạn lưu trữ — nên biên **không chặn cú tra nào**. Nó chỉ bắt đầu có hiệu lực khi admin **nâng hạn nhật ký lên trên 24 tháng**, tức đúng lúc quan hệ đó vỡ. Đó là hình dạng đúng của một lưới an toàn: im lặng khi không cần, có mặt khi cần.
+
+**Vì sao không cho `PERM-062` một biên hẹp hơn.** Hai biên khác nhau buộc cửa kiểm hỏi thêm ***"phiên này vào bằng cửa nào"*** trước khi biết áp biên nào. Đó đúng hình dạng mà `QĐ-094` cấm — cửa hỏi **permission**, trả lời **có hoặc không**, không kèm một trục thứ hai phải tra — và là chính lý do `QĐ-135` đã tách hai permission thay vì cho một permission gán được ở hai phạm vi. Một giá trị, một trục cấu hình.
+
+**Không đổi gì.** Khoảng thời gian không hợp lệ vẫn **từ chối kèm lý do**, không tự hoán đổi · trong phạm vi biên vẫn **không** có giới hạn số dòng, tập lớn xử lý bằng phân trang · hai cửa vẫn **không lồng nhau và không suy ra nhau**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-094`, `QĐ-135`, `QĐ-136`, `QĐ-139` · `PRD-REQ-116`, `NFR-11b`, `NFR-37`, `PERM-015`, `PERM-062`
+
+### QĐ-142 — `PERM-062` mang tên `audit.readContest`; vai seed *Quản trị* giữ CẢ HAI cửa đọc nhật ký
+
+**Quyết định — hai vế.**
+
+**1. Tên chuẩn tắc của `PERM-062` là `audit.readContest`**, đứng cạnh `PERM-015` `audit.read` theo đúng khuôn đặt tên hai cấp của catalog.
+
+**2. Vai dựng sẵn *Quản trị* giữ CẢ `PERM-015` và `PERM-062`** ngay ở bản cài mới dựng. Ba vai seed còn lại — *Người ra đề*, *MC*, *Thí sinh* — **MUST NOT** giữ permission nào trong hai.
+
+**Vì sao bản cài mới phải có sẵn một đường đọc.** `QĐ-130` đã khai: không có bề mặt đọc thì bảng là **chỉ-ghi**, `PERM-015` **không gác gì**, và vế *"chứng minh đáp án không rò"* của `PRD-REQ-082` **không thực hiện được**. Để cả hai permission nằm ngoài mọi túi vai seed là đặt **một mốc phải nhớ bật** ở đúng chỗ mà EPIC-011 sinh ra để phục vụ: đơn vị phải tự dựng một vai tuỳ biến trước khi dùng được thứ mà một requirement P1 và một requirement P2 cùng đứng trên. Cùng lý lẽ đã dùng ở `QĐ-140` cho ô `practice` — một bề mặt **nói ra được một điều đúng** hơn là một bề mặt để người vận hành đoán.
+
+**Vì sao giữ CẢ HAI chứ không chỉ cửa rộng.** Lối *"`PERM-015` đã đủ đọc mọi dòng nên gán thêm `PERM-062` là thừa"* dựa trên một phép suy mà `QĐ-135` đã **bác**: hai cửa **không suy ra nhau**. Cửa kiểm hỏi đúng permission mà bề mặt đó đòi — bề mặt tra cứu phạm vi contest hỏi `PERM-062` và **không** chấp nhận `PERM-015` thay thế. Vai *Quản trị* thiếu `PERM-062` sẽ **mở được màn rộng nhưng không mở được màn hẹp**: một kết cục ngược đời, và là hệ quả trực tiếp của việc trộn *"đủ quyền"* với *"đúng cửa"*.
+
+**Ranh giới không đổi.** `TERM-059` **chủ contest** vẫn là thuộc tính cố định của contest, **không** phải vai và **không** phải permission (`QĐ-093`); nó **không** tự động kéo theo `PERM-062`. Muốn một người tra nhật ký trong phạm vi một contest thì phải **gán permission đó ở phạm vi `CONTEST`**, như mọi permission `CONTEST` khác.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-093`, `QĐ-094`, `QĐ-130`, `QĐ-135`, `QĐ-140` khuôn lập luận · `PRD-REQ-116`, `PRD-REQ-082`, `PERM-015`, `PERM-062`, `TERM-059`
+
+### QĐ-143 — *"Cảnh báo trước"* của bước dọn là một DIALOG tại mốc kích hoạt; v1 KHÔNG có tầng cảnh báo theo lịch
+
+**Quyết định — hai vế.**
+
+**1. Cảnh báo là một dialog xác nhận Yes/No phát tại mốc kích hoạt**, tới **phiên đang bấm** — không phát tới phiên khác. Dialog **MUST liệt kê phạm vi sắp bị xoá** đủ để người bấm biết mình đang đồng ý xoá cái gì, và bước dọn **MUST NOT** xoá một byte nào trước khi nhận Yes.
+
+**2. v1 MUST NOT đặc tả và MUST NOT dựng một tầng cảnh báo theo LỊCH TRÌNH** — không báo trước N ngày, không banner, không thông báo ngoài luồng. Khi job dọn tự động của v1.5 được dựng, một tầng cảnh báo lịch trình được đặc tả **thêm** và **MUST NOT** thay thế dialog này.
+
+**Vì sao quy về một dialog.** `PRD-REQ-080` và `NFR-35` khai ràng buộc bằng đúng ba chữ *"cảnh báo trước"* — không người nhận, không khoảng thời gian, không kênh. Ở v1 bước dọn **chỉ chạy bằng tay** (`product-discovery.md` §5 E-11 xếp job tự động ngoài phạm vi), nên chữ *"trước"* chỉ có **một** mốc để trỏ tới: **cú bấm**. Đặt một con số ngày ở v1 là khai một lịch trình cho một **bộ hẹn giờ chưa tồn tại** — tức bịa một luật ở chỗ không có luật, đúng thứ Nguyên tắc II của constitution cấm.
+
+`CLAUDE.md` §Dialog xác nhận đã có sẵn khuôn cho đúng hình dạng này: *"mọi thao tác không hoàn tác được đều qua dialog Yes/No"*. Xoá dữ liệu quá hạn là thao tác **không hoàn tác được đậm nhất** của epic này, nên nó rơi thẳng vào khuôn đó mà không cần một cơ chế mới.
+
+**Vì sao ràng buộc vẫn thuộc v1 dù job thuộc v1.5.** `PRD.md` §11 EPIC-011 §Out of scope khai rõ: *"ràng buộc là điều kiện đặt lên job, không phải job"*. Hợp đồng phải có **trước** khi bên kia được dựng, không phải sau — và một ràng buộc không có hình dạng thì không có gì để kiểm.
+
+**Không đổi gì.** Ràng buộc *"không đụng hiện vật đã xuất"* (`QĐ-077`, `NFR-35b`) giữ nguyên và vẫn đúng ở **mọi** thời điểm của mọi lần chạy · mỗi lần chạy bước dọn vẫn để lại dòng nhật ký · job dọn tự động vẫn ngoài phạm vi v1.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-077`, `QĐ-091`, `QĐ-131` · `PRD-REQ-080`, `NFR-35`, `NFR-35b` · `CLAUDE.md` §Dialog xác nhận
+
+### QĐ-144 — BỎ HẲN disclaimer bản quyền khi tải âm thanh lên
+
+**Quyết định.** Hệ thống **MUST NOT** hiện disclaimer bản quyền ở **bất cứ đâu** — không ở luồng tải âm thanh lên, không ở đường **nhập gói contest**, không ở bề mặt nào khác. Không ô tích, không nút *"Tôi hiểu"*, không trạng thái *"đã đọc"*, không dòng nhật ký nào về việc đọc.
+
+Đây **không** phải một hạng mục hoãn sang v1.5. Nó **không tồn tại** — cùng hạng với *tuỳ chọn hiển thị biệt danh* (NON-GOAL-018, `QĐ-090`).
+
+**Hạng của câu hỏi: PHẠM VI SẢN PHẨM, không phải kỹ thuật hay pháp lý bắt buộc.** Không luật nào ép một nền tảng tự host hiển thị disclaimer bản quyền cho file mà chính người vận hành tải lên máy chủ của chính họ; trách nhiệm về nguồn gốc file nằm ở **bên tải lên**, và ở mô hình tự host thì bên tải lên **chính là** đơn vị chịu trách nhiệm. Một dòng chữ hệ thống tự hiện cho chính người đó không dịch chuyển trách nhiệm đi đâu cả.
+
+**Vì sao bỏ chứ không hoãn.** Ở lối *"chỉ hiển thị"* — đúng chữ nghĩa `PRD-REQ-084` — disclaimer **không để lại dấu vết nào**, nên nó không chứng minh được ai đã đọc; giá trị pháp lý gần bằng không. Ở lối *"đòi xác nhận"* thì nó thành một bước chắn **mỗi lần tải lên** cho một tính năng P3, cộng một loại dòng nhật ký mới, cộng một câu hỏi kéo theo *(đường nhập gói có áp không, hiện ở mốc nào)*. Cả hai lối đều **trả giá thật để đổi lấy một thứ không dùng được**. Bỏ hẳn là lối duy nhất không mang chi phí nào.
+
+**Đây là lần đầu một requirement `CONFIRMED` bị RÚT khỏi `PRD.md`.** Nó được xử lý theo §Quy ước bảo trì: `PRD-REQ-084` **rút thành `NON-GOAL-020`**, không giữ lại dưới dạng ghi chú lịch sử ở chỗ cũ; lịch sử tra ở `git log`.
+
+**Hệ quả.** `PRD.md`: `PRD-REQ-084` rút thành **`NON-GOAL-020`** · §11 EPIC-011 §Scope bỏ vế disclaimer · §18 bảng rủi ro và §18 hàng *"Bản quyền nhạc nền"* sửa theo · §22 ma trận bỏ hàng. `specs/011`: **US-007 bỏ hẳn**, `FR-047` → `FR-050` bỏ *(số hiệu để trống, không dùng lại)*, `AC-039` → `AC-041` bỏ, `SC-016` đổi thành tiêu chí **nghịch**.
+
+**Rủi ro đã cân và chấp nhận.** Hệ thống vẫn **không kiểm được** nguồn gốc nhạc nền — điều đó không đổi. Cái đổi là hệ thống **thôi giả vờ** đã làm gì đó về việc ấy. Nếu sau này một đơn vị cần dấu vết bản quyền, nó quay lại như một FR mới có yêu cầu thật đằng sau, không phải một dòng chữ trang trí.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-090` khuôn xử lý · `PRD-REQ-084` *(rút)*, `NFR-36`, NON-GOAL-018 · `product-discovery.md` §3 *(nguồn cũ, nay không còn hiệu lực cho vế này)*
+
+### QĐ-145 — Cú ĐẨY đáp án hàng loạt tại mốc câu khép là MỘT sự kiện trong trận, không phải dòng nhật ký thao tác
+
+**Quyết định.** Cú **đẩy đáp án hàng loạt** của engine tại mốc câu khép — tới thí sinh, khán giả và lớp phủ khi cờ `revealAnswerAfterJudge` bật, tức các ca `GR-037` **C5** và **C7** — **MUST** sinh **một** sự kiện trong **nhật ký sự kiện của trận**, mang mốc thời gian và câu bị lộ. Sự kiện đó **MUST** tra ra được từ nhật ký thao tác qua đường **tham chiếu** (`QĐ-132`).
+
+Hệ thống **MUST NOT** sinh một dòng nhật ký thao tác **riêng** cho cú đẩy, **MUST NOT** sinh một dòng cho **từng người nhận**, và **MUST NOT** bịa một chủ ngữ *"hệ thống"* ở trường *người thực hiện*.
+
+**Hai đường tách bạch, đừng trộn.** Đáp án rời server bằng **hai** đường khác hẳn nhau về bản chất:
+
+| | Đường **KÉO** | Đường **ĐẨY** |
+|---|---|---|
+| Ai khởi phát | một **phiên** yêu cầu | **engine**, tại một mốc của trận |
+| Ai nhận | riêng phiên đó | thí sinh + khán giả + lớp phủ, cùng lúc |
+| Cửa kiểm | `PERM-045` | không — cờ `revealAnswerAfterJudge` mở |
+| Ca `GR-037` | C1, C2 | C5, C7 |
+| Dấu vết | **một dòng nhật ký thao tác** mang kết quả (`QĐ-133`) | **một sự kiện trong trận** |
+
+`QĐ-133` khai *"mọi **yêu cầu** xem đáp án"* — cú đẩy **không phải một yêu cầu**, nên nó rơi ra ngoài và cần kết cục riêng này.
+
+**Vì sao là sự kiện trong trận.** Cú đẩy do **engine** phát tại một mốc của trận, không phải thao tác của một vai — đúng định nghĩa `TERM-021`. Đặt nó vào nhật ký thao tác buộc phải **bịa một chủ ngữ** cho trường *người thực hiện*, đúng thứ `QĐ-134` vừa bác ở ca *khán giả vào phòng*: một bảng vốn ghi *"thao tác của mọi vai"* không được có dòng không thuộc vai nào. Quy nó về admin đã bấm cú chấm cũng sai — gán cho họ một hành động họ không chủ động làm, và trùng với dòng đã có của chính cú chấm.
+
+**Một sự kiện, không phải N.** Cú đẩy là **một** hành vi của engine, dù có 4 hay 400 điểm nhận. Ghi mỗi người nhận một dòng là nhân bản cùng một sự thật theo số kết nối — vô nghĩa với phân xử, và đúng thứ `QĐ-132` bác.
+
+**Ranh giới đã cân và chấp nhận.** Dấu vết này đi theo hạn lưu trữ của **trận** *(mặc định 12 tháng)*, không theo hạn nhật ký *(24 tháng)*. Từ tháng thứ 13, **thời điểm chính xác** đáp án rời vòng `PERM-045` không tra lại được — chỉ còn dòng nhật ký thao tác mang nhãn *"nguồn đã hết hạn"* (`QĐ-137`). Đây là hệ quả trực tiếp và nhất quán của `QĐ-132`: nội dung một sự kiện trong trận có **đúng một** nguồn sự thật và đi theo vòng đời của trận đó. Giữ một bản thứ hai sống lâu hơn chính là **đường vòng thoát khỏi hạn lưu trữ** mà `QĐ-137` đã bác.
+
+**Không đổi gì.** Cột *kết quả trả đáp án* của cả mười ca `GR-037` **không đổi** · mốc câu khép **không đổi** · cờ `revealAnswerAfterJudge` **không đổi** · mọi **yêu cầu** của một phiên vẫn để lại đúng một dòng nhật ký thao tác mang kết quả (`QĐ-133`), kể cả yêu cầu xảy ra ngay sau cú đẩy.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-132`, `QĐ-133`, `QĐ-134`, `QĐ-137` · `GR-037` C5, C7 · `PRD-REQ-082`, `TERM-021`, `PERM-045`
+
 ### QĐ-088 — Hai kênh public nhận đẩy MỘT CHIỀU trên HTTP; kênh hai chiều chỉ cho vai đã xác thực
 
 **Quyết định.** Hai kênh public — **màn khán giả** và **lớp phủ dựng stream** — nhận cập nhật bằng **luồng sự kiện một chiều server → client trên HTTP**, cộng một lời gọi đọc thông thường để lấy ảnh chụp trạng thái lúc vào phòng. Chúng **không** dùng kênh hai chiều.
@@ -1551,7 +2162,7 @@ Kênh hai chiều **chỉ dành cho vai đã xác thực**: admin, thí sinh, MC
 - **Phạm vi kênh**: socket hai chiều dành cho **vai đã xác thực**; hai kênh public đi đường HTTP **một chiều**.
 - **Lớp phủ vẫn nhận đáp án từ mốc câu khép** (`QĐ-080`) — chiều truyền không đổi cái gì được truyền. Kênh một chiều **đẩy được** đáp án đúng lúc; nó chỉ không nhận vào.
 - **Nút *"khoá cổng"*** (`PRD-REQ-086`) áp ở tầng vào của kênh public, không đổi.
-- **Không đụng tới việc nạp trước media mã hoá** (`QĐ-012b`) — đó là đường tải nội dung, không phải đường sự kiện.
+- **Không đụng tới việc nạp trước media mã hoá** (`NFR-24`) — đó là đường tải nội dung, không phải đường sự kiện.
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
@@ -1584,6 +2195,17 @@ Kênh hai chiều **chỉ dành cho vai đã xác thực**: admin, thí sinh, MC
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
+
+### QĐ-151 — Bảng tóm tắt phạm vi hiển thị PHẢI nêu ngoại lệ của cú đóng bằng tay
+
+**Quyết định.** Dòng *"Đáp án chuẩn"* trong bảng ba loại thông tin của `game-rules.md` §Phạm vi hiển thị **phải nêu ngoại lệ C10**: từ mốc câu khép, đáp án công bố cho mọi vai theo cờ **trừ khi admin đang giữ một cú ĐÓNG hiển thị bằng tay cho câu đó**.
+
+**Vì sao.** Dòng tóm tắt đọc là *"từ mốc đó công bố cho **mọi vai** theo cờ"*, trong khi `GR-037` **C10** khai cú đóng tay **chặn** cú đẩy kể cả khi cờ bật (`QĐ-074`, `QĐ-119`). Một người hiện thực đọc bảng tóm tắt mà không đọc hết bảng quyết định sẽ để engine ghi đè cú đóng của admin — đúng thứ `QĐ-119` sinh ra để chống.
+
+**Không phải một quyết định mới về hành vi.** C10 giữ nguyên nghĩa; đây là sửa một bản tóm tắt lược mất ngoại lệ. Ghi thành mục riêng vì nó xác lập một nguyên tắc đọc: **bảng quyết định thắng bảng tóm tắt**, và bảng tóm tắt nào lược mất một ca thì bảng tóm tắt đó sai.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-074`, `QĐ-119` · `GR-037` C10
+
 
 # K. Quyết định theo vòng
 
@@ -1789,6 +2411,58 @@ Câu VCNV **không** khai thời lượng theo từng câu: người soạn đ�
 
 ---
 
+### QĐ-158 — Băng điểm Chướng ngại vật cho 5-8 hàng ngang: PRESET mặc định suy từ luật gốc
+
+**Quyết định.** Băng điểm Chướng ngại vật vẫn là **mảng cấu hình** dài bằng `rowCount` như `GR-009` C11 khai. Cái được chốt ở đây là **giá trị mặc định của preset** khi `rowCount` được mở khoá ở phiên bản sau, suy từ luật gốc:
+
+> **`băng(k) = max(30, 70 − 10k)`** — với `k` là **số hàng ngang không còn ở trạng thái chờ**. Sau khi **gợi ý cuối đã đưa ra**: **20**, là **sàn tuyệt đối**.
+
+| `rowCount` | Băng theo `k` = 1, 2, 3, … | Sau gợi ý cuối |
+|---|---|---|
+| **4** *(luật gốc)* | 60 · 50 · 40 · 30 | 20 |
+| 5 | 60 · 50 · 40 · 30 · 30 | 20 |
+| 6 | 60 · 50 · 40 · 30 · 30 · 30 | 20 |
+| 7 | 60 · 50 · 40 · 30 · 30 · 30 · 30 | 20 |
+| 8 | 60 · 50 · 40 · 30 · 30 · 30 · 30 · 30 | 20 |
+
+**Vì sao công thức này.** Nó **tái tạo đúng** thang gốc ở `rowCount = 4` — 60/50/40/30 — nên nó không phải một thang thứ hai cạnh tranh với luật, mà là **cùng một thang được viết dưới dạng tổng quát**. Ba giá trị của nguồn được giữ nguyên: đỉnh **60** khi trả lời sớm nhất · đáy **30** khi mọi hàng ngang đã qua · **20** sau gợi ý cuối.
+
+**Vì sao có sàn 30 thay vì tiếp tục trừ 10.** Ba lý do, cả ba đứng trên **chính con số của nguồn**, không cần viện tới một quy tắc sàn nào:
+
+- `rowCount = 5` chạm **20** — **va** vào giá trị của *sau gợi ý cuối*. Hai tình huống khác hẳn nhau *(giải được khi còn 5 hàng chưa qua, và giải được sau khi đã có gợi ý cuối)* sẽ cho **cùng** số điểm, xoá mất bậc mà thang sinh ra để tạo.
+- `rowCount = 7` chạm **0** — một câu trả lời **đúng** không được điểm nào.
+- `rowCount = 8` xuống **âm** — một câu trả lời **đúng** bị trừ điểm, ngược toàn bộ cấu trúc của nguồn.
+
+Nên phép ngoại suy tuyến tính thẳng là **sai**, không chỉ là khó chịu.
+
+> **Quan hệ với sàn 20.** Ba lý do trên đứng độc lập, **không** cần viện tới một quy tắc sàn. `QĐ-163` chốt riêng rằng **20 là sàn** — và đó là quyết định của dự án, **không** phải phát biểu của luật gốc. Hai mục củng cố nhau: công thức ở đây luôn cho giá trị **≥ 30 > 20**, nên nó thoả sàn của `QĐ-163` ở mọi `rowCount`.
+
+**Vẫn KHÔNG hard-code.** Đây là **mặc định của preset**, không phải một hằng số trong engine. `GR-009` C11 giữ nguyên: mảng băng là **cấu hình bắt buộc** dài bằng `rowCount`, và người dựng contest đổi được từng phần tử.
+
+**Hệ quả.** Câu hỏi mở *"băng điểm cho `rowCount` 5-8"* của `specs/006` **đóng** · `rowCount` vẫn **khoá cứng ở 4 trong v1** (`QĐ-068`) — quyết định này chỉ có hiệu lực khi khoá được mở.
+
+*Nguồn*: `[SUY RA]` từ `source/fandom-olympia-26-luat-choi.md` §Vượt chướng ngại vật *(thang 60/50/40/30 và giá trị 20 sau gợi ý cuối — nguồn **không** phát biểu một quy tắc sàn)* · nền: `QĐ-068` · `GR-009` C11
+
+
+### QĐ-163 — **20 là SÀN** của băng điểm Chướng ngại vật — quyết định của dự án, không phải của luật gốc
+
+**Quyết định.** Băng điểm Chướng ngại vật **không bao giờ xuống dưới 20**. Giá trị **20** — trao cho người giải đúng Chướng ngại vật **sau khi gợi ý cuối đã đưa ra** — là **sàn tuyệt đối** của thang, ở mọi cấu hình `rowCount`.
+
+**Xuất xứ — đọc kỹ chỗ này.** Luật gốc **KHÔNG** phát biểu một quy tắc sàn. Nguồn chỉ viết:
+
+> *"Trả lời đúng Chướng ngại vật sau gợi ý cuối cùng ở ô trung tâm **chỉ được 20 điểm**."*
+
+Đó là **một giá trị cho một tình huống**. Chữ *"chỉ"* cho biết 20 là mức thấp nhất của thang **khi có 4 hàng ngang**, nhưng nguồn chưa bao giờ xét cấu hình khác 4 nên nó không có cơ hội phát biểu điều gì về một sàn. Mệnh đề *sàn* là **lựa chọn của dự án**, ghi ở đây để nó thôi mặc áo trích dẫn nguồn.
+
+**Vì sao chọn giữ nó thành luật thật.** Ở `rowCount = 4` mệnh đề này **không phân biệt được** với việc liệt kê thang, nên nó vô hại và cũng vô dụng. Nó chỉ gánh tải khi `rowCount` được mở khoá — và đúng ở đó nó ngăn ba kết cục vô lý mà một phép ngoại suy tuyến tính sinh ra: điểm **va** vào giá trị của *sau gợi ý cuối*, điểm **bằng 0** cho một câu trả lời đúng, và điểm **âm** cho một câu trả lời đúng. Có một sàn tường minh thì ba ca đó bị chặn bằng **một** mệnh đề, thay vì phải liệt kê từng ca hỏng.
+
+**Phạm vi.** Sàn này áp cho **băng điểm Chướng ngại vật** và chỉ nó. Nó **không** phải một sàn điểm chung: điểm của thí sinh vẫn **được phép âm, không có sàn** (`QĐ-012`), và mọi vòng khác không có sàn nào.
+
+**Hệ quả.** `GR-009` giữ mệnh đề *"20 là sàn"* và nay trỏ về mục này thay vì về đoạn luật gốc · `QĐ-158` được củng cố: công thức `băng(k) = max(30, 70 − 10k)` luôn cho giá trị **≥ 30 > 20**, nên nó thoả sàn ở mọi `rowCount`.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `source/fandom-olympia-26-luat-choi.md` §VCNV *(giá trị **20**, không phải quy tắc sàn)* · `GR-009`, `QĐ-158`
+
+
 # L. Mô hình dữ liệu và quyền
 
 ### QĐ-095 — Trong lúc trận chưa đóng sổ, quyền chỉ NỞ RA, không bao giờ CO LẠI
@@ -1926,6 +2600,26 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 
 *Nguồn*: `[CHỦ DỰ ÁN]` · vế lý do: `[SUY RA]` từ `QĐ-051` + `CLAUDE.md` §Mô hình truy cập
 
+### QĐ-162 — MỘT kiểu nhập đáp án duy nhất; format yêu cầu nằm trong ĐỀ
+
+**Quyết định.** Bỏ trường `answerInputKind` và trường `options[]` khỏi `Question`. Mọi câu hỏi có ô nhập đều dùng **một** ô nhập chữ duy nhất; **câu hỏi lựa chọn** và **câu hỏi sắp xếp** của luật gốc được soạn như câu hỏi thường, và **phần đề tự nêu format** mà thí sinh phải theo — ví dụ *"chọn A, B, C hay D"* hoặc *"viết thứ tự, cách nhau bởi dấu phẩy"*.
+
+**Đáp án và bài làm vẫn là CHUỖI**, và vẫn đi qua đúng một đường so khớp của `GR-027`.
+
+**Vì sao bỏ hẳn thay vì giữ ba kiểu.** `QĐ-066` giữ hai kiểu thêm với lý do *"chỉ đổi widget, không đổi cách chấm"* — nhưng nếu nó **chỉ** đổi widget thì nó không mua được gì mà luật đòi. Máy **không chấm** (`QĐ-010`), nên một thứ tự kéo thả và một chuỗi gõ tay đi vào cùng một chỗ: mắt admin. Đổi lại, hai kiểu đó bắt hệ thống mang thêm một trường mảng, một trục render riêng trên máy thí sinh, một nhánh xuất/nhập, và một câu hỏi *"`options[]` dài bao nhiêu"* không nguồn nào trả lời được.
+
+**Vì sao format nằm trong ĐỀ là chỗ đúng của nó.** Người ra đề là người biết câu hỏi của mình cần thí sinh trả lời ra sao. Đặt yêu cầu format vào phần đề giữ nó **cạnh nội dung nó ràng buộc**, hiện ra cho thí sinh đúng lúc, và không đòi hệ thống hiểu ngữ nghĩa của một loại câu nào.
+
+**Ranh giới đã chấp nhận.** Thí sinh gõ sai format thì bài làm trông khác đáp án, và **admin phán quyết** — đúng như mọi ca sai chính tả khác (`GR-027`). Hệ thống **không** tự sửa format, **không** tự chuẩn hoá thứ tự, và **không** có thông điệp riêng cho *"sai format"*.
+
+**Không đổi gì.** `isPractical` — **kênh trả lời thứ tư** — giữ nguyên và nằm ngoài trục này: không có ô nhập, admin chấm *đạt / không đạt* · `GR-027` không đổi một chữ, nó vốn đã viết *"nhận được một bài làm dạng chữ"* · mode sân khấu vẫn là thí sinh **đọc** đáp án, không gõ.
+
+**Thay cho.** `QĐ-066` — hai kiểu `choice` và `ordering` cùng trường `options[]` **không còn tồn tại**.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-010`, `QĐ-027` · `GR-027`, `TERM-044`
+
+---
+
 ### QĐ-066 — Ba kiểu NHẬP đáp án; đáp án luôn là CHUỖI
 
 **Quyết định.** Thêm hai trường vào `Question`:
@@ -1936,6 +2630,8 @@ Pre-flight chặn theo **`everPublic`**, không theo `visibility` — vì thứ 
 | `options[]` | danh sách phương án | Nội dung để render, cho `choice` và `ordering` |
 
 **Đáp án và bài làm vẫn là CHUỖI ở cả ba kiểu**: câu lựa chọn lưu `"B"`, câu sắp xếp lưu `"B, D, A, C"`.
+
+> ⚠️ **`QĐ-162` đã thay mục này.** `answerInputKind` và `options[]` **không còn tồn tại**: chỉ còn **một** ô nhập chữ, và format yêu cầu nằm trong phần đề. Vế *"đáp án luôn là chuỗi"* giữ nguyên hiệu lực.
 
 **Vì sao — `QĐ-010` làm bài toán nhỏ đi rất nhiều.** Máy **không chấm**, nên nó **không cần đánh giá** một thứ tự hay một lựa chọn; nó chỉ cần **hiển thị bài làm cạnh đáp án** để admin phán quyết. Serialise về chuỗi thì cơ chế **tô khác biệt ký tự** chạy nguyên và **không đẻ ra nhánh chấm mới** — câu sắp xếp `BDCA` so với đáp án `BDAC` cho ra highlight đúng hai vị trí bị hoán.
 
@@ -1995,6 +2691,31 @@ Hai con số là **mặc định**, không phải luật: không rule, không tr
 *Nguồn*: `[CHỦ DỰ ÁN]`
 
 ---
+
+### QĐ-150 — v1 CÓ bề mặt dọn dữ liệu THỦ CÔNG; thứ ngoài phạm vi là BỘ HẸN GIỜ
+
+**Quyết định.** v1 có một **bề mặt trong sản phẩm** để admin chạy bước dọn dữ liệu theo hạn lưu trữ, gác bằng **`PERM-063` `retention.purge`**. Bề mặt này hiện **bản kê phạm vi sắp bị xoá**, phát **dialog xác nhận Yes/No** tại mốc kích hoạt theo `NFR-35`, và **không xoá một byte nào trước khi nhận Yes**.
+
+**Thứ nằm ngoài phạm vi v1 là JOB TỰ ĐỘNG** — bộ hẹn giờ tự chạy bước dọn theo lịch. Không phải bản thân bước dọn.
+
+**Vì sao phải khai.** `NFR-35` đặt ràng buộc `MUST` lên **cú bấm kích hoạt** và lên **phiên đang bấm** — tức nó giả định có một người đang bấm. Nhưng không permission nào cấp quyền **chạy** bước dọn *(`PERM-021` chỉ cho **đặt** hạn)*, và job tự động thì ngoài phạm vi. Kết quả: ở v1 **không tồn tại bề mặt nào** để cú bấm đó xảy ra, nên `NFR-35` là một ràng buộc không có chủ ngữ và `PRD-REQ-080` không kiểm thử được.
+
+**Vì sao không chọn lối *"v1 không có bước dọn nào"*.** Nó rẻ hơn, nhưng nghĩa là dữ liệu cá nhân **không bao giờ rời hệ thống** ở v1: hạn lưu trữ đặt được mà không ai thi hành. Đó là ngược đúng mục tiêu của EPIC-011 — *"đơn vị tổ chức chịu được trách nhiệm pháp lý về dữ liệu"* — và biến `QĐ-091`, `QĐ-131`, `QĐ-136`, `QĐ-140` thành bốn quyết định về một giá trị không ai đọc.
+
+**Vì sao không chọn lối *"chỉ có dòng lệnh"*.** Bước dọn cần **thấy phạm vi sắp xoá trước khi bấm**; đó là một bề mặt trình bày, không phải một cờ dòng lệnh. Cộng thêm: đường dòng lệnh của `QĐ-087` phục vụ **người dựng máy trước ngày thi**, còn bước dọn chạy **sau ngày thi** bởi người vận hành — hai vai khác nhau ở hai thời điểm khác nhau.
+
+**Permission này KHÔNG thuộc bảy thao tác phá huỷ của `QĐ-078`.** Bảy thao tác đó đều **đổi kết quả của một trận**; bước dọn là vòng đời dữ liệu **cấp bản cài** và không chạm tới điểm hay thứ hạng của trận nào. Hệ quả trực tiếp: **`NFR-15` *(lý do bắt buộc)* không áp** cho bước dọn — hàng rào của nó là dialog liệt kê phạm vi của `NFR-35`, không phải một ô nhập lý do.
+
+**Hệ quả.**
+
+- **`PRD-REQ-117` mới** — màn dọn dữ liệu thủ công, **P2**.
+- **`PERM-063` `retention.purge` mới**, tách khỏi `PERM-021`: một cái **đặt** hạn, một cái **thi hành**. Vai dựng sẵn **Quản trị** giữ nó.
+- **`PRD.md` §11 EPIC-011 §Out of scope** đổi từ *"job dọn dữ liệu tự động"* thành khai rõ: bộ hẹn giờ ngoài phạm vi, bề mặt thủ công thuộc v1.
+- **`NFR-35` không đổi một chữ** — nó nay có chủ ngữ.
+- **Khi job tự động của v1.5 ra đời**, nó dùng lại `PERM-063`, và tầng cảnh báo theo lịch được đặc tả **thêm**, không thay dialog của `NFR-35` (`QĐ-143`).
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-091`, `QĐ-131`, `QĐ-143`, `QĐ-078` · `NFR-35`, `PRD-REQ-080`, `PERM-021`
+
 
 # M. Bảng tra mã CŨ → MỚI
 
@@ -2141,3 +2862,65 @@ Bốn chỉ số hoãn **chỉ được đặt ngưỡng sau khi có người d�
 **Hệ quả.** `PRD.md` §19.2 tách làm hai bảng thay vì một bảng mang `NEEDS CLARIFICATION`; bốn chỉ số hoãn chuyển sang `roadmap-post-v1.md`, cùng chỗ với các hạng mục chưa gắn mốc.
 
 *Nguồn*: `[CHỦ DỰ ÁN]`
+
+---
+
+# O. Quy ước tài liệu và mã hiệu
+
+Hai mục dưới đây không nói về luật chơi hay về sản phẩm. Chúng nói về **cách đọc chính bộ tài liệu này**, và chúng ở đây vì cả hai đều sinh ra từ một chỗ hỏng có thật đã xảy ra.
+
+### QĐ-146 — Đánh số lại cho liền CHỈ áp cho mã đã được giải phóng; mã đang có chủ thì không
+
+**Quyết định.** Quy ước *"dãy số liên quan được đánh lại cho liền"* của `PRD.md` §Quy ước bảo trì **chỉ** áp cho một mã mà mục giữ nó **đã bị xoá khỏi tài liệu**. Một mã **đang có chủ** MUST NOT được cấp cho một mục khác, kể cả khi mục mới ra đời sau.
+
+**Chỗ hỏng đã xảy ra.** `QĐ-144` rút `PRD-REQ-084` thành `NON-GOAL-019`, nhưng `NON-GOAL-019` **đã thuộc về** mục *trình hướng dẫn cài đặt lần đầu trên trình duyệt* từ `QĐ-087`. Kết quả: `PRD.md` §17 có **hai** hàng cùng mang một mã, và ba chỗ trỏ tới mã đó với nghĩa cũ — §11 EPIC-012 §Out of scope, `PRD-REQ-106` §Source, `specs/001` FR-039 — trở thành ba chỗ sai **trong im lặng**.
+
+**Phân xử.** Mục **cũ giữ mã**: `NON-GOAL-019` vẫn là *trình hướng dẫn cài đặt lần đầu trên trình duyệt*. *Disclaimer bản quyền khi tải âm thanh* chuyển sang **`NON-GOAL-020`** — số kế tiếp còn trống.
+
+**Vì sao mục cũ giữ, không phải mục mới.** Đây chính là lý lẽ mà sổ này đã ghi ở §Cách đọc cho `QĐ-*`: *"đánh số lại mỗi lần thêm một quyết định sẽ làm mọi trích dẫn cũ trôi nghĩa, kể cả trích dẫn nằm ngoài repo."* Mã đã phát ra thì có người đang trỏ vào; kéo nó sang nghĩa khác làm mọi trích dẫn đó sai mà không phép kiểm nào bắt được. Mục mới thì chưa ai trỏ tới, nên đổi nó không tốn gì.
+
+**Không mâu thuẫn với §Quy ước bảo trì.** Quy ước đó nói về mã **được giải phóng** khi một mục bị xoá — như `PRD-REQ-083` được `QĐ-090` dùng lại sau khi tuỳ chọn biệt danh bị bỏ hẳn. Ca đó hợp lệ và không đổi. Ca ở đây khác hẳn: mã **chưa** được giải phóng, nên đây là **va chạm**, không phải đánh số lại.
+
+**Hệ quả.**
+
+- **`PRD.md` §17**: hàng disclaimer đổi thành `NON-GOAL-020`; hàng trình hướng dẫn giữ `NON-GOAL-019`; hai hàng xếp lại đúng thứ tự số.
+- **Mọi chỗ trỏ tới disclaimer đổi theo**: `PRD.md` §Version, §11 EPIC-011 §Out of scope, §18 hai hàng, §22 ma trận · `QĐ-144` §Hệ quả · `specs/011`.
+- **Mọi chỗ trỏ tới trình hướng dẫn cài đặt giữ nguyên**: `PRD.md` §10, §11 EPIC-012, §22 · `specs/001` FR-039 · `specs/004` · `specs/012` FR-012.
+- **Số kế tiếp còn trống của dãy `NON-GOAL-*` nay là 021.**
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-087`, `QĐ-144` · `PRD.md` §Quy ước bảo trì, §Cách đọc của sổ này · `specs/012-van-hanh-hai-ho-so-trien-khai` `CONFLICT-001`
+
+### QĐ-147 — §12 là danh sách phạm vi CHUẨN TẮC; bảng `FS-*` ở §14 là bản tóm tắt
+
+**Quyết định.** Phạm vi requirement của một epic được đọc từ **`PRD.md` §12** — nơi mỗi requirement được phát biểu đầy đủ — cộng mọi requirement **khai epic đó trong trường `Related epic`** dù nằm ở mục epic khác. Bảng `FS-*` ở §14 là **bản tóm tắt cho người đọc lướt**, không phải danh sách chuẩn tắc; `FS-*` lệch với §12 là dấu hiệu **`FS-*` sai**.
+
+**Chỗ hỏng đã xảy ra.** `FS-36` khai phạm vi EPIC-012 gồm năm requirement, trong khi §12 mục EPIC-012 chứa sáu — `PRD-REQ-106` và `PRD-REQ-107` vắng mặt — cộng `PRD-REQ-019` khai `Related epic` gồm EPIC-012 nhưng nằm ở mục EPIC-003. Ba cách đọc cho ra ba phạm vi khác nhau cho cùng một epic.
+
+**Vì sao §12 thắng.** §11 EPIC-012 §Scope khai thẳng *"cài đặt lần đầu: dòng lệnh khi dựng máy, tài khoản admin theo gói khi ra hội trường (`QĐ-087`)"*, tức `PRD-REQ-106` chắc chắn thuộc epic đó. Một bảng tóm tắt thiếu nó là bảng sai, không phải một phạm vi hẹp hơn. Lấy `FS-36` làm chuẩn sẽ cắt đúng phần *"người thật dùng được hồ sơ thứ hai"* — phần mà `QĐ-087` sinh ra để giải.
+
+**Vì sao không bỏ bảng `FS-*` cho gọn.** Nó là bề mặt duy nhất trả lời câu *"epic này gồm những nhóm tính năng nào"* trong một dòng. Vấn đề không phải sự tồn tại của nó mà là **hạng** của nó chưa được khai; khai xong thì nó hết là một nguồn cạnh tranh.
+
+**Hệ quả.**
+
+- **`FS-36` sửa**: thêm `PRD-REQ-106` và `PRD-REQ-107`. Phạm vi EPIC-012 là **bảy** requirement.
+- **Quy tắc kiểm được cho mọi epic về sau**: một requirement khai `Related epic` gồm `E` thì thuộc phạm vi của `E`, bất kể nó nằm ở mục epic nào của §12; mọi spec đã có đều đang theo quy tắc này.
+- **`FS-*` không thoả cổng truy nguyên một mình.** Một FR trong `specs/**` MUST trỏ về một `PRD-REQ-*` ở §12, MUST NOT chỉ trỏ về một mã `FS-*`.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `QĐ-087` · `PRD.md` §12, §14 · `.specify/memory/constitution.md` §I · `specs/012-van-hanh-hai-ho-so-trien-khai` `OQ-001`
+
+### QĐ-161 — Ranh giới EPIC-004 ↔ EPIC-005 về danh sách câu gán: TRƯỚC và SAU khi trận bắt đầu
+
+**Quyết định.** Hai epic sở hữu hai thời điểm khác nhau của cùng một danh sách:
+
+| Epic | Thời điểm | Sở hữu |
+|---|---|---|
+| **EPIC-004** — contest builder | **Trước** khi trận đầu tiên của contest bắt đầu, cấu hình **chưa đóng băng** | Dựng danh sách câu gán: tìm, lọc, chọn, thêm, bớt |
+| **EPIC-005** — phòng thi | **Sau** khi một trận đã tồn tại, tại `LOBBY` giữa các vòng | Sửa danh sách của trận đang chạy (`GR-031` C5 → C8) |
+
+**Đây KHÔNG phải trùng lặp.** Hai bề mặt khác nhau, hai vai đang làm hai việc khác nhau, ở hai thời điểm không giao nhau.
+
+**Vì sao phải khai.** `specs/004` `FR-018` từng viết *"chỉ khi trận đang ở `LOBBY`"* — tức nó mô tả **ca của EPIC-005** dưới mã của EPIC-004. Đọc hai spec cạnh nhau thì thấy hai bộ FR nói cùng một điều, và người hiện thực không biết dựng bề mặt nào.
+
+**Hai ràng buộc áp ở CẢ HAI cửa.** *Không gỡ được câu đã hiển thị* (`GR-031` C6) và *gỡ được câu đã rút chưa hiển thị* (`GR-031` C7) là tính chất của **cờ đã dùng**, không phải của một bề mặt. Chúng xuất hiện ở cả hai spec là **lặp có kiểm soát**, không phải trùng lặp cần gộp — vì một contest chạy nhiều trận, nên cửa builder cũng gặp câu đã lộ ở trận trước.
+
+*Nguồn*: `[CHỦ DỰ ÁN]` · nền: `GR-031` C5 → C8 và §Thứ tự đánh giá bước (1) · `QĐ-042`

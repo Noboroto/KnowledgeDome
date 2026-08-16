@@ -254,8 +254,24 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 - **Tên khác**: sự kiện trận · event log
 - **Giá trị**: các loại đã đặt tên — `QUESTIONS_DRAWN` · `QUESTION_USED` · `SCORE_ADJUST` · `MEDIA_KEY` · `TIE_BREAK_RESOLVED`
 - **Không phải mọi event đều là event điểm.** `TIE_BREAK_RESOLVED` là **event thứ hạng**: nó nằm trong cùng nhật ký nhưng **không tham gia** `reduce` ra bảng điểm (`QĐ-083`)
-- **Đừng nhầm với**: **AuditLog** — bảng chung ghi mọi thao tác của mọi vai (auth, CRUD, xuất/nhập), khác event trận · **thao tác của người dùng** — thao tác là cái được bấm và **có thể bị từ chối**; event là cái **đã xảy ra và được ghi**
-- **Nguồn**: `QĐ-011`, `QĐ-083`
+- **Đừng nhầm với**: **Nhật ký thao tác** (`TERM-063`) — bảng chung ghi mọi thao tác của mọi vai, khác event trận ở **chủ**, **vòng đời** và **người đọc**; nó **tham chiếu** tới nhật ký này chứ không nhân bản (`QĐ-132`) · **thao tác của người dùng** — thao tác là cái được bấm và **có thể bị từ chối**; event là cái **đã xảy ra và được ghi**
+- **Nguồn**: `QĐ-011`, `QĐ-083`, `QĐ-132`
+
+### TERM-063 — Nhật ký thao tác · AuditLog
+
+**Định nghĩa.** Bảng **chỉ thêm**, phạm vi **bản cài**, ghi dấu vết **mọi thao tác của mọi vai** — đăng nhập thành công và thất bại, đăng xuất, thao tác kho đề và bộ đề, quản lý contest, nhập và xuất, khán giả **bị đuổi**, và **mỗi lần xem đáp án**. Mỗi dòng mang **năm trường**: người thực hiện · hành động · đối tượng · thời điểm *(server time)* · địa chỉ nguồn.
+
+- **Tên khác**: audit log · nhật ký kiểm toán
+- **Mang thêm trường *kết quả*** *(thành công · bị từ chối · thất bại)* ở các thao tác mà `NFR-14` đòi, và ở **mọi** yêu cầu xem đáp án (`QĐ-133`)
+- **Không tham gia phép tính nào.** Nó **không** là nguồn để tính điểm, khác hẳn `TERM-021`
+- **Với sự kiện trong trận, nó THAM CHIẾU chứ không nhân bản** (`QĐ-132`) — nội dung sự kiện có đúng một nguồn sự thật
+- **Có vòng đời RIÊNG**: hạn lưu trữ của nó là **một** giá trị, mặc định **24 tháng**, **không** theo `matchPurpose` (`QĐ-131`, `QĐ-136`). Dòng thuộc một trận **không** bị dọn theo hạn của trận đó. Quan hệ giữa hai trục **không bị cưỡng chế** — đặt thấp hơn hạn trận thì hệ thống cảnh báo, không chặn
+- **Tham chiếu treo có nhãn riêng**: khi nguồn mà một dòng trỏ tới đã bị dọn, dòng vẫn hiện đủ năm trường nhưng mang nhãn ***"nguồn đã hết hạn"*** và đường đi tiếp bị vô hiệu hoá; `NFR-17` khi đó **không còn thoả** cho mốc ấy (`QĐ-137`). Ở cấu hình mặc định đây là **trạng thái thường trực** cho mọi trận quá 12 tháng
+- ***"Chỉ thêm"* nói về BỀ MẶT SẢN PHẨM.** Không đường sửa, không đường xoá một dòng nào cho bất kỳ vai nào; bước dọn theo hạn riêng là đường **duy nhất** một dòng rời hệ thống, và nó không đi qua bề mặt nào (`QĐ-131`)
+- **Đọc bằng hai cửa tách bạch** (`QĐ-135`): `PERM-015` `audit.read` ở phạm vi **bản cài**, và `PERM-062` `audit.readContest` ở phạm vi **`CONTEST`** — phạm vi sau tính **theo ĐỐI TƯỢNG của dòng**, không theo người thực hiện (`QĐ-138`). Vai dựng sẵn **Quản trị** giữ **cả hai** (`QĐ-142`). Một lần tra chịu **biên cứng về độ dài khoảng thời gian**, mặc định **24 tháng**, một giá trị cấp bản cài dùng chung cho cả hai cửa (`QĐ-139`, `QĐ-141`)
+- **Chỉ ghi đường KÉO, không ghi đường ĐẨY.** Một **yêu cầu** xem đáp án của một phiên để lại một dòng ở bảng này; cú **đẩy đáp án hàng loạt** của engine tại mốc câu khép thì **không** — nó là một **sự kiện trong trận**, tra qua tham chiếu (`QĐ-145`)
+- **Đừng nhầm với**: **Event · MatchEvent** (`TERM-021`) — thứ đó là nhật ký **của một trận** và là **nguồn để tính điểm**; hai bảng khác chủ, khác vòng đời, khác người đọc
+- **Nguồn**: `QĐ-130` → `QĐ-145` · `PRD-REQ-082`, `PRD-REQ-116`, `NFR-14`, `NFR-17`
 
 ### TERM-022 — Event điểm
 
@@ -494,18 +510,12 @@ Trong một **contest thật**, trận `practice` **chỉ được gán câu đ�
 
 **Định nghĩa.** Đơn vị đề thi. Người tạo contest **phải chọn danh sách câu hỏi trước khi start**; hệ thống **không tự lấy đề** — rút chỉ random **trong danh sách đã gán**.
 
-- **Giá trị**: `displayId` · `fieldId` · `wordCount` · `explanation` · `note` · `timeSeconds?` · `value?` · `clues[]?` · `everPublic` · `isPractical` · **`answerInputKind`** · **`options[]`**
+- **Giá trị**: `displayId` · `fieldId` · `wordCount` · `explanation` · `note` · `timeSeconds?` · `value?` · `clues[]?` · `everPublic` · `isPractical`
 - **Nguồn**: luật gốc §Khởi động, §Tăng tốc, §Về đích · `QĐ-066`
 
-**Ba kiểu NHẬP đáp án** — `answerInputKind` chỉ quyết định **widget trên máy thí sinh**:
+**Một kiểu NHẬP đáp án.** Mọi câu hỏi có ô nhập dùng **một** ô nhập chữ duy nhất. **Câu hỏi lựa chọn** và **câu hỏi sắp xếp** của luật gốc soạn như câu hỏi thường, và **phần đề tự nêu format** thí sinh phải theo — ví dụ *"chọn A, B, C hay D"* hoặc *"viết thứ tự, cách nhau bởi dấu phẩy"*. Không có trường danh sách phương án (`QĐ-162`).
 
-| Kiểu | Widget | Bài làm lưu thành |
-|---|---|---|
-| `text` | ô nhập chữ | chuỗi đáp án |
-| `choice` | chọn một trong `options[]` | nhãn phương án, vd `"B"` |
-| `ordering` | kéo thả `options[]` | thứ tự serialise, vd `"B, D, A, C"` |
-
-- **Đừng nhầm với**: **đáp án và bài làm luôn là CHUỖI ở cả ba kiểu.** Máy không chấm, nên nó không cần đánh giá một thứ tự hay một lựa chọn — nó chỉ **hiển thị bài làm cạnh đáp án** và tô khác biệt ký tự để admin phán quyết. Không có nhánh chấm riêng cho kiểu nào
+- **Đừng nhầm với**: **đáp án và bài làm luôn là CHUỖI.** Máy không chấm, nên nó không cần đánh giá một thứ tự hay một lựa chọn — nó chỉ **hiển thị bài làm cạnh đáp án** và tô khác biệt ký tự để admin phán quyết. Không có nhánh chấm riêng cho kiểu nào
 - **Đừng nhầm với**: luật gốc liệt kê *3 loại câu* ở Khởi động và *4 loại* ở Tăng tốc, nhưng **nhìn nhanh · suy luận · đoạn băng · hình ảnh · đoạn nhạc** khác nhau ở **nội dung và media**, không ở cơ chế trả lời. Chúng là **phân loại cho người soạn đề**, không phải nhánh của engine
 - **Đừng nhầm với**: **`isPractical`** là **kênh trả lời thứ tư**, nằm ngoài trục này — không có ô nhập nào, admin chấm *"đạt / không đạt"*
 
@@ -640,6 +650,7 @@ Hàng rào gắn với **THAO TÁC, không gắn với mốc thời gian**: nó 
 | `turn` | Lượt — **4 nghĩa, luôn gọi tên đầy đủ** | TERM-013 |
 | `state` | **Luôn kèm thang bậc** — có bảy thang | TERM-018 |
 | `event` | Event · MatchEvent | TERM-021 |
+| `audit log` | Nhật ký thao tác — **không phải** nhật ký sự kiện trận | TERM-063 |
 | `revert` | Hoàn nguyên | TERM-023 |
 | `buzz`, `buzzer` | Chuông | TERM-025 |
 | `reject` | Từ chối tín hiệu | TERM-027 |
@@ -660,3 +671,12 @@ Hàng rào gắn với **THAO TÁC, không gắn với mốc thời gian**: nó 
 | `row` | Hàng ngang — **không phải câu độc lập** | TERM-052 |
 | `obstacle` | Chướng ngại vật | TERM-055 |
 | `obstacleSet` | Bộ VCNV — **đơn vị chọn và rút** của vòng | TERM-058 |
+
+### TERM-064 — Hồ sơ triển khai
+
+**Định nghĩa.** Một **bản cài đang chạy** của sản phẩm. Khái niệm này có **đúng hai** giá trị: **máy chủ** *(bản cài dựng bằng container)* và **portable** *(bản cài chạy LAN offline trên Windows)*. Một bản cài mang **đúng một** hồ sơ, và không hồ sơ nào phục vụ nhiều bản cài.
+
+- **Tên thay thế**: *bản cài* · *bản triển khai* — ba cụm chỉ **cùng một** khái niệm, dùng lẫn nhau được (`QĐ-160`).
+- **Miền giá trị**: `máy chủ` · `portable`.
+- **Đừng nhầm với**: **contest** hay **trận** — hồ sơ triển khai là tính chất của một **bản cài**, không phải của một cuộc thi. **0** state và **0** transition nào của máy trạng thái trận đọc nó.
+- **Ghi chú**: mọi **ngưỡng vận hành** *(kích thước media, giới hạn tần suất cổng khán giả, quy mô viewer)* đặt ở phạm vi **bản cài**; cụm *"theo hồ sơ"* đọc là *"theo bản cài, vì mỗi bản cài mang đúng một hồ sơ"*.

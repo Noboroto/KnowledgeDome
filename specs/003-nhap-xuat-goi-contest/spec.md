@@ -10,18 +10,6 @@
 
 ---
 
-## Clarifications
-
-### Session 2026-07-30
-
-- Q: `OQ-003` — Nhập/xuất một gói bị ngắt giữa chừng (mất kết nối, mất điện) thì xử lý thế nào? → A: **Tất cả-hoặc-không (all-or-nothing)**, không có bản dở dang. Nhập/xuất một gói là một thao tác server-side đơn, hoàn tất trong dưới một phút — **không** phải một saga nhiều bước cần theo dõi tiến độ hay cơ chế resume. "Ngắt giữa chừng" chỉ có hai kết cục quan sát được: thao tác **đã hoàn tất** ở server trước khi client mất kết nối (contest/bản ghi đã tồn tại đầy đủ), hoặc **chưa hoàn tất** (không để lại bản ghi dở dang nào). Không cần cơ chế transaction/rollback phức tạp hay theo dõi trạng thái từng phần — bảo đảm ghi-tất-cả-hoặc-không-ghi-gì ở đúng MỘT thao tác ghi là đủ.
-- Q: `OQ-005` — Hai phiên admin cùng nhập bản kê câu đã dùng (X3) vào CÙNG một contest đích gần như đồng thời thì xử lý thế nào? → A: **Không cần luật phân xử riêng.** Vì phép hợp của X3 chỉ đặt cờ `usedInContest` từ `false` sang `true` (một chiều, không bao giờ đảo — đã chốt ở FR-017), hai thao tác cùng đặt `true` cho cùng một câu **không xung đột về mặt ngữ nghĩa** — kết quả cuối cùng giống hệt nhau bất kể thứ tự hay xen kẽ giữa hai phiên. Không cần khoá theo contest đích, không cần hàng đợi. *(Vế X1 — gói contest — đã tự giải quyết: mỗi lần nhập luôn tạo một contest nháp mới độc lập theo `FR-005`/`AC-004`, nên hai phiên nhập X1 không hề đụng nhau.)*
-- Q: `OQ-001` — Gói thiếu media của một câu khi nhập thì chặn toàn bộ hay chỉ đánh dấu câu đó? → A: **Nhập một phần** — contest nháp vẫn được tạo với toàn bộ câu hỏi; riêng câu thiếu media được đánh dấu để admin tìm và bổ sung sau, KHÔNG chặn việc nhập toàn bộ gói. Điều này **không mâu thuẫn** với nguyên tắc tất-cả-hoặc-không của `OQ-003`: hai quyết định thuộc hai phạm trù khác nhau — `OQ-003` bảo đảm **tính nguyên tử của chính thao tác ghi** (kết nối đứt giữa chừng thì không để lại bản ghi nửa vời), còn `OQ-001` là một **quy tắc nghiệp vụ về nội dung gói không đầy đủ** (thiếu file media là dữ liệu không đầy đủ nhưng vẫn hợp lệ để tạo contest, khác hẳn gói bị hỏng/sai mật khẩu ở `PRD-REQ-104` — trường hợp đó gói KHÔNG giải mã/xác thực được nên không có gì để nhập một phần).
-- Q: `OQ-002` — File media có kích thước đúng bằng ngưỡng cấu hình có được chấp nhận không? → A: **Biên đóng** — file đúng bằng ngưỡng được chấp nhận (tương đương "≤ ngưỡng"), nhất quán với quy ước biên đóng dùng xuyên suốt dự án cho các ranh giới khác.
-- Q: `OQ-004` — Có giới hạn số lần thử sai cụm mật khẩu liên tiếp khi nhập danh sách người tham gia không? → A: **Không giới hạn ở tầng nghiệp vụ.** Sức chống dò cụm mật khẩu nằm ở **độ mạnh của cụm mật khẩu lúc xuất** (`QĐ-086` đã yêu cầu kiểm độ mạnh lúc xuất), không nằm ở giới hạn số lần thử nhập — đây là thao tác của một admin trên file của chính họ, không phải bề mặt đăng nhập công khai cần rate-limit. Sai cụm ⇒ từ chối toàn bộ (đã chốt), thử lại được ngay không giới hạn số lần. Rate-limit hạ tầng, nếu cần, là quyết định kỹ thuật thuộc `plan.md`, không phải nội dung spec.
-
----
-
 ## 0. Nguồn đã đọc và ghi chú về nguồn
 
 | Nguồn yêu cầu đọc | Trạng thái |
@@ -30,8 +18,7 @@
 | `docs/glossary.md` | ✅ đã đọc — `TERM-048` (`usedInContest`), `TERM-049` (`everPublic`) |
 | `docs/game-rules.md` | ✅ đã đọc — `GR-031` đầy đủ *(chỉ vế "cờ đi theo câu vs đi theo contest" và bảng quyết định thuộc feature này; phần rút đề/kiểm kho lúc chạy trận đã phủ ở spec EPIC-002 và thuộc EPIC-006)* |
 | `docs/game-state-machine.md` | ✅ đã đọc §9 — xác nhận: **không** có `STATE-*`/`EVENT-*`/`T-*` nào thuộc trực tiếp EPIC-003; nhập/xuất là thao tác cấp **contest** hoặc cấp **hệ thống**, không phải một trong bảy thang bậc trạng thái của một trận |
-| `docs/rule-traceability.md` | ⚠️ **KHÔNG TỒN TẠI**. File thật là `docs/traceability.md` — đã đọc file này thay thế |
-| `docs/reviews/prd-review.md` | ⚠️ **KHÔNG TỒN TẠI**. `docs/reviews/` chỉ có `game-rules-*.md` và `README.md`; theo `docs/reviews/README.md` đây là **kho lưu, không phải requirement**, nên việc thiếu file này không tạo lỗ hổng truy nguyên |
+| `docs/traceability.md` | ✅ đã đọc — bảng đối chiếu giá trị luật và biến thể bị loại |
 
 Ngoài ra đã đọc `docs/decisions.md` (`QĐ-071`, `QĐ-084`, `QĐ-086`, `QĐ-087`) và `docs/product-discovery.md` §2 A-2, §4 J-3, §5 E-3 vì `docs/PRD.md` khai chúng là nguồn của các `PRD-REQ-*` thuộc EPIC-003.
 
@@ -358,6 +345,24 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-071`, `QĐ-084`, `QĐ-086`, `QĐ
 - **Then** một dòng nhật ký **riêng** được ghi cho việc xuất danh sách người tham gia, tách khỏi nhật ký của lần xuất câu hỏi/gói — vì đây là một lần dữ liệu cá nhân rời hệ thống
 
 ---
+**AC-029 — Xuất lại nhiều lần: mỗi lần khai lại cụm mật khẩu**
+- **FR**: FR-030 · `NFR-24b`
+- **Given** một contest đã từng được xuất kèm danh sách người tham gia với một cụm mật khẩu,
+- **When** admin xuất lại chính contest đó lần thứ hai,
+- **Then** hệ thống đòi khai **lại** cụm mật khẩu từ đầu · **0** ô *ghi nhớ cụm* nào tồn tại · **0** gợi ý cụm cũ nào hiện ra · admin khai **cùng** cụm cũ hoặc một cụm **khác** đều được chấp nhận · **0** phép kiểm nào so cụm mới với cụm cũ
+
+**AC-030 — Gói rỗng bị chặn, gói một câu được nhận**
+- **FR**: FR-031 · `GR-031` C3
+- **Given** hai contest — một contest **chưa gán câu nào**, một contest gán **đúng 1** câu *(chưa đủ cho bất kỳ vòng nào)*,
+- **When** admin xuất cả hai, rồi nhập gói xuất được vào một bản cài khác,
+- **Then** contest rỗng bị **từ chối ở bước xuất** kèm thông điệp *gói không có câu hỏi nào* · contest 1 câu **xuất được và nhập được bình thường** · một gói rỗng dựng tay cũng bị **từ chối ở bước nhập** · **0** dữ liệu nào đổi ở hai lần bị từ chối
+
+**AC-031 — Xuất và nhập gói contest khi đã ngắt Internet**
+- **FR**: FR-032 · `PRD-REQ-098`
+- **Given** một bản cài có contest đầy đủ đề và media, **đã chặn toàn bộ đường ra Internet**,
+- **When** admin xuất gói contest rồi nhập lại gói đó vào một bản cài khác cũng đã ngắt mạng,
+- **Then** cả hai chiều **hoàn thành bình thường** · **0** lần gọi nào chờ hết thời gian vì một dịch vụ ngoài · nội dung gói **không đổi** so với lần xuất khi còn mạng · **0** dữ liệu nào bị mất qua vòng xuất-nhập
+
 
 ## 4. Functional Requirements *(mandatory)*
 
@@ -370,8 +375,8 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-071`, `QĐ-084`, `QĐ-086`, `QĐ
 - **FR-003**: Sau khi nhập một gói đầy đủ và hợp lệ, contest MUST qua được phép kiểm kho đề mà không cần thao tác sửa nào. · US-001 · `PRD-REQ-016` · `GR-031` · AC-001
 - **FR-004**: Gói MUST mang định danh ổn định của từng câu hỏi; bên nhập MUST giữ nguyên định danh đó, MUST NOT sinh định danh mới cho câu đã có trong gói. · US-001 · `PRD-REQ-016` · — · AC-003
 - **FR-005**: Mỗi lần nhập gói MUST tạo một contest nháp **mới**, độc lập; hệ thống MUST NOT tự động hợp nhất với một contest đã nhập trước đó từ cùng gói. · US-001 · `PRD-REQ-016` · — · AC-004
-- **FR-006**: Khi gói thiếu media của một câu, hệ thống MUST vẫn nhập toàn bộ gói — bao gồm câu thiếu media — MUST NOT chặn việc nhập cả gói vì lý do này. Hệ thống MUST báo lỗi/cảnh báo và MUST nêu rõ câu nào thiếu media. *(`OQ-001`, xác nhận 2026-07-30)* · US-001 · `PRD-REQ-016` · — · AC-002
-- **FR-006b**: Câu thiếu media sau khi nhập MUST được đánh dấu để admin tìm và bổ sung media sau, tách biệt với câu đã đầy đủ. *(`OQ-001`, xác nhận 2026-07-30)* · US-001 · `PRD-REQ-016` · — · AC-002
+- **FR-006**: Hệ thống MUST đánh giá một lần nhập gói theo thứ tự: **(1)** gói giải nén và đọc được không — không ⇒ từ chối toàn bộ; **(2)** gói có kèm danh sách người tham gia không, và nếu có thì cụm mật khẩu cùng tính toàn vẹn của gói có đạt không *(FR-022)* — không đạt ⇒ từ chối toàn bộ, không tạo bản ghi nào; **(3)** mọi bước trên đạt ⇒ tạo contest nháp với **toàn bộ** câu hỏi trong gói. Ở bước (3), việc **thiếu file media** của một hay nhiều câu MUST NOT chặn thao tác nhập: câu thiếu media vẫn được tạo, và hệ thống MUST báo rõ **đúng những câu nào** thiếu media. Thiếu media là nội dung không đầy đủ nhưng vẫn hợp lệ để dựng contest; nó khác hẳn ca gói hỏng hoặc sai cụm mật khẩu ở bước (1) và (2), nơi không có gì đọc được để nhập. · US-001 · `PRD-REQ-016` · — · AC-002
+- **FR-006b**: Câu thiếu media sau khi nhập MUST mang một dấu hiệu tách biệt với câu đã đầy đủ, đủ để admin lọc ra và bổ sung media sau. · US-001 · `PRD-REQ-016` · — · AC-002
 
 ### Nhóm B — Chủ sở hữu hai cờ khi nhập/xuất
 
@@ -385,8 +390,8 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-071`, `QĐ-084`, `QĐ-086`, `QĐ
 
 ### Nhóm D — Giới hạn kích thước media
 
-- **FR-011**: Hệ thống MUST áp một ngưỡng kích thước cho mỗi loại media tải lên; ngưỡng MUST cấu hình được theo từng bản triển khai, MUST NOT hard-code. Biên MUST đóng — file có kích thước **đúng bằng** ngưỡng MUST được chấp nhận. *(`OQ-002`, xác nhận 2026-07-30)* · US-004 · `PRD-REQ-019` · — · AC-009, AC-010, AC-011
-- **FR-012**: File vượt ngưỡng MUST bị từ chối, kèm thông điệp nêu rõ ngưỡng đang áp. · US-004 · `PRD-REQ-019` · — · AC-010
+- **FR-011**: Hệ thống MUST áp một ngưỡng kích thước **riêng cho từng loại media** — ảnh, video, audio. Mỗi ngưỡng MUST cấu hình được theo từng bản triển khai và MUST NOT hard-code ở bất kỳ đâu trong hệ thống hay giao diện. Khi nhận một file, hệ thống MUST so kích thước file với ngưỡng của **đúng loại media đó** và MUST áp **biên đóng**: file có kích thước **nhỏ hơn hoặc đúng bằng** ngưỡng ⇒ chấp nhận và gắn vào câu hỏi; chỉ file **lớn hơn** ngưỡng mới bị từ chối. Phép so này MUST chạy ở cả giao diện *(để báo sớm)* lẫn server *(để cưỡng chế)*. · US-004 · `PRD-REQ-019` · — · AC-009, AC-010, AC-011
+- **FR-012**: File lớn hơn ngưỡng MUST bị từ chối, và thông điệp từ chối MUST nêu **giá trị ngưỡng đang áp cho loại media đó**, đọc từ cấu hình tại thời điểm từ chối — MUST NOT nêu một con số cố định viết sẵn. Lần từ chối MUST không tác dụng phụ: câu hỏi **không** gắn media này, không media nào khác của câu bị đụng, và các trường còn lại của câu **không đổi**. · US-004 · `PRD-REQ-019` · — · AC-010
 
 ### Nhóm E — Đánh dấu "đã dùng" hàng loạt bằng tay
 
@@ -398,15 +403,22 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-071`, `QĐ-084`, `QĐ-086`, `QĐ
 
 - **FR-016**: Hệ thống MUST xuất được bản kê các câu đã dùng của một contest, gồm định danh câu, thời điểm dùng, và trận đã dùng. · US-006 · `PRD-REQ-095` · `GR-031` · AC-015
 - **FR-017**: Hệ thống MUST nhập được bản kê đó vào một contest trên bản cài khác; phép nhập MUST là **phép hợp** — chỉ đặt cờ đã-dùng, MUST NOT xoá cờ nào đã có. · US-006 · `PRD-REQ-095` · `GR-031` · AC-015, AC-018
-- **FR-018**: Trước khi áp, hệ thống MUST hiện bản xem trước tách thành ba nhóm — sẽ chuyển đã dùng · đã ở trạng thái đó · không thuộc danh sách câu đã gán của contest đích. Nhóm thứ ba MUST NOT được áp tự động. · US-006 · `PRD-REQ-095` · `GR-031` · AC-015, AC-017
+- **FR-018**: Trước khi áp một bản kê, hệ thống MUST xếp từng mục vào đúng một trong ba nhóm và MUST hiện bản xem trước theo ba nhóm đó:
+  1. **Sẽ chuyển đã dùng** — câu thuộc danh sách đã gán của contest đích và đang chưa-dùng. Sau khi admin xác nhận, nhóm này MUST được đặt cờ đã-dùng.
+  2. **Đã ở trạng thái đó** — câu thuộc danh sách đã gán và đã mang cờ đã-dùng. Áp lên nhóm này MUST không đổi gì.
+  3. **Không thuộc danh sách câu đã gán của contest đích** — MUST hiển thị rõ và MUST NOT được đặt cờ, kể cả sau khi admin đã xác nhận.
+
+  Admin huỷ ở bước xác nhận ⇒ **không** cờ nào đổi. · US-006 · `PRD-REQ-095` · `GR-031` · AC-015, AC-017
 - **FR-019**: Nhập cùng một bản kê nhiều lần MUST cho cùng một kết quả; các lần nhập sau lần đầu MUST NOT đổi thêm gì. · US-006 · `PRD-REQ-095` · — · AC-016
-- **FR-019b**: Hai phiên admin cùng nhập bản kê câu đã dùng vào **cùng một contest đích** gần như đồng thời MUST NOT cần khoá hay hàng đợi phân xử — vì phép hợp ở FR-017 chỉ đặt cờ một chiều, hai thao tác đặt `true` cho cùng một câu MUST cho ra cùng một kết quả cuối cùng bất kể thứ tự. *(`OQ-005`, xác nhận 2026-07-30)* · US-006 · `PRD-REQ-095` · `GR-031` · AC-028
+- **FR-019b**: Hai phiên admin cùng nhập bản kê câu đã dùng vào **cùng một contest đích** gần như đồng thời MUST NOT cần khoá hay hàng đợi phân xử: phép hợp chỉ đặt cờ đã-dùng theo một chiều, nên hai thao tác cùng đặt cờ cho một câu MUST cho ra cùng một kết quả cuối bất kể thứ tự hay xen kẽ, và MUST NOT có phiên nào bị từ chối. · US-006 · `PRD-REQ-095` · `GR-031` · AC-028
 
 ### Nhóm G — Danh sách người tham gia, luôn mã hoá
 
 - **FR-020**: Gói contest MUST cho phép kèm hoặc không kèm danh sách người tham gia — thí sinh, MC, và tài khoản admin của contest — khi xuất. · US-007 · `PRD-REQ-104` · — · AC-019, AC-022
 - **FR-021**: Khi kèm, danh sách MUST luôn ở dạng đã mã hoá, kể cả khi không mang mật khẩu nào; chìa khoá MUST NOT nằm trong gói. · US-007 · `PRD-REQ-104` · — · AC-019
-- **FR-022**: Bên nhập MUST khai đúng cụm mật khẩu đã dùng để mã hoá; sai cụm mật khẩu **hoặc** gói bị sửa MUST khiến hệ thống từ chối toàn bộ, MUST NOT nhập một phần. Hệ thống MUST NOT giới hạn số lần thử sai liên tiếp ở tầng nghiệp vụ — sức chống dò cụm mật khẩu nằm ở độ mạnh của cụm mật khẩu lúc xuất, không ở giới hạn số lần thử nhập. *(`OQ-004`, xác nhận 2026-07-30)* · US-007 · `PRD-REQ-104` · — · AC-020, AC-021
+- **FR-022**: Khi gói có kèm danh sách người tham gia, hệ thống MUST đánh giá theo thứ tự: **(1)** hỏi bên nhập cụm mật khẩu; **(2)** giải mã danh sách bằng cụm đó — thất bại ⇒ từ chối; **(3)** kiểm tính toàn vẹn của gói — gói đã bị sửa dù chỉ một byte ⇒ từ chối, kể cả khi cụm mật khẩu đúng; **(4)** cả hai đạt ⇒ dựng tài khoản theo FR-023 → FR-025.
+
+  Từ chối ở bước (2) hoặc (3) MUST là **từ chối toàn bộ**: MUST NOT tạo bản ghi tài khoản nào, MUST NOT tạo phép gán vai nào, MUST NOT tạo contest nháp nào, và MUST NOT để lại trạng thái nhập nửa vời cần dọn tay. Bên nhập MUST thử lại được ngay; hệ thống MUST NOT khoá thao tác và MUST NOT giới hạn số lần thử sai liên tiếp ở tầng nghiệp vụ — sức chống dò nằm ở **độ mạnh của cụm mật khẩu lúc xuất**, không ở số lần thử nhập. · US-007 · `PRD-REQ-104` · — · AC-020, AC-021
 - **FR-023**: Cách xử lý mật khẩu khi nhập MUST là lựa chọn của người xuất, giữa hai phương án — tạo mật khẩu mới kèm phiếu tài khoản in được *(mặc định)*, hoặc giữ mật khẩu hiện tại — và lựa chọn MUST đi trong gói. · US-007 · `PRD-REQ-104` · — · AC-019
 - **FR-024**: Tài khoản admin của contest MUST luôn theo phương án "tạo mật khẩu mới", bất kể phương án chọn cho các vai khác trong cùng gói. · US-007 · `PRD-REQ-104` · — · AC-019
 - **FR-025**: Trùng tên đăng nhập ở bên nhận MUST khiến hệ thống hỏi người nhập, với đúng ba lựa chọn — nối vào tài khoản sẵn có, tạo tài khoản mới có hậu tố, hoặc huỷ; hệ thống MUST NOT tự động nối. · US-007 · `PRD-REQ-104` · — · AC-023
@@ -416,9 +428,12 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-071`, `QĐ-084`, `QĐ-086`, `QĐ
 
 ### Nhóm H — Toàn vẹn khi bị ngắt giữa chừng
 
-- **FR-029**: Mọi thao tác nhập *(gói contest, bản kê câu đã dùng, danh sách người tham gia)* MUST là **tất cả-hoặc-không**: nếu thao tác bị ngắt trước khi hoàn tất ở server, hệ thống MUST NOT để lại bất kỳ bản ghi dở dang nào — kết quả quan sát được chỉ có hai khả năng, **đã hoàn tất đầy đủ** hoặc **chưa hề xảy ra**. *(`OQ-003`, xác nhận 2026-07-30 — nhập/xuất là một thao tác server-side đơn, không phải chuỗi nhiều bước cần theo dõi tiến độ hay resume)* · US-001 · `PRD-REQ-016` · — · AC-027
+- **FR-029**: Mọi thao tác nhập *(gói contest, bản kê câu đã dùng, danh sách người tham gia)* MUST là **tất cả-hoặc-không**: nếu thao tác bị ngắt trước khi hoàn tất ở server, hệ thống MUST NOT để lại bất kỳ bản ghi dở dang nào — kết quả quan sát được chỉ có hai khả năng, **đã hoàn tất đầy đủ** hoặc **chưa hề xảy ra**. Hệ thống MUST NOT phơi ra trạng thái nhập dở dang, tiến độ từng phần, hay thao tác resume; đường xử lý duy nhất khi bị ngắt là **nhập lại từ đầu**, và MUST NOT có bản ghi nửa vời nào cần dọn tay. · US-001 · `PRD-REQ-016` · — · AC-027
 
 ---
+- **FR-030**: Cụm mật khẩu bảo vệ danh sách người tham gia MUST NOT được lưu ở bất kỳ đâu trong hệ thống — nó là chìa mã hoá, không phải một thiết lập của contest. **Mỗi** lần xuất MUST đòi người xuất khai lại cụm mật khẩu. Hệ thống MUST NOT có ô *ghi nhớ cụm mật khẩu*, MUST NOT gợi ý lại cụm cũ, và MUST NOT kiểm rằng cụm mới khác cụm cũ. *(`QĐ-156` · `NFR-24b` · AC-029)*
+- **FR-031**: Gói contest có **0 câu hỏi** MUST bị chặn ở **cả** bước xuất lẫn bước nhập, kèm thông điệp nêu rõ *gói không có câu hỏi nào*. Gói có **từ 1 câu trở lên** MUST được chấp nhận, kể cả khi số câu chưa đủ để chạy bất kỳ vòng nào — phép kiểm đủ đề cho một vòng là việc của **cửa vào vòng**, không phải của bước xuất. *(`QĐ-157` · `GR-031` C3 · AC-030)*
+- **FR-032**: Việc **xuất** và **nhập** gói contest MUST NOT phụ thuộc một dịch vụ ngoài và MUST NOT phụ thuộc kết nối Internet; cả hai chiều MUST chạy được trên một bản cài đã ngắt đường ra ngoài. *(`PRD-REQ-098` vế EPIC-003 · `QĐ-084` · AC-031)*
 
 ## 5. Key Entities
 
@@ -450,23 +465,20 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-071`, `QĐ-084`, `QĐ-086`, `QĐ
 **Trạng thái không hợp lệ**
 - Tìm đường đảo `usedInContest` từ đã-dùng về chưa-dùng qua công cụ đánh dấu hàng loạt: không tồn tại *(AC-013)*.
 - Nhập một bản kê mà `questionId` không thuộc danh sách gán của contest đích: rơi vào nhóm thứ ba, không tự áp *(AC-017)*.
-- Gói thiếu media của một hoặc nhiều câu: **không** phải trạng thái không hợp lệ chặn cứng — contest nháp vẫn tạo đủ mọi câu, câu thiếu media chỉ bị đánh dấu để bổ sung sau *(AC-002, `OQ-001`)*. Khác hẳn ca gói bị sửa/sai cụm mật khẩu ở `PRD-REQ-104`, nơi gói không giải mã/xác thực được nên không có gì để nhập một phần.
+- Gói thiếu media của một hoặc nhiều câu: **không** phải trạng thái không hợp lệ chặn cứng — contest nháp vẫn tạo đủ mọi câu, câu thiếu media chỉ bị đánh dấu để bổ sung sau *(AC-002)*. Khác hẳn ca gói bị sửa hoặc sai cụm mật khẩu, nơi gói không giải mã hay xác thực được nên không có gì để nhập *(AC-020, AC-021)*.
 
 **Thao tác lặp**
 - Nhập cùng một gói contest nhiều lần: mỗi lần tạo một contest nháp mới, độc lập *(AC-004)*.
 - Nhập cùng một bản kê câu đã dùng nhiều lần: idempotent, không đổi thêm từ lần thứ hai *(AC-016)*.
-- Xuất gói kèm danh sách người tham gia nhiều lần liên tiếp cho cùng một contest — mỗi lần có bắt buộc một cụm mật khẩu mới hay dùng lại được cụm cũ chưa được nguồn nào quy định *(`OQ-006`)*.
+- Xuất gói kèm danh sách người tham gia nhiều lần liên tiếp cho cùng một contest — mỗi lần có bắt buộc một cụm mật khẩu mới hay dùng lại được cụm cũ chưa được nguồn nào quy định *(xem `OQ-006`)*.
 
 **Trạng thái cũ / sự kiện trùng**
 - Hai phiên admin cùng nhập gói contest (X1) vào cùng một bản đích gần như đồng thời: mỗi phiên tạo một contest nháp riêng, không đụng nhau *(AC-004)*.
-- Hai phiên admin cùng nhập bản kê câu đã dùng (X3) vào CÙNG một contest đích gần như đồng thời: không cần phân xử, phép hợp một chiều cho cùng kết quả bất kể thứ tự *(AC-028, `OQ-005`)*.
+- Hai phiên admin cùng nhập bản kê câu đã dùng (X3) vào CÙNG một contest đích gần như đồng thời: không cần phân xử, phép hợp một chiều cho cùng kết quả bất kể thứ tự *(AC-028)*.
 - Danh sách người tham gia được xuất trước khi ghế/vai của contest đổi thêm — gói mang một ảnh chụp tại thời điểm xuất, không tự đồng bộ lại sau đó.
 
 **Hỏng một phần**
-- Quá trình nhập hoặc xuất gói bị ngắt giữa chừng *(mất kết nối, mất điện)*: **tất cả-hoặc-không** — thao tác đã hoàn tất ở server thì bản ghi đầy đủ, chưa hoàn tất thì không để lại bản ghi dở dang nào *(`OQ-003`, xác nhận 2026-07-30, xem FR-029)*.
-
-**Luật xung đột**
-- Không phát hiện mâu thuẫn nào giữa `docs/PRD.md`, `docs/game-rules.md` và `docs/decisions.md` trong phạm vi các nguồn đã đọc cho feature này.
+- Quá trình nhập hoặc xuất gói bị ngắt giữa chừng *(mất kết nối, mất điện)*: **tất cả-hoặc-không** — thao tác đã hoàn tất ở server thì bản ghi đầy đủ, chưa hoàn tất thì không để lại bản ghi dở dang nào *(AC-027, FR-029)*.
 
 **Hành vi nguồn không quy định** — hai mục còn mở: `OQ-006` (cụm mật khẩu mới hay dùng lại khi xuất lại danh sách), `OQ-007` (gói với kho đề rỗng) ở §9; spec này không tự điền các hành vi đó.
 
@@ -496,25 +508,7 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-071`, `QĐ-084`, `QĐ-086`, `QĐ
 
 ## 9. Open Questions
 
-> Giữ nguyên theo đúng yêu cầu — spec này không tự trả lời bất kỳ mục nào dưới đây.
-
-**~~OQ-001~~ — ĐÃ ĐÓNG 2026-07-30.** Nhập một phần — contest nháp vẫn tạo đủ mọi câu, câu thiếu media được đánh dấu để bổ sung sau, không chặn cả gói — xem §Clarifications, FR-006, FR-006b.
-
-**~~OQ-002~~ — ĐÃ ĐÓNG 2026-07-30.** Biên đóng — file đúng bằng ngưỡng được chấp nhận — xem §Clarifications, FR-011, AC-011.
-
-**~~OQ-003~~ — ĐÃ ĐÓNG 2026-07-30.** Tất cả-hoặc-không; nhập/xuất là một thao tác server-side đơn dưới một phút, không cần transaction/rollback nhiều bước hay theo dõi tiến độ từng phần — xem §Clarifications, FR-029.
-
-**~~OQ-004~~ — ĐÃ ĐÓNG 2026-07-30.** Không giới hạn số lần thử ở tầng nghiệp vụ — sức chống dò nằm ở độ mạnh cụm mật khẩu lúc xuất, không ở số lần thử — xem §Clarifications, FR-022.
-
-**~~OQ-005~~ — ĐÃ ĐÓNG 2026-07-30.** X1 tự giải quyết (mỗi lần nhập tạo contest nháp mới độc lập). X3 vào cùng contest đích: không cần luật phân xử, phép hợp một chiều cho cùng kết quả bất kể thứ tự — xem §Clarifications, FR-019b.
-
-**OQ-006 — MISSING (repeated action): xuất lại danh sách người tham gia nhiều lần**
-Không nguồn nào quy định việc xuất gói kèm danh sách người tham gia nhiều lần liên tiếp cho cùng một contest có bắt buộc một cụm mật khẩu mới mỗi lần hay không, hay admin dùng lại được cụm đã đặt trước đó.
-
-**OQ-007 — MISSING (boundary): gói contest với kho đề rỗng**
-Không nguồn nào quy định việc xuất hoặc nhập một gói contest không có câu hỏi nào *(kho đề rỗng)* có hợp lệ hay bị chặn ngay từ bước xuất.
-
----
+**Không có.** Hai mục từng mở đã được phân xử: cụm mật khẩu **không bao giờ được lưu** nên mỗi lần xuất là một lần khai lại (`QĐ-156`), và gói contest bị chặn **chỉ khi kho đề rỗng** (`QĐ-157`).
 
 ## 10. Traceability Matrix
 

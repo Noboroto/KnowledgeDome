@@ -18,8 +18,7 @@
 | `docs/glossary.md` | ✅ đã đọc — `TERM-004`…`TERM-008`, `TERM-057` |
 | `docs/game-rules.md` | ✅ đã đọc — `GR-026`, `GR-029`, `GR-030`, `GR-036`, `GR-037` |
 | `docs/game-state-machine.md` | ✅ đã đọc — `STATE-001` LOBBY, thang trạng thái ghế, `EVENT-028`…`EVENT-036`, bảng transition và bảng invalid-state |
-| `docs/rule-traceability.md` | ⚠️ **KHÔNG TỒN TẠI**. File thật là `docs/traceability.md` — đã đọc file này thay thế |
-| `docs/reviews/prd-review.md` | ⚠️ **KHÔNG TỒN TẠI**. `docs/reviews/` chỉ có `game-rules-*.md` và `README.md`. Theo constitution §"Nguồn đã migrate xong", `docs/reviews/**` là **kho lưu, không phải requirement**, nên việc thiếu file này không tạo lỗ hổng truy nguyên |
+| `docs/traceability.md` | ✅ đã đọc — bảng đối chiếu giá trị luật và biến thể bị loại |
 
 Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ-064`, `QĐ-065`, `QĐ-070`, `QĐ-078`, `QĐ-086`, `QĐ-087`, `QĐ-088`) vì `docs/PRD.md` khai chúng là nguồn của các `PRD-REQ-*` thuộc EPIC-001.
 
@@ -46,14 +45,12 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 | `PRD-REQ-108` | Giành quyền điều khiển khi phiên đang giữ mất kết nối; MC duyệt | P1 |
 | `PRD-REQ-109` | Phân quyền theo vai, kiểm bằng permission | P1 |
 | `PRD-REQ-110` | Phạm vi của phép gán vai | P2 |
-| `PRD-REQ-111` | *(theo `docs/PRD.md` §12 mục EPIC-001)* | P2 |
+| `PRD-REQ-111` | Vai tuỳ biến do đơn vị tự định nghĩa | P2 |
 | `PRD-REQ-112` | Không thu hồi quyền của tài khoản mà trận đang cần | P1 |
 
 > **Ba requirement `086`, `106`, `107`** được đưa vào vì `docs/PRD.md` §12 khai chúng thuộc **cả** EPIC-001. Phần thuộc epic khác của chính ba requirement đó (hồ sơ triển khai, màn khán giả, gói xuất) nằm ở §8 Out of scope.
 >
 > **`PRD-REQ-074`** cùng dạng: nó khai `EPIC-009, EPIC-001`, và spec này chỉ nhận **mặt EPIC-001** của nó.
->
-> **`PRD-REQ-108` → `PRD-REQ-112`** ra đời sau bản đầu của spec này — chúng là kết quả tích hợp `QĐ-093` → `QĐ-096` vào `docs/PRD.md` bản 2.2.1. Các FR đã trích chúng từ trước; bảng này bổ sung cho khớp.
 
 **Game rule trong phạm vi** (đúng những rule mà EPIC-001 và các `PRD-REQ-*` trên tham chiếu): `GR-037` *(phạm vi hiển thị đáp án)* · `GR-026` *(phán quyết của admin — chỉ ở vế "ai được bấm")* · `GR-029`, `GR-030` *(chỉ ở vế "thao tác nào cần permission riêng")*.
 
@@ -62,20 +59,6 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 **Actor**: `ACTOR-001` admin · `ACTOR-002` setter · `ACTOR-003` thí sinh · `ACTOR-004` MC · `ACTOR-005` khán giả · `ACTOR-006` máy dựng stream.
 
 **Journey**: `JOURNEY-001` *(chuẩn bị kho đề — chỉ vế vai setter/admin)* · `JOURNEY-002` *(dựng contest — vế gán vai)* · `JOURNEY-004` *(vào phòng)* · `JOURNEY-006` *(xử lý sự cố — vế chuyển quyền điều khiển)*.
-
----
-
-## 1b. Clarifications
-
-### Session 2026-07-30
-
-- Q: [`QĐ-097`] Quyền điều khiển ở trạng thái **TRỐNG** *(chưa ai nhận, hoặc holder đăng xuất chủ động)* xử thế nào → A: Phiên admin đầu tiên vào trận tự nhận quyền; đăng xuất chủ động = nhả quyền; khi quyền TRỐNG thì bất kỳ phiên admin nào nhận được **ngay**, **không** qua MC duyệt — trống không phải giành, không có phiên nào để bảo vệ
-- Q: [`QĐ-098`] Điều kiện *"contest CÓ MC"* ở FR-021/FR-022 đo bằng gì → A: Đo bằng **có phiên MC đang kết nối tại thời điểm cú giành**, không phải bằng việc contest có phép gán vai MC
-- Q: [`QĐ-099`] MC giữ prompt duyệt cú giành rồi mất kết nối, hoặc không bấm → A: **Không** có ngưỡng thời gian. Phiên MC đang giữ prompt mất kết nối ⇒ cú giành **rơi về nhánh không-MC** và có hiệu lực ngay, kèm một dòng nhật ký
-- Q: [`QĐ-102`] Nút **khoá cổng** áp cho những kênh public nào → A: **Chỉ** chặn màn khán giả; **lớp phủ vào được kể cả khi cổng đang khoá** — lớp phủ chính là buổi phát sóng, không phải khán giả của nó
-- Q: [`QĐ-103`] Hai phiên admin cùng nhận một quyền điều khiển **TRỐNG** thì ai thắng → A: Theo nguyên tắc nền mới **`QĐ-103`** — **hàng đợi theo server timestamp** trước; **chỉ khi bằng nhau ở mili-giây** mới **bốc ngẫu nhiên**, và kết quả bốc MUST ghi thành **sự kiện** để phát lại vẫn tất định. Ưu tiên chủ contest của FR-022 không áp
-- Q: [`QĐ-100`] Contest có **nhiều phiên MC** cùng kết nối thì ai duyệt cú giành quyền → A: **Accept bất kỳ** — prompt lên tất cả, phiên nào quyết cũng được, **quyết định tới server đầu tiên thắng** *(Duyệt hay Từ chối đều vậy)*; quyết định tới sau bị từ chối, không lật kết quả. Kéo theo: fallback về nhánh không-MC chỉ kích hoạt khi **phiên MC cuối cùng** rớt
-- Q: [`QĐ-101`] FR-030 *(quyền không co lại khi trận chưa đóng sổ)* áp cho những tài khoản nào → A: **Chỉ** tài khoản mà trận **cần quyền của nó để chạy tiếp** — phiên đang giữ hoặc có thể nhận quyền điều khiển, và MC *(người duyệt cú giành)*. Thu hồi phép gán hoặc vô hiệu hoá **tài khoản thí sinh** vẫn đi qua giữa trận
 
 ---
 
@@ -248,13 +231,13 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 - **When** phiên đó cố mở kênh hai chiều vốn dành cho admin, thí sinh và MC
 - **Then** bị từ chối vì **chưa xác thực** · phiên xem công khai hiện có **không** bị ngắt
 
-**AC-010 — `GR-037` C1: admin luôn thấy đáp án, có audit**
+**AC-010 — Giữ permission đọc đáp án + đang điều khiển ⇒ trả đáp án, ghi audit**
 - **US**: US-002 · **FR**: FR-008 · **GR**: `GR-037` C1
 - **Given** một câu đang mở, **chưa** tới mốc câu khép; một phiên đã xác thực **giữ permission đọc đáp án của câu đang chạy** *(vai Quản trị dựng sẵn)*; cờ `revealAnswerAfterJudge` bất kỳ
 - **When** phiên đó yêu cầu xem đáp án chuẩn
 - **Then** server **trả** đáp án · ghi một dòng audit cho lần xem · **không** sinh sự kiện điểm · trạng thái trận **không đổi**
 
-**AC-011 — `GR-037` C2: giữ permission mà không điều khiển vẫn thấy đáp án**
+**AC-011 — Giữ permission đọc đáp án mà không điều khiển ⇒ vẫn trả đáp án**
 - **US**: US-002 · **FR**: FR-008 · **GR**: `GR-037` C2
 - **Given** cùng tiền điều kiện AC-010; phiên mang **vai MC** — giữ đúng permission đọc đáp án, **không** giữ quyền điều khiển và **không** giữ permission công bố
 - **When** phiên đó yêu cầu xem đáp án chuẩn
@@ -266,43 +249,49 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 - **When** phiên đó yêu cầu xem đáp án chuẩn
 - **Then** server **không trả** — dù phiên đó đang **điều khiển** trận · chứng tỏ cửa kiểm hỏi **permission**, không hỏi vai và không hỏi việc có giữ quyền điều khiển hay không
 
-**AC-013 — `GR-037` C3: cờ reveal TẮT thì ba vai còn lại không nhận**
+**AC-013 — Cờ reveal TẮT ⇒ ba vai không giữ permission không nhận**
 - **US**: US-002 · **FR**: FR-008 · **GR**: `GR-037` C3
 - **Given** một trận có `revealAnswerAfterJudge` **TẮT** *(giá trị đã chụp vào trận lúc bắt đầu)*; một câu **đã khép**; ba phiên: thí sinh, khán giả, lớp phủ
 - **When** cả ba yêu cầu đáp án chuẩn
 - **Then** server **không trả** cho cả ba · không có thông báo rò rỉ nội dung đáp án · quyền của admin và MC **không đổi**
 
-**AC-014 — `GR-037` C4: reveal BẬT nhưng câu chưa khép**
+**AC-014 — Reveal BẬT nhưng câu chưa khép ⇒ không trả và chưa từng đẩy**
 - **US**: US-002 · **FR**: FR-008, FR-009 · **GR**: `GR-037` C4
 - **Given** một trận có `revealAnswerAfterJudge` **BẬT**; một câu đang ở trạng thái **chưa khép**; ba phiên thí sinh, khán giả, lớp phủ
 - **When** cả ba yêu cầu đáp án chuẩn
 - **Then** server **không trả** · và server **chưa từng đẩy** đáp án xuống ba kênh này từ trước *(kiểm ở phía truyền, không phải ở phía hiển thị — `GR-037` §Cấm)*
 
-**AC-015 — `GR-037` C5 + C7: câu đã khép, reveal BẬT**
+**AC-015 — Câu đã khép *(chấm xong hoặc bị bỏ qua)*, reveal BẬT ⇒ công bố**
 - **US**: US-002 · **FR**: FR-008 · **GR**: `GR-037` C5, C7
 - **Given** một trận có `revealAnswerAfterJudge` **BẬT**; hai câu: một câu **đã khép do admin chấm xong**, một câu **bị bỏ qua vì hết cửa sổ chuông không ai bấm**
 - **When** thí sinh, khán giả và lớp phủ nhận cập nhật cho hai câu đó
 - **Then** đáp án của **cả hai** câu được công bố tới cả ba vai · điểm **không** vì thế mà đổi · trạng thái vòng **không đổi**
 
-**AC-016 — `GR-037` C6: cửa sổ cướp quyền Về đích đang mở**
+**AC-016 — Cửa sổ cướp quyền Về đích đang mở ⇒ câu chưa khép, không trả**
 - **US**: US-002 · **FR**: FR-008 · **GR**: `GR-037` C6
 - **Given** vòng Về đích, `revealAnswerAfterJudge` **BẬT**; người thi chính vừa bị admin chấm **Sai**; cửa sổ cướp quyền **đang mở** và chưa có ai được chấm
 - **When** thí sinh, khán giả hoặc lớp phủ yêu cầu đáp án
 - **Then** server **không trả** — câu **chưa khép** · cửa sổ cướp quyền và mọi con số của luật **không đổi**
 
-**AC-017 — `GR-037` C8 + C9: hai ca biên không tự công bố**
+**AC-017 — Huỷ kết quả và đáp án Chướng ngại vật: hai ca biên không tự công bố**
 - **US**: US-002 · **FR**: FR-008 · **GR**: `GR-037` C8, C9
 - **Given** `revealAnswerAfterJudge` **BẬT**; một câu vừa khép bằng phán quyết **Huỷ kết quả**; và một đáp án **Chướng ngại vật**
 - **When** thí sinh, khán giả và lớp phủ nhận cập nhật
 - **Then** đáp án của câu Huỷ kết quả **không tự công bố** *(admin vẫn mở tay được)* · đáp án Chướng ngại vật **không đi theo cơ chế này** mà theo `GR-012` — nằm ngoài phạm vi feature · không sinh sự kiện điểm nào
 
-**AC-017a — `GR-037` C8b: đang chờ admin kích hoạt tay một tín hiệu khác**
+**AC-017a — Đang chờ admin kích hoạt tay một tín hiệu khác ⇒ mốc câu khép lùi**
 - **US**: US-002 · **FR**: FR-008, FR-009 · **GR**: `GR-037` C8b · **PRD**: `PRD-REQ-113`
 - **Given** `revealAnswerAfterJudge` **BẬT**; một vòng có giành quyền bằng chuông; người đang giữ quyền vừa bị chấm **Huỷ kết quả**; hàng đợi còn tín hiệu hợp lệ và admin **chưa** kích hoạt tay ai
 - **When** thí sinh, khán giả hoặc lớp phủ yêu cầu đáp án chuẩn của câu đó
 - **Then** server **không trả** — câu **chưa khép** vì mốc đã **lùi** tới sau khi người được kích hoạt được chấm · server cũng **chưa từng đẩy** đáp án xuống ba kênh này từ trước *(kiểm ở phía truyền)* · **cơ chế** kích hoạt tay thuộc EPIC-006 *(xem §8)*; feature này chỉ phủ vế **đáp án không rời server**
 
 ### US-003 — Vai và ràng buộc loại trừ
+
+**AC-017b — Admin đang giữ cú đóng hiển thị bằng tay ⇒ cờ reveal BẬT vẫn không công bố**
+- **US**: US-002 · **FR**: FR-008 · **GR**: `GR-037` C10
+- **Given** một trận có `revealAnswerAfterJudge` **BẬT**; một câu **đã khép**; admin giữ `PERM-044` và đã bấm **đóng hiển thị bằng tay** cho chính câu đó; ba phiên thí sinh, khán giả và lớp phủ đang kết nối
+- **When** engine tới mốc công bố của câu đó, và cả ba phiên nhận cập nhật
+- **Then** server **không trả** đáp án cho cả ba — **thao tác tay thắng cờ tự động** · đáp án giữ kín **cho tới khi admin tự mở lại** · **0** byte đáp án nào rời server tới ba kênh này · điểm của mọi ghế **không đổi** · trạng thái trận **không đổi** · phiên giữ permission đọc đáp án **vẫn** xem được như thường
 
 **AC-018 — Rejection: không gán được vai thứ hai**
 - **US**: US-003 · **FR**: FR-010 · **GR**: `GR-037`
@@ -459,7 +448,7 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 - **Then** điều chỉnh điểm **đi qua** · huỷ trận **bị từ chối** · việc có permission này **không** suy ra permission kia, và **không** suy ra từ việc *"là admin"*
 
 **AC-038 — Invalid state chồng lên permission: trận đã đóng sổ**
-- **US**: US-005 · **FR**: FR-024 · **GR**: `GR-029` C6
+- **US**: US-005 · **FR**: FR-024, FR-025 · **GR**: `GR-029` C6
 - **Given** một tài khoản **có đủ** permission *điều chỉnh điểm*; trận ở `STATE-008` FINISHED *(cả hai nhãn: hoàn thành hoặc bỏ dở)*
 - **When** tài khoản đó thử điều chỉnh điểm
 - **Then** thao tác **không thực hiện được** vì trận đã niêm phong — đây là **invalid state**, **không ép được**, và độc lập với việc có permission · biên bản đã đóng **không đổi**
@@ -591,8 +580,16 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 ### Nhóm A — Xác thực và kiểm quyền ở server
 
 - **FR-001**: Hệ thống MUST yêu cầu tài khoản đã xác thực cho bốn vai **thí sinh, MC, admin, người ra đề**; hai vai **khán giả** và **máy dựng stream** MUST NOT cần tài khoản. · US-001 · `PRD-REQ-002` · `GR-037` · AC-001, AC-004, AC-005
-- **FR-002**: Server MUST kiểm xác thực và quyền cho **mọi** yêu cầu, bất kể phiên đó là ai, đã vào phòng nào, và bất kể giao diện có ẩn nút hay không. · US-001 · `PRD-REQ-002` · `GR-037` · AC-001, AC-002, AC-003, AC-004
-- **FR-003**: Yêu cầu bị từ chối vì thiếu quyền MUST NOT tạo, sửa hay xoá bất kỳ dữ liệu nào — nhật ký sự kiện, điểm, trạng thái câu và trạng thái vòng đều giữ nguyên. · US-001 · `PRD-REQ-002` · `GR-037` · AC-002, AC-003
+- **FR-002**: Server MUST đánh giá **mọi** yêu cầu — REST lẫn sự kiện socket — theo đúng thứ tự sau, và MUST dừng ở bước đầu tiên không đạt:
+  1. **Phiên đã xác thực chưa.** Chưa ⇒ từ chối. Việc phiên đó đang mở đúng đường dẫn phòng, đã nhận mã phòng hợp lệ, hay đang xem kênh công khai đều **không** thay thế bước này.
+  2. **Yêu cầu đòi permission nào.** Server tra permission tương ứng với chính thao tác được yêu cầu.
+  3. **Tài khoản của phiên có giữ permission đó trong đúng phạm vi của đối tượng bị tác động không** *(phạm vi `HỆ THỐNG`, hoặc đúng contest chứa đối tượng)*. Không giữ ⇒ từ chối.
+  4. **Thao tác có đòi quyền điều khiển không.** Có, mà phiên không phải phiên đang giữ ⇒ từ chối *(FR-015)*.
+  5. **Trạng thái đích có cho phép thao tác không** *(ví dụ trận đã niêm phong ở `STATE-008` FINISHED)*. Không ⇒ từ chối, và bước này **không ép qua được** kể cả khi bước 3 đạt.
+  6. Mọi bước đạt ⇒ thực hiện, và mọi input MUST được validate lại ở server.
+
+  Cửa kiểm này MUST độc lập hoàn toàn với giao diện: việc màn hình của một vai không render nút tương ứng MUST NOT là một lớp bảo vệ, và việc nó có render nút MUST NOT làm cửa nới ra. · US-001 · `PRD-REQ-002` · `GR-037` · AC-001, AC-002, AC-003, AC-004
+- **FR-003**: Yêu cầu bị từ chối ở bất kỳ bước nào của FR-002 MUST là **không tác dụng phụ** — MUST NOT tạo, sửa hay xoá bất kỳ dữ liệu nào: nhật ký sự kiện trận giữ nguyên số mục, điểm mọi ghế giữ nguyên, trạng thái câu và trạng thái vòng giữ nguyên, đồng hồ **không** dừng và **không** đặt lại, vai và tập permission của tài khoản gửi yêu cầu **không đổi**. · US-001 · `PRD-REQ-002` · `GR-037` · AC-002, AC-003
 - **FR-004**: Hệ thống MUST ghi lại mỗi lần đăng nhập, cả thành công lẫn thất bại. · US-001 · `PRD-REQ-002` · — · AC-005
 
 ### Nhóm B — Truy cập công khai và phạm vi hiển thị đáp án
@@ -600,7 +597,32 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 - **FR-005**: Khán giả và máy dựng stream MUST vào được phòng bằng **đúng một URL**, với mã phòng nằm trong URL — không tài khoản, không vai, không bước nhập mã, không bước chờ duyệt. · US-002 · `PRD-REQ-001` · `GR-037` · AC-006, AC-007
 - **FR-006**: Màn khán giả và lớp phủ MUST nhận cập nhật qua kênh **một chiều server → client**, cộng một lời gọi đọc để lấy ảnh chụp trạng thái lúc vào phòng; hai kênh này MUST NOT có đường gửi sự kiện lên server. · US-002 · `PRD-REQ-107` · `GR-037` · AC-007, AC-008
 - **FR-007**: Kênh hai chiều MUST chỉ dành cho vai đã xác thực — admin, thí sinh, MC. · US-002 · `PRD-REQ-107` · `GR-037` · AC-008, AC-009
-- **FR-008**: Đáp án chuẩn MUST rời server theo đúng bảng quyết định của `GR-037`, và cửa kiểm MUST hỏi **permission đọc đáp án của câu đang chạy** *(`PERM-045`)*, MUST NOT hỏi tên vai: phiên **giữ** permission đó nhận **mọi lúc** kèm audit *(C1, C2)*; phiên **không giữ** — thí sinh, khán giả và lớp phủ — **chỉ** nhận khi cờ `revealAnswerAfterJudge` **BẬT** **và** câu **đã khép** *(C3, C4, C5)*; câu bị bỏ qua vẫn công bố *(C7)*; cửa sổ cướp quyền Về đích đang mở thì **không** công bố *(C6)*; câu khép bằng **Huỷ kết quả** **không tự** công bố *(C8)*; trong lúc đang chờ admin **kích hoạt tay** một tín hiệu khác sau một cú *Huỷ kết quả* thì **không trả**, vì mốc câu khép đã **lùi** *(C8b — `PRD-REQ-113`, `GR-032` §Kích hoạt tay)*; đáp án Chướng ngại vật nằm ngoài rule này *(C9)*. · US-002 · `PRD-REQ-001`, `PRD-REQ-002`, `PRD-REQ-113` · `GR-037` · AC-010…AC-017, AC-017a
+- **FR-008**: Đáp án chuẩn của một câu MUST rời server **chỉ** theo bảng quyết định dưới đây. Cửa kiểm MUST hỏi **permission đọc đáp án của câu đang chạy** *(`PERM-045`)* và MUST NOT hỏi tên vai, MUST NOT hỏi việc phiên đó có đang giữ quyền điều khiển hay không. Thứ tự đánh giá:
+  1. **Phiên có giữ `PERM-045` trong phạm vi contest của trận không.** Có ⇒ trả đáp án, ghi một dòng nhật ký cho lần xem, dừng tại đây — không phụ thuộc cờ nào và không phụ thuộc mốc nào.
+  2. Không giữ ⇒ hỏi **đáp án này có thuộc Chướng ngại vật không**. Có ⇒ nằm ngoài rule này *(thời điểm lộ do `GR-012` quy định; khi lộ thì tới cả khán giả lẫn lớp phủ)*.
+  3. Hỏi **cờ `revealAnswerAfterJudge` của trận có BẬT không**. TẮT ⇒ không trả.
+  4. Hỏi **câu đã tới mốc CÂU KHÉP chưa**. Chưa ⇒ không trả.
+  5. Hỏi **câu có khép bằng phán quyết *Huỷ kết quả* không**. Có ⇒ không tự công bố.
+  6. Hỏi **admin có đang giữ một cú ĐÓNG hiển thị bằng tay cho chính câu này không**. Có ⇒ không trả, tới khi admin tự mở lại; hiệu lực ở phạm vi một câu.
+  7. Mọi bước trên đạt ⇒ công bố tới thí sinh, khán giả và lớp phủ.
+
+  **Mốc CÂU KHÉP** của bước 4 xác định theo vòng: Khởi động lượt riêng, VCNV và Tăng tốc ⇒ khi admin chấm xong; Khởi động lượt chung ⇒ khi admin chấm xong **hoặc** hết cửa sổ chuông mà không ai bấm; **Về đích** ⇒ khi người thi chính được chấm **Đúng**, **hoặc** cửa sổ cướp quyền đã đóng **và** người cướp đã được chấm, **hoặc** hết cửa sổ cướp mà không ai bấm. Khi admin còn có thể **kích hoạt tay** một tín hiệu khác sau một cú *Huỷ kết quả*, mốc câu khép **lùi** tới sau khi người được kích hoạt đã được chấm.
+
+  **Bảng quyết định hiệu lực**
+
+  | Điều kiện | Kết quả |
+  |---|---|
+  | Phiên giữ `PERM-045` | Trả đáp án cho **riêng phiên đó**; ghi một dòng nhật ký cho lần xem. Không kèm quyền công bố cho ai khác |
+  | Không giữ `PERM-045`, cờ reveal **TẮT** | Không trả |
+  | Không giữ `PERM-045`, cờ **BẬT**, câu **chưa khép** | Không trả |
+  | Không giữ `PERM-045`, cờ **BẬT**, câu **đã khép** *(gồm cả câu bị bỏ qua vì không ai bấm chuông)* | Công bố tới thí sinh, khán giả và lớp phủ |
+  | Về đích — người thi chính vừa bị chấm **Sai**, cửa sổ cướp quyền **đang mở** | Không trả — câu chưa khép |
+  | Đang chờ admin **kích hoạt tay** một tín hiệu khác sau một cú *Huỷ kết quả* | Không trả — mốc câu khép đã lùi |
+  | Câu khép bằng phán quyết **Huỷ kết quả** | Không tự công bố; chỉ ra khi admin mở tay |
+  | Câu khép, cờ **BẬT**, nhưng admin đang giữ một cú **đóng hiển thị bằng tay** cho câu này | Không trả, tới khi admin tự mở lại |
+  | Đáp án **Chướng ngại vật** | Ngoài rule này về **thời điểm**; người nhận không đổi |
+
+  Mọi ca **không trả** MUST là im lặng ở phía truyền: server MUST NOT phát nội dung đáp án, và MUST NOT phát bất kỳ thông báo nào để lộ nội dung đó. · US-002 · `PRD-REQ-001`, `PRD-REQ-002`, `PRD-REQ-113` · `GR-037`, `PERM-045` · AC-010…AC-017, AC-017a
 - **FR-009**: Server MUST đẩy đáp án **chỉ tại đúng mốc câu khép**; MUST NOT đẩy sớm xuống client rồi dựa vào một cờ hiển thị phía client để giấu. · US-002 · `PRD-REQ-002` · `GR-037` §Cấm · AC-014
 
 ### Nhóm C — Vai hệ thống, vai vận hành, ràng buộc loại trừ
@@ -619,7 +641,7 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 - **FR-018**: Mỗi sự kiện trận MUST mang đúng **một** người thực hiện, là phiên đang giữ quyền tại thời điểm bấm; sự kiện đã ghi MUST NOT bị viết lại khi quyền chuyển sang phiên khác. · US-004 · `PRD-REQ-004` · `GR-026` · AC-025
 - **FR-019**: Khi phiên giữ quyền mất kết nối, hệ thống MUST NOT đóng băng đồng hồ, MUST NOT tự tạm dừng trận, và MUST NOT có vai dự phòng nhận quyền tự động; phiên quay lại MUST khôi phục trạng thái từ server bằng cùng cơ chế của một client thường. · US-004 · `PRD-REQ-004` · — · AC-028
 - **FR-020**: Một phiên admin khác MUST **giành** được quyền điều khiển khi phiên đang giữ **mất kết nối**, không cần phiên đó đồng ý. Khi phiên đang giữ **còn kết nối**, thao tác giành MUST NOT tồn tại — nút không bật và server từ chối; đổi người khi đó chỉ đi qua FR-016. · US-004 · `PRD-REQ-108` · `GR-036` · AC-029, AC-030
-- **FR-020b**: Trạng thái quyền **TRỐNG** MUST NOT đi qua đường giành của FR-020 và FR-021: bất kỳ phiên admin nào của contest MUST nhận được quyền **ngay**, MUST NOT chờ MC duyệt và MUST NOT sinh dialog xác nhận — trống không phải giành, không có phiên nào để bảo vệ. Mỗi lần nhận quyền từ trạng thái trống MUST được ghi vào nhật ký. Nhiều phiên admin cùng nhận trong một cửa sổ ⇒ phân xử theo `QĐ-103`: **server timestamp**, và **chỉ khi bằng nhau ở mili-giây** thì server **bốc ngẫu nhiên**, kết quả ghi thành sự kiện. Ưu tiên **chủ contest** của FR-022 MUST NOT áp ở đây — nó thuộc đường giành, mà quyền trống không đi qua đường giành. · US-004 · `PRD-REQ-004`, `PRD-REQ-108`, `QĐ-097`, `QĐ-103` · `GR-026` · AC-056, AC-062
+- **FR-020b**: Trạng thái quyền **TRỐNG** MUST NOT đi qua đường giành của FR-020 và FR-021: bất kỳ phiên admin nào của contest MUST nhận được quyền **ngay**, MUST NOT chờ MC duyệt và MUST NOT sinh dialog xác nhận — trống không phải giành, không có phiên nào để bảo vệ. Mỗi lần nhận quyền từ trạng thái trống MUST được ghi vào nhật ký. Nhiều phiên admin cùng nhận trong một cửa sổ ⇒ server MUST phân xử theo đúng hai bước: **(1)** phiên có **server timestamp sớm hơn** thắng; **(2)** chỉ khi hai timestamp **bằng nhau ở mili-giây**, server **bốc ngẫu nhiên**, và kết quả bốc MUST được ghi thành một **sự kiện** mang nhãn chỉ rõ thắng do bốc, để phát lại trận vẫn tất định. Ở đường nhận quyền từ trạng thái TRỐNG, việc một phiên là **chủ contest** MUST NOT cho phiên đó bất kỳ ưu tiên nào. · US-004 · `PRD-REQ-004`, `PRD-REQ-108`, `QĐ-097`, `QĐ-103` · `GR-026` · AC-056, AC-062
 - **FR-021**: Khi contest **có MC**, cú giành MUST chờ **MC duyệt** qua một prompt phía MC mà **MC không tự tắt được** — chỉ server đóng nó, và chỉ khi cú giành đã được phân giải. Điều kiện *"có MC"* MUST đo bằng **có phiên MC đang kết nối tại thời điểm cú giành**, MUST NOT đo bằng việc contest có phép gán vai MC *(`QĐ-098`)*. Đây MUST là bề mặt quyền ghi **duy nhất** của MC; MC MUST NOT duyệt tín hiệu của thí sinh, MUST NOT phán quyết Đúng/Sai và MUST NOT mở đáp án. MC từ chối ⇒ quyền ở nguyên chỗ cũ; phiên đang giữ kết nối lại trước khi MC quyết ⇒ cú giành **mất đối tượng**. · US-004 · `PRD-REQ-108`, `PRD-REQ-074` *(mệnh đề quyền ghi)* · `GR-026` · AC-029, AC-031, AC-032
 - **FR-021a**: Khi có **nhiều phiên MC** đang kết nối, prompt MUST lên **tất cả**, và **bất kỳ phiên nào trong số đó** MUST quyết được — không có phiên MC chính, không có thứ tự ưu tiên. Quyết định **tới server đầu tiên** theo server timestamp MUST là quyết định có hiệu lực, **bất kể** nó là Duyệt hay Từ chối; server MUST đóng prompt ở mọi phiên còn lại. Quyết định tới **sau** MUST bị từ chối và MUST NOT lật kết quả đã phân giải. Mọi quyết định tới sau MUST vẫn được ghi vào nhật ký kèm trạng thái bị từ chối. · US-004 · `PRD-REQ-108`, `QĐ-100` · `GR-026` · AC-060, AC-061
 - **FR-021b**: Hệ thống MUST NOT đặt ngưỡng thời gian cho prompt duyệt cú giành. Khi **phiên MC cuối cùng còn kết nối** mất kết nối trong lúc prompt đang chờ, cú giành MUST rơi về nhánh không-MC của FR-022 và có hiệu lực **ngay**, kèm một dòng nhật ký — sao cho không tồn tại trạng thái cú giành chờ vô hạn mà không phiên nào trên hệ thống giải được. Còn **ít nhất một** phiên MC kết nối ⇒ prompt MUST tiếp tục chờ. · US-004 · `PRD-REQ-108`, `QĐ-099` · `GR-036` · AC-057, AC-061
@@ -628,8 +650,8 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 
 ### Nhóm E — Permission cho thao tác phá huỷ
 
-- **FR-024**: Bảy thao tác — **bỏ vòng · chạy lại vòng · kết thúc vòng khẩn cấp · huỷ trận · điều chỉnh điểm · sửa danh sách đề · ép qua hàng rào đề đã từng public** — MUST mỗi thứ là một permission riêng; MUST NOT suy ra từ việc một tài khoản *"là admin"*, và có permission này MUST NOT suy ra permission kia. · US-005 · `PRD-REQ-005` · `GR-029`, `GR-030` · AC-035, AC-036, AC-037
-- **FR-025**: Khi thiếu permission tương ứng, giao diện MUST hiển thị thao tác ở trạng thái không dùng được **và** server MUST từ chối yêu cầu tương ứng gửi tới bằng đường khác. · US-005 · `PRD-REQ-005` · `GR-030` · AC-036
+- **FR-024**: Bảy thao tác phá huỷ — **bỏ vòng** *(`PERM-033`)* · **chạy lại vòng** *(`PERM-034`)* · **kết thúc vòng khẩn cấp** *(`PERM-035`)* · **huỷ trận** *(`PERM-037`)* · **điều chỉnh điểm** *(`PERM-043`)* · **sửa danh sách đề** *(`PERM-026`)* · **ép qua hàng rào đề đã từng public** *(`PERM-027`)* — MUST mỗi thứ là một permission riêng đứng độc lập. Giữ một trong bảy permission này MUST NOT suy ra bất kỳ permission nào trong sáu cái còn lại, và MUST NOT suy ra từ việc một tài khoản mang vai admin hay đang giữ quyền điều khiển. · US-005 · `PRD-REQ-005` · `GR-029`, `GR-030` · AC-035, AC-036, AC-037
+- **FR-025**: Một yêu cầu thực hiện thao tác phá huỷ MUST được đánh giá theo thứ tự: **(1)** trạng thái trận có cho phép thao tác không — trận đã niêm phong ở `STATE-008` FINISHED thì **không**, và ca này MUST NOT ép qua được kể cả với đủ permission; **(2)** phiên có giữ đúng permission của **chính thao tác đó** trong phạm vi contest của trận không; **(3)** thao tác có đòi quyền điều khiển không. Thiếu ở bất kỳ bước nào ⇒ **từ chối, không tác dụng phụ** theo FR-003. Song song đó, khi phiên thiếu permission, giao diện MUST hiển thị thao tác ở trạng thái không dùng được — nhưng đó là chỉ dẫn cho người dùng, MUST NOT là lớp cưỡng chế: một yêu cầu gửi thẳng tới server bằng đường khác MUST vẫn bị từ chối ở đúng cửa kiểm trên. · US-005 · `PRD-REQ-005` · `GR-029`, `GR-030` · AC-036, AC-038
 - **FR-026**: Ở cửa kiểm quyền, server MUST quyết dựa trên việc tài khoản **có giữ một permission cụ thể trong một phạm vi cụ thể hay không**, và MUST NOT quyết dựa trên **tên vai** mà tài khoản mang. · US-005 · `PRD-REQ-109` · — · AC-039, AC-040
 - **FR-027**: Permission MUST tới người dùng **chỉ qua vai**; hệ thống MUST NOT có đường cấp một permission thẳng cho một tài khoản. Đổi tập permission của một vai MUST đổi ngay quyền của mọi tài khoản đang mang vai đó. · US-005 · `PRD-REQ-109` · — · AC-040
 - **FR-028**: Mỗi phép gán vai MUST mang một phạm vi — **toàn hệ thống** hoặc **đúng một contest**. Vai gán ở contest A MUST NOT có hiệu lực ở contest B. Cùng một vai MUST gán được ở cả hai phạm vi khi tập permission của nó có nghĩa ở đó. · US-005, US-003 · `PRD-REQ-110` · — · AC-021, AC-041
@@ -687,7 +709,6 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 - Mã phòng đúng 6 ký tự số — độ dài khác hoặc ký tự khác số không phải mã hợp lệ.
 - Cờ `revealAnswerAfterJudge` được **chụp vào trận lúc bắt đầu**: sửa cấu hình contest sau đó không đụng trận đang chạy — hai giá trị khác nhau cho hai trận cùng phòng là kịch bản hợp lệ.
 - Đúng mốc câu khép: `GR-037` đặt mốc công bố **tại** câu khép, không sớm hơn; ở Về đích mốc này đến **sau** cú bấm Đúng/Sai của người thi chính.
-
 - **Quyền điều khiển TRỐNG** là trạng thái hợp lệ, không phải lỗi: nó tồn tại trước khi phiên admin đầu tiên vào trận, và sau khi holder đăng xuất chủ động. Nó **không** đi qua đường giành quyền *(AC-056)*.
 - **Ranh giới "contest có MC"** đo ở đúng thời điểm cú giành, bằng **phiên đang kết nối** — không bằng phép gán. Cùng một contest vì thế rẽ hai nhánh khác nhau ở hai thời điểm khác nhau *(AC-030, AC-031, AC-057)*.
 
@@ -713,9 +734,6 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 - Nhập gói contest có kèm danh sách nhưng sai cụm mật khẩu hoặc gói bị sửa: **từ chối toàn bộ**, không tạo bản ghi tài khoản nào — không có trạng thái nhập nửa vời *(`NFR-24b`)*.
 - Trùng tên đăng nhập ở bản đích: hệ thống **hỏi**, không tự nối *(`QĐ-086` vế 6)* — luồng chi tiết thuộc EPIC-003, xem §8.
 - Server sập: **mất khả năng cứu** — đây là ranh giới đã chấp nhận *(`NFR-31`)*, không phải chỗ thiếu đặc tả.
-
-**Luật xung đột**
-- `TERM-004` khai *"đúng MỘT admin cho mỗi contest"* trong khi `PRD-REQ-004` và `QĐ-008` khai **nhiều tài khoản admin, một phiên giữ quyền**. Spec này đọc `TERM-004` theo nghĩa *một luồng thao tác*, khớp với `GR-026` §Đồng thời — **không** phải một mâu thuẫn, nhưng là chỗ dễ đọc sai và được ghi lại ở đây.
 
 **Hành vi nguồn không quy định** — spec này **không** tự điền **mã lỗi** cho từng ca từ chối; nguồn không định nghĩa mã lỗi nào, và spec không tạo mới.
 
@@ -751,29 +769,7 @@ Ngoài ra đã đọc `docs/decisions.md` (`QĐ-008`, `QĐ-051`, `QĐ-060`, `QĐ
 
 ## 9. Open Questions
 
-**0 CONFLICT · 0 marker · 43/43 FR truy về `docs/`.** Không FR nào của feature này phụ thuộc một mâu thuẫn chưa phân xử, và không FR nào truy nguyên về chính spec này.
-
-Ba câu hỏi từng treo ở mục này đã được chủ dự án phân xử và ghi vào `docs/`:
-
-| Câu hỏi | Đóng bằng |
-|---|---|
-| Giành lại quyền điều khiển khi phiên đang giữ mất kết nối | `QĐ-093` · `PRD-REQ-108` |
-| Thu hồi permission giữa lúc trận đang chạy | `QĐ-095` · `PRD-REQ-112` |
-| Ràng buộc loại trừ theo chiều ngược lại | `QĐ-065` — **tan biến**: mỗi tài khoản đúng một vai, nên tổ hợp *thí sinh* + *admin/MC/setter* không dựng nổi theo **cả hai chiều**, và không cửa nào phải kiểm |
-
-**Bảy** chỗ nữa được chủ dự án phân xử ngày **2026-07-30** — xem §1b. Chúng là những ca mà `QĐ-093` và `QĐ-095` không phủ, chứ không phải mâu thuẫn với chúng. Cả bảy **đã được ghi vào `docs/decisions.md`**:
-
-| Quyết định | Nội dung | FR |
-|---|---|---|
-| `QĐ-097` | Quyền điều khiển **TRỐNG**: nhận ngay, không qua MC | FR-015, FR-020b |
-| `QĐ-098` | *"Contest có MC"* đo bằng **phiên đang kết nối** | FR-021 |
-| `QĐ-099` | Prompt duyệt **không có ngưỡng**; MC cuối cùng rớt ⇒ chuyển nhánh | FR-021b |
-| `QĐ-100` | Nhiều phiên MC: **accept bất kỳ**, quyết định tới trước thắng | FR-021a |
-| `QĐ-101` | `QĐ-095` chỉ áp cho tài khoản **trận cần quyền** để chạy tiếp | FR-030, FR-030b |
-| `QĐ-102` | Khoá cổng **chỉ** chặn màn khán giả | FR-035 |
-| `QĐ-103` | Xung đột chưa có luật: **hàng đợi**, hết cách mới **ngẫu nhiên** *(§A Nguyên tắc nền)* | FR-020b |
-
-`QĐ-103` sinh ra từ chính FR-020b: quyền TRỐNG không đi qua đường giành nên ưu tiên chủ contest của `QĐ-093` vế 4 không với tới, và chỗ trống đó cần một luật chung thay vì một ngoại lệ riêng.
+Không còn câu hỏi mở và không còn `CONFLICT` nào trong phạm vi feature này. Hai chi tiết cố ý để ngoài spec — **mã lỗi** cho từng ca từ chối, và **cơ chế xác thực cụ thể** — nằm ở §11 Assumptions vì chúng là lựa chọn kỹ thuật, không phải requirement nghiệp vụ chưa chốt.
 
 ---
 
@@ -782,7 +778,7 @@ Ba câu hỏi từng treo ở mục này đã được chủ dự án phân xử
 | User story | PRD requirement | Game rules | Functional requirements | Acceptance scenarios |
 |---|---|---|---|---|
 | **US-001** — Đăng nhập và kiểm quyền ở server | `PRD-REQ-002` | `GR-037` | FR-001 → FR-004 | AC-001 → AC-005 |
-| **US-002** — Vào phòng công khai bằng URL, không đường ghi | `PRD-REQ-001`, `PRD-REQ-107`, `PRD-REQ-113` *(vế mốc câu khép lùi)* | `GR-037` | FR-005 → FR-009 | AC-006 → AC-017, AC-017a |
+| **US-002** — Vào phòng công khai bằng URL, không đường ghi | `PRD-REQ-001`, `PRD-REQ-107`, `PRD-REQ-113` *(vế mốc câu khép lùi)* | `GR-037` | FR-005 → FR-009 | AC-006 → AC-017, AC-017a, AC-017b |
 | **US-003** — Mỗi tài khoản một vai, gán theo phạm vi | `PRD-REQ-003`, `PRD-REQ-006` | `GR-037` | FR-010 → FR-013, FR-028 | AC-018 → AC-022, AC-041 |
 | **US-004** — Một phiên giữ quyền; chuyển giao và giành lại được | `PRD-REQ-004`, `PRD-REQ-108`, **`PRD-REQ-074`** *(mệnh đề quyền ghi)* | `GR-026`, `GR-036` | FR-014 → FR-023 *(gồm FR-020b, FR-021a, FR-021b)*, FR-033 | AC-023 → AC-034, AC-048, AC-056, AC-057, AC-060 → AC-062 |
 | **US-005** — Phân quyền theo vai và permission cho thao tác phá huỷ | `PRD-REQ-005`, `109`, `110`, `111`, `112`, **`074`** *(mệnh đề quyền ghi)* | `GR-026`, `GR-029`, `GR-030`, `GR-032` | FR-024 → FR-033 *(gồm FR-030b)* | AC-035 → AC-048, AC-058 |
@@ -802,6 +798,7 @@ Ba câu hỏi từng treo ở mục này đã được chủ dự án phân xử
 | `GR-037` C7 | Câu bị bỏ qua, reveal BẬT ⇒ trả | AC-015 |
 | `GR-037` C8 | Câu khép bằng Huỷ kết quả ⇒ không tự trả | AC-017 |
 | `GR-037` C8b | Đang chờ admin **kích hoạt tay** một tín hiệu khác ⇒ không trả, câu chưa khép | AC-017a |
+| `GR-037` C10 | Admin đang giữ cú **đóng hiển thị bằng tay** ⇒ không trả dù cờ reveal BẬT | AC-017b |
 | `GR-037` C9 | Đáp án Chướng ngại vật ⇒ ngoài rule này | AC-017 |
 | `GR-026` §Đồng thời | Không có hai luồng thao tác admin song song | AC-026 |
 | `GR-026` C1/C2 §"điểm chỉ chốt khi admin bấm" | Chỉ phiên giữ quyền mới sinh được sự kiện phán quyết | AC-025, AC-026 |

@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
-- [ ] **Không còn marker `[NEEDS CLARIFICATION]`** — ⚠️ **2 mục mở còn lại** (`OQ-003` giới hạn số lượng trường mảng, `OQ-007` hỏng media giữa chừng — cả hai là MISSING/NEEDS CLARIFICATION, **không phải** CONFLICT). Đã chạy `/speckit-clarify` **2026-07-30** (5 câu, xem §Clarifications của spec) và đóng **5/7** mục mở ban đầu, gồm cả CONFLICT duy nhất (`OQ-001`).
+- [x] **Không còn marker `[NEEDS CLARIFICATION]`**
 - [x] Requirement kiểm thử được và không mơ hồ
 - [x] Success criteria đo được
 - [x] Success criteria không phụ thuộc công nghệ
@@ -40,9 +40,7 @@
 | **5. Độc lập** | ✅ 8/8 story có "Independent Test" và độ ưu tiên. US-001 *(P1)* tự nó kiểm thử được không cần contest hay trận nào. |
 | **6. Đo được** | ✅ 5 Success Criteria đều có số/tỉ lệ + điều kiện đo, không phụ thuộc công nghệ. |
 
+
 ## Notes
 
-- **Đã chạy `/speckit-clarify` 2026-07-30** (5 câu, xem `## Clarifications` của spec) — đóng `OQ-001` (CONFLICT), `OQ-002`, `OQ-004`, `OQ-005`, `OQ-006`.
-- **Còn 2 mục mở**: `OQ-003` (giới hạn `clues[]`/`options[]`), `OQ-007` (hỏng media giữa chừng) — cả hai thấp tác động hơn so với năm mục đã đóng, không chặn `/speckit-plan` theo đánh giá tại thời điểm chạy `/speckit-clarify`, nhưng khuyến nghị chủ dự án xác nhận trước khi thiết kế chi tiết luồng soạn câu.
-- **Bảy FR mới sinh ra từ phiên clarify chưa được ghi vào `docs/decisions.md`** — chủ dự án cần chuyển các quyết định ở `## Clarifications` của spec thành `QĐ-*` chính thức, tương tự cách EPIC-001 đã làm (`QĐ-097`→`QĐ-103`), để cổng 1 (Truy nguyên) hết phụ thuộc chính spec này.
-- **Hai file nguồn được yêu cầu đọc không tồn tại**: `docs/rule-traceability.md` *(file thật là `docs/traceability.md`)* và `docs/reviews/prd-review.md` *(không có trong `docs/reviews/`, vốn chỉ chứa `game-rules-*.md` và `README.md`)*. Chi tiết ở §0 của spec. Việc thiếu file thứ hai không tạo lỗ hổng truy nguyên vì `docs/reviews/**` là kho lưu, không phải nguồn — cùng ghi chú với `specs/001-xac-thuc-phan-quyen`.
+Không còn mục nào chờ phân xử. Mọi requirement của feature này truy nguyên được về `docs/`.

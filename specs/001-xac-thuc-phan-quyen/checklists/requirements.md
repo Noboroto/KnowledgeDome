@@ -40,9 +40,7 @@
 | **5. Độc lập** | ✅ 7/7 story có "Independent Test" và độ ưu tiên. US-001 *(P1)* tự nó là MVP dùng được. |
 | **6. Đo được** | ✅ 8 Success Criteria đều có số + đơn vị + điều kiện đo, không phụ thuộc công nghệ. |
 
+
 ## Notes
 
-- **Ba `[NEEDS CLARIFICATION]` ban đầu** đã đóng bằng `QĐ-093`, `QĐ-095`, `QĐ-065`.
-- **Không còn nợ.** Cả bảy phán quyết ở §1b đã vào `docs/decisions.md` (`QĐ-097`→`QĐ-103`); cổng **1. Truy nguyên** đã khép. Spec sẵn sàng cho `/speckit-plan`.
-- **Hai file nguồn được yêu cầu đọc không tồn tại**: `docs/rule-traceability.md` *(file thật là `docs/traceability.md`)* và `docs/reviews/prd-review.md` *(không có trong `docs/reviews/`)*. Chi tiết ở §0 của spec. Việc thiếu file thứ hai không tạo lỗ hổng truy nguyên vì `docs/reviews/**` là kho lưu, không phải nguồn.
-- Đã chạy `/speckit-clarify` *(2026-07-30, 5 câu)*. Bước kế: ghi §1b vào `docs/decisions.md`, rồi `/speckit-plan`.
+Không còn mục nào chờ phân xử. Mọi requirement của feature này truy nguyên được về `docs/`.

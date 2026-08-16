@@ -12,8 +12,8 @@
 
 | Trường | Giá trị |
 |---|---|
-| **Version** | 2.8.0 — *tích hợp `QĐ-121` → `QĐ-123` từ phiên làm rõ EPIC-009 lần hai: **chủ đề hiển thị** gồm đúng ba trục tĩnh *(bảng màu · logo · ảnh nền)*, không tài sản động và không phông chữ, áp cho **đúng hai kênh public** *(sửa `PRD-REQ-078`)* · danh sách khe nhóm **mốc thi đấu** chốt **52 khe** dẫn xuất từ trang `Âm thanh` của wiki Fandom sau hai tầng lọc, tổng **58 khe**, tập đóng ở v1, mỗi vòng đúng một khe *đếm giờ* *(sửa `PRD-REQ-078`; nguồn mới `docs/source/fandom-olympia-26-am-thanh.md`)* · **lớp phủ thiếu dữ liệu vẫn dựng bình thường**, không có nhánh trạng thái rỗng và không từ chối cú mở *(sửa `PRD-REQ-075`)*. Bản 2.7.0: tích hợp `QĐ-116` → `QĐ-120` từ phiên làm rõ EPIC-009: banner tạm dừng **không phủ màn MC** *(sửa `PRD-REQ-076`)* · banner × lớp công bố **loại trừ lẫn nhau**, hạng invalid state, thu hẹp `INV-021` bằng một ngoại lệ đã liệt kê *(sửa `PRD-REQ-075`, `PRD-REQ-076`)* · đáp án **Chướng ngại vật tới cả overlay** — đứng ngoài `GR-037` chỉ đổi **thời điểm**, không đổi **người nhận** *(sửa `PRD-REQ-073`)* · **cú đóng hiển thị bằng tay thắng** cú đẩy của engine tại mốc câu khép, thao tác tay thắng cờ tự động ở **cả hai chiều** *(sửa `PRD-REQ-049`, thêm `GR-037` C10)* · khe âm thanh chia **hai nhóm** theo *khán giả có được nghe không*, cộng **nguồn phát** `admin | overlay` mặc định `overlay` *(sửa `PRD-REQ-077`, `PRD-REQ-078`)*. Bản 2.6.0: tích hợp `QĐ-108` → `QĐ-110` từ phiên làm rõ EPIC-007, phần còn nợ: `PRD-REQ-056` viết lại theo **hai trục** *(tầng dialog xác định bằng cách thoát × trục bắt lý do độc lập)*, bốn loại phản hồi thay vì ba · `PRD-REQ-052` nhận **biên trên** của cửa sổ giữ bản tới muộn · `PRD-REQ-054` đổi mốc mở nút chấm thành `hạn chót + padding`, ngoại lệ Khởi động · `PRD-REQ-020` nhận `padding` vào tập cấu hình luật. Bản 2.5.0: tích hợp `QĐ-111` → `QĐ-115` từ phiên làm rõ EPIC-008: khoá nút chuông gắn với **phán quyết** *(sửa `PRD-REQ-064`)* · control không bấm được **ẩn khi mất nghĩa, mờ kèm nhãn khi bị luật cấm** và outcome tín hiệu **báo về máy phát** *(sửa `PRD-REQ-072`, thêm ghi chú hai trục ở §9.4)* · **nguyên tắc hai trục** — giành lượt lấy người đầu tiên, đáp án lấy bản cuối — gỡ ngoại lệ *"người cướp tính bản đầu"* khỏi `GR-020` *(sửa §13.3, bổ sung Related game rules của `PRD-REQ-065`)* · **banner tạm dừng CHE TOÀN BỘ màn thí sinh** — ngoại lệ tường minh và duy nhất của `PRD-REQ-067` *(`QĐ-115`)*. Bản 2.4.0: tích hợp `QĐ-105` → `QĐ-107` thành `PRD-REQ-114`, `PRD-REQ-115` và một Note ngoại lệ ở `PRD-REQ-008`: dưới 4 thí sinh chạy bằng **ghế bỏ thi** và chỉ trên 4 mới bị chặn · VCNV có **hai** giá trị thời gian cấp vòng · kho đề có **xoá mềm** và **phiên bản theo cú Save** (bản tối giản), lật phần loại trừ đánh phiên bản của EPIC-002. Bản 2.3.0: tích hợp `QĐ-104` (admin kích hoạt tay) thành `PRD-REQ-113`, kèm ba chỗ sửa theo — §8.2 bước 5, `INV-009` ở §9.5, và bảng §13.2. Bản 2.2.1: chủ dự án phân xử toàn bộ tám câu hỏi mở; `QĐ-085`→`QĐ-092` ghi vào sổ quyết định; `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001`, `108`→`112`; `QĐ-097`→`103` chủ đích truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen` (không sinh `PRD-REQ` riêng)* |
-| **Quy ước bảo trì** | Mục **đã chốt / đã đóng / đã sửa** bị **xoá khỏi tài liệu**, không giữ lại dưới dạng ghi chú lịch sử; dãy số liên quan được **đánh lại cho liền**. Lịch sử tra ở `git log` và `docs/reviews/` |
+| **Version** | 3.4.0 |
+| **Quy ước bảo trì** | Tài liệu chỉ chứa behavior **đang có hiệu lực**. Mã định danh (`PRD-REQ-*`, `NON-GOAL-*`, `NFR-*`, `FS-*`) là **định danh vĩnh viễn**: mã đã cấp không bao giờ được cấp lại cho mục khác, kể cả khi mục cũ bị rút. Lịch sử tra ở `git log`; lý do tra ở `docs/decisions.md` |
 | **Đặc tả cho** | **Phiên bản sản phẩm 1.0** |
 | **Status** | Bản đầu tiên — chờ chủ dự án phê duyệt |
 | **Last updated** | 2026-08-03 |
@@ -26,11 +26,11 @@
 |---|---|---|
 | `docs/source/fandom-olympia-26-luat-choi.md` | Luật gốc O26 nguyên văn (snapshot 2026-07-23) | Không sửa; source of truth **duy nhất về LUẬT** |
 | `docs/source/fandom-olympia-26-am-thanh.md` | Danh sách khe âm thanh gốc, trích lược cột `Tên` (snapshot 2026-08-04) | Không sửa; nguồn của `QĐ-122`. **Không** phải nguồn luật |
-| `docs/decisions.md` | 123 quyết định `QĐ-001`→`QĐ-123` | Source of truth về **lựa chọn sản phẩm**; §N khai *"không còn mục treo nào"* |
+| `docs/decisions.md` | 148 quyết định `QĐ-001`→`QĐ-148` | Source of truth về **lựa chọn sản phẩm** |
 | `docs/game-rules.md` | 37 rule `GR-001`→`GR-037`, 23 nguyên tắc nền, 4 bảng dùng chung | Chuẩn tắc; **không còn marker treo** |
-| `docs/game-state-machine.md` | 43 `STATE-*`, 52 `EVENT-*`, 100 `T-*`, 22 `INV-*`, 8 sơ đồ | Chuẩn tắc; **không còn marker treo** |
-| `docs/glossary.md` | 60 thuật ngữ `TERM-001`→`TERM-060` | Chuẩn tắc về tên gọi |
-| `docs/permissions.md` | Catalog `PERM-001`→`PERM-061`, bốn cổng ngoài RBAC, bốn điều cấm, bốn vai seed, vòng đời phép cấp | Catalog tra cứu; **không đặt ra luật** — mô hình ở `QĐ-094` |
+| `docs/game-state-machine.md` | 43 `STATE-*`, 52 `EVENT-*`, 102 `T-*`, 22 `INV-*`, 8 sơ đồ | Chuẩn tắc |
+| `docs/glossary.md` | 63 thuật ngữ `TERM-001`→`TERM-063` | Chuẩn tắc về tên gọi |
+| `docs/permissions.md` | Catalog `PERM-001`→`PERM-062`, bốn cổng ngoài RBAC, bốn điều cấm, bốn vai seed, vòng đời phép cấp | Catalog tra cứu; **không đặt ra luật** — mô hình ở `QĐ-094` |
 | `docs/traceability.md` | Ma trận rule ↔ luật gốc ↔ `QĐ-*`; biến thể bị loại; biến thể ngoài O26 | Không đặt ra luật |
 | `docs/product-discovery.md` | Vấn đề, người dùng, mục tiêu, hành trình, epic, giả định, cách đo | Đầu vào cho PRD; **tự khai không phải PRD** |
 | `docs/reviews/game-rules-review.md` | Rà soát lượt 3, `GRR-137`→`GRR-171` (2026-07-25) | **Kho lưu, KHÔNG phải requirement** — dùng để phát hiện câu hỏi mở |
@@ -116,6 +116,7 @@ Trường học và câu lạc bộ muốn tổ chức thi đấu theo format Ol
 | **NON-GOAL-017** | **Phân định hoà ở vị trí khác vị trí NHẤT** — v1 khoá `tieBreakPositions = [1]`; hoà ở vị trí khác ghi **đồng hạng** | `QĐ-085` |
 | **NON-GOAL-018** | **Tuỳ chọn hiển thị biệt danh** — bỏ hẳn; tên hiển thị của ghế là trường tự do, người dựng contest tự quyết nhập gì | `QĐ-090` |
 | **NON-GOAL-019** | **Trình hướng dẫn cài đặt lần đầu trên trình duyệt** — v1 dùng dòng lệnh khi dựng máy, và tài khoản admin đi theo gói khi ra hội trường | `QĐ-087` |
+| **NON-GOAL-020** | **Disclaimer bản quyền khi tải âm thanh lên** — bỏ hẳn. Hệ thống MUST NOT hiện disclaimer bản quyền ở bất cứ đâu: không ở luồng tải lên, không ở đường nhập gói contest, không ô tích, không trạng thái *"đã đọc"*, không dòng nhật ký. Ở mô hình tự host, bên tải file lên **chính là** đơn vị chịu trách nhiệm — một dòng chữ hệ thống tự hiện cho chính người đó không dịch chuyển trách nhiệm đi đâu. | `QĐ-144`, `QĐ-146` |
 
 ---
 
@@ -287,11 +288,11 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 | Hạng | Ép được? | Dùng khi |
 |---|---|---|
 | **Invalid state** (toast) | **Không** — nhánh **không tồn tại**, nút không bật | Thao tác không có nghĩa ở trạng thái hiện tại |
-
-> **Bảng này phân loại theo QUYỀN ÉP ĐƯỢC, không phải theo cách hiển thị.** Việc một control không bấm được thì **ẩn** hay **mờ kèm nhãn** là một trục **độc lập**, quy định ở `QĐ-112`: control **mất nghĩa** ở pha hiện tại ⇒ không render; control **có nghĩa nhưng ghế này bị luật cấm** ⇒ render vô hiệu hoá kèm nhãn. Đừng suy từ hạng *invalid state* ra kết cục hiển thị.
 | **Cảnh báo lệch luật** (dialog Yes/No) | **Có** | Hệ thống khuyến nghị khác admin; admin luôn ép được |
 | **Chặn cứng** *(luật chơi)* | **Không** | **Đúng ba chỗ** (`INV-014`): cửa sổ cướp quyền cần ≥2 thí sinh · Câu hỏi phụ cần ≥2 thí sinh · cửa vào vòng thiếu câu |
 | **Chặn do GIỚI HẠN PHIÊN BẢN** | **Không** | Một hạng **riêng**, không phải chỗ thứ tư của `INV-014`: cú bấm bắt đầu trận có **số ghế > 4** (`QĐ-105`). Hạng này **biến mất** khi v1.5 mở khoá luật đa ghế, thay vì buộc sửa một bất biến |
+
+> **Bảng này phân loại theo QUYỀN ÉP ĐƯỢC, không phải theo cách hiển thị.** Việc một control không bấm được thì **ẩn** hay **mờ kèm nhãn** là một trục **độc lập**, quy định ở `QĐ-112`: control **mất nghĩa** ở pha hiện tại ⇒ không render; control **có nghĩa nhưng ghế này bị luật cấm** ⇒ render vô hiệu hoá kèm nhãn. Đừng suy từ hạng *invalid state* ra kết cục hiển thị.
 
 ### 9.5 Bất biến chi phối toàn hệ thống
 
@@ -378,9 +379,9 @@ Từ *"state"* trong dự án này **luôn phải kèm thang bậc** (`TERM-018`
 - **Related game rules**: `GR-022`, `GR-023`, `GR-025`, `GR-028`, `GR-031`
 - **Source**: `product-discovery.md` §4 J-7 · `QĐ-036`, `QĐ-037`, `QĐ-038`, `QĐ-077`, `QĐ-083`, `QĐ-084`
 
-### Cài đặt lần đầu — không còn là hành trình thiếu
+### Cài đặt lần đầu
 
-`QĐ-087` chốt **hai đường cho hai thời điểm**: dòng lệnh khi **dựng máy** *(trước ngày thi, người dựng máy làm)*, và **tài khoản admin đi theo gói contest** khi **ra hội trường** *(nhập gói là xong, không mở dòng lệnh)*. v1 không làm trình hướng dẫn trên trình duyệt (NON-GOAL-019).
+Cài đặt lần đầu có **hai đường cho hai thời điểm**: dòng lệnh khi **dựng máy** *(trước ngày thi, người dựng máy làm)*, và **tài khoản admin đi theo gói contest** khi **ra hội trường** *(nhập gói là xong, không mở dòng lệnh)*. v1 không làm trình hướng dẫn trên trình duyệt (NON-GOAL-019).
 
 Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống và gói không kèm danh sách người tham gia**. Tài liệu vận hành phải nêu thẳng ca này.
 
@@ -410,7 +411,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Goal**: Câu hỏi soạn một lần, dùng lại nhiều lần, không rò và không lặp.
 - **Primary actor**: ACTOR-002 người ra đề
 - **User value**: Giải `PS-3` và `PS-6` — kho tập trung, tìm kiếm được, và đề kín tới lúc công bố.
-- **Scope**: Soạn câu với metadata và media · ba kiểu nhập đáp án + kênh thực hành · vòng duyệt `DRAFT` → `ACTIVE` · bộ đề · cờ hiển thị **dẫn xuất** và dấu vết `everPublic` một chiều · tìm kiếm toàn văn, lọc, sắp xếp · cờ đã-dùng theo contest.
+- **Scope**: Soạn câu với metadata và media · một kiểu nhập đáp án + kênh thực hành · vòng duyệt `DRAFT` → `ACTIVE` · bộ đề · cờ hiển thị **dẫn xuất** và dấu vết `everPublic` một chiều · tìm kiếm toàn văn, lọc, sắp xếp · cờ đã-dùng theo contest.
 - **Out of scope**: Chặn sao chép đề (NON-GOAL-007); **màn so sánh diff và thao tác quay về bản cũ** của phiên bản câu hỏi — bản tối giản thuộc v1 qua `PRD-REQ-115`, phần còn lại hoãn.
 - **Related journeys**: JOURNEY-001, JOURNEY-002
 - **Related game rules**: `GR-031`, `GR-027`
@@ -514,26 +515,26 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Goal**: Kết quả có thể in ra, phân xử được, và nuôi ngược lại kho đề.
 - **Primary actor**: ACTOR-001 admin
 - **User value**: Biên bản đủ để trả lời khiếu nại, và số liệu để cải thiện kho đề.
-- **Scope**: Bảng điểm cuối và thứ hạng · biên bản in **theo lần chạy** kèm nhãn · thống kê ghi ngược kho đề · nhật ký thao tác đủ để phân xử.
-- **Out of scope**: **Phát lại một trận** — ngoài phạm vi (`product-discovery.md` §5 E-10).
+- **Scope**: Bảng điểm cuối và thứ hạng · biên bản in **theo lần chạy** kèm nhãn · xuất toàn bộ kết quả và nhật ký sự kiện, và kết quả rút gọn · thống kê ghi ngược kho đề · **ghi vào** nhật ký thao tác ở mọi lần in và mọi lần xuất.
+- **Out of scope**: **Phát lại một trận** — ngoài phạm vi (`product-discovery.md` §5 E-10). **Màn ĐỌC nhật ký thao tác** — thuộc EPIC-011, cùng chủ với bảng `AuditLog` và `PRD-REQ-082` (`QĐ-130`); EPIC-010 chỉ ghi vào, không đọc ra.
 - **Related journeys**: JOURNEY-007
 - **Related game rules**: `GR-022`, `GR-028`
 - **Dependencies**: EPIC-006
 - **MVP status**: **Thuộc phạm vi**, trừ phát lại
-- **Source**: §5 E-10 · `QĐ-077`
+- **Source**: §5 E-10 · `QĐ-077`, `QĐ-128`, `QĐ-129`, `QĐ-130`
 
 ### EPIC-011 — Dữ liệu cá nhân và quyền riêng tư
 
 - **Goal**: Dữ liệu cá nhân của người tham gia được bảo mật (mã hoá khi rời hệ thống), và mọi thao tác trên hệ thống đều có dấu vết (audit log).
 - **Primary actor**: ACTOR-001 admin *(và đơn vị tự host)*
 - **User value**: Đơn vị tổ chức chịu được trách nhiệm pháp lý về dữ liệu.
-- **Scope**: Nhật ký thao tác chung, append-only, cho **mọi thao tác của mọi vai** · disclaimer khi tải nhạc lên · **hạn lưu trữ cấu hình được, khác nhau theo mục đích trận** (`QĐ-091`) · xuất biên bản trước khi dọn dữ liệu · **mã hoá bắt buộc cho danh sách người tham gia rời hệ thống** (`QĐ-086`).
-- **Out of scope**: **Job dọn dữ liệu tự động** — ngoài phạm vi (`product-discovery.md` §5 E-11). Ràng buộc *"dọn dữ liệu không được đụng biên bản đã xuất"* (`PRD-REQ-080`) vẫn thuộc phạm vi vì nó là điều kiện đặt lên job, không phải job. **Tuỳ chọn biệt danh** — bỏ hẳn (NON-GOAL-018).
+- **Scope**: Nhật ký thao tác chung, append-only, cho **mọi thao tác của mọi vai** — sự kiện trong trận vào bằng **tham chiếu**, không nhân bản (`QĐ-132`); mỗi **yêu cầu** xem đáp án để lại một dòng mang **kết quả**, gồm cả lần bị từ chối (`QĐ-133`) · **màn ĐỌC nhật ký thao tác** gác bằng **hai cửa tách bạch** — `PERM-015` `audit.read` cấp bản cài và `PERM-062` `audit.readContest` cấp `CONTEST`, vai seed *Quản trị* giữ cả hai (`PRD-REQ-116`, `QĐ-130`, `QĐ-135`, `QĐ-142`) · **hạn lưu trữ hai trục** — theo mục đích trận cho dữ liệu trận và media, riêng một giá trị cho nhật ký thao tác (`QĐ-091`, `QĐ-131`) · **bề mặt dọn dữ liệu thủ công** gác bằng `PERM-063` (`PRD-REQ-117`) · xuất biên bản trước khi dọn dữ liệu · **mã hoá bắt buộc cho danh sách người tham gia rời hệ thống** (`QĐ-086`).
+- **Out of scope**: **Job dọn dữ liệu TỰ ĐỘNG** — ngoài phạm vi (`product-discovery.md` §5 E-11). Bề mặt dọn dữ liệu **thủ công** thì **thuộc** v1 (`PRD-REQ-117`, `QĐ-150`) — thứ ngoài phạm vi là **bộ hẹn giờ**, không phải bước dọn. Ràng buộc *"dọn dữ liệu không được đụng biên bản đã xuất"* (`PRD-REQ-080`) vẫn thuộc phạm vi vì nó là điều kiện đặt lên job, không phải job — và ràng buộc đó có hình dạng: **dialog xác nhận Yes/No tại mốc kích hoạt**, liệt kê phạm vi sắp xoá; v1 **không** có tầng cảnh báo theo lịch (`QĐ-143`). **Tuỳ chọn biệt danh** — bỏ hẳn (NON-GOAL-018). **Disclaimer bản quyền khi tải âm thanh** — bỏ hẳn (NON-GOAL-020, `QĐ-144`).
 - **Related journeys**: JOURNEY-003, JOURNEY-007
 - **Related game rules**: `GR-037`
 - **Dependencies**: EPIC-001
 - **MVP status**: **Thuộc phạm vi**, trừ job dọn tự động
-- **Source**: §5 E-11, §3 *(pháp lý)* · `QĐ-040`, `QĐ-077`, `QĐ-086`, `QĐ-090`, `QĐ-091` · `CLAUDE.md` §Quy ước khác
+- **Source**: §5 E-11, §3 *(pháp lý)* · `QĐ-040`, `QĐ-077`, `QĐ-086`, `QĐ-090`, `QĐ-091`, `QĐ-130` → `QĐ-145` · `CLAUDE.md` §Quy ước khác
 
 ### EPIC-012 — Vận hành và hai hồ sơ triển khai
 
@@ -631,7 +632,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Priority**: P1 · **Rationale**: Thu hồi quyền của phiên đang giữ quyền điều khiển giữa một câu đang mở **khoá chết trận** — phiên đó không chấm được, mà phán quyết là điều kiện chuyển câu (`INV-010`); đồng thời mọi lối thoát đóng cùng lúc: admin khác xem-không-bấm, giành quyền đòi holder mất kết nối, còn chuyển quyền và huỷ trận thì nằm trong chính vai vừa bị thu hồi. Đồng hồ không đóng băng được, nên trận kẹt giữa buổi phát sóng.
 - **Acceptance intent**: Trận đang chạy ⇒ mọi đường thu hồi quyền đều không dùng được và server từ chối, kể cả yêu cầu gửi thẳng; thêm quyền vẫn đi qua và dùng được ngay. Trận chuyển sang `FINISHED` ⇒ thu hồi thực hiện được.
 - **Note**: Rủi ro đã được chủ dự án chấp nhận tường minh, liệt kê ở `QĐ-095` — gồm việc không gỡ được một admin cố tình giữ quyền mà vẫn online, việc sửa vai ở phạm vi hệ thống có thể gần như luôn bị chặn trên bản cài bận, và việc tài khoản lộ mật khẩu giữa trận phải chờ đóng sổ mới vô hiệu hoá được. Lối thoát chính thức: chốt hoặc huỷ trận trước rồi thu hồi.
-- **Note**: Phạm vi *"tài khoản dính tới trận đó"* đã được thu hẹp ở `QĐ-101`: chỉ áp cho tài khoản mà **trận cần quyền của nó để chạy tiếp** — phiên đang giữ quyền điều khiển, phiên admin có thể nhận quyền, và MC *(người duyệt cú giành)*. Thu hồi phép gán hoặc vô hiệu hoá một **tài khoản thí sinh** vẫn đi qua giữa trận; van thoát để cắt một ghế là **vô hiệu hoá ghế**, không phải vô hiệu hoá tài khoản. — `specs/001-xac-thuc-phan-quyen` FR-030, FR-030b.
+- **Note**: Phạm vi *"tài khoản dính tới trận đó"* gồm **đúng ba nhóm** — tài khoản mà **trận cần quyền của nó để chạy tiếp** — phiên đang giữ quyền điều khiển, phiên admin có thể nhận quyền, và MC *(người duyệt cú giành)*. Thu hồi phép gán hoặc vô hiệu hoá một **tài khoản thí sinh** vẫn đi qua giữa trận; van thoát để cắt một ghế là **vô hiệu hoá ghế**, không phải vô hiệu hoá tài khoản. — `specs/001-xac-thuc-phan-quyen` FR-030, FR-030b.
 - **Source**: `QĐ-095` · `QĐ-101` · `QĐ-094`, `QĐ-078` · **Status**: CONFIRMED
 
 **PRD-REQ-006 — Vai vận hành gán theo contest, tách khỏi vai hệ thống**
@@ -658,12 +659,12 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Note**: *(ngoại lệ có nguồn, `QĐ-106`)* Vòng **Vượt chướng ngại vật** không theo mục này: câu hàng ngang và câu ô trung tâm **không** khai thời lượng riêng mà dùng **một giá trị cấu hình cấp vòng** *(preset 15 giây)*, và vòng còn một giá trị cấp vòng **thứ hai, độc lập** cho **cửa sổ giải Chướng ngại vật sau gợi ý cuối** *(preset 15 giây)*. Lý do: bốn hàng ngang thuộc **cùng một bộ** và chạy trong cùng một lượt trình diễn (`PRD-REQ-092`), nên bốn đồng hồ khác nhau không có căn cứ sân khấu; còn ở Về đích thì thời lượng gắn với **mức điểm của câu** nên metadata từng câu là đúng. Ngoại lệ này **không** đụng `PRD-REQ-020` — cả hai giá trị vẫn là cấu hình, chỉ ở cấp vòng.
 - **Source**: `TERM-045` · `GOAL-004` · `QĐ-106` *(ngoại lệ VCNV)* · `CLAUDE.md` §Luật chơi & đề thi · **Status**: CONFIRMED
 
-**PRD-REQ-009 — Ba kiểu nhập đáp án, đáp án luôn là chuỗi**
-- **Description**: Câu hỏi MUST hỗ trợ ba kiểu nhập — nhập chữ, chọn một phương án, sắp thứ tự — và kiểu nhập chỉ quyết định **widget trên máy thí sinh**. Đáp án và bài làm MUST lưu dưới dạng chuỗi ở cả ba kiểu. Hệ thống MUST NOT có nhánh chấm riêng cho kiểu nào.
+**PRD-REQ-009 — Một kiểu nhập đáp án; đáp án luôn là chuỗi**
+- **Description**: Mọi câu hỏi có ô nhập MUST dùng **một** ô nhập chữ duy nhất; hệ thống MUST NOT có kiểu nhập thứ hai và MUST NOT mang trường danh sách phương án. **Câu hỏi lựa chọn** và **câu hỏi sắp xếp** của luật gốc MUST được soạn như câu hỏi thường, với **yêu cầu format nằm trong phần đề**. Đáp án và bài làm MUST lưu dưới dạng chuỗi. Hệ thống MUST NOT có nhánh chấm riêng cho kiểu nào.
 - **Actor**: ACTOR-002, ACTOR-003 · **Related epic**: EPIC-002 · **Related journey**: JOURNEY-001 · **Related game rules**: `GR-027`
-- **Priority**: P1 · **Rationale**: Máy không chấm nên không cần đánh giá một thứ tự hay một lựa chọn; giữ chuỗi thì cơ chế tô khác biệt ký tự chạy nguyên cho cả ba.
-- **Acceptance intent**: Bài làm kiểu sắp thứ tự hiện ra dưới dạng chuỗi cạnh đáp án và được tô khác biệt như câu nhập chữ.
-- **Source**: `QĐ-066` · `TERM-044` · **Status**: CONFIRMED
+- **Priority**: P1 · **Rationale**: Máy không chấm nên không cần đánh giá một thứ tự hay một lựa chọn — cả hai đi vào cùng một chỗ là mắt admin. Một ô nhập duy nhất giữ cơ chế tô khác biệt ký tự chạy nguyên cho mọi câu, và bỏ được một trục render, một trường mảng, một nhánh xuất/nhập.
+- **Acceptance intent**: Một câu sắp thứ tự và một câu lựa chọn soạn được mà không cần khai một danh sách phương án nào; bài làm của cả hai hiện ra dưới dạng chuỗi cạnh đáp án và được tô khác biệt y như câu nhập chữ.
+- **Source**: `QĐ-162` · `TERM-044` · **Status**: CONFIRMED
 
 **PRD-REQ-010 — Câu thực hành là kênh trả lời thứ tư**
 - **Description**: Câu hỏi thực hành MUST có các trường riêng: cờ thực hành *(chỉ hợp lệ ở kho Về đích)*, thời gian thực hành của người thi chính, thời gian thực hành của người cướp quyền, ghi chú dụng cụ, và tiêu chí đạt. Không có ô nhập nào; admin chấm *đạt / không đạt*. Tiêu chí đạt MUST cùng mức bảo mật với đáp án.
@@ -684,7 +685,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-002, ACTOR-001 · **Related epic**: EPIC-002, EPIC-006, EPIC-010 · **Related journey**: JOURNEY-001, JOURNEY-007 · **Related game rules**: `GR-031` · `INV-001`, `INV-022`
 - **Priority**: P2 · **Rationale**: Xoá cứng phá `everPublic` — hàng rào chống rò đề — và làm biên bản trận cũ trỏ vào hư không; nhưng kho đề dùng nhiều mùa phải có đường gỡ câu hỏng. Phiên bản giải một lỗi thật: sửa một câu sau trận A rồi in biên bản trận A sẽ in ra nội dung **mới**, sai với thứ đã lên sóng — mà biên bản là công cụ phân xử khiếu nại (`PRD-REQ-079`). Khoá sửa câu đã lên sóng thì không được, vì một lỗi chính tả phải sửa được ngay.
 - **Acceptance intent**: Sửa và Save một câu đã dùng ở trận A ⇒ biên bản trận A vẫn in đúng nội dung lúc phát sóng, còn kho đề hiện bản mới; xoá mềm một câu ⇒ nó biến khỏi tìm kiếm nhưng hàng rào `everPublic` với các contest cũ **không** đổi.
-- **Note**: Mục này **lật** phần loại trừ *"đánh phiên bản khi sửa câu đã duyệt"* của EPIC-002 ở §11 và §20.1 — chủ dự án đưa vào v1 ngày 2026-07-31, ở **bản tối giản**. Vế *"trận ghi phiên bản nào đã dùng"* thuộc **nhật ký sự kiện của trận** (`INV-022`) nên chủ sở hữu là EPIC-006, không phải kho đề.
+- **Note**: Vế *"trận ghi phiên bản nào đã dùng"* thuộc **nhật ký sự kiện của trận** (`INV-022`) nên chủ sở hữu là EPIC-006, không phải kho đề.
 - **Source**: `QĐ-107` · `QĐ-071`, `QĐ-077`, `QĐ-044` · **Status**: CONFIRMED
 
 **PRD-REQ-012 — Cờ hiển thị của câu là giá trị DẪN XUẤT, chỉ đọc**
@@ -744,7 +745,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-002 · **Related epic**: EPIC-003, EPIC-012 · **Related journey**: JOURNEY-001 · **Related game rules**: —
 - **Priority**: P2 · **Rationale**: Bản portable chạy trên máy tính xách tay; media không giới hạn làm gói contest không mang đi được.
 - **Acceptance intent**: File vượt ngưỡng bị từ chối kèm thông điệp nêu ngưỡng.
-- **Note**: **Không có con số chuẩn tắc.** Ngưỡng là **giá trị vận hành**, đặt bằng biến môi trường theo từng bản triển khai. Yêu cầu này chỉ ràng buộc rằng ngưỡng **tồn tại**, **cấu hình được**, và **không hard-code**.
+- **Note**: **Không có con số chuẩn tắc.** Ngưỡng là **giá trị vận hành**, đặt bằng biến môi trường theo từng bản cài — **một bộ giá trị dùng chung cho cả hai hồ sơ triển khai**, không tách theo hồ sơ (`QĐ-159`). Yêu cầu này chỉ ràng buộc rằng ngưỡng **tồn tại**, **cấu hình được**, và **không hard-code**.
 - **Source**: `CLAUDE.md` §Quy ước khác · **Status**: CONFIRMED
 
 **PRD-REQ-094 — Đánh dấu "đã dùng" hàng loạt bằng tay**
@@ -811,7 +812,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-004 · **Related journey**: JOURNEY-002 · **Related game rules**: `GR-009` C11
 - **Priority**: P1 · **Rationale**: Băng điểm Chướng ngại vật cho 5-8 hàng **không tồn tại trong bất kỳ nguồn nào** ⇒ mở ra là bịa luật.
 - **Acceptance intent**: Cấu hình nhận giá trị 5-8 mà không lỗi cấu trúc; giao diện tạo contest không hiện lựa chọn.
-- **Note**: *(làm rõ 2026-07-30, phiên đối chiếu spec ↔ PRD)* Vế *"vẫn **nhận** giá trị 5-8 mà không lỗi cấu trúc"* nói về **sức chứa của mô hình dữ liệu và kiểu dữ liệu cấu hình** — chuẩn bị cho v1.5 để không phải migrate schema. Nó **KHÔNG** phải một đường ghi hợp lệ: server MUST từ chối mọi **request ghi** `rowCount ≠ 4` cho một contest v1, bất kể request đến từ giao diện hay gọi thẳng API. Đọc theo hướng "chỉ khoá ở giao diện" biến khoá cứng này thành hàng rào UI-only, trái `CLAUDE.md` §Nguyên tắc code *(zero-trust — "validate FE chỉ là UX")*. Giá trị ngoài khoá cứng vì thế chỉ tồn tại được qua nguồn **ngoài** API v1 *(seed/fixture/migration nội bộ)*; khi contest builder mở một contest như vậy thì hiển thị giá trị thật và khoá trường đó khỏi chỉnh sửa. — `specs/004-contest-builder-luat` FR-005, FR-032.
+- **Note**: Vế *"vẫn **nhận** giá trị 5-8 mà không lỗi cấu trúc"* nói về **sức chứa của mô hình dữ liệu và kiểu dữ liệu cấu hình** — chuẩn bị cho v1.5 để không phải migrate schema. Nó **KHÔNG** phải một đường ghi hợp lệ: server MUST từ chối mọi **request ghi** `rowCount ≠ 4` cho một contest v1, bất kể request đến từ giao diện hay gọi thẳng API. Đọc theo hướng "chỉ khoá ở giao diện" biến khoá cứng này thành hàng rào UI-only, trái `CLAUDE.md` §Nguyên tắc code *(zero-trust — "validate FE chỉ là UX")*. Giá trị ngoài khoá cứng vì thế chỉ tồn tại được qua nguồn **ngoài** API v1 *(seed/fixture/migration nội bộ)*; khi contest builder mở một contest như vậy thì hiển thị giá trị thật và khoá trường đó khỏi chỉnh sửa. — `specs/004-contest-builder-luat` FR-005, FR-032.
 - **Source**: `QĐ-068` · `traceability.md` · **Status**: CONFIRMED
 
 **PRD-REQ-105 — v1 khoá cứng phạm vi phân định hoà: chỉ vị trí NHẤT**
@@ -819,7 +820,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-004, EPIC-005, EPIC-006 · **Related journey**: JOURNEY-002, JOURNEY-007 · **Related game rules**: `GR-022`, `GR-023`, `GR-025`
 - **Priority**: P1 · **Rationale**: Đây là khoá cứng **thứ ba** của v1, cùng khuôn với `PRD-REQ-024` và `PRD-REQ-025`. Luật gốc chỉ mô tả chọn ra **một** người thắng. Cái thiếu không phải luật của một lượt phân định — cơ chế Câu hỏi phụ vốn không phụ thuộc vị trí — mà là luật **điều phối nhiều lượt**: thứ tự giải nhiều nhóm hoà, ngân sách câu cho `3N` câu khi `N` chỉ biết được **tại cú bấm chốt trận**, và việc tái nhập vòng phân định vốn bị `GR-022` C7 chặn.
 - **Acceptance intent**: Cấu hình nhận danh sách nhiều vị trí mà không lỗi cấu trúc; giao diện tạo contest không hiện lựa chọn; trận hoà ở vị trí nhì đóng sổ với hai người **đồng hạng nhì** và không có hạng ba.
-- **Note**: *(làm rõ 2026-07-30, phiên đối chiếu spec ↔ PRD)* Vế *"vẫn **nhận** danh sách nhiều vị trí mà không lỗi cấu trúc"* đọc **y hệt** `PRD-REQ-025` — là **sức chứa schema**, không phải đường ghi. Server MUST từ chối mọi request ghi `tieBreakPositions ≠ [1]` cho một contest v1, bất kể qua giao diện hay API. — `specs/004-contest-builder-luat` FR-008 · `specs/005-phong-thi-vong-doi-tran` FR-017.
+- **Note**: Vế *"vẫn **nhận** danh sách nhiều vị trí mà không lỗi cấu trúc"* đọc **y hệt** `PRD-REQ-025` — là **sức chứa schema**, không phải đường ghi. Server MUST từ chối mọi request ghi `tieBreakPositions ≠ [1]` cho một contest v1, bất kể qua giao diện hay API. — `specs/004-contest-builder-luat` FR-008 · `specs/005-phong-thi-vong-doi-tran` FR-017.
 - **Source**: `QĐ-085` · `traceability.md` · **Status**: CONFIRMED
 
 **PRD-REQ-026 — Gán ghế và vị trí trước trận; vị trí bất biến trong trận**
@@ -827,7 +828,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-004 · **Related journey**: JOURNEY-002, JOURNEY-004 · **Related game rules**: `GR-016`, `GR-007`
 - **Priority**: P1 · **Rationale**: Vị trí là đầu vào của hai luật — thứ tự chọn hàng ngang, và phá hoà thứ tự lượt Về đích; đổi giữa trận làm hai luật đó mất nghĩa.
 - **Acceptance intent**: Sau khi vòng đầu tiên đã chạy, không có đường nào đổi vị trí.
-- **Note**: *(làm rõ 2026-07-30, sửa 2026-07-31 theo `QĐ-105`)* Số ghế **KHÔNG** cùng khuôn với ba khoá cứng `PRD-REQ-024`, `PRD-REQ-025`, `PRD-REQ-105` — ba mục đó nói thẳng *"cửa tạo contest MUST NOT cho chọn giá trị khác"*, còn mục này đòi **giao diện hỗ trợ 1-12**. Hàng rào của v1 nằm ở **cú bấm bắt đầu trận** và nó chặn **số ghế > 4**, không phải *"≠ 4"*: bước gán ghế nhận 1-12 cho cả contest official lẫn practice; trận **dưới** 4 ghế bắt đầu được và chạy bằng **ghế bỏ thi** theo `PRD-REQ-114`; chỉ trận **trên** 4 ghế bị chặn, vì thang điểm Tăng tốc chỉ định nghĩa cho 4 đơn vị điểm (`NON-GOAL-012`, `QĐ-007`, `QĐ-105`). Đặt hàng rào ở bước gán ghế sẽ buộc v1.5 dựng lại giao diện — đúng cái `QĐ-007` chốt là không làm. — `specs/004-contest-builder-luat` FR-013, FR-030.
+- **Note**: Số ghế **KHÔNG** cùng khuôn với ba khoá cứng `PRD-REQ-024`, `PRD-REQ-025`, `PRD-REQ-105` — ba mục đó nói thẳng *"cửa tạo contest MUST NOT cho chọn giá trị khác"*, còn mục này đòi **giao diện hỗ trợ 1-12**. Hàng rào của v1 nằm ở **cú bấm bắt đầu trận** và nó chặn **số ghế > 4**, không phải *"≠ 4"*: bước gán ghế nhận 1-12 cho cả contest official lẫn practice; trận **dưới** 4 ghế bắt đầu được và chạy bằng **ghế bỏ thi** theo `PRD-REQ-114`; chỉ trận **trên** 4 ghế bị chặn, vì thang điểm Tăng tốc chỉ định nghĩa cho 4 đơn vị điểm (`NON-GOAL-012`, `QĐ-007`, `QĐ-105`). Đặt hàng rào ở bước gán ghế sẽ buộc v1.5 dựng lại giao diện — đúng cái `QĐ-007` chốt là không làm. — `specs/004-contest-builder-luat` FR-013, FR-030.
 - **Source**: `QĐ-007` · `TERM-002` · `GR-016` · **Status**: CONFIRMED
 
 ### EPIC-005 — Phòng thi và vòng đời trận
@@ -1102,11 +1103,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 **PRD-REQ-056 — Bốn loại phản hồi giao diện; tầng dialog xác định bằng CÁCH THOÁT**
 - **Description**: Có **bốn** loại phản hồi và cả bốn MUST phân biệt được bằng mắt: **toast invalid state**, cùng **ba tầng dialog**. Tầng của một dialog MUST xác định bằng **cách thoát khỏi nó**; *"bắt nhập lý do"* MUST là một **trục độc lập**, MUST NOT suy ra được từ tầng (`QĐ-108`):
 
-  | Tầng | `Esc` | Click ra ngoài | Bắt lý do | Phím tắt `Y`/`N` |
-  |---|---|---|---|---|
-  | **Phá huỷ** — bỏ vòng · chạy lại vòng · kết thúc sớm · huỷ trận | không đóng | không đóng | **có** | **không** |
-  | **Điều chỉnh điểm** | **đóng, và KHÔNG lưu thay đổi** | **không đóng** | **có** | có |
-  | **Yes/No thường** — mở đáp án · mở ô chữ · xác nhận tín hiệu · **cảnh báo lệch luật** | đóng = **No** | đóng = **No** | không | có |
+  Tầng **phá huỷ** *(bỏ vòng · chạy lại vòng · kết thúc sớm · huỷ trận)* MUST NOT đóng được bằng `Esc`, click ra ngoài hay phím tắt, và MUST bắt nhập lý do. Tầng **điều chỉnh điểm** MUST đóng được bằng `Esc` và khi đó MUST NOT lưu thay đổi, MUST NOT đóng khi click ra ngoài, MUST bắt nhập lý do. Tầng **Yes/No thường** *(mở đáp án · mở ô chữ · xác nhận tín hiệu · cảnh báo lệch luật)* MUST coi `Esc` và click ra ngoài là **No**, MUST NOT bắt lý do. Ma trận đầy đủ theo từng lối thoát: `game-state-machine.md` `STATE-035`.
 
   **Toast invalid state** MUST NOT ép được, MUST nêu rõ vì sao, MUST NOT bắt nhập lý do, và **mỗi loại invalid state MUST có thông điệp riêng**. **Dialog cảnh báo lệch luật** MUST dùng lại **y hệt** tầng Yes/No thường — khác biệt duy nhất là **nội dung chữ**, và nó MUST **ép được** *(khác toast ở trục quyền, không khác ở trục hình thức — `QĐ-072`)*. Thao tác **đóng** hiển thị MUST NOT có dialog.
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-007 · **Related journey**: JOURNEY-005, JOURNEY-006 · **Related game rules**: `GR-029`, `GR-030`, `GR-032` C9
@@ -1267,7 +1264,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 
 **PRD-REQ-078 — Chủ đề và âm thanh tuỳ chỉnh; khe trống là im lặng**
 - **Description**: Hệ thống MUST cho admin tải lên file âm thanh cho từng khe sự kiện, và danh sách khe MUST phủ **cả sự kiện điều khiển** — hoàn nguyên, bỏ vòng, chạy lại vòng, kết thúc sớm, ép qua cảnh báo, mở màn công bố. Mỗi khe MUST thuộc đúng **một** trong **hai nhóm**, phân định bằng *khán giả có được nghe không* (`QĐ-120`): nhóm **hướng khán giả** — các mốc thi đấu và khe *mở màn công bố*; nhóm **chỉ-admin** — năm thao tác sự cố còn lại, MUST NOT tới màn khán giả hay lớp phủ ở **mọi** cấu hình. **Nguồn phát** cho nhóm hướng khán giả MUST là cấu hình với đúng hai lựa chọn — **máy admin** hoặc **lớp phủ dựng stream** — mặc định **lớp phủ**, bật/tắt và đổi được; nó MUST chỉ áp cho nhóm hướng khán giả, và **màn khán giả MUST NOT bao giờ là nguồn phát**. Nguồn phát là lớp phủ mà không lớp phủ nào kết nối ⇒ hệ thống MUST NOT tự lui và MUST NOT báo lỗi. Khe trống MUST là im lặng; hệ thống MUST NOT có bộ âm thanh mặc định. Nhóm **hướng khán giả** MUST gồm **52 khe mốc thi đấu** — Khởi động `11`, Vượt chướng ngại vật `14`, Tăng tốc `8`, Về đích `15`, Câu hỏi phụ `4` — dẫn xuất từ `docs/source/fandom-olympia-26-am-thanh.md` sau khi loại biến thể ngoài O26 và khe truyền hình, cộng khe *mở màn công bố*; tổng danh sách **58 khe** và MUST là **tập đóng ở v1** (`QĐ-122`). Hệ thống MUST NOT tách khe theo **độ dài đồng hồ**: mỗi vòng có đúng **một** khe *đếm giờ*. Contest MUST cấu hình được **chủ đề hiển thị** gồm đúng **ba trục tĩnh** — bảng màu, logo giải, ảnh nền; chủ đề MUST NOT chứa tài sản động hay phông chữ, và MUST áp cho đúng **hai kênh public** — màn thí sinh, màn MC và màn admin MUST giữ nguyên bảng màu hệ thống (`QĐ-121`).
-- **Actor**: ACTOR-001 · **Related epic**: EPIC-009 · **Related journey**: JOURNEY-002 · **Related game rules**: —
+- **Actor**: ACTOR-001 · **Related epic**: EPIC-009, EPIC-004 · **Related journey**: JOURNEY-002 · **Related game rules**: —
 - **Priority**: P3 · **Rationale**: Engine chỉ phát tín hiệu ngữ nghĩa; ánh xạ tín hiệu sang âm thanh là cấu hình phía client, nên sửa luật không đụng âm thanh và ngược lại.
 - **Acceptance intent**: Bỏ một vòng phát đúng khe âm thanh đã gán; khe chưa gán không phát gì và không báo lỗi.
 - **Source**: `QĐ-079`, `QĐ-120`, `QĐ-121`, `QĐ-122` · `docs/source/fandom-olympia-26-am-thanh.md` · `CLAUDE.md` §Quy ước khác · **Status**: CONFIRMED
@@ -1276,65 +1273,79 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 ### EPIC-010 — Sau trận
 
 **PRD-REQ-079 — Biên bản trận in theo LẦN CHẠY**
-- **Description**: Một vòng chạy nhiều lần MUST in thành **nhiều khối** theo thứ tự thời gian, mỗi khối kèm số lần chạy và một nhãn: *đã bỏ* · *đã chạy lại* · *kết thúc sớm* · *hoàn thành*. Biên bản MUST NOT gộp hay giấu lần hỏng. Sự kiện hoàn nguyên MUST hiện như mọi sự kiện khác, kèm tên người bấm và lý do.
+- **Description**: Một vòng chạy nhiều lần MUST in thành **nhiều khối** theo thứ tự thời gian. Mỗi khối MUST mang **hai trường tách bạch**: **(1) cách rời** — *đã bỏ* · *đã chạy lại* · *kết thúc sớm* · *hoàn thành* — mô tả cửa ra đã kết thúc lần chạy đó; và **(2) lần chạy thứ mấy** — số nguyên từ `1`, không lặp trong phạm vi vòng. Hệ thống MUST NOT trộn hai trục vào một trường. Giá trị *hoàn thành* MUST áp cho **bất kỳ** lần chạy nào kết thúc bình thường, kể cả lần chạy sinh ra bởi một cú chạy lại. Biên bản MUST NOT gộp hay giấu lần hỏng. Sự kiện hoàn nguyên MUST hiện như mọi sự kiện khác, kèm tên người bấm và lý do. Việc xuất biên bản MUST khả dụng ở **cả hai** hồ sơ triển khai và MUST NOT phụ thuộc dịch vụ ngoài hay kết nối Internet (`PRD-REQ-098`, `QĐ-129`).
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-010 · **Related journey**: JOURNEY-007 · **Related game rules**: `GR-028`, `GR-030`
-- **Priority**: P2 · **Rationale**: Biên bản là công cụ phân xử khiếu nại; gộp các lần chạy là xoá đúng thông tin mà người phân xử cần.
-- **Acceptance intent**: Trận có một vòng bị bỏ và chạy lại ⇒ biên bản có hai khối riêng với hai nhãn khác nhau.
-- **Source**: `QĐ-077` · `product-discovery.md` §6 · **Status**: CONFIRMED
+- **Priority**: P2 · **Rationale**: Biên bản là công cụ phân xử khiếu nại; gộp các lần chạy là xoá đúng thông tin mà người phân xử cần. Tách hai trường vì tập nhãn gốc trộn hai trục — `T-012`/`T-013`/`T-014` gán tại mốc **rời**, còn `GR-030` §Ví dụ dùng *đã chạy lại* cho lần chạy **thứ hai** — nên ca bốn khối không phân biệt được khối hỏng thứ nhất với khối hỏng thứ ba (`QĐ-125`).
+- **Acceptance intent**: Trận có một vòng bị bỏ và chạy lại ⇒ biên bản có hai khối riêng; khối 1 mang *cách rời* `đã bỏ` và *lần chạy* `1`, khối 2 mang *cách rời* `hoàn thành` và *lần chạy* `2`. Vòng đi qua bốn cửa ra khác nhau ⇒ bốn khối với dãy *lần chạy* `1..4` không lặp.
+- **Source**: `QĐ-077`, `QĐ-125`, `QĐ-129` · `product-discovery.md` §6 · **Status**: CONFIRMED
 
-**PRD-REQ-080 — Xuất biên bản trước khi dọn dữ liệu**
-- **Description**: Job dọn dữ liệu theo hạn lưu trữ MUST cảnh báo trước và MUST NOT đụng vào biên bản đã xuất.
+**PRD-REQ-080 — Xuất biên bản trước khi dọn dữ liệu; xuất KHÔNG PHẢI một trạng thái**
+- **Description**: Job dọn dữ liệu theo hạn lưu trữ MUST cảnh báo trước và MUST NOT đụng vào biên bản đã xuất. **Xuất MUST NOT là một trạng thái mà hệ thống theo dõi**: một lần gọi hoặc cho ra hiện vật hoàn chỉnh, hoặc không cho ra gì; hệ thống MUST NOT giữ khái niệm *"hiện vật dở dang"*, MUST NOT có bản ghi vòng đời cho một lần xuất, và MUST cho gọi lại bao nhiêu lần cũng được mà không cần bước dọn dẹp nào trước. **Mỗi** lần gọi xuất MUST để lại **đúng một** dòng nhật ký thao tác mang **kết quả** — *thành công* hoặc *thất bại* — áp cho cả ba loại hiện vật và áp cho cả lần **bị từ chối** lẫn lần **thất bại**.
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-010, EPIC-011 · **Related journey**: JOURNEY-007 · **Related game rules**: —
-- **Priority**: P3 · **Rationale**: Hạn lưu trữ phục vụ quyền riêng tư, nhưng nó không được xoá mất bằng chứng phân xử mà đơn vị tổ chức đã chủ động giữ.
-- **Acceptance intent**: Sau khi job dọn chạy, biên bản đã xuất vẫn còn.
-- **Source**: `QĐ-077` · `QĐ-040` · **Status**: CONFIRMED
+- **Priority**: P3 · **Rationale**: Hạn lưu trữ phục vụ quyền riêng tư, nhưng nó không được xoá mất bằng chứng phân xử mà đơn vị tổ chức đã chủ động giữ. Xuất không phải một state vì nó chỉ **đọc** rồi dựng tệp — không đổi trạng thái trận, không sinh event, không tiêu tài nguyên phải thu hồi; một thực thể vòng đời cho nó đẻ ra một tập trạng thái và một ngưỡng *"thế nào là dở dang"* mà **gọi lại** đã giải xong (`QĐ-128`).
+- **Acceptance intent**: Sau khi job dọn chạy, biên bản đã xuất vẫn còn. Gọi xuất lại ngay sau một lần thất bại thành công mà không cần thao tác dọn dẹp nào; và ba loại kết cục — thành công, bị từ chối, thất bại — đều để lại đúng một dòng nhật ký mang kết quả.
+- **Note**: `NFR-35b` nói về **tệp mà người vận hành đang giữ**, ở ngoài hệ thống; nó không khai một thực thể mà hệ thống quản lý vòng đời — nên câu *"tệp cụt có được miễn khỏi hạn lưu trữ không"* **không có chủ ngữ**.
+- **Source**: `QĐ-077` · `QĐ-040` · `QĐ-128` · **Status**: CONFIRMED
 
 **PRD-REQ-081 — Thống kê ghi ngược kho đề**
-- **Description**: Sau khi trận đóng sổ, hệ thống MUST ghi số liệu sử dụng ngược lại kho đề. Yêu cầu này chỉ áp cho trận chạy **trên cùng bản cài** — trận chạy trên bản portable đóng góp đúng cờ *đã dùng* qua `PRD-REQ-095`, MUST NOT kỳ vọng số liệu thống kê.
-- **Actor**: ACTOR-001, ACTOR-002 · **Related epic**: EPIC-010 · **Related journey**: JOURNEY-007 · **Related game rules**: `GR-031`
-- **Priority**: P3 · **Rationale**: Không có vòng phản hồi này thì người ra đề không biết câu nào quá dễ hay quá khó.
-- **Acceptance intent**: Câu đã dùng hiện số liệu sử dụng trong kho đề.
-- **Source**: `product-discovery.md` §4 J-7, §5 E-10 · `QĐ-084` · **Status**: CONFIRMED
+- **Description**: Sau khi trận đóng sổ — **cả hai nhãn** `hoàn thành` lẫn `bỏ dở` — hệ thống MUST ghi số liệu sử dụng ngược lại kho đề. Số liệu MUST gồm đúng **ba nhóm trường**: **(1)** số lần câu đã hiển thị; **(2)** lần dùng gần nhất *(thời điểm và trận)*; **(3)** kết quả trả lời — số lượt chấm **Đúng** / **Sai** / **Huỷ kết quả** trên **tổng số lượt**. Mọi trường MUST dẫn xuất từ nhật ký sự kiện đã có; hệ thống MUST NOT đòi thu thập dữ liệu mới trong trận. Số liệu MUST NOT chứa **thời gian trả lời** của thí sinh. Số liệu MUST **tách thành hai bộ theo `matchPurpose`** — `official` và `practice` — và hai bộ MUST NOT cộng vào nhau. Số liệu MUST là **đại lượng dẫn xuất** — tính lại từ nhật ký sự kiện của mọi trận đã đóng sổ **tại mốc đọc**; hệ thống MUST NOT giữ nó như một giá trị được cộng dồn, MUST NOT cần dấu chống trùng, và tính lại nhiều lần trên cùng một tập trận MUST cho **cùng một** kết quả. Yêu cầu này chỉ áp cho trận chạy **trên cùng bản cài** — trận chạy trên bản portable đóng góp đúng cờ *đã dùng* qua `PRD-REQ-095`, MUST NOT kỳ vọng số liệu thống kê, **bất kể `matchPurpose`**.
+- **Actor**: ACTOR-001, ACTOR-002 · **Related epic**: EPIC-010 · **Related journey**: JOURNEY-007 · **Related game rules**: `GR-031`, `GR-026`, `GR-033`
+- **Priority**: P3 · **Rationale**: Không có vòng phản hồi này thì người ra đề không biết câu nào quá dễ hay quá khó — và chính rationale đó buộc nhóm trường thứ ba phải có, vì đếm số lần dùng không trả lời được câu ấy. Trận `bỏ dở` vẫn đóng góp vì câu đã lên sóng ở đó **bị đốt vĩnh viễn**; loại nó ra là tạo một lớp câu đã mất mà không có phản hồi nào. Tách hai bộ vì trận practice chạy trên câu đã lộ và không có áp lực sân khấu, nên tỉ lệ Đúng ở đó không so sánh được với trận thật. Số liệu là đại lượng dẫn xuất vì nó **có nguồn để tính lại** — khác cờ `usedInContest`, vốn là trạng thái được ghi và không có nguồn nào tính lại; dựng dấu chống trùng cho một đại lượng dẫn xuất là dựng luật ở chỗ cấu trúc đã đảm bảo (`QĐ-127`).
+- **Acceptance intent**: Câu đã dùng hiện đủ ba nhóm trường trong kho đề; câu đã rút mà **chưa hiển thị** không có số liệu nào; một câu được hỏi ở cả trận official lẫn trận practice hiện **hai bộ số riêng**, và tổng của hai bộ không xuất hiện ở bất kỳ đâu; tính lại số liệu nhiều lần trên cùng một tập trận cho cùng một kết quả mà không cần dấu chống trùng nào.
+- **Note**: Chữ *"ghi ngược"* ở đây đọc là **thời điểm số liệu trở nên đúng**, không phải một thao tác được kích hoạt — với một đại lượng dẫn xuất thì không có bước ghi nào để bấm hay để hẹn giờ (`QĐ-127` vế 5).
+- **Source**: `product-discovery.md` §4 J-7, §5 E-10 · `QĐ-084`, `QĐ-127` · **Status**: CONFIRMED
 
 **PRD-REQ-096 — Xuất toàn bộ kết quả và nhật ký sự kiện của contest**
-- **Description**: Hệ thống MUST xuất được một gói cấp contest gồm **mọi trận**: nhật ký sự kiện đầy đủ, điểm, thứ hạng, sự kiện hoàn nguyên kèm người bấm và lý do. Gói MUST tham chiếu câu hỏi bằng **định danh**, và MUST NOT nhúng nội dung câu hay đáp án trừ khi người xuất có quyền đọc kho đề. Mỗi lần xuất MUST vào nhật ký thao tác. Gói xuất từ trận chưa đóng sổ MUST mang dấu **"trận chưa đóng sổ"**. Gói này **chỉ có chiều ra** — hệ thống MUST NOT nhập nó trở lại.
+- **Description**: Hệ thống MUST xuất được một gói cấp contest gồm **mọi trận**: nhật ký sự kiện đầy đủ, điểm, thứ hạng, sự kiện hoàn nguyên kèm người bấm và lý do. Gói MUST tham chiếu câu hỏi bằng **định danh**, và MUST NOT nhúng nội dung câu hay đáp án trừ khi người xuất có quyền đọc kho đề. Mỗi lần xuất MUST vào nhật ký thao tác. Gói xuất từ trận chưa đóng sổ MUST mang dấu **"trận chưa đóng sổ"**. Gói này **chỉ có chiều ra** — hệ thống MUST NOT nhập nó trở lại. **Thứ tự đánh giá**: `PERM-020` `results.export` MUST kiểm **trước hết** và MUST là **cửa từ chối duy nhất**; thiếu nó thì MUST từ chối bằng **một** thông điệp MUST NOT khác nhau theo trạng thái trận hay theo việc phiên gọi có quyền đọc kho đề hay không, và MUST NOT có byte nội dung gói nào rời server. Hai điều kiện còn lại — trạng thái trận, quyền đọc kho đề — MUST NOT là cửa từ chối **cho gói này**; chúng chỉ quyết dấu và độ sâu nội dung. *(Ranh giới này áp cho **gói này**; `PRD-REQ-097` có cửa từ chối thứ hai theo trạng thái trận.)* Mỗi lần gọi xuất MUST để lại đúng một dòng nhật ký mang kết quả, gồm cả lần bị từ chối và lần thất bại (`PRD-REQ-080`).
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-010 · **Related journey**: JOURNEY-007 · **Related game rules**: `GR-028`, `GR-030`, `GR-037`
-- **Priority**: P2 · **Rationale**: Đây là bằng chứng phân xử ở dạng máy đọc được, và là van thoát của hạn lưu trữ — gói đã xuất nằm ngoài hệ thống nên job dọn không chạm tới.
-- **Acceptance intent**: Gói xuất ra chứa đủ các lần chạy của một vòng bị bỏ rồi chạy lại; xuất giữa trận cho ra gói có dấu chưa đóng sổ; xuất bởi tài khoản không có quyền đọc kho đề cho ra gói không có nội dung câu.
-- **Source**: `QĐ-084` · `QĐ-077` · **Status**: CONFIRMED
+- **Priority**: P2 · **Rationale**: Đây là bằng chứng phân xử ở dạng máy đọc được, và là van thoát của hạn lưu trữ — gói đã xuất nằm ngoài hệ thống nên job dọn không chạm tới. Thứ tự kiểm phải cố định vì thứ tự ngược lại biến thông báo lỗi thành **kênh dò quyền**: một phiên không có `PERM-020` vẫn suy ra được mình có quyền đọc kho đề hay không (`QĐ-126`).
+- **Acceptance intent**: Gói xuất ra chứa đủ các lần chạy của một vòng bị bỏ rồi chạy lại; xuất giữa trận cho ra gói có dấu chưa đóng sổ; xuất bởi tài khoản không có quyền đọc kho đề cho ra gói không có nội dung câu; bốn phiên thiếu `PERM-020` khác nhau ở hai trục *(quyền đọc kho đề × trận đang chạy)* nhận **cùng một** phản hồi từ chối.
+- **Source**: `QĐ-084` · `QĐ-077` · `QĐ-126` · **Status**: CONFIRMED
 
 **PRD-REQ-097 — Xuất kết quả rút gọn**
-- **Description**: Hệ thống MUST xuất được gói kết quả rút gọn gồm bảng điểm cuối, thứ hạng và người thắng theo từng trận. Gói này MUST NOT chứa đáp án, nội dung câu hỏi, hay định danh câu hỏi. Chỉ xuất được từ trận đã đóng sổ. **Chỉ có chiều ra.**
+- **Description**: Hệ thống MUST xuất được gói kết quả rút gọn gồm bảng điểm cuối, thứ hạng và người thắng theo từng trận. Gói này MUST NOT chứa đáp án, nội dung câu hỏi, hay định danh câu hỏi. Chỉ xuất được từ trận đã đóng sổ — **cả hai nhãn** `hoàn thành` lẫn `bỏ dở` đều thoả. Với trận nhãn **`bỏ dở`**, gói MUST chứa bảng điểm **tại mốc đóng**, MUST để **trống** hai trường *thứ hạng* và *người thắng*, và MUST mang kèm **nhãn `bỏ dở`** cùng **lý do đóng sổ**; hệ thống MUST NOT suy ra một thứ hạng và MUST NOT bỏ nhãn khiến gói trông như một kết quả có thứ hạng. **Chỉ có chiều ra.** **Thứ tự đánh giá — gói này có HAI cửa từ chối**: **(1)** `PERM-020` `results.export` MUST kiểm **trước hết**; thiếu nó thì MUST từ chối bằng **một** thông điệp MUST NOT khác nhau theo trạng thái trận, theo nhãn đóng sổ hay theo quyền đọc kho đề, và MUST NOT có byte nội dung gói nào rời server; **(2)** trạng thái trận — chưa đóng sổ thì MUST từ chối **kèm lý do**. Một phiên thiếu `PERM-020` MUST NOT suy ra được trạng thái trận từ phản hồi.
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-010 · **Related journey**: JOURNEY-007 · **Related game rules**: `GR-022`, `GR-028`
-- **Priority**: P3 · **Rationale**: Công bố và báo cáo chỉ cần kết quả; đưa cả nhật ký sự kiện ra ngoài cho việc đó là mở rộng bề mặt rò đề mà không được gì.
-- **Acceptance intent**: Xuất từ trận chưa đóng sổ bị từ chối kèm lý do; gói xuất ra không chứa định danh câu nào.
-- **Source**: `QĐ-084` · **Status**: CONFIRMED
+- **Priority**: P3 · **Rationale**: Công bố và báo cáo chỉ cần kết quả; đưa cả nhật ký sự kiện ra ngoài cho việc đó là mở rộng bề mặt rò đề mà không được gì. Trận `bỏ dở` vẫn xuất được vì lý lẽ *"chưa có thứ hạng thì gọi là kết quả là sai"* nhắm vào việc **khẳng định** một thứ hạng không tồn tại, không nhắm vào việc có gói hay không — và buổi thi hỏng là lúc **dễ có khiếu nại nhất** (`QĐ-124`).
+- **Acceptance intent**: Xuất từ trận chưa đóng sổ bị từ chối kèm lý do; gói xuất ra không chứa định danh câu nào; xuất từ trận `bỏ dở` cho ra gói có bảng điểm, hai trường trống, nhãn và lý do. Hai phiên **thiếu** `PERM-020` — một trên trận đã đóng sổ, một trên trận đang chạy — nhận **cùng một** phản hồi từ chối không nêu trạng thái trận.
+- **Note**: Vế *"trạng thái trận MUST NOT là cửa từ chối"* của `PRD-REQ-096` áp cho **gói đó**, không áp cho gói này. Hai gói khác bản chất: gói kết quả và nhật ký sự kiện là **ảnh chụp có dấu** dùng được ở mọi lúc, còn gói này **khẳng định một thứ hạng đã chốt** — thứ chưa tồn tại ở trận đang chạy.
+- **Source**: `QĐ-084` · `QĐ-124` · `QĐ-126` *(khuôn cửa permission)* · **Status**: CONFIRMED
 
 > **Bốn gói xuất, một nguồn.** `PRD-REQ-016` *(gói contest)* đọc cấu hình contest và kho đề. `PRD-REQ-096` *(kết quả và nhật ký)* đọc nhật ký sự kiện, và **`PRD-REQ-095` cùng `PRD-REQ-097` là phép chiếu của nó** — MUST NOT hiện thực thành ba đường sinh dữ liệu độc lập. Biên bản PDF (`PRD-REQ-079`) là **một trận, cho người đọc**; hai gói kia là **cấp contest, cho máy đọc**; cả ba MUST sinh từ cùng một nguồn.
 
 ### EPIC-011 — Dữ liệu cá nhân và quyền riêng tư
 
 **PRD-REQ-082 — Nhật ký mọi thao tác, mọi vai**
-- **Description**: Hệ thống MUST ghi một nhật ký chung, chỉ thêm, cho **mọi thao tác của mọi vai**: đăng nhập thành công và thất bại, thao tác trên kho đề, quản lý contest, mọi sự kiện trong trận, khán giả vào và bị đuổi, nhập và xuất, và **mỗi lần xem đáp án**. Mỗi dòng MUST có người thực hiện, hành động, đối tượng, thời điểm và địa chỉ nguồn.
+- **Description**: Hệ thống MUST ghi một nhật ký chung, chỉ thêm, cho **mọi thao tác của mọi vai**: đăng nhập thành công và thất bại, đăng xuất, thao tác trên kho đề, quản lý contest, mọi sự kiện trong trận, khán giả **bị đuổi**, nhập và xuất, và **mỗi lần xem đáp án**. Mỗi dòng MUST có người thực hiện, hành động, đối tượng, thời điểm và địa chỉ nguồn. Vế **"mọi sự kiện trong trận"** MUST được thoả bằng **THAM CHIẾU** tới nhật ký sự kiện của trận; hệ thống MUST NOT nhân bản nội dung sự kiện sang bảng này, và nội dung của một sự kiện MUST có **đúng một** nguồn sự thật (`QĐ-132`). Hệ thống MUST NOT ghi dòng cho việc một **khán giả vào phòng** — kênh public không có tài khoản và không có vai (`PRD-REQ-001`), nên mọi lối giữ dòng đó đều phải bịa một chủ ngữ; MUST NOT sinh một định danh nào cho hai kênh public (`QĐ-134`). Mỗi **yêu cầu xem đáp án** MUST để lại **đúng một** dòng mang **kết quả** *(đã trả · bị từ chối)*, cùng một loại dòng, gồm cả yêu cầu rơi vào `GR-037` C3, C4, C6, C8, C8b, C10 (`QĐ-133`). Vế đó phủ **đường KÉO** — một phiên yêu cầu. **Đường ĐẨY** thì khác: cú **đẩy đáp án hàng loạt** của engine tại mốc câu khép — tới thí sinh, khán giả và lớp phủ khi cờ `revealAnswerAfterJudge` bật (`GR-037` C5, C7) — MUST sinh **một** sự kiện trong **nhật ký sự kiện của trận**, tra ra được qua đường tham chiếu; hệ thống MUST NOT sinh một dòng nhật ký thao tác riêng cho cú đẩy, MUST NOT sinh một dòng cho từng người nhận, và MUST NOT bịa một chủ ngữ *"hệ thống"* (`QĐ-145`). Khi một dòng trỏ tới một nhật ký sự kiện **đã bị bước dọn xoá**, dòng đó MUST vẫn hiện **đủ năm trường**, đường đi tiếp MUST bị **vô hiệu hoá**, và dòng MUST mang nhãn ***"nguồn đã hết hạn"*** — phân biệt được với ca *trận không có sự kiện nào*; ở trạng thái đó `NFR-17` MUST được coi là **không còn thoả** cho mốc ấy (`QĐ-137`). Vế *"chỉ thêm"* MUST được đọc là ràng buộc lên **bề mặt sản phẩm**: MUST NOT có đường sửa hay xoá một dòng cho bất kỳ vai nào; bước dọn theo **hạn lưu trữ riêng của nhật ký** (`PRD-REQ-083`) MUST là đường **duy nhất** một dòng rời hệ thống và MUST NOT đi qua một bề mặt nào (`QĐ-131`).
 - **Actor**: mọi actor · **Related epic**: EPIC-011 · **Related journey**: mọi journey · **Related game rules**: `GR-037`
-- **Priority**: P1 · **Rationale**: Đây là điều kiện để phân xử khiếu nại và để chứng minh đáp án không rò.
-- **Acceptance intent**: Mỗi sự kiện bị khiếu nại có đủ thời điểm và chuỗi thao tác trong nhật ký.
-- **Source**: `CLAUDE.md` §Quy ước khác · `QĐ-071`, `QĐ-074`, `QĐ-008`, `QĐ-065` · `TERM-021` · **Status**: CONFIRMED
+- **Priority**: P1 · **Rationale**: Đây là điều kiện để phân xử khiếu nại và để chứng minh đáp án không rò. Vế thứ hai là lý do buộc phải ghi **cả yêu cầu bị từ chối**: một chuỗi yêu cầu xem đáp án bị từ chối liên tiếp từ một phiên là dấu hiệu **dò đề**, và nếu không ghi thì nó vô hình — tức chỉ chứng minh được nửa có phép của bức tranh.
+- **Acceptance intent**: Mỗi sự kiện bị khiếu nại có đủ thời điểm và chuỗi thao tác trong nhật ký. Một chuỗi mười yêu cầu xem đáp án bị từ chối liên tiếp hiện thành **mười** dòng, tra ra được liền mạch. **0** bản sao nội dung sự kiện trận tồn tại trong bảng này, và mọi dòng trỏ tới sự kiện đều đi tiếp được tới nhật ký sự kiện. **0** dòng nào được ghi cho việc khán giả vào phòng.
+- **Note**: Đây là bảng **cùng chủ** với màn đọc của `PRD-REQ-116` (`QĐ-130`). Thuật ngữ chuẩn tắc: `TERM-063`.
+- **Source**: `CLAUDE.md` §Quy ước khác · `QĐ-071`, `QĐ-074`, `QĐ-008`, `QĐ-065`, `QĐ-131`, `QĐ-132`, `QĐ-133`, `QĐ-134`, `QĐ-137`, `QĐ-145` · `TERM-063` · **Status**: CONFIRMED
 
-**PRD-REQ-083 — Hạn lưu trữ cấu hình được, khác nhau theo mục đích trận**
-- **Description**: Hạn lưu trữ MUST đặt được bởi admin, riêng cho từng **mục đích trận**. Mặc định MUST là **12 tháng** cho trận chính thức và **3 tháng** cho trận luyện tập. Hai giá trị này MUST là mặc định cấu hình được, MUST NOT được viết cứng ở bất kỳ đâu, và MUST NOT có rule hay chuyển tiếp nào đọc chúng.
+**PRD-REQ-083 — Hạn lưu trữ cấu hình được; HAI trục độc lập**
+- **Description**: Hạn lưu trữ MUST có **hai trục độc lập** và hệ thống MUST NOT trộn chúng. **Trục 1 — theo mục đích trận**: MUST đặt được bởi admin, riêng cho từng **mục đích trận**, áp cho **dữ liệu trận** và **media do người dùng tải lên**; mặc định MUST là **12 tháng** cho trận chính thức và **3 tháng** cho trận luyện tập. **Trục 2 — riêng của nhật ký thao tác**: MUST là **một** giá trị, mặc định **24 tháng**, và MUST NOT đi theo `matchPurpose`, vì phần lớn dòng của nhật ký **không thuộc trận nào** *(đăng nhập, kho đề, quản lý contest)* nên không tra ra được một giá trị `matchPurpose` (`QĐ-131`, `QĐ-136`). Hệ thống MUST **cảnh báo** khi admin đặt trục 2 **thấp hơn** hạn dài nhất của trục 1 và MUST nêu cái giá — chuỗi phân xử sẽ hết hạn trước dữ liệu mà nó mô tả — nhưng MUST NOT từ chối giá trị đó: **không** biên nào cưỡng chế quan hệ giữa hai trục (`QĐ-136`). Dòng nhật ký thuộc một trận MUST NOT bị dọn theo hạn của trận đó. Lớp dữ liệu nào không nằm ở một trong hai trục MUST NOT bị bước dọn đụng tới. **Cả hai trục MUST đặt ở phạm vi BẢN CÀI**; một contest MUST NOT ghi đè giá trị của bản cài — trách nhiệm pháp lý nằm ở cấp đơn vị, không ở cấp contest (`QĐ-140`). Bề mặt cấu hình MUST bày **đủ hai ô** của trục 1 **ngay từ v1**, và ô `practice` MUST đặt được dù chưa trận nào mang giá trị đó; hệ thống MUST NOT ẩn ô đó ở v1 rồi hiện lại ở v1.5 (`QĐ-140`). Mọi giá trị của cả hai trục MUST là mặc định cấu hình được, MUST NOT được viết cứng ở bất kỳ đâu, MUST NOT có biên trên và MUST NOT có biên dưới, và MUST NOT có rule hay chuyển tiếp nào đọc chúng.
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-011 · **Related journey**: JOURNEY-007 · **Related game rules**: —
-- **Priority**: P2 · **Rationale**: `QĐ-040` đã chốt phần chuẩn tắc — hạn khác nhau theo mục đích trận. Không có con số thì job dọn không dựng được và `PRD-REQ-080` không có gì để kiểm. Khác với quy mô viewer, ở đây **không cần đo gì** để chọn: đây là lựa chọn về quyền riêng tư, không phải về phần cứng.
-- **Acceptance intent**: Đổi hạn lưu trữ bằng cấu hình mà không sửa code; trận luyện tập và trận chính thức nhận hai hạn khác nhau.
-- **Note**: Admin đặt được nghĩa là admin đặt được **rất dài**. Đó là chấp nhận có chủ đích — đơn vị tự host là bên chịu trách nhiệm pháp lý nên phải là bên quyết. Hệ thống làm đúng một việc: **mặc định về phía giữ ít hơn**.
-- **Source**: `QĐ-091` · `QĐ-040` · **Status**: CONFIRMED
+- **Priority**: P2 · **Rationale**: `QĐ-040` đã chốt phần chuẩn tắc — hạn khác nhau theo mục đích trận. Không có con số thì job dọn không dựng được và `PRD-REQ-080` không có gì để kiểm. Khác với quy mô viewer, ở đây **không cần đo gì** để chọn: đây là lựa chọn về quyền riêng tư, không phải về phần cứng. Trục thứ hai tồn tại vì nhật ký thao tác là **bảng dữ liệu cá nhân dày nhất** của bản cài — miễn nó khỏi hạn lưu trữ là dựng đúng thứ mà `QĐ-091` sinh ra để chống, ở ngay chỗ đậm đặc nhất.
+- **Acceptance intent**: Đổi hạn lưu trữ bằng cấu hình mà không sửa code; trận luyện tập và trận chính thức nhận hai hạn khác nhau. Sau khi bước dọn chạy trên một trận quá hạn, **100%** dòng nhật ký thuộc trận đó vẫn còn — chúng đi theo trục thứ hai.
+- **Note**: Admin đặt được nghĩa là admin đặt được **rất dài**, và đặt được **rất ngắn**. Đó là chấp nhận có chủ đích — đơn vị tự host là bên chịu trách nhiệm pháp lý nên phải là bên quyết; hệ thống làm đúng một việc là **mặc định về phía giữ ít hơn** và **nói ra cái giá**. Mặc định trục 2 là 24 tháng chứ không phải 12 vì bằng hạn `official` thì **không có biên an toàn nào** — nhật ký và dữ liệu trận hết hạn cùng lúc, khiếu nại muộn một ngày là mất cả hai (`QĐ-136`).
+- **Source**: `QĐ-091` · `QĐ-040` · `QĐ-131`, `QĐ-136`, `QĐ-140` · **Status**: CONFIRMED
 
-**PRD-REQ-084 — Disclaimer khi tải nhạc lên**
-- **Description**: Hệ thống MUST hiện disclaimer về bản quyền khi người dùng tải file âm thanh lên.
-- **Actor**: ACTOR-001 · **Related epic**: EPIC-011 · **Related journey**: JOURNEY-002 · **Related game rules**: —
-- **Priority**: P3 · **Rationale**: Hệ thống không kiểm được nguồn gốc nhạc nền do người dùng cung cấp; `product-discovery.md` §3 nâng disclaimer này thành **yêu cầu chính thức** thay vì để ở mục rủi ro.
-- **Acceptance intent**: Không tải được file âm thanh mà không thấy disclaimer.
-- **Source**: `product-discovery.md` §3 *(pháp lý)* · **Status**: CONFIRMED
+**PRD-REQ-116 — Màn ĐỌC nhật ký thao tác**
+- **Description**: Hệ thống MUST có một bề mặt **đọc** nhật ký thao tác của `PRD-REQ-082`, ở **phạm vi bản cài**, gác bằng `PERM-015` `audit.read`. Màn này MUST cho lọc và tra theo **người thực hiện**, **hành động**, **đối tượng** và **khoảng thời gian**, đủ để dựng lại chuỗi thao tác quanh một sự kiện bị khiếu nại; với dòng trỏ tới một sự kiện trong trận, nó MUST cho **đi tiếp tới** nhật ký sự kiện của trận đó (`QĐ-132`). Nó MUST là **chỉ đọc** — MUST NOT có đường sửa hay xoá một dòng nhật ký nào. Mốc thời gian MUST hiển thị theo **UTC+7**. Hệ thống MUST có thêm **một permission thứ hai, TÁCH BẠCH**, ở phạm vi **`CONTEST`** (`PERM-062`), cho tra cứu nhật ký **trong phạm vi một contest**; hai cửa MUST NOT lồng nhau và MUST NOT suy ra nhau — giữ permission phạm vi contest MUST NOT cho đọc dòng ngoài contest đó, và giữ `PERM-015` MUST NOT đòi phải có thêm permission kia (`QĐ-135`). Một dòng MUST được coi là **thuộc một contest** khi và chỉ khi **đối tượng** của nó thuộc contest đó; dòng **đăng nhập**, **kho đề**, **quản lý tài khoản** MUST NOT thuộc contest nào, và hệ thống MUST NOT phân loại theo **người thực hiện** (`QĐ-138`). Phản hồi cho phiên giữ `PERM-062` MUST NOT tiết lộ sự tồn tại của dòng ngoài phạm vi. Khoảng thời gian **không hợp lệ** MUST bị **từ chối kèm lý do**; hệ thống MUST NOT tự hoán đổi hai mốc và MUST NOT trả kết quả rỗng thay cho một lời từ chối. MUST có một **biên cứng cho độ dài khoảng thời gian** của một lần tra, **cấu hình được** và MUST NOT hard-code; vượt biên MUST bị từ chối kèm lý do nêu rõ biên, và MUST NOT trả về một tập bị cắt bớt trong im lặng. Trong phạm vi biên đó MUST NOT có giới hạn nghiệp vụ nào cho **số dòng** — tập lớn xử lý bằng **phân trang** (`QĐ-139`). Cửa kiểm MUST hỏi **permission**, MUST NOT hỏi **tên vai**. Màn này thuộc **v1**.
+- **Actor**: ACTOR-001 · **Related epic**: EPIC-011 · **Related journey**: JOURNEY-007 · **Related game rules**: `GR-037`
+- **Priority**: P2 · **Rationale**: Không có bề mặt đọc thì nhật ký thao tác là bảng **chỉ-ghi**, `PERM-015` không gác gì, và vế *"chứng minh đáp án không rò"* của `PRD-REQ-082` không thực hiện được — nên nó phải vào v1. Nó thuộc EPIC-011 vì **cùng chủ với bảng**: chia đường ghi và đường đọc cho hai epic thì mọi thay đổi lược đồ phải qua hai spec (`QĐ-130`). Cửa hẹp cấp `CONTEST` tồn tại vì một cửa cấp bản cài duy nhất buộc phải trao quyền đọc **toàn bảng** để giao một việc trong phạm vi một contest — và bảng đó nay chứa cả dấu vết **dò đề** của mọi contest (`QĐ-133`).
+- **Acceptance intent**: Một tài khoản có `audit.read` tra được đủ chuỗi thao tác quanh một mốc bị khiếu nại, gồm cả các dòng do EPIC-010 ghi vào khi in biên bản và khi xuất gói; một tài khoản không có permission đó **không** mở được màn này; một tài khoản chỉ giữ permission phạm vi `CONTEST` tra được dòng trong contest của mình và **0** dòng của contest khác rời server; và **0** đường sửa hay xoá dòng nhật ký tồn tại trên toàn bề mặt.
+- **Note**: EPIC-010 chỉ **ghi vào** nhật ký này, không đọc ra (`QĐ-130`). `NFR-17` là yêu cầu về **nội dung** nhật ký và độc lập với requirement này. `PERM-062` mang tên **`audit.readContest`**, và vai seed **Quản trị** giữ **cả hai** cửa (`QĐ-142`). Biên độ dài khoảng thời gian mặc định **24 tháng**, một giá trị cấp bản cài dùng chung cho cả hai cửa (`QĐ-141`, `NFR-11b`).
+- **Source**: `QĐ-130`, `QĐ-132`, `QĐ-135`, `QĐ-137`, `QĐ-138`, `QĐ-139`, `QĐ-141`, `QĐ-142` · `PRD-REQ-082`, `PERM-015`, `PERM-062`, `NFR-17`, `NFR-11b` · **Status**: CONFIRMED
+
+**PRD-REQ-117 — Màn dọn dữ liệu thủ công**
+
+- **Description**: Admin MUST chạy được **bước dọn dữ liệu theo hạn lưu trữ** từ một bề mặt trong sản phẩm, gác bằng `PERM-063` `retention.purge`. Bề mặt này MUST hiện **bản kê phạm vi sắp bị xoá** trước khi bấm, MUST phát **dialog xác nhận Yes/No** tại mốc kích hoạt theo `NFR-35`, và MUST NOT xoá một byte nào trước khi nhận Yes. Bước dọn MUST là đường **duy nhất** một dòng dữ liệu quá hạn rời hệ thống. **Job dọn tự động** MUST NOT thuộc v1.
+- **Actor**: ACTOR-001 · **Related epic**: EPIC-011 · **Related journey**: JOURNEY-007 · **Related game rules**: —
+- **Priority**: P2 · **Rationale**: Không có bề mặt này thì hạn lưu trữ đặt được nhưng **không bao giờ thi hành**, và toàn bộ trục quyền riêng tư của epic trở thành một giá trị cấu hình không ai đọc — ngược đúng mục tiêu *"đơn vị tổ chức chịu được trách nhiệm pháp lý về dữ liệu"*. Cùng hạng P2 với `PRD-REQ-083`: trận vẫn chạy được nếu thiếu, nhưng thiếu thì một requirement khác mất nghĩa.
+- **Acceptance intent**: Trên một bản cài có dữ liệu quá hạn, một tài khoản giữ `PERM-063` mở được màn dọn, thấy đúng phạm vi sắp xoá, bấm và nhận dialog; bấm No ⇒ **0** byte bị xoá. Một tài khoản không giữ permission đó **không** mở được màn này.
+- **Note**: Permission này **không** thuộc bảy thao tác phá huỷ của `QĐ-078` — bảy thao tác đó đều **đổi kết quả một trận**, còn bước dọn là vòng đời dữ liệu **cấp bản cài**. Hệ quả: `NFR-15` *(lý do bắt buộc)* **không** áp; hàng rào là dialog liệt kê phạm vi của `NFR-35`.
+- **Source**: `QĐ-150` · `QĐ-091`, `QĐ-143` · `NFR-35`, `PERM-063` · **Status**: CONFIRMED
 
 ### EPIC-012 — Vận hành và hai hồ sơ triển khai
 
@@ -1353,19 +1364,20 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Note**: Ca **bản cài trống và gói không kèm danh sách** vẫn phải dùng dòng lệnh. Đây là ca duy nhất còn lại có thể xảy ra ở hội trường và tài liệu vận hành MUST nêu thẳng nó.
 - **Source**: `QĐ-087` · `QĐ-086` · **Status**: CONFIRMED
 
-**PRD-REQ-098 — Bốn loại gói xuất có đủ ở cả hai hồ sơ triển khai**
-- **Description**: Cả hồ sơ máy chủ dựng bằng container lẫn hồ sơ portable MUST xuất được đủ bốn loại gói: gói contest (`PRD-REQ-016`), toàn bộ kết quả và nhật ký sự kiện (`PRD-REQ-096`), bản kê câu đã dùng (`PRD-REQ-095`), và kết quả rút gọn (`PRD-REQ-097`). Việc xuất MUST NOT phụ thuộc dịch vụ ngoài hay kết nối Internet.
+**PRD-REQ-098 — Bốn gói xuất CỘNG BIÊN BẢN có đủ ở cả hai hồ sơ triển khai**
+- **Description**: Cả hồ sơ máy chủ dựng bằng container lẫn hồ sơ portable MUST xuất được đủ bốn loại gói: gói contest (`PRD-REQ-016`), toàn bộ kết quả và nhật ký sự kiện (`PRD-REQ-096`), bản kê câu đã dùng (`PRD-REQ-095`), và kết quả rút gọn (`PRD-REQ-097`) — **cộng biên bản trận** (`PRD-REQ-079`). Việc xuất **cả năm** hiện vật MUST NOT phụ thuộc dịch vụ ngoài hay kết nối Internet.
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-012, EPIC-003, EPIC-010 · **Related journey**: JOURNEY-003, JOURNEY-007 · **Related game rules**: —
-- **Priority**: P2 · **Rationale**: Bản portable là nơi trận thật chạy; nếu nó xuất được ít hơn thì dữ liệu của chính những trận quan trọng nhất bị mắc kẹt trong máy.
-- **Acceptance intent**: Xuất đủ bốn gói trên bản portable đã ngắt Internet.
-- **Source**: `QĐ-084` · **Status**: CONFIRMED
+- **Priority**: P2 · **Rationale**: Bản portable là nơi trận thật chạy; nếu nó xuất được ít hơn thì dữ liệu của chính những trận quan trọng nhất bị mắc kẹt trong máy. Rationale đó áp nguyên văn cho biên bản, và hệ quả nếu bỏ sót là **một chiều**: gói kết quả chỉ có chiều ra nên không có đường dựng lại biên bản ở máy chủ trung tâm — trận chạy trên portable sẽ không bao giờ có biên bản ở bất kỳ đâu (`QĐ-129`).
+- **Acceptance intent**: Xuất đủ bốn gói **và biên bản** trên bản portable đã ngắt Internet, với nội dung biên bản đầy đủ như trên hồ sơ máy chủ.
+- **Note**: Đây là requirement **duy nhất đếm ra** các hiện vật phải có ở cả hai hồ sơ. `PRD-REQ-085` *(portable hoạt động đầy đủ)* vẫn đúng nhưng quá tổng quát để tra ra từng hiện vật.
+- **Source**: `QĐ-084` · `QĐ-129` · **Status**: CONFIRMED
 
 **PRD-REQ-086 — Rate-limit và khoá cổng phòng khán giả**
-- **Description**: Cổng vào của khán giả MUST có giới hạn tần suất **cấu hình được**, và admin MUST có thao tác **khoá cổng** phòng.
+- **Description**: Cổng vào của khán giả MUST có giới hạn tần suất **cấu hình được**, và admin MUST có thao tác **khoá cổng** phòng. Khoá cổng MUST áp **chỉ cho màn khán giả**: phiên khán giả **mới** MUST không vào được, phiên khán giả **đang xem** MUST NOT bị ngắt, và **lớp phủ dựng stream MUST vào được kể cả khi cổng đang khoá** — gồm cả một lần lớp phủ kết nối lại giữa buổi phát sóng.
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-012, EPIC-001 · **Related journey**: JOURNEY-004 · **Related game rules**: —
 - **Priority**: P2 · **Rationale**: Mã 6 số là công khai, nên cổng khán giả là bề mặt duy nhất mở với Internet.
 - **Acceptance intent**: Khoá cổng ⇒ khán giả mới không vào được, khán giả đang xem không bị ngắt.
-- **Note**: Phạm vi nút khoá cổng đã được thu hẹp ở `QĐ-102`: khoá cổng áp **chỉ cho màn khán giả**; **lớp phủ vào được kể cả khi cổng đang khoá**, kể cả một lần kết nối lại giữa buổi phát sóng — lớp phủ chính là buổi phát sóng, không phải khán giả của nó. — `specs/001-xac-thuc-phan-quyen` FR-035.
+- **Note**: Lớp phủ chính là buổi phát sóng, không phải khán giả của nó — chặn nó biến một nút **giảm tải** thành một nút **tắt hình**. — `QĐ-102` · `specs/001-xac-thuc-phan-quyen` FR-035.
 - **Source**: `CLAUDE.md` §Mô hình truy cập · `QĐ-067`, `QĐ-102` · **Status**: CONFIRMED *(ngưỡng cụ thể: xem `PRD-REQ-087`)*
 
 **PRD-REQ-087 — Số viewer đồng thời và ngưỡng độ trễ dùng mặc định cấu hình được**
@@ -1373,7 +1385,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 - **Actor**: ACTOR-001 · **Related epic**: EPIC-012 · **Related journey**: JOURNEY-004 · **Related game rules**: —
 - **Priority**: P2 · **Rationale**: Đây là mục tiêu phi chức năng phụ thuộc sức chứa hội trường và phần cứng thật; chốt bừa một con số biến một giá trị cấu hình thành một cam kết.
 - **Acceptance intent**: Đổi ngưỡng bằng cấu hình môi trường mà không sửa code.
-- **Note**: `QĐ-088` **hạ hạng** con số này chứ không xoá nó. Vì hai kênh public nhận đẩy một chiều và nằm ngoài kênh của lõi thi đấu, số khán giả **không chạm tới** thứ tự chuông, đồng hồ hay thứ hạng tốc độ — nên nó thôi là một cam kết sản phẩm và chỉ còn là **giá trị định cỡ triển khai**. Nói cho đúng: mỗi người xem **vẫn giữ một kết nối mở**; rẻ hơn nhiều, không phải bằng không.
+- **Note**: Con số này là **giá trị định cỡ triển khai**, không phải cam kết sản phẩm: hai kênh public nhận đẩy một chiều và nằm ngoài kênh của lõi thi đấu, nên số khán giả **không chạm tới** thứ tự chuông, đồng hồ hay thứ hạng tốc độ. Nói cho đúng: mỗi người xem **vẫn giữ một kết nối mở** — rẻ hơn đáng kể, không phải bằng không.
 - **Source**: `QĐ-067`, `QĐ-088` · **Status**: CONFIRMED
 
 **PRD-REQ-107 — Kênh public không có đường ghi**
@@ -1410,7 +1422,7 @@ Ca duy nhất còn phải dùng dòng lệnh tại chỗ: **bản cài trống v
 | **Số câu theo luật** | Khởi động riêng **6**/thí sinh · chung **12** · VCNV **4+1** · Tăng tốc **4** · Về đích **3**/gói · Câu hỏi phụ **3**. Biên *"lớn hơn max"* **không tồn tại** |
 | **Phán quyết hai hay ba lựa chọn** | Chỉ nhị phân khi *Sai* trừ **0** điểm; có hình phạt ⇒ thêm **Huỷ kết quả**. **Ngoại lệ** *(`PRD-REQ-113`, `GR-009` C6b)*: tín hiệu *"Mở chướng ngại vật"* có **ba** lựa chọn dù *Sai* không trừ điểm — *Huỷ kết quả* ở đó là đường khép một tín hiệu đã xác nhận mà **không loại** thí sinh |
 | **Bản gửi quá hạn** | Giữ, tô đỏ, không tự ghi đè, không tự loại; chỉ có bản quá hạn ⇒ thêm **Huỷ kết quả** |
-| **Kênh trả lời quyết định lúc nào chấm được** | **Nói** ⇒ chấm bất cứ lúc nào · **Gõ** ⇒ nút chấm khoá tới hết giờ · **Thực hành** ⇒ nút chấm sống suốt |
+| **Kênh trả lời quyết định lúc nào chấm được** | **Nói** ⇒ chấm bất cứ lúc nào · **Gõ** ⇒ nút chấm khoá tới **`hạn chót + padding`**, riêng **Khởi động** mở ngay tại `hạn chót` · **Thực hành** ⇒ nút chấm sống suốt |
 
 ### 13.3 Nhóm rule theo vòng
 
@@ -1463,7 +1475,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | FS-02 | Một phiên giữ quyền điều khiển; chuyển giao hợp tác, và giành được khi holder mất kết nối | EPIC-001 | PRD-REQ-004, 108 |
 | FS-03 | Phân quyền theo vai, kiểm bằng permission; phép gán có phạm vi; vai tuỳ biến; permission riêng cho từng thao tác phá huỷ; quyền không co lại giữa trận | EPIC-001 | PRD-REQ-005, 109, 110, 111, 112 |
 | FS-04 | Truy cập public bằng mã phòng 6 số, read-only thi hành ở server | EPIC-001, EPIC-009 | PRD-REQ-001, 073 |
-| FS-05 | Soạn câu hỏi với metadata, media, ba kiểu nhập, và kênh thực hành | EPIC-002 | PRD-REQ-007, 008, 009, 010 |
+| FS-05 | Soạn câu hỏi với metadata, media, một kiểu nhập, và kênh thực hành | EPIC-002 | PRD-REQ-007, 008, 009, 010 |
 | FS-06 | Vòng duyệt đề và tìm kiếm kho đề | EPIC-002 | PRD-REQ-011, 014 |
 | FS-07 | Cờ hiển thị dẫn xuất và hàng rào đề đã từng public | EPIC-002 | PRD-REQ-012, 013 |
 | **FS-07b** | **Vòng đời dữ liệu câu hỏi: mã hiển thị duy nhất, xoá mềm, phiên bản theo cú Save** | EPIC-002, EPIC-006 | PRD-REQ-115 |
@@ -1496,8 +1508,9 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | FS-33 | Chủ đề và các khe âm thanh | EPIC-009 | PRD-REQ-078 |
 | FS-34 | Biên bản trận theo lần chạy, thống kê ghi ngược | EPIC-010 | PRD-REQ-079, 080, 081 |
 | **FS-34b** | **Xuất toàn bộ kết quả và nhật ký sự kiện; xuất kết quả rút gọn — cả hai chỉ có chiều ra** | EPIC-010 | PRD-REQ-096, 097 |
-| FS-35 | Nhật ký thao tác toàn hệ thống và biện pháp quyền riêng tư | EPIC-011 | PRD-REQ-082, 083, 084 |
-| FS-36 | Hai hồ sơ triển khai, giới hạn media, rate-limit cổng khán giả, **bốn loại gói xuất có đủ ở cả hai hồ sơ** | EPIC-012 | PRD-REQ-019, 085, 086, 087, 098 |
+| FS-35 | Nhật ký thao tác toàn hệ thống, biện pháp quyền riêng tư, **bề mặt dọn dữ liệu thủ công** | EPIC-011 | PRD-REQ-082, 083, 117 |
+| **FS-35b** | **Màn ĐỌC nhật ký thao tác — chỉ đọc, gác bằng `audit.read`** | EPIC-011 | PRD-REQ-116 |
+| FS-36 | Hai hồ sơ triển khai, **cài đặt lần đầu**, giới hạn media, rate-limit cổng khán giả, **kênh public không có đường ghi ở cả hai hồ sơ**, **bốn gói xuất CỘNG BIÊN BẢN có đủ ở cả hai hồ sơ** | EPIC-012 | PRD-REQ-019, 085, 086, 087, **106**, **107**, 098 |
 
 
 ---
@@ -1525,7 +1538,8 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | NFR-08 | Một contest MUST chỉ có **một trận đang chạy** tại một thời điểm | `QĐ-039` | CONFIRMED |
 | NFR-09 | Hàng đợi tín hiệu MUST xử lý **FIFO thuần theo server timestamp**, không ưu tiên theo loại, số ghế hay vị trí; hai tín hiệu cùng mốc do hàng đợi tự quyết, **tất định khi dựng lại** | `INV-007`, `QĐ-025` | CONFIRMED |
 | NFR-10 | Mỗi thao tác MUST có đúng **một đường vào** cho mỗi mode trả lời | `QĐ-019` | CONFIRMED |
-| NFR-11 | Một bản cài MUST được định cỡ và kiểm thử tải cho **tối đa 6 trận chạy đồng thời** *(trường hợp thường trực: 1-2)*. Đây là **mục tiêu định cỡ**, không phải chặn cứng — hệ thống MUST NOT đếm và MUST NOT từ chối trận vượt con số này | `QĐ-089` | CONFIRMED |
+| NFR-11 | Mỗi **hồ sơ triển khai** MUST có mục tiêu định cỡ và kiểm thử tải riêng về số trận chạy đồng thời: **6 trận** cho hồ sơ **máy chủ dựng bằng container** *(trường hợp thường trực: 1-2)*, **1 trận** cho hồ sơ **portable**. Hệ thống MUST NOT dùng một con số chung cho hai hồ sơ. Cả hai là **mục tiêu định cỡ**, không phải chặn cứng — hệ thống MUST NOT đếm số trận đang chạy và MUST NOT từ chối một trận vượt mục tiêu, ở **cả hai** hồ sơ: mở trận thứ **hai** trên portable MUST thành công như mở trận thứ **bảy** trên hồ sơ máy chủ | `QĐ-089`, `QĐ-148` | CONFIRMED |
+| NFR-11b | Một lần tra nhật ký thao tác MUST bị chặn bởi một **biên cứng về độ dài khoảng thời gian**, cấu hình được, MUST NOT hard-code. Khác `NFR-11`, đây **là** một chặn cứng: vượt biên MUST bị từ chối kèm lý do, MUST NOT trả tập bị cắt bớt trong im lặng. Trong phạm vi biên MUST NOT có giới hạn số dòng. **Mặc định 24 tháng** — bằng đúng hạn lưu trữ mặc định của nhật ký (`NFR-33b`), nên ở cấu hình mặc định biên **không chặn cú tra nào**; nó chỉ có hiệu lực khi admin nâng hạn nhật ký lên trên 24 tháng. Biên là **MỘT** giá trị ở phạm vi **bản cài**; phiên giữ `PERM-062` chịu **cùng** biên với phiên giữ `PERM-015`, và hệ thống MUST NOT đặt biên riêng theo cửa vào (`QĐ-141`) | `QĐ-139`, `QĐ-141` · `PRD-REQ-116` | CONFIRMED |
 
 ### 15.3 Khả năng kiểm toán *(auditability)*
 
@@ -1533,10 +1547,10 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 |---|---|---|---|
 | NFR-12 | Nhật ký sự kiện trận MUST **linear, chỉ thêm, không bao giờ xoá**; hoàn nguyên bằng cách thêm sự kiện | `INV-001`, `QĐ-011` | CONFIRMED |
 | NFR-13 | Lịch sử tín hiệu và lịch sử các bản đã gửi MUST NOT bị xoá | `GR-032`, `GR-006`, `GR-015` | CONFIRMED |
-| NFR-14 | Hệ thống MUST ghi nhật ký **mọi thao tác của mọi vai**, gồm mỗi lần xem đáp án và mỗi lần chuyển quyền điều khiển | `CLAUDE.md` §Quy ước khác · `QĐ-074`, `QĐ-008` | CONFIRMED |
+| NFR-14 | Hệ thống MUST ghi nhật ký **mọi thao tác của mọi vai**, gồm mỗi lần chuyển quyền điều khiển. Mỗi lần gọi xuất MUST để lại **đúng một** dòng mang **kết quả** *(thành công · bị từ chối · thất bại)*; **mỗi yêu cầu xem đáp án** MUST để lại **đúng một** dòng mang kết quả *(đã trả · bị từ chối)*, cùng loại dòng. Việc khán giả **vào phòng** MUST NOT sinh dòng nào | `CLAUDE.md` §Quy ước khác · `QĐ-074`, `QĐ-008`, `QĐ-128`, `QĐ-133`, `QĐ-134` | CONFIRMED |
 | NFR-15 | Mọi thao tác phá huỷ MUST kèm **lý do bắt buộc** | `QĐ-072`, `GR-029`, `GR-030` | CONFIRMED |
 | NFR-16 | Biên bản trận MUST in theo **lần chạy** kèm nhãn, không gộp, không giấu lần hỏng | `QĐ-077` | CONFIRMED |
-| NFR-17 | Sự kiện bị khiếu nại MUST có đủ thời điểm và chuỗi thao tác trong nhật ký | `product-discovery.md` §9 SM-8 | CONFIRMED |
+| NFR-17 | Sự kiện bị khiếu nại MUST có đủ thời điểm và chuỗi thao tác trong nhật ký. Khi nguồn mà một dòng trỏ tới **đã hết hạn**, yêu cầu này MUST được coi là **không còn thoả** cho mốc đó, và bề mặt đọc MUST **nói ra điều đó** bằng nhãn *"nguồn đã hết hạn"* thay vì để người tra đoán | `product-discovery.md` §9 SM-8 · `QĐ-137` | CONFIRMED |
 
 ### 15.4 Bảo mật *(security)*
 
@@ -1574,10 +1588,11 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 
 | ID | Yêu cầu | Nguồn | Trạng thái |
 |---|---|---|---|
-| NFR-33 | Hạn lưu trữ MUST khác nhau theo **mục đích trận** | `QĐ-040` | CONFIRMED |
-| NFR-34 | Hạn lưu trữ MUST đặt được bởi admin; mặc định **12 tháng** chính thức và **3 tháng** luyện tập. Hai con số là **mặc định**, MUST NOT hard-code và MUST NOT có rule nào đọc | `QĐ-091` · `PRD-REQ-083` | CONFIRMED |
-| NFR-35b | Gói đã xuất MUST được hiểu là nằm **ngoài** tầm với của hạn lưu trữ — gồm cả gói mang danh sách người tham gia; tài liệu vận hành MUST nhắc xoá gói sau ngày thi | `QĐ-086`, `QĐ-091` | CONFIRMED |
-| NFR-35 | Job dọn dữ liệu MUST cảnh báo trước và MUST NOT đụng biên bản đã xuất | `QĐ-077` | CONFIRMED |
+| NFR-33 | Hạn lưu trữ của **dữ liệu trận và media** MUST khác nhau theo **mục đích trận** | `QĐ-040` | CONFIRMED |
+| NFR-33b | **Nhật ký thao tác MUST có hạn lưu trữ RIÊNG** — một giá trị, mặc định **24 tháng**, MUST NOT theo `matchPurpose`. Dòng thuộc một trận MUST NOT bị dọn theo hạn của trận đó. Vế *"chỉ thêm"* của `NFR-12` khuôn chung và của `PRD-REQ-116` MUST được đọc là ràng buộc lên **bề mặt sản phẩm**; bước dọn theo hạn riêng MUST là đường **duy nhất** một dòng rời hệ thống. Quan hệ giữa hai trục MUST NOT bị cưỡng chế — đặt trục 2 thấp hơn trục 1 thì **cảnh báo**, không chặn | `QĐ-131`, `QĐ-136` · `PRD-REQ-082`, `PRD-REQ-083` | CONFIRMED |
+| NFR-34 | Hạn lưu trữ MUST đặt được bởi admin **ở phạm vi bản cài**; contest MUST NOT ghi đè. Mặc định **12 tháng** chính thức và **3 tháng** luyện tập; bề mặt cấu hình MUST bày **đủ hai ô ngay từ v1**. Ba con số *(cộng 24 tháng của `NFR-33b`)* là **mặc định**, MUST NOT hard-code, MUST NOT có biên trên lẫn biên dưới, và MUST NOT có rule nào đọc | `QĐ-091`, `QĐ-131`, `QĐ-136`, `QĐ-140` · `PRD-REQ-083` | CONFIRMED |
+| NFR-35b | Gói đã xuất MUST được hiểu là nằm **ngoài** tầm với của hạn lưu trữ — gồm cả gói mang danh sách người tham gia; tài liệu vận hành MUST nhắc xoá gói sau ngày thi. Mục này nói về **tệp người vận hành đang giữ**, MUST NOT đọc thành một thực thể hệ thống quản lý vòng đời (`QĐ-128`) | `QĐ-086`, `QĐ-091`, `QĐ-128` | CONFIRMED |
+| NFR-35 | Bước dọn dữ liệu MUST cảnh báo trước và MUST NOT đụng biên bản đã xuất. **Cảnh báo có hình dạng**: một **dialog xác nhận Yes/No** phát tại **mốc kích hoạt** tới **phiên đang bấm**, liệt kê **phạm vi sắp bị xoá**; MUST NOT xoá một byte nào trước khi nhận Yes. v1 MUST NOT đặc tả và MUST NOT dựng tầng cảnh báo **theo lịch trình** — không có bộ hẹn giờ nào để báo trước; khi job tự động của v1.5 ra đời thì tầng đó đặc tả **thêm**, MUST NOT thay thế dialog (`QĐ-143`) | `QĐ-077`, `QĐ-143` | CONFIRMED |
 
 ### 15.8 Trải nghiệm và bố cục *(usability)*
 
@@ -1617,7 +1632,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | Nguồn | Vai trò | Rủi ro |
 |---|---|---|
 | **Luật chơi/Olympia 26 trên Fandom** | Source of truth về luật | Wiki cộng đồng, sửa được bất kỳ lúc nào, **không có phiên bản**. Đối phó: dùng **bản lưu trong `docs/source/`**, không dùng URL sống — `ASSUMPTION-007`, `RISK-006` |
-| **Media do người dùng cung cấp** | Ảnh, video, âm thanh của câu hỏi và các khe âm thanh | Hệ thống không kiểm được nguồn gốc ⇒ disclaimer khi tải lên (PRD-REQ-084) |
+| **Media do người dùng cung cấp** | Ảnh, video, âm thanh của câu hỏi và các khe âm thanh | Hệ thống **không kiểm được** nguồn gốc, và **không** hiện disclaimer nào về việc đó (NON-GOAL-020, `QĐ-144`) — ở mô hình tự host, bên tải lên chính là bên chịu trách nhiệm |
 
 ### 16.4 Phụ thuộc vận hành
 
@@ -1634,7 +1649,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 |---|---|
 | **Bản quyền format Olympia** | **Đã được chấp thuận.** Sản phẩm dùng tên và cấu trúc vòng bình thường. Thiết kế trung lập vẫn giữ vì nó phục vụ **tính tuỳ biến**, không phải để né bản quyền |
 | **Giấy phép mã nguồn** | **Không ghi ở giai đoạn này** — đây là sản phẩm nội bộ. Xét lại nếu về sau mở mã hoặc bán |
-| **Bản quyền nhạc nền do người dùng tải lên** | Giữ **disclaimer khi tải lên**, và nâng nó thành yêu cầu chính thức (PRD-REQ-084) |
+| **Bản quyền nhạc nền do người dùng tải lên** | **Không dựng biện pháp nào** — disclaimer đã **bỏ hẳn** (NON-GOAL-020, `QĐ-144`). Trách nhiệm về nguồn gốc file nằm ở bên tải lên, mà ở mô hình tự host bên tải lên chính là đơn vị chịu trách nhiệm |
 
 *Nguồn §16.5: `product-discovery.md` §3 (pháp lý).*
 
@@ -1647,7 +1662,7 @@ Wikipedia bị loại làm căn cứ luật; chủ dự án chọn Fandom làm n
 | ID | Giả định | Căn cứ / vì sao đáng ngờ | Nguồn |
 |---|---|---|---|
 | **ASSUMPTION-001** | **Có nhu cầu thị trường thực** cho sản phẩm này | Không có nghiên cứu người dùng, không có người dùng đầu tiên đã cam kết. Toàn bộ phát biểu vấn đề rút từ suy luận và đối chiếu hệ thống tiền lệ | `product-discovery.md` §1, §7 AS-1 |
-| **ASSUMPTION-002** | **Nhiều trận song song là nhu cầu thật** | Nay đã có con số từ chủ dự án — **tối đa 6, thường 1-2** (`QĐ-089`) — nhưng đó là **kỳ vọng, không phải quan sát**: vẫn chưa đơn vị nào chạy hai trận cùng lúc để kiểm chứng | §7 AS-2 · `QĐ-089` |
+| **ASSUMPTION-002** | **Nhiều trận song song là nhu cầu thật — ở hồ sơ MÁY CHỦ** | Mục tiêu định cỡ của hồ sơ máy chủ là **tối đa 6, thường trực 1-2** (`QĐ-089`, `QĐ-148`), nhưng đó là **kỳ vọng, không phải quan sát**: chưa đơn vị nào chạy hai trận cùng lúc để kiểm chứng. Hồ sơ **portable không mang giả định này** — mục tiêu **1 trận** của nó là hình dạng ca dùng *(một hội trường, một buổi phát sóng)*, không phải một kỳ vọng chờ kiểm chứng | §7 AS-2 · `QĐ-089` · `QĐ-149` |
 | **ASSUMPTION-003** | **Admin chấp nhận bỏ thời gian chọn tay toàn bộ đề trước mỗi trận** | Hệ thống **cố ý** không tự lấy đề. Khối lượng là **69 câu + 1 bộ Chướng ngại vật mỗi trận** (§19.3); chưa ai kiểm chứng admin chấp nhận bỏ **bao nhiêu thời gian** cho từng ấy câu | §7 AS-3 · §19.3 |
 | **ASSUMPTION-004** | **Cơ chế nạp trước media mã hoá chạy ổn định trên trình duyệt** | Chính nguồn xếp nó là hạng mục phức tạp nhất phía client, và đã phải chuẩn bị phương án lui | §7 AS-4 |
 | **ASSUMPTION-005** | **Mã 6 số công khai là chấp nhận được về quyền riêng tư** | Ai có mã đều thấy tên và trường lớp của thí sinh. Tuỳ chọn biệt danh **đã bỏ hẳn** (`QĐ-090`), nên hệ thống không còn biện pháp giảm thiểu nào ở tầng hiển thị — chỉ còn giới hạn tần suất, khoá cổng phòng, và việc người dựng contest **tự chọn** nhập tên rút gọn vào trường tên hiển thị | §7 AS-5 · `QĐ-090` |
@@ -1764,15 +1779,15 @@ Thời gian admin bỏ ra để chọn từng ấy câu **là** `METRIC-005`, kh
 
 ### 20.2 Requirement thuộc MVP
 
-Tổng **110 yêu cầu** *(098 cũ + 104, 105, 106, 107 + 108→112 + 113, 114, 115; dãy 099-103 thuộc `roadmap-post-v1.md`)*, phân bố theo độ ưu tiên. *(Con số của bản 2.2.1 khai 102 vì bỏ sót dãy `108`→`112`; đã đếm lại từ bản 2.3.0.)*
+Tổng **111 yêu cầu**, phân bố theo độ ưu tiên. *(Dãy `099`-`103` thuộc `roadmap-post-v1.md`.)*
 
 | Priority | Nghĩa | Số lượng | Danh sách `PRD-REQ-*` |
 |---|---|---|---|
-| **P1** | Không có thì không chạy được một trận | **72** | 001, 002, 003, 004, 007, 008, 009, 013, 014, 016, 017, 020, 021, 023, 024, 025, 026, 027, 028, 029, 030, 031, 032, 033, 035, 036, 037, 038, 039, 040, 041, 042, 043, 044, 045, 046, 047, 048, 049, 050, 051, 052, 054, 055, 056, 057, 058, 059, 062, 064, 065, 066, 067, 068, 069, 070, 073, 074, 082, 085, 088, 089, 092, **104**, **105**, **106**, **107**, **108**, **109**, **110**, **112**, **114** |
-| **P2** | Cần cho v1 nhưng trận vẫn chạy được nếu thiếu | **30** | 005, 006, 010, 011, 012, 015, 019, 034, 053, 060, 061, 063, 071, 072, 075, 076, 077, 079, 083, 086, 087, 090, 093, 094, 095, 096, 098, **111**, **113**, **115** |
-| **P3** | Phần cắt được của v1 | **8** | 018, 022, 078, 080, 081, 084, 091, 097 |
+| **P1** | Không có thì không chạy được một trận | **72** | 001, 002, 003, 004, 007, 008, 009, 013, 014, 016, 017, 020, 021, 023, 024, 025, 026, 027, 028, 029, 030, 031, 032, 033, 035, 036, 037, 038, 039, 040, 041, 042, 043, 044, 045, 046, 047, 048, 049, 050, 051, 052, 054, 055, 056, 057, 058, 059, 062, 064, 065, 066, 067, 068, 069, 070, 073, 074, 082, 085, 088, 089, 092, 104, 105, 106, 107, 108, 109, 110, 112, 114 |
+| **P2** | Cần cho v1 nhưng trận vẫn chạy được nếu thiếu | **32** | 005, 006, 010, 011, 012, 015, 019, 034, 053, 060, 061, 063, 071, 072, 075, 076, 077, 079, 083, 086, 087, 090, 093, 094, 095, 096, 098, 111, 113, 115, 116, 117 |
+| **P3** | Phần cắt được của v1 | **7** | 018, 022, 078, 080, 081, 091, 097 |
 
-**Toàn bộ 110 yêu cầu ở trạng thái `CONFIRMED`.** Không yêu cầu nào mang `NEEDS CLARIFICATION`, không yêu cầu nào ở trạng thái `CONFLICT`.
+**Toàn bộ 111 yêu cầu ở trạng thái `CONFIRMED`.** Không yêu cầu nào mang `NEEDS CLARIFICATION`, không yêu cầu nào ở trạng thái `CONFLICT`.
 
 ### 20.3 Lý do ưu tiên
 
@@ -1791,30 +1806,9 @@ Chuỗi chặn: EPIC-001 → EPIC-002 → EPIC-004 → EPIC-005 → EPIC-006 →
 
 ## 21. Open Questions
 
-> Tổng hợp mọi `CONFLICT`, `NEEDS CLARIFICATION`, `MISSING`, `BOUNDARY_UNDEFINED`, `ORDER_DEPENDENT`, `INVALID_TRANSITION_UNDEFINED` phát hiện được khi đọc toàn bộ nguồn.
->
-> **Câu hỏi được chốt thì bị XOÁ khỏi đây**, và danh sách được **đánh số lại** — số hiệu là **chỉ mục của bản hiện hành**, không phải định danh vĩnh viễn. Trích dẫn `QUESTION-*` từ tài liệu khác phải kèm tên câu hỏi.
+**Không còn câu hỏi mở nào ở mức chặn nghiệm thu v1.**
 
-### Không còn câu hỏi mở nào
-
-Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn vẹn ngày **2026-07-29**. Chúng bị xoá khỏi mục này theo quy ước bảo trì; nơi tra là `docs/decisions.md`:
-
-| Câu hỏi cũ | Phân xử | Quyết định |
-|---|---|---|
-| Danh sách thí sinh trong gói contest | **Có làm** — gói mang danh sách người tham gia, luôn ở dạng đã mã hoá | `QĐ-086` |
-| Trải nghiệm cài đặt lần đầu | Dòng lệnh khi dựng máy **và** tài khoản admin theo gói khi ra hội trường; không làm trình hướng dẫn web | `QĐ-087` |
-| Quy mô viewer và ngưỡng độ trễ | Hai kênh public chuyển sang đẩy **một chiều**, tách khỏi kênh của lõi thi đấu ⇒ con số thôi là cam kết sản phẩm, chỉ còn là giá trị định cỡ | `QĐ-088` *(và `QĐ-067` giữ nguyên)* |
-| Biệt danh có bật mặc định không | **Bỏ hẳn tuỳ chọn biệt danh** | `QĐ-090` |
-| Khoá cứng phạm vi phân định hoà | **Có khoá** — chỉ vị trí nhất; schema vẫn nhận mảng | `QĐ-085` |
-| Giá trị hạn lưu trữ | Admin đặt được; mặc định 12 tháng chính thức, 3 tháng luyện tập | `QĐ-091` |
-| Số trận song song | Định cỡ cho tối đa 6, thường 1-2; **không** chặn cứng | `QĐ-089` |
-| Bộ chỉ số thành công | Chốt bảy, hoãn bốn cho tới khi có người dùng đầu tiên | `QĐ-092` |
-
-**Câu hỏi mở của các phiên bản sau** nằm ở `roadmap-post-v1.md` §9 — chúng không chặn v1.
-
-**Không mục nào trong `game-rules.md`, `game-state-machine.md`, `decisions.md`, `glossary.md` hay `traceability.md` còn mang marker treo.** Ba tài liệu đầu tự khai điều này; lần quét toàn văn xác nhận. Marker duy nhất được định nghĩa và dùng trong bộ đặc tả là `[SUY RA]` — nhãn nguồn, không phải câu hỏi mở.
-
----
+Mục còn thiếu nguồn nằm ở §Open Questions của từng feature spec — chúng là **missing source behavior** trong phạm vi hẹp, không mục nào chặn một requirement của PRD này. Câu hỏi mở của các phiên bản sau nằm ở `roadmap-post-v1.md` §9.
 
 ## 22. Traceability Matrix
 
@@ -1878,6 +1872,8 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | PRD-REQ-113 | GOAL-007 | EPIC-006, EPIC-007 | J5, J6 | AD, SV | `GR-032` §Kích hoạt tay, `GR-009` C6b, `GR-037` C8b · `INV-006`, `INV-008` | `QĐ-104` | CONFIRMED |
 | PRD-REQ-114 | GOAL-002 | EPIC-005, EPIC-006, EPIC-004 | J2, J4, J5 | AD, SV | `GR-036` C5b, `GR-020` C6, `GR-022`, `GR-017` §Biên · `INV-014`, `INV-018` | `QĐ-105`, `QĐ-007` | CONFIRMED |
 | PRD-REQ-115 | GOAL-005 | EPIC-002, EPIC-006, EPIC-010 | J1, J7 | ST, AD | `GR-031` · `INV-001`, `INV-022` | `QĐ-107` | CONFIRMED |
+| PRD-REQ-116 | GOAL-007 | EPIC-011 | J7 | AD | `GR-037` | `QĐ-130`, `QĐ-132`, `QĐ-135`, `QĐ-137`, `QĐ-138`, `QĐ-139` · `PRD-REQ-082`, `PERM-015`, `PERM-062`, `NFR-17`, `NFR-11b` | CONFIRMED |
+| PRD-REQ-117 | GOAL-007 | EPIC-011 | J7 | AD | — | `QĐ-150` · `QĐ-091`, `QĐ-143` · `NFR-35`, `PERM-063` | CONFIRMED |
 | PRD-REQ-047 | GOAL-005 | EPIC-006, EPIC-002 | J2, J5 | AD, SV | `GR-031` · `INV-011` | `QĐ-041`, `QĐ-044` | CONFIRMED |
 | PRD-REQ-048 | GOAL-007 | EPIC-006 | J5, J6 | SV | `GR-031`, `GR-005` · `INV-012` | `QĐ-042`, `QĐ-003` | CONFIRMED |
 | PRD-REQ-049 | GOAL-005 | EPIC-006, EPIC-009 | J5 | AD, MC, OV | `GR-037` · `INV-017` | `QĐ-051`, `QĐ-062`, `QĐ-074`, `QĐ-080`, `QĐ-119` | CONFIRMED |
@@ -1910,12 +1906,11 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | PRD-REQ-076 | GOAL-008 | EPIC-009 | J6 | AD | `GR-035` · `INV-016`, `INV-021` | `QĐ-050`, `QĐ-116`, `QĐ-117`, `STATE-040` | CONFIRMED |
 | PRD-REQ-077 | GOAL-008 | EPIC-009 | J5 | KG, OV | `GR-030` | `QĐ-076`, `QĐ-120` | CONFIRMED |
 | PRD-REQ-078 | GOAL-008 | EPIC-009 | J2 | AD | — | `QĐ-079`, `QĐ-120`, `QĐ-121`, `QĐ-122` | CONFIRMED |
-| PRD-REQ-079 | GOAL-007 | EPIC-010 | J7 | AD | `GR-028`, `GR-030` | `QĐ-077` | CONFIRMED |
-| PRD-REQ-080 | GOAL-007 | EPIC-010, EPIC-011 | J7 | AD | — | `QĐ-077`, `QĐ-040` | CONFIRMED |
-| PRD-REQ-081 | GOAL-005 | EPIC-010 | J7 | AD, ST | `GR-031` | `product-discovery.md` §5 E-10 | CONFIRMED |
-| PRD-REQ-082 | GOAL-007 | EPIC-011 | mọi J | mọi actor | `GR-037` | `CLAUDE.md` §Quy ước khác · `QĐ-074` | CONFIRMED |
-| PRD-REQ-083 | GOAL-007 | EPIC-011 | J7 | AD | — | `QĐ-091`, `QĐ-040` | CONFIRMED |
-| PRD-REQ-084 | GOAL-007 | EPIC-011 | J2 | AD | — | `product-discovery.md` §3 *(pháp lý)* | CONFIRMED |
+| PRD-REQ-079 | GOAL-007 | EPIC-010 | J7 | AD | `GR-028`, `GR-030` | `QĐ-077`, `QĐ-125`, `QĐ-129` | CONFIRMED |
+| PRD-REQ-080 | GOAL-007 | EPIC-010, EPIC-011 | J7 | AD | — | `QĐ-077`, `QĐ-040`, `QĐ-128` | CONFIRMED |
+| PRD-REQ-081 | GOAL-005 | EPIC-010 | J7 | AD, ST | `GR-031`, `GR-026`, `GR-033` | `product-discovery.md` §5 E-10 · `QĐ-127` | CONFIRMED |
+| PRD-REQ-082 | GOAL-007 | EPIC-011 | mọi J | mọi actor | `GR-037` | `CLAUDE.md` §Quy ước khác · `QĐ-074`, `QĐ-131`, `QĐ-132`, `QĐ-133`, `QĐ-134` · `TERM-063` | CONFIRMED |
+| PRD-REQ-083 | GOAL-007 | EPIC-011 | J7 | AD | — | `QĐ-091`, `QĐ-040`, `QĐ-131`, `QĐ-136`, `QĐ-140` | CONFIRMED |
 | PRD-REQ-085 | GOAL-010 | EPIC-012 | J3, J4 | AD | — | `product-discovery.md` §3 G-10 | CONFIRMED |
 | PRD-REQ-086 | GOAL-008 | EPIC-012, EPIC-001 | J4 | AD | — | `CLAUDE.md` §Mô hình truy cập | CONFIRMED |
 | PRD-REQ-087 | GOAL-010 | EPIC-012 | J4 | AD | — | `QĐ-067`, `QĐ-088` | CONFIRMED |
@@ -1927,9 +1922,9 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | PRD-REQ-093 | GOAL-007 | EPIC-006, EPIC-007 | J6 | AD | `GR-023`, `GR-031` | `QĐ-081`, `QĐ-082` | CONFIRMED |
 | PRD-REQ-094 | GOAL-005 | EPIC-003 | J7 | AD | `GR-031` | `QĐ-084`, `TERM-048` | CONFIRMED |
 | PRD-REQ-095 | GOAL-005 | EPIC-003 | J7 | AD | `GR-031` | `QĐ-084` | CONFIRMED |
-| PRD-REQ-096 | GOAL-007 | EPIC-010 | J7 | AD | `GR-028`, `GR-030`, `GR-037` | `QĐ-084`, `QĐ-077` | CONFIRMED |
-| PRD-REQ-097 | GOAL-007 | EPIC-010 | J7 | AD | `GR-022`, `GR-028` | `QĐ-084` | CONFIRMED |
-| PRD-REQ-098 | GOAL-009 | EPIC-012, EPIC-003, EPIC-010 | J3, J7 | AD | — | `QĐ-084` | CONFIRMED |
+| PRD-REQ-096 | GOAL-007 | EPIC-010 | J7 | AD | `GR-028`, `GR-030`, `GR-037` | `QĐ-084`, `QĐ-077`, `QĐ-126` | CONFIRMED |
+| PRD-REQ-097 | GOAL-007 | EPIC-010 | J7 | AD | `GR-022`, `GR-028` | `QĐ-084`, `QĐ-124`, `QĐ-126` | CONFIRMED |
+| PRD-REQ-098 | GOAL-009 | EPIC-012, EPIC-003, EPIC-010 | J3, J7 | AD | — | `QĐ-084`, `QĐ-129` | CONFIRMED |
 | PRD-REQ-104 | GOAL-009 | EPIC-003, EPIC-011 | J3 | AD | — | `QĐ-086`, `QĐ-087` | CONFIRMED |
 | PRD-REQ-105 | GOAL-002 | EPIC-004, EPIC-005, EPIC-006 | J2, J7 | AD | `GR-022`, `GR-023`, `GR-025` | `QĐ-085` | CONFIRMED |
 | PRD-REQ-106 | GOAL-010 | EPIC-012, EPIC-001 | J3, J4 | AD | — | `QĐ-087` | CONFIRMED |
@@ -1945,7 +1940,7 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | GOAL-004 | 008 |
 | GOAL-005 | 002, 003, 007, 011, 012, 013, 014, 047, 049, 060, 081, 089, 107 |
 | GOAL-006 | 041, 042, 043, 044, 045, 046, 054, 064, 065, 066, 068, 069, 070 |
-| GOAL-007 | 004, 005, 006, 015, 028, 029, 030, 031, 032, 033, 034, 035, 036, 037, 038, 039, 040, 048, 050, 051, 052, 053, 055, 056, 057, 058, 059, 061, 062, 063, 079, 080, 082, 083, 084 |
+| GOAL-007 | 004, 005, 006, 015, 028, 029, 030, 031, 032, 033, 034, 035, 036, 037, 038, 039, 040, 048, 050, 051, 052, 053, 055, 056, 057, 058, 059, 061, 062, 063, 079, 080, 082, 083 |
 | GOAL-008 | 001, 067, 071, 072, 073, 074, 075, 076, 077, 078, 086, 088 |
 | GOAL-009 | 016, 017, 018, 104 |
 | GOAL-010 | 019, 085, 087, 106 |
@@ -1961,7 +1956,7 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | `GR-022` → `GR-025` *(Câu hỏi phụ)* | 024, 032, 034, 075, 092, 105, 114 |
 | `GR-026` *(phán quyết)* | 004, 036, 037, 038, 051, 062, 063 |
 | `GR-027` *(chuẩn hoá, tô nổi bật)* | 009, 015, 036, 051 |
-| `GR-028` *(điểm là hàm event log)* | 039, 040, 067, 075, 079, 101, 102 |
+| `GR-028` *(điểm là hàm event log)* | 039, 040, 067, 075, 079 |
 | `GR-029` *(điều chỉnh điểm)* | 005, 033, 055 |
 | `GR-030` *(bỏ / chạy lại / kết thúc sớm)* | 005, 029, 030, 031, 056, 077, 079 |
 | `GR-031` *(rút đề, không lặp câu)* | 007, 011, 012, 013, 014, 016, 017, 027, 028, 035, 047, 048, 060, 081, 104 · *(099, 100 ở `roadmap-post-v1.md`)* |
@@ -1971,33 +1966,6 @@ Tám câu hỏi của bản 2.1.0 đã được chủ dự án phân xử trọn
 | `GR-035` *(server time)* | 042, 052, 076 |
 | `GR-036` *(mất kết nối, giữ ghế)* | 050, 061, 114 |
 | `GR-037` *(phạm vi hiển thị đáp án)* | 001, 002, 003, 028, 049, 057, 073, 074, 082, 107, 113 |
-
-### 22.3 Đối chiếu ngược: Quyết định mới → Requirement chịu ảnh hưởng
-
-> Thay cho bảng *Open question → Requirement* của bản 2.1.0. Không còn câu hỏi mở nào để đối chiếu; bảng này ghi các quyết định phân xử chúng và những mục đã sửa theo. `QĐ-093`→`096` đã tích hợp qua `PRD-REQ-001` và `108`→`112`; `QĐ-097`→`103` truy nguyên thẳng tại `specs/001-xac-thuc-phan-quyen`, không sinh `PRD-REQ` riêng.
-
-| Quyết định | Requirement chịu ảnh hưởng |
-|---|---|
-| `QĐ-085` khoá phạm vi phân định hoà | **105** *(mới)* · 024, 025, 032 · NON-GOAL-017 |
-| `QĐ-086` danh sách người tham gia trong gói | **104** *(mới)* · 016 · NFR-24b, NFR-35b · RISK-010 |
-| `QĐ-087` cài đặt lần đầu | **106** *(mới)* · 085, 104 · NON-GOAL-019 |
-| `QĐ-088` kênh public một chiều | **107** *(mới)* · 086, 087 · NFR-06, NFR-20 |
-| `QĐ-089` số trận song song | 027 · NFR-11 · ASSUMPTION-002 |
-| `QĐ-090` bỏ biệt danh | **083** *(nay là hạn lưu trữ)* · NON-GOAL-018 · ASSUMPTION-005, RISK-007 |
-| `QĐ-091` hạn lưu trữ | **083** · 080 · NFR-33, NFR-34, NFR-35b |
-| `QĐ-092` bộ chỉ số | METRIC-005 → METRIC-011 *(chốt)*; bốn chỉ số hoãn chuyển sang `roadmap-post-v1.md` §8.3 |
-| `QĐ-104` admin kích hoạt tay một tín hiệu | **113** *(mới)* · 037, 038, 044, 045, 088 · §8.2 bước 5 · §9.5 `INV-009` · §13.2 bảng *Phán quyết hai hay ba lựa chọn* · §11 EPIC-006, EPIC-007 |
-| `QĐ-105` dưới 4 thí sinh chạy bằng ghế bỏ thi | **114** *(mới)* · 026 · NON-GOAL-012 · §9.4 *(hạng chặn do giới hạn phiên bản)* · §9.5 `INV-014` · §20.1 EPIC-006 |
-| `QĐ-106` VCNV có hai giá trị thời gian cấp vòng | 008 *(Note ngoại lệ)* · 020 · §13.3 dòng VCNV |
-| `QĐ-107` vòng đời dữ liệu câu hỏi | **115** *(mới)* · 007, 011 · §11 EPIC-002 *(bỏ phần loại trừ đánh phiên bản)* · §20.1 EPIC-002 |
-| `QĐ-116` banner tạm dừng **không phủ màn MC** | **076** · 074 · `game-state-machine.md` §F bảng nhóm *(bỏ MC khỏi nhóm chặn toàn cục)*, `STATE-039`, `STATE-040`, `T-089` |
-| `QĐ-117` banner × lớp công bố **loại trừ lẫn nhau** | **075**, **076** · `STATE-033`, `STATE-040`, `EVENT-032`, `EVENT-034`, `T-087`, `T-089`, §Invalid transitions, `INV-021` *(thu hẹp một ngoại lệ)* |
-| `QĐ-118` đáp án Chướng ngại vật tới **cả overlay** | **073** · 049 · `GR-012` §Điều kiện, C2, `GR-037` C9 |
-| `QĐ-119` **cú đóng tay thắng** cú đẩy tại mốc câu khép | **049** · 057 · `GR-037` **C10** *(mới)*, §Thứ tự đánh giá bước (5b), §Bấm trùng, §Không đổi gì · `STATE-021` · `INV-017` · `QĐ-074` *(vế "engine không bao giờ tự mở" bị thay)* |
-| `QĐ-120` khe âm thanh **hai nhóm** + nguồn phát | **078**, **077** · `QĐ-079` *(danh sách phẳng bị tách)* |
-| `QĐ-121` chủ đề = **ba trục tĩnh**, áp cho **hai kênh public** | **078** |
-| `QĐ-122` **52 khe** mốc thi đấu dẫn xuất từ wiki Fandom, lọc hai tầng | **078** · `QĐ-079` *(cụm "ngoài các mốc thi đấu" được liệt kê)* · nguồn mới `source/fandom-olympia-26-am-thanh.md` |
-| `QĐ-123` lớp phủ thiếu dữ liệu vẫn dựng **bình thường** | **075** |
 
 ---
 
